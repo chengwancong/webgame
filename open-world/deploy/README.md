@@ -52,7 +52,7 @@ curl https://staging.你的域名/api/health
 - **staging（默认）**：`NODE_ENV=development`、`AW_TEST_LOGIN=1`，开测试号登录、QA 区域和开发检查点，方便跑测机器人；只靠 Caddy 口令挡外人。
 - **prod**：`.env` 里设 `AW_MODE_NODE_ENV=production`、`AW_TEST_LOGIN=0`，密码账号、cookie 仅 HTTPS；`main.ts` 会拒绝在 production 下开 QA 开关。
 
-## 云端跑测（阶段 2 预留）
+## 云端跑测（阶段 2）
 
 镜像仓库不含素材，所以云端适合跑**不依赖图片**的检查：类型检查、内容校验（`pnpm content`）、数值推导/校验（`pacing:*`、`spine:check`）、
 带 PG 的服务端与模拟测试、`probe-quest.mjs` 这类对着 API 的自动驾驶。下面这些测试读取 PNG，云端要跳过或等素材进对象存储后再跑：
@@ -102,3 +102,5 @@ curl https://staging.你的域名/api/health
 ### 当前运行层
 
 API 多阶段镜像只保留生产依赖和独立的 tsx 4.21.0；不包含 TypeScript、Vitest、Playwright 或 Electron。实测 docker images 磁盘占用 567MB（原 824MB），压缩内容约 113MB；Node 直接加载 tsx loader 运行源码。
+
+Grok 的持久会话、独立账号、开场选武器与问题记录提示词见 `docs/cloud-20261018/grok-跑测指南.md`。当前线上有并行会话的客户端覆盖层，后续 HEAD 发版前核对服务器 `deploy/SOURCE_MANIFEST.json`；本轮未代提交这些工作区改动。
