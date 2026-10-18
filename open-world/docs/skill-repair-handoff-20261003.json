@@ -1,0 +1,1778 @@
+{
+  "checkedAt": "2026-10-03T18:21:11.660215+08:00",
+  "versions": {
+    "client": "0.8.10",
+    "protocol": 12,
+    "rules": "ow-17",
+    "assets": "world-art-20261003-v17-chibi-items",
+    "db": 11
+  },
+  "originalExecutionEvidenceVersions": {
+    "client": "0.8.7",
+    "protocol": 12,
+    "rules": "ow-17",
+    "assets": "world-art-20261003-v17-chibi-items",
+    "db": 11
+  },
+  "worktree": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world",
+  "scope": "技能能力、共享效果与直接关联的技能交互；全局平衡仅复测与建议",
+  "counts": {
+    "playerSkillGaps": 36,
+    "sharedTasks": 4,
+    "skillUiTasks": 6,
+    "tuningChecks": 2
+  },
+  "sourceFingerprints": [
+    {
+      "file": "packages/content/skills-expanded.ts",
+      "current": "5f2d27cd491ea0b95633d252b7e67f94a4bc2947912174f92c760216c433fbc1",
+      "auditSnapshot": "5f2d27cd491ea0b95633d252b7e67f94a4bc2947912174f92c760216c433fbc1",
+      "sameAsAuditSnapshot": true
+    },
+    {
+      "file": "packages/content/index.ts",
+      "current": "a375f7b6c2414194413e0fc6ae2e643ff03348b0a187ea4d62300760086f691f",
+      "auditSnapshot": "a375f7b6c2414194413e0fc6ae2e643ff03348b0a187ea4d62300760086f691f",
+      "sameAsAuditSnapshot": true
+    },
+    {
+      "file": "packages/simulation/index.ts",
+      "current": "c701bf21901b2908d362bdb5e71c42f26431a20098666626e7bb93f1513eeeed",
+      "auditSnapshot": "c701bf21901b2908d362bdb5e71c42f26431a20098666626e7bb93f1513eeeed",
+      "sameAsAuditSnapshot": true
+    },
+    {
+      "file": "packages/rules/index.ts",
+      "current": "27c0dfe8aac7ffe7e919c7f48253db47ee794b0ef54c29c50da9a292dd82aa65",
+      "auditSnapshot": "27c0dfe8aac7ffe7e919c7f48253db47ee794b0ef54c29c50da9a292dd82aa65",
+      "sameAsAuditSnapshot": true
+    },
+    {
+      "file": "packages/rules/deep-progression.ts",
+      "current": "134139f25b71a1107ed97ec9ec29309156244f7f54ae000cfb54d924b99085cf",
+      "auditSnapshot": "134139f25b71a1107ed97ec9ec29309156244f7f54ae000cfb54d924b99085cf",
+      "sameAsAuditSnapshot": true
+    },
+    {
+      "file": "packages/content/chapter-combat.ts",
+      "current": "cd72c1df0f8d3970aa6a8332514ece65430dd5e6daa54c58e94c04696319e09a",
+      "auditSnapshot": "cd72c1df0f8d3970aa6a8332514ece65430dd5e6daa54c58e94c04696319e09a",
+      "sameAsAuditSnapshot": true
+    },
+    {
+      "file": "packages/contracts/index.ts",
+      "current": "bacd126df92f83351c2223049dbbc3943d3f02a7d26f23d9d8e43e953ba2f203",
+      "auditSnapshot": "dbce117e908dd61dd33739c5326e020bafc6b11c6d0dc70aca2dcab5c550d620",
+      "sameAsAuditSnapshot": false
+    },
+    {
+      "file": "apps/web/src/main.ts",
+      "current": "f8e504660009dc8f7555c68faa39cc4875c1f64fedd0e330752faa04a2b03b1e",
+      "auditSnapshot": "5e66f79f9a9466e302ab18b96ddb38fb13ed96af963123119a1e093fef73ddfa",
+      "sameAsAuditSnapshot": false
+    },
+    {
+      "file": "apps/web/src/skills-panel.ts",
+      "current": "9f20453af630209bebff48212423f30ed5da754dc417dd3dd02aa0e8f1aaf7a2",
+      "auditSnapshot": "9f20453af630209bebff48212423f30ed5da754dc417dd3dd02aa0e8f1aaf7a2",
+      "sameAsAuditSnapshot": true
+    },
+    {
+      "file": "apps/web/src/ui/skill-effects.ts",
+      "current": "67fd533457d979f91ead9c6516546aaff955deaa4215c20115fa13b0e746fb91",
+      "auditSnapshot": "67fd533457d979f91ead9c6516546aaff955deaa4215c20115fa13b0e746fb91",
+      "sameAsAuditSnapshot": true
+    },
+    {
+      "file": "apps/api/src/dungeon-service.ts",
+      "current": "47799d194d0ab26e5679fce513abd60a813431a591a2bc9b129ca0e1771b7bbc",
+      "auditSnapshot": "47799d194d0ab26e5679fce513abd60a813431a591a2bc9b129ca0e1771b7bbc",
+      "sameAsAuditSnapshot": true
+    },
+    {
+      "file": "apps/web/src/combat-vfx.ts",
+      "current": "963a07d91c8945542f22a9de2f426e74c5257d7ff7d1c5eb488786cdbf0f1d7d",
+      "auditSnapshot": "963a07d91c8945542f22a9de2f426e74c5257d7ff7d1c5eb488786cdbf0f1d7d",
+      "sameAsAuditSnapshot": true
+    }
+  ],
+  "shared": [
+    {
+      "id": "C01",
+      "priority": "P1",
+      "title": "燃烧自续、伤害触发边界与来源归属",
+      "sources": [
+        "packages/simulation/index.ts:99",
+        "packages/simulation/index.ts:214",
+        "packages/content/index.ts:32"
+      ],
+      "problem": "DOT调用damage默认secondary=false，重新刷新燃烧并进入命中触发；吸血在!secondary之外，单改布尔值仍不足。burn仅保存结束tick，没有独立施加者/强度记录。",
+      "fix": "明确直接命中、持续伤害、衍生伤害类别；燃烧跳伤不能续自己，按相对战斗时钟排程，记录来源/强度/结束与下次结算。暴击、吸血、传导、护盾、打断分别用规则控制。",
+      "acceptance": [
+        "一次直接命中后30秒内只产生声明的跳数；按3秒/每秒一次的方案应为3次。",
+        "重复直接命中刷新时间不无限加层，不重置跳伤到永远不结算；不同玩家的归属可核对。",
+        "断线、保存恢复、阶段切换后时间与次数一致。"
+      ]
+    },
+    {
+      "id": "C02",
+      "priority": "P1",
+      "title": "龙之祝福永久累乘",
+      "sources": [
+        "packages/simulation/index.ts:631",
+        "packages/content/chapter-combat.ts"
+      ],
+      "problem": "buff_nearby直接修改ally.attack*=1.2，没有回收；原300秒受控样本25→662。",
+      "fix": "基础攻击与临时modifier分开，声明持续时间、来源、刷新/叠加上限和清除规则。",
+      "acceptance": [
+        "持续300秒不超过声明上限，到期回基础值。",
+        "施加者死亡、驱散、重连不重复乘算。"
+      ]
+    },
+    {
+      "id": "C03",
+      "priority": "P1",
+      "title": "敌方减速与眩晕声明未执行",
+      "sources": [
+        "packages/simulation/index.ts:574",
+        "packages/simulation/index.ts:115",
+        "packages/content/chapter-combat.ts"
+      ],
+      "problem": "frost_bite.slow、shield_bash.effect=stun未在近战命中执行；敌方zone.slow也没有更新玩家减速。",
+      "fix": "玩家与怪物共用状态执行能力，明确比例/时长、免疫/抵抗、解除和行动限制。",
+      "acceptance": [
+        "冰冻撕咬、盾击、冰霜区域分别测移动和可施法窗口。",
+        "状态到期、净化、救援与恢复结果一致，未命中不施加。"
+      ]
+    },
+    {
+      "id": "C04",
+      "priority": "P2",
+      "title": "最终冷却、上限与UI口径",
+      "sources": [
+        "packages/rules/deep-progression.ts:130",
+        "packages/simulation/index.ts:82",
+        "apps/web/src/ui/skill-effects.ts"
+      ],
+      "problem": "技能冷却修正与stats.cdr分别最多降低75%，合成后可能超过75%；面板总贡献不等于实际生效。",
+      "fix": "服务端输出最终解析冷却、贡献与有效上限；前摇/施法占用另显示，防止冷却已好但仍不可施法的静默点击。",
+      "acceptance": [
+        "UI最终冷却与实际cooldown tick一致。",
+        "双池、封顶、取整、施法占用和资源不足均有对应状态。"
+      ]
+    }
+  ],
+  "playerSkills": [
+    {
+      "issueId": "SK01",
+      "skillId": "dual_strike",
+      "name": "双重打击",
+      "category": "melee",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "dual_strike",
+        "category": "melee",
+        "unlockLevel": 3,
+        "name": "双重打击",
+        "kind": "single",
+        "damage": 28,
+        "range": 2.5,
+        "radius": 0,
+        "cooldown": 35,
+        "cost": 8,
+        "windup": 4,
+        "duration": 0,
+        "description": "快速连击两次"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 13,
+      "problem": "当前 single 分支只产生一次命中，文案为快速连击两次。",
+      "implementation": [
+        "将已解析的单次总伤害拆成两段，间隔建议 0.12–0.18 秒；整数余数放到第二段，先保持总预算。",
+        "第一段与第二段分别发命中事件，第二段目标死亡或离开范围时允许落空；是否追踪新目标必须明确。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "一次成功完整施放有两次命中，总伤等于原定预算，不能把 28 直接变成两次 28。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "Hades（哈迪斯）",
+      "referenceSource": "https://gigazine.net/gsc_news/en/20210501-game-hades/",
+      "referenceMechanism": "https://www.supergiantgames.com/games/hades/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK01.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\hades-boon.png",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK02",
+      "skillId": "blade_fury",
+      "name": "刀刃风暴",
+      "category": "melee",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "blade_fury",
+        "category": "melee",
+        "unlockLevel": 8,
+        "name": "刀刃风暴",
+        "kind": "area",
+        "damage": 15,
+        "range": 0,
+        "radius": 4,
+        "cooldown": 120,
+        "cost": 22,
+        "windup": 5,
+        "duration": 90,
+        "description": "持续旋转攻击周围"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 15,
+      "problem": "area 分支只伤害一次，duration=90 没有形成持续旋转。",
+      "implementation": [
+        "建立跟随施法者的 3 秒通道，建议每秒一次伤害；先将现有总伤预算分到三次。",
+        "移动、控制、死亡和再次施放分别定义中断规则；这是跟随人物的旋转能力，不能把静态落地区域当作同一机制。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "持续期有三次可追溯命中，结束后无额外伤害；范围与旋转表现跟随同一主体。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK02.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK03",
+      "skillId": "execute",
+      "name": "斩杀",
+      "category": "melee",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "execute",
+        "category": "melee",
+        "unlockLevel": 10,
+        "name": "斩杀",
+        "kind": "single",
+        "damage": 80,
+        "range": 2.5,
+        "radius": 0,
+        "cooldown": 150,
+        "cost": 20,
+        "windup": 8,
+        "duration": 0,
+        "description": "对低血量敌人造成额外伤害"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 16,
+      "problem": "只有基础 80 单次伤害，低生命额外伤害不由技能本体提供。",
+      "implementation": [
+        "增加明确低生命阈值和伤害倍率字段，初始试验可为 20% 阈值、50% 增伤，重新核对基础爆发预算。",
+        "在命中时而非按键时读取目标生命比；与通用斩杀天赋的叠加单独规定，避免重复乘算。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "同一敌人 21% 与 19% 生命的配对命中产生预定差异，其他技能不获得这个本体加成。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "恐怖黎明（Grim Dawn）",
+      "referenceSource": "https://store.steampowered.com/app/219990/Grim_Dawn/",
+      "referenceMechanism": "https://www.grimdawn.com/guide/items/the-hunt-for-loot/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK03.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\grim-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK04",
+      "skillId": "blood_rage",
+      "name": "血怒",
+      "category": "melee",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "blood_rage",
+        "category": "melee",
+        "unlockLevel": 12,
+        "name": "血怒",
+        "kind": "shield",
+        "damage": 0,
+        "range": 0,
+        "radius": 0,
+        "cooldown": 240,
+        "cost": 30,
+        "windup": 2,
+        "duration": 180,
+        "description": "提升攻击力但持续消耗生命"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 18,
+      "problem": "shield damage=0，只消耗灵力，未增加攻击或持续损失生命。",
+      "implementation": [
+        "改为有来源的攻击增益与生命消耗状态，建议先试 6 秒、攻击 +20%、每秒损失最大生命 2%。",
+        "自耗是否能致死、是否触发护盾/吸血、净化是否可解除均明确；不把零盾当作攻击增益。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "持续期间攻击与生命按规定改变，到期恢复；角色倒地、重连和刷新不会永久叠加。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "Hades（哈迪斯）",
+      "referenceSource": "https://gigazine.net/gsc_news/en/20210501-game-hades/",
+      "referenceMechanism": "https://www.supergiantgames.com/games/hades/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK04.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\hades-boon.png",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK05",
+      "skillId": "vortex_blade",
+      "name": "漩涡之刃",
+      "category": "melee",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "vortex_blade",
+        "category": "melee",
+        "unlockLevel": 13,
+        "name": "漩涡之刃",
+        "kind": "area",
+        "damage": 38,
+        "range": 0,
+        "radius": 4.5,
+        "cooldown": 85,
+        "cost": 24,
+        "windup": 9,
+        "duration": 0,
+        "description": "制造吸引敌人的漩涡"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 19,
+      "problem": "只有范围伤害，没有 pull 参数，敌人不会被吸引。",
+      "implementation": [
+        "配置适度牵引距离，先试 1–1.5 格；命中后调用已有身体移动与碰撞能力。",
+        "墙体、存活单位和首领抵抗统一处理；不能直接把敌人位置设为角色坐标。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "敌人距离按预定范围缩短，但不穿墙、不重叠；首领的抵抗结果可见。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK05.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK06",
+      "skillId": "counter_strike",
+      "name": "反击",
+      "category": "melee",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "counter_strike",
+        "category": "melee",
+        "unlockLevel": 14,
+        "name": "反击",
+        "kind": "shield",
+        "damage": 50,
+        "range": 0,
+        "radius": 3,
+        "cooldown": 180,
+        "cost": 15,
+        "windup": 1,
+        "duration": 60,
+        "description": "格挡并反弹伤害"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 20,
+      "problem": "当前只是 50 点护盾，不反弹伤害，radius 没有执行意义。",
+      "implementation": [
+        "保留防护预算，加入短格挡窗口与真实被挡伤害记录；反击基于实际挡下的伤害而非攻击者无限面板值。",
+        "反击标为衍生伤害，不再触发反击、燃烧续期等循环；规定远程、DOT、重击是否可反弹。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "窗口内外同一命中产生不同反馈，反击不形成双方递归循环，防护到期正确。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK06.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK07",
+      "skillId": "berserker",
+      "name": "狂战士",
+      "category": "melee",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "berserker",
+        "category": "melee",
+        "unlockLevel": 16,
+        "name": "狂战士",
+        "kind": "single",
+        "damage": 65,
+        "range": 2.8,
+        "radius": 0,
+        "cooldown": 120,
+        "cost": 25,
+        "windup": 10,
+        "duration": 0,
+        "description": "牺牲防御换取巨额伤害"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 22,
+      "problem": "只有 65 点单次伤害，没有牺牲防御的状态。",
+      "implementation": [
+        "为爆发加一个短暂防御代价，先试释放后 2 秒护甲降低 20%，并重新校准额外伤害收益。",
+        "防御代价用基础属性外的临时 modifier 表达，不直接修改持久护甲；禁止因重连丢掉代价。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "施放前后同一次来袭伤害按规定改变，2 秒后恢复；代价与伤害收益都可预览。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "Hades（哈迪斯）",
+      "referenceSource": "https://gigazine.net/gsc_news/en/20210501-game-hades/",
+      "referenceMechanism": "https://www.supergiantgames.com/games/hades/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK07.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\hades-boon.png",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK08",
+      "skillId": "war_cry",
+      "name": "战吼",
+      "category": "melee",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "war_cry",
+        "category": "melee",
+        "unlockLevel": 17,
+        "name": "战吼",
+        "kind": "area",
+        "damage": 20,
+        "range": 0,
+        "radius": 6,
+        "cooldown": 150,
+        "cost": 18,
+        "windup": 3,
+        "duration": 120,
+        "description": "降低周围敌人防御"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 23,
+      "problem": "area 只造成 20 伤害，没有降低敌人防御。",
+      "implementation": [
+        "增加范围护甲削弱，先试 4 秒、20%；写明同类只刷新或取最高，不无界叠加。",
+        "目标防御从冻结基础值与状态推导；多玩家重复战吼、首领抵抗和驱散都使用同一效果 ID。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "同敌人被影响时后续命中伤害按预定曲线提高，到期恢复，其他目标不受影响。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "恐怖黎明（Grim Dawn）",
+      "referenceSource": "https://store.steampowered.com/app/219990/Grim_Dawn/",
+      "referenceMechanism": "https://www.grimdawn.com/guide/items/the-hunt-for-loot/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK08.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\grim-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK09",
+      "skillId": "multi_shot",
+      "name": "多重箭",
+      "category": "ranged",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "multi_shot",
+        "category": "ranged",
+        "unlockLevel": 3,
+        "name": "多重箭",
+        "kind": "projectile",
+        "damage": 16,
+        "range": 11,
+        "radius": 0.3,
+        "cooldown": 40,
+        "cost": 10,
+        "windup": 5,
+        "duration": 0,
+        "description": "同时发射三支箭"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 32,
+      "problem": "projectiles 未配置，默认只生成一支直线箭。",
+      "implementation": [
+        "声明基础投射物数 3 和扇形角度；区分技能本体数量与天赋/威能加成，统一到现有最多 5 支能力。",
+        "先保持合理单次总伤预算，再测三目标收益；不能直接把单箭 16 无条件乘三。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "无遮挡释放生成三条独立弹道，墙体和目标命中逐条验证，单目标近距离总伤可解释。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK09.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK10",
+      "skillId": "pierce_arrow",
+      "name": "穿透箭",
+      "category": "ranged",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "pierce_arrow",
+        "category": "ranged",
+        "unlockLevel": 4,
+        "name": "穿透箭",
+        "kind": "projectile",
+        "damage": 32,
+        "range": 14,
+        "radius": 0.4,
+        "cooldown": 55,
+        "cost": 12,
+        "windup": 7,
+        "duration": 0,
+        "description": "穿透多个敌人"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 33,
+      "problem": "技能本体没有穿透，只有装备 pierce 或 lance 特例会贯穿。",
+      "implementation": [
+        "把穿透次数/贯穿标志写入技能解析参数，先试贯穿 2 个后续目标。",
+        "每个目标只命中一次，整段路径检查墙体；装备穿透与本体规则合并，不能重复生成同一次命中。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "用无穿透装备、三个共线目标验证本体贯穿；换装备不应使技能突然丢掉名称承诺。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK10.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK11",
+      "skillId": "rain_of_arrows",
+      "name": "箭雨",
+      "category": "ranged",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "rain_of_arrows",
+        "category": "ranged",
+        "unlockLevel": 8,
+        "name": "箭雨",
+        "kind": "zone",
+        "damage": 18,
+        "range": 10,
+        "radius": 4,
+        "cooldown": 110,
+        "cost": 22,
+        "windup": 15,
+        "duration": 0,
+        "description": "在区域内降下箭雨"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 34,
+      "problem": "zone duration=0，单次施放没有伤害。",
+      "implementation": [
+        "明确是一次落地爆发还是持续箭雨；建议先试 3 秒、三次伤害，range=10/radius=4 沿用现有范围。",
+        "伤害总量、首次命中时刻和对移动目标的作用由执行器定义，动效只能消费真实落地事件。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "单次施放有正伤害，首次/末次命中都在声明时段内；范围外目标不受伤。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK11.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK12",
+      "skillId": "explosive_shot",
+      "name": "爆破箭",
+      "category": "ranged",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "explosive_shot",
+        "category": "ranged",
+        "unlockLevel": 9,
+        "name": "爆破箭",
+        "kind": "projectile",
+        "damage": 40,
+        "range": 12,
+        "radius": 2,
+        "cooldown": 80,
+        "cost": 20,
+        "windup": 10,
+        "duration": 0,
+        "description": "命中后爆炸"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 35,
+      "problem": "projectile 只直接命中一名敌人，radius=2 没有触发爆炸查询。",
+      "implementation": [
+        "直接命中后在接触点产生一次范围爆炸，区分直接与范围预算。",
+        "直接目标是否同时承受爆炸需明示；爆炸检查视线、身体与边界，不因弹道大半径冒充爆炸。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "贴近命中点的第二名敌人按规则受伤，范围外不受伤，直接目标不被无意双算。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK12.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK13",
+      "skillId": "poison_arrow",
+      "name": "毒箭",
+      "category": "ranged",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "poison_arrow",
+        "category": "ranged",
+        "unlockLevel": 12,
+        "name": "毒箭",
+        "kind": "projectile",
+        "damage": 28,
+        "range": 11,
+        "radius": 0.35,
+        "cooldown": 70,
+        "cost": 14,
+        "windup": 6,
+        "duration": 90,
+        "description": "造成持续毒性伤害"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 37,
+      "problem": "duration=90 未创建毒性持续状态，仅有直线伤害。",
+      "implementation": [
+        "给命中目标创建独立中毒状态，建议 3 秒、三次跳伤，直接伤害与 DOT 预算分别标注。",
+        "区分毒与装备燃烧的来源、叠加和到期；持续伤害不再刷新自身或触发所有直接命中收益。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "停止施法后中毒按时结束，来源、总量和护甲作用可核对，不能无限延长。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "恐怖黎明（Grim Dawn）",
+      "referenceSource": "https://store.steampowered.com/app/219990/Grim_Dawn/",
+      "referenceMechanism": "https://www.grimdawn.com/guide/items/the-hunt-for-loot/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK13.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\grim-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK14",
+      "skillId": "volley",
+      "name": "齐射",
+      "category": "ranged",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "volley",
+        "category": "ranged",
+        "unlockLevel": 13,
+        "name": "齐射",
+        "kind": "projectile",
+        "damage": 20,
+        "range": 10,
+        "radius": 0.3,
+        "cooldown": 45,
+        "cost": 18,
+        "windup": 8,
+        "duration": 0,
+        "description": "快速连续射击"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 38,
+      "problem": "没有连发排程，仍为一次投射物。",
+      "implementation": [
+        "建立短连射序列，建议三发间隔 0.1 秒；先把既有单次预算分到三发。",
+        "明确连射期间能否移动、能否打断、目标死亡后后续是否继续；不重复扣整份灵力或重启冷却。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "一次命令只扣一次费用，但释放三发；打断和目标消失不会产生遗漏的幽灵弹。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK14.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK15",
+      "skillId": "arcane_missile",
+      "name": "奥术飞弹",
+      "category": "ranged",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "arcane_missile",
+        "category": "ranged",
+        "unlockLevel": 14,
+        "name": "奥术飞弹",
+        "kind": "projectile",
+        "damage": 35,
+        "range": 13,
+        "radius": 0.4,
+        "cooldown": 60,
+        "cost": 16,
+        "windup": 5,
+        "duration": 0,
+        "description": "追踪敌人的魔法飞弹"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 39,
+      "problem": "方向在发射时固定，未追踪移动敌人。",
+      "implementation": [
+        "给投射物保存目标 ID 并设置有限转向速度，而非瞬间吸附；保留可躲避空间。",
+        "目标死亡/不可见后采用最后方向或结束，行为需定义；追踪不能绕过完整路径碰撞。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "移动目标下弹道明显转向，追踪和普通直线弹道有可测差别，不穿墙。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK15.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK16",
+      "skillId": "meteor",
+      "name": "陨石术",
+      "category": "ranged",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "meteor",
+        "category": "ranged",
+        "unlockLevel": 15,
+        "name": "陨石术",
+        "kind": "zone",
+        "damage": 60,
+        "range": 12,
+        "radius": 3.5,
+        "cooldown": 180,
+        "cost": 35,
+        "windup": 25,
+        "duration": 0,
+        "description": "召唤陨石砸击地面"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 40,
+      "problem": "zone duration=0，单次施放没有伤害。",
+      "implementation": [
+        "将陨石定义为前摇后的单次范围命中，保留 25 tick 前摇并明确实际落地延迟。",
+        "使用一次爆发事件，不靠 duration=1 的周期取模偶然产生伤害；落点在释放后保持固定。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "前摇后落点内目标受到一次预定伤害，移动离开能躲过，冷却与费用只扣一次。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK16.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK17",
+      "skillId": "frost_bolt",
+      "name": "冰霜箭",
+      "category": "ranged",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "frost_bolt",
+        "category": "ranged",
+        "unlockLevel": 17,
+        "name": "冰霜箭",
+        "kind": "projectile",
+        "damage": 30,
+        "range": 12,
+        "radius": 0.4,
+        "cooldown": 50,
+        "cost": 12,
+        "windup": 6,
+        "duration": 0,
+        "description": "减速敌人的冰箭"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 42,
+      "problem": "projectile 命中没有设置减速状态。",
+      "implementation": [
+        "命中施加短减速，建议初始 30%/2 秒；将比例与时长写进实际参数。",
+        "同源刷新、不同来源取最大或按规则合成；DOT、护盾和减速不得混用 damage 字段。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "被命中目标相同时段移动距离降低预定比例，到期恢复；落空不施加减速。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK17.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK18",
+      "skillId": "fireball",
+      "name": "火球术",
+      "category": "ranged",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "fireball",
+        "category": "ranged",
+        "unlockLevel": 19,
+        "name": "火球术",
+        "kind": "projectile",
+        "damage": 50,
+        "range": 11,
+        "radius": 1.5,
+        "cooldown": 85,
+        "cost": 20,
+        "windup": 10,
+        "duration": 0,
+        "description": "造成范围爆炸的火球"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 44,
+      "problem": "仅单体命中，没有文案中的范围爆炸。",
+      "implementation": [
+        "接触点触发一次半径 1.5 的范围查询，明确主目标与周边伤害分配。",
+        "复用爆破箭的执行能力，以不同参数和表现区分；先测总伤与费用效率再定爆炸倍率。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "主目标和周边目标各被正确命中一次；墙后目标和范围外目标不受伤。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK18.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK19",
+      "skillId": "dark_arrow",
+      "name": "暗影箭",
+      "category": "ranged",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "dark_arrow",
+        "category": "ranged",
+        "unlockLevel": 20,
+        "name": "暗影箭",
+        "kind": "projectile",
+        "damage": 38,
+        "range": 15,
+        "radius": 0.35,
+        "cooldown": 65,
+        "cost": 15,
+        "windup": 7,
+        "duration": 0,
+        "description": "穿透护甲的暗影攻击"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 45,
+      "problem": "护甲穿透只来自角色 stats，技能自身没有穿透修正。",
+      "implementation": [
+        "加入本技能的穿透参数，先试忽略 30% 护甲，并与角色穿透明确合成方式和上限。",
+        "仅本次命中消费该参数；不要把能力写成全角色永久穿透或直接跳过全部防御。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "相同护甲目标下本技能与无穿透技能的配对受伤符合公式，零护甲不额外增伤。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "恐怖黎明（Grim Dawn）",
+      "referenceSource": "https://store.steampowered.com/app/219990/Grim_Dawn/",
+      "referenceMechanism": "https://www.grimdawn.com/guide/items/the-hunt-for-loot/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK19.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\grim-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK20",
+      "skillId": "stun_strike",
+      "name": "震慑",
+      "category": "control",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "stun_strike",
+        "category": "control",
+        "unlockLevel": 4,
+        "name": "震慑",
+        "kind": "single",
+        "damage": 25,
+        "range": 2.5,
+        "radius": 0,
+        "cooldown": 80,
+        "cost": 12,
+        "windup": 5,
+        "duration": 30,
+        "description": "眩晕单个敌人"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 52,
+      "problem": "single 只造成伤害，没有 30 tick 眩晕。",
+      "implementation": [
+        "创建 1 秒眩晕状态，行动与施法能力由状态执行器控制。",
+        "首领控制抵抗和不可打断动作需声明；表现只反映成功、抵抗或免疫的真实结果。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "普通目标在 1 秒内不能行动/施法，到期恢复；对首领规则一致且有反馈。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK20.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK21",
+      "skillId": "gravity_well",
+      "name": "重力陷阱",
+      "category": "control",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "gravity_well",
+        "category": "control",
+        "unlockLevel": 7,
+        "name": "重力陷阱",
+        "kind": "zone",
+        "damage": 10,
+        "range": 8,
+        "radius": 3,
+        "cooldown": 140,
+        "cost": 24,
+        "windup": 12,
+        "duration": 90,
+        "description": "减速并拉扯敌人"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 53,
+      "problem": "zone 只有周期伤害，没有减速或拉扯。",
+      "implementation": [
+        "区域持续 3 秒，按固定频率施加减速和有限牵引；伤害频率与位移频率分开。",
+        "牵引沿身体碰撞移动，记录来源和最大位移；范围中心固定，不能把特效跟着目标漂移。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "区域内目标移动与位置真实改变，退出即按规则停止，墙体与首领抵抗有效。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK21.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK22",
+      "skillId": "silence",
+      "name": "沉默",
+      "category": "control",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "silence",
+        "category": "control",
+        "unlockLevel": 9,
+        "name": "沉默",
+        "kind": "area",
+        "damage": 0,
+        "range": 0,
+        "radius": 5,
+        "cooldown": 180,
+        "cost": 20,
+        "windup": 5,
+        "duration": 60,
+        "description": "禁止敌人使用技能"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 54,
+      "problem": "零伤 area，没有禁止敌人技能的状态。",
+      "implementation": [
+        "范围命中施加 2 秒沉默，限制主动技能但保留普攻；不能把“沉默”等同暂停整个敌人。",
+        "正在前摇的技能是中断还是只禁止新技能需定义；首领免疫或韧性写入内容。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "沉默期普通怪不开始新技能，仍可普攻；到期、抵抗和净化有真实事件。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK22.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK23",
+      "skillId": "petrify",
+      "name": "石化",
+      "category": "control",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "petrify",
+        "category": "control",
+        "unlockLevel": 11,
+        "name": "石化",
+        "kind": "single",
+        "damage": 15,
+        "range": 10,
+        "radius": 0,
+        "cooldown": 200,
+        "cost": 28,
+        "windup": 15,
+        "duration": 90,
+        "description": "石化单个敌人"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 55,
+      "problem": "只有一次 15 点伤害，没有 90 tick 控制。",
+      "implementation": [
+        "配置 3 秒石化，决定受到伤害是否解除，以及是否伴随防御变化。",
+        "石化与眩晕共用控制基础能力，但分别定义解除条件；不要凭颜色或冻结动画判定完成。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "被石化目标按规定不能移动/施法，受到伤害和到期各遵守解除规则。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK23.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK24",
+      "skillId": "slow_field",
+      "name": "减速场",
+      "category": "control",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "slow_field",
+        "category": "control",
+        "unlockLevel": 12,
+        "name": "减速场",
+        "kind": "zone",
+        "damage": 5,
+        "range": 9,
+        "radius": 4,
+        "cooldown": 120,
+        "cost": 18,
+        "windup": 8,
+        "duration": 150,
+        "description": "大范围减速区域"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 56,
+      "problem": "只有区域周期伤害，slow 仅对 id=frost 开启。",
+      "implementation": [
+        "把减速能力变为显式参数，建议 5 秒区域、30% 减速，不依赖固定技能 ID。",
+        "进入、退出和多个区域重叠使用同一状态来源模型，地表边界读取真实 radius=4。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "frost 与 slow_field 都按自身参数执行；新增同机制技能只改内容即可生效。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK24.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK25",
+      "skillId": "fear",
+      "name": "恐惧术",
+      "category": "control",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "fear",
+        "category": "control",
+        "unlockLevel": 13,
+        "name": "恐惧术",
+        "kind": "area",
+        "damage": 0,
+        "range": 0,
+        "radius": 4,
+        "cooldown": 160,
+        "cost": 22,
+        "windup": 10,
+        "duration": 45,
+        "description": "使敌人逃跑"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 57,
+      "problem": "零伤 area 没有驱使敌人逃跑。",
+      "implementation": [
+        "配置 1.5 秒恐惧，暂时切换敌人的目标选择与逃离方向。",
+        "可通行路径、地图边缘和首领抵抗必须执行；结束后恢复原 AI，不能删除敌人或强制穿墙。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "目标确实远离施法者，不能卡进墙体；结束后恢复接敌且已击杀实例不重刷。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK25.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK26",
+      "skillId": "root",
+      "name": "束缚",
+      "category": "control",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "root",
+        "category": "control",
+        "unlockLevel": 14,
+        "name": "束缚",
+        "kind": "zone",
+        "damage": 8,
+        "range": 10,
+        "radius": 2.5,
+        "cooldown": 100,
+        "cost": 16,
+        "windup": 7,
+        "duration": 60,
+        "description": "固定敌人位置"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 58,
+      "problem": "zone 只造成伤害，不固定敌人位置。",
+      "implementation": [
+        "区域命中施加短定身，建议 2 秒，禁止普通移动但保留可施法。",
+        "突进是否受限制、控制免疫和新状态刷新需要明确；不能把减速 100% 作为全部定身语义。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "目标普通移动停止，但允许的攻击/施法仍运行，到期恢复，突进遵守声明规则。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK26.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK27",
+      "skillId": "blind",
+      "name": "致盲",
+      "category": "control",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "blind",
+        "category": "control",
+        "unlockLevel": 15,
+        "name": "致盲",
+        "kind": "area",
+        "damage": 0,
+        "range": 0,
+        "radius": 5,
+        "cooldown": 140,
+        "cost": 18,
+        "windup": 5,
+        "duration": 75,
+        "description": "降低敌人命中率"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 59,
+      "problem": "零伤 area，没有降低敌人命中或改变判定。",
+      "implementation": [
+        "先建立实际命中/失手机制，再配置 2.5 秒致盲；建议初期 25% 失手概率作为测试值。",
+        "使用已冻结的随机状态，失手产生独立事件；不同伤害路径是否受影响必须清楚。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "同种子配对可重放致盲命中差异，重连不会重抽，视觉与失手事件一致。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "恐怖黎明（Grim Dawn）",
+      "referenceSource": "https://store.steampowered.com/app/219990/Grim_Dawn/",
+      "referenceMechanism": "https://www.grimdawn.com/guide/items/the-hunt-for-loot/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK27.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\grim-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK28",
+      "skillId": "vortex",
+      "name": "虚空漩涡",
+      "category": "control",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "vortex",
+        "category": "control",
+        "unlockLevel": 16,
+        "name": "虚空漩涡",
+        "kind": "zone",
+        "damage": 20,
+        "range": 8,
+        "radius": 3.5,
+        "cooldown": 170,
+        "cost": 30,
+        "windup": 18,
+        "duration": 90,
+        "description": "持续吸引并伤害"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 60,
+      "problem": "区域持续伤害存在，但没有文案中的吸引。",
+      "implementation": [
+        "沿重力陷阱的有限牵引能力，使用 radius=3.5/duration=3 秒的参数。",
+        "区分持续牵引与漩涡之刃一次牵引，控制最大频率和首领抵抗，不能无限压入同点。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "持续期有实际牵引事件与伤害事件；结束后两者都停止，碰撞状态稳定。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK28.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK29",
+      "skillId": "time_stop",
+      "name": "时间停滞",
+      "category": "control",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "time_stop",
+        "category": "control",
+        "unlockLevel": 18,
+        "name": "时间停滞",
+        "kind": "area",
+        "damage": 0,
+        "range": 0,
+        "radius": 6,
+        "cooldown": 300,
+        "cost": 40,
+        "windup": 20,
+        "duration": 30,
+        "description": "短暂定身所有敌人"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 61,
+      "problem": "零伤 area 没有定身或暂停敌人的能力。",
+      "implementation": [
+        "将 1 秒时间停滞定义为指定目标的控制状态，暂停它们声明的行动，不暂停实例时钟。",
+        "投射物、地面区域、首领韧性和冷却是否继续分别定义；切后台仍不延长副本时限。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "受影响敌人在 1 秒内按规则停止，玩家与副本倒计时继续，恢复不会重新生成敌人。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK29.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK30",
+      "skillId": "haste",
+      "name": "加速",
+      "category": "support",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "haste",
+        "category": "support",
+        "unlockLevel": 5,
+        "name": "加速",
+        "kind": "shield",
+        "damage": 0,
+        "range": 0,
+        "radius": 0,
+        "cooldown": 180,
+        "cost": 20,
+        "windup": 2,
+        "duration": 120,
+        "description": "提升移动速度"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 68,
+      "problem": "shield damage=0，不改变移动速度。",
+      "implementation": [
+        "改为 4 秒速度 modifier，建议先试 +25% 移速，数值在服务端解析并进入临时状态。",
+        "效果取最高/刷新策略明确；碰撞、寻路和网络输入归一化仍按实际速度工作。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "4 秒内位移增加预定比例，到期恢复；不因掉线、重复按键或区域切换永久叠加。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "Hades（哈迪斯）",
+      "referenceSource": "https://gigazine.net/gsc_news/en/20210501-game-hades/",
+      "referenceMechanism": "https://www.supergiantgames.com/games/hades/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK30.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\hades-boon.png",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK31",
+      "skillId": "regen",
+      "name": "再生",
+      "category": "support",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "regen",
+        "category": "support",
+        "unlockLevel": 6,
+        "name": "再生",
+        "kind": "heal",
+        "damage": 0,
+        "range": 0,
+        "radius": 0,
+        "cooldown": 200,
+        "cost": 18,
+        "windup": 5,
+        "duration": 180,
+        "description": "持续恢复生命"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 69,
+      "problem": "heal damage=0，只会执行零点即时回复。",
+      "implementation": [
+        "建立 6 秒持续治疗，建议总量先接近回春的单次预算，按每秒分配。",
+        "释放条件基于受伤或预设策略；治疗事件可追踪，重复释放采用刷新或取最高，不无限叠层。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "受伤目标按声明节奏恢复，到期结束，治疗总量与报价一致；满血不会冒充有效治疗。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "Hades（哈迪斯）",
+      "referenceSource": "https://gigazine.net/gsc_news/en/20210501-game-hades/",
+      "referenceMechanism": "https://www.supergiantgames.com/games/hades/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK31.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\hades-boon.png",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK32",
+      "skillId": "blink",
+      "name": "闪现",
+      "category": "support",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "blink",
+        "category": "support",
+        "unlockLevel": 10,
+        "name": "闪现",
+        "kind": "dash",
+        "damage": 0,
+        "range": 10,
+        "radius": 0,
+        "cooldown": 120,
+        "cost": 15,
+        "windup": 1,
+        "duration": 0,
+        "description": "瞬间移动"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 70,
+      "problem": "dash 依赖敌人目标，没有目标时 cast=false，无法自由选择逃离位置。",
+      "implementation": [
+        "提供显式地面目标/方向输入，使用10格最大距离与终点规则；自动模式单独定义避险目的地。",
+        "闪现与普通突进是否检查整段身体路径要按现有接触约束明确，不借瞬移绕开墙体验收。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "无敌人时仍可按选定合法方向位移，非法终点不会扣费后卡墙，范围与提示一致。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK32.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK33",
+      "skillId": "cleanse",
+      "name": "净化",
+      "category": "support",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "cleanse",
+        "category": "support",
+        "unlockLevel": 13,
+        "name": "净化",
+        "kind": "heal",
+        "damage": 0,
+        "range": 0,
+        "radius": 0,
+        "cooldown": 150,
+        "cost": 16,
+        "windup": 2,
+        "duration": 0,
+        "description": "移除减益效果"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 72,
+      "problem": "heal damage=0，不清除状态；生命大于80%还会被治疗条件阻止。",
+      "implementation": [
+        "改成清除允许列表的减益，施放条件根据可清除状态而非生命比例。",
+        "只解除已定义可净化控制和持续伤害；来源、剩余时长和副本特殊标记不能随意全部删除。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "满血但中减益时可用，减益确实移除；无可清除状态按策略提示而非空扣费。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "Hades（哈迪斯）",
+      "referenceSource": "https://gigazine.net/gsc_news/en/20210501-game-hades/",
+      "referenceMechanism": "https://www.supergiantgames.com/games/hades/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK33.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\hades-boon.png",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK34",
+      "skillId": "phase_shift",
+      "name": "相位转换",
+      "category": "support",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "phase_shift",
+        "category": "support",
+        "unlockLevel": 14,
+        "name": "相位转换",
+        "kind": "shield",
+        "damage": 0,
+        "range": 0,
+        "radius": 0,
+        "cooldown": 180,
+        "cost": 20,
+        "windup": 1,
+        "duration": 90,
+        "description": "免疫物理伤害"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 73,
+      "problem": "shield damage=0，不提供物理伤害免疫。",
+      "implementation": [
+        "在伤害类型尚未正式区分前，先收敛为已可执行的明确防护说明；若保留物理免疫，需要加入伤害类型合同。",
+        "免疫建议3秒，伤害分类由所有命中路径声明；护盾、免疫与闪避的优先级固定，不能全部来袭伤害默认为物理。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "物理与其他类型配对命中结果符合声明，到期恢复，未分类伤害明确拒绝或迁移。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK34.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK35",
+      "skillId": "second_wind",
+      "name": "回气",
+      "category": "support",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "second_wind",
+        "category": "support",
+        "unlockLevel": 16,
+        "name": "回气",
+        "kind": "heal",
+        "damage": 50,
+        "range": 0,
+        "radius": 0,
+        "cooldown": 300,
+        "cost": 30,
+        "windup": 10,
+        "duration": 0,
+        "description": "大量恢复生命和法力"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 74,
+      "problem": "只回复 50 生命，没有恢复法力。",
+      "implementation": [
+        "增加独立灵力回复字段，建议先试恢复25灵力，声明治疗量与回能量的各自成长。",
+        "施放条件考虑生命或灵力至少一项不足，不沿用单纯80%生命门槛；费用与回能发生时点需明确。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "满血低灵力时可按规则使用，两资源实际改变且不溢出各自上限。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "Hades（哈迪斯）",
+      "referenceSource": "https://gigazine.net/gsc_news/en/20210501-game-hades/",
+      "referenceMechanism": "https://www.supergiantgames.com/games/hades/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK35.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\hades-boon.png",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    },
+    {
+      "issueId": "SK36",
+      "skillId": "guardian_angel",
+      "name": "守护天使",
+      "category": "support",
+      "priority": "P1",
+      "currentDefinition": {
+        "id": "guardian_angel",
+        "category": "support",
+        "unlockLevel": 18,
+        "name": "守护天使",
+        "kind": "shield",
+        "damage": 0,
+        "range": 0,
+        "radius": 0,
+        "cooldown": 600,
+        "cost": 0,
+        "windup": 1,
+        "duration": 300,
+        "description": "死亡时复活一次"
+      },
+      "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\packages\\content\\skills-expanded.ts",
+      "line": 75,
+      "problem": "shield damage=0，核心没有此技能的死亡拦截或复活记录。",
+      "implementation": [
+        "实现一次致死拦截状态，建议有效10秒、一次消耗，复起生命比例单独设定。",
+        "副本倒地/救援与该效果的顺序要固定，效果已消费状态进入检查点；避免退出、重连重复获得复活。",
+        "通过共享能力/合同解析，再同步技能详情、报价与动效；保留已训练等级和原回执。新增图像优先复用用户指定的现成特效库，不能用动效代替机制。"
+      ],
+      "acceptance": [
+        "连续两次致死只拦截第一次，同场重连不会重置次数；复起位置和生命可核对。",
+        "覆盖单人、多人目标、墙体、状态到期与检查点恢复；记录施法、命中、费用和失败样本。"
+      ],
+      "referenceGame": "激战2",
+      "referenceSource": "https://hardstuck.gg/gw2/guides/general/game-basics-first-steps-in-tyria/",
+      "referenceMechanism": "https://www.guildwars2.com/en/the-game/combat/",
+      "planDiagram": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\diagrams\\SK36.png",
+      "referenceImage": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\.design\\project-audit-20261003\\references\\gw2-combat.jpg",
+      "proposalStatus": "原审查参数是试验起点，不是已经批准的新数值表；优先保留现有总预算。"
+    }
+  ],
+  "ui": [
+    {
+      "id": "I01",
+      "priority": "P1",
+      "title": "未保存装配关闭后丢失",
+      "auditIds": [
+        "EX08"
+      ],
+      "sources": [
+        "apps/web/src/main.ts:125",
+        "apps/web/src/skills-panel.ts"
+      ],
+      "fix": "关闭、Esc、切系统页统一处理未保存差异：保存并退出/放弃/继续编辑；保留角色归属、滚动与焦点。响应未知沿用原Outbox编号核回执。",
+      "acceptance": [
+        "移除技能后关闭不再无提示复原；取消退出保留草稿。",
+        "重复请求只保存一次，升级与保存意图不混用。"
+      ]
+    },
+    {
+      "id": "I02",
+      "priority": "P2",
+      "title": "自动施法顺序缺可见调整入口",
+      "auditIds": [
+        "EX11"
+      ],
+      "sources": [
+        "apps/web/src/main.ts:296",
+        "apps/web/src/skills-panel.ts:45"
+      ],
+      "fix": "接出已有上移/下移动作，支持键盘；可再加拖动。只调整草稿，保存后才成为正式装配；说明按满足条件的装配顺序检查。",
+      "acceptance": [
+        "不移除技能即可调整顺序，焦点与图标尺寸不跳。",
+        "同构筑同种子验证实际施法顺序及治疗/防护触发。"
+      ]
+    },
+    {
+      "id": "I03",
+      "priority": "P2",
+      "title": "费用未显示持有与缺口",
+      "auditIds": [
+        "UI05"
+      ],
+      "sources": [
+        "apps/web/src/skills-panel.ts:22",
+        "apps/web/src/ui/primitives.ts"
+      ],
+      "fix": "使用公共费用组件展示需要/持有/不足，未知值保持待核对；免费激活与满级分别明确呈现。",
+      "acceptance": [
+        "0、刚好足够、不足、满级和待确认各状态清楚。",
+        "消费服务端报价，UI不复制费用公式。"
+      ]
+    },
+    {
+      "id": "I04",
+      "priority": "P1",
+      "title": "本场冻结构筑与升级后生效时机不清楚",
+      "auditIds": [
+        "EX07"
+      ],
+      "sources": [
+        "apps/web/src/dungeon-controller.ts:18",
+        "apps/web/src/main.ts:165",
+        "apps/web/src/skills-panel.ts"
+      ],
+      "fix": "区分持久等级/技能与入场冻结构筑；已锁定实例的培养/保存入口表现为不可执行并说明生效边界，保留只读查看。",
+      "acceptance": [
+        "升级提示与本场真实参数不冲突。",
+        "打开面板、后台和断线不暂停副本，不重置生命/冷却。"
+      ]
+    },
+    {
+      "id": "I05",
+      "priority": "P2",
+      "title": "效果参数与升级差异不易比较",
+      "auditIds": [
+        "UI06"
+      ],
+      "sources": [
+        "apps/web/src/ui/skill-effects.ts",
+        "apps/web/src/skills-panel.ts"
+      ],
+      "fix": "伤害/治疗/护盾、冷却、灵力固定对齐；控制时长、强度、跳数、层数、解除条件等新增真实字段进入详情与预览，只强调实际变化。",
+      "acceptance": [
+        "所有新能力均显示真实当前值与下一级效果。",
+        "长短描述、等级切换保持布局、列表滚动和焦点稳定。"
+      ]
+    },
+    {
+      "id": "I06",
+      "priority": "P2",
+      "title": "缺跨分类检索与可用筛选",
+      "auditIds": [
+        "UI07"
+      ],
+      "sources": [
+        "apps/web/src/skills-panel.ts:27"
+      ],
+      "fix": "沿现有分组技能册补搜索及已激活/可激活/全部，保留分类、选中项与草稿；机制标签须对应已实现能力。",
+      "acceptance": [
+        "55个登记技能可按名称找到。",
+        "切换和清空筛选不改变草稿与当前权限。"
+      ]
+    }
+  ],
+  "tuning": [
+    {
+      "id": "T01",
+      "priority": "P2",
+      "title": "零伤害能力升级没有实际收益",
+      "sources": [
+        "packages/rules/index.ts:31",
+        "packages/rules/deep-progression.ts:130"
+      ],
+      "problem": "现行基础成长只乘damage，blood_rage/haste/regen/cleanse/phase_shift/guardian_angel等damage=0时升级仍可能不改变能力。",
+      "fix": "机制完成后在唯一内容/规则源定义该能力真实成长字段，使skillAccess.current/next与实战一致；保留已训练等级、费用和激活门槛。",
+      "acceptance": [
+        "每个可升级技能至少有实际有效变化，满级不再报价。",
+        "新成长参数明确记录，控制/位移不无界放大。"
+      ]
+    },
+    {
+      "id": "T02",
+      "priority": "P2",
+      "title": "装配的资源与输出/防护效率复测",
+      "sources": [
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "tools/measured-build.ts",
+        "tools/balance.ts",
+        "tools/dungeon-model.ts"
+      ],
+      "problem": "初始回能10/秒，穿云箭约耗4.8/秒、护身印约1.875/秒；伤害类倍率还作用于治疗/护盾解析。能力补齐后旧输出、控制、防护和回能结果将改变。",
+      "fix": "同敌人/构筑/种子测每个技能施法、命中、输出、DOT、防护、治疗、灵力与失败；自然获取和受控授予分别标注。先提出预算结果，不借此批量重做方阵、经济和怪物曲线。",
+      "acceptance": [
+        "请求与实际执行技能一致，空或无输出构筑不得静默过滤。",
+        "真实副本时限、冻结构筑、目标、独立玩家与跨阶段资源被消费。"
+      ]
+    }
+  ],
+  "baselineMechanismEvidence": {
+    "dragonBlessing": {
+      "seconds": 300,
+      "seed": 47,
+      "casts": 18,
+      "baseAttack": 25,
+      "afterAttack": 662,
+      "ratio": 26.48
+    },
+    "burn": {
+      "cast": true,
+      "oneInitialCastOnly": true,
+      "seconds": 30,
+      "dotHits": 30,
+      "lastHitSeconds": 30,
+      "burnExpiresAt": 33,
+      "advertisedSeconds": 3
+    },
+    "noTargets": [
+      {
+        "id": "blink",
+        "hp": 100,
+        "cast": false
+      },
+      {
+        "id": "cleanse",
+        "hp": 100,
+        "cast": false
+      }
+    ]
+  },
+  "baselineEvidenceCaution": "原测试使用0.8.7固定快照；旧audit-math.ts/mechanism-probes.ts默认导入snapshot，不能直接作为新实现验收。修复后须测试实际open-world并记录版本/前后指纹。"
+}

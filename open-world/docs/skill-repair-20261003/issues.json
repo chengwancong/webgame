@@ -1,0 +1,1972 @@
+{
+  "versions": {
+    "client": "0.8.11",
+    "protocol": 13,
+    "rules": "ow-18",
+    "assets": "world-art-20261003-v17-chibi-items",
+    "db": 11
+  },
+  "skillCount": 55,
+  "issues": [
+    {
+      "id": "SK01",
+      "skillId": "dual_strike",
+      "name": "双重打击",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "enemy",
+        "schedule": {
+          "hits": 2,
+          "interval": 5,
+          "followCaster": false,
+          "interruptOnMove": false
+        },
+        "statuses": []
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 35,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 35
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#dual_strike",
+        "browser": "browser/combat-55.json#dual_strike",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK02",
+      "skillId": "blade_fury",
+      "name": "刀刃风暴",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "enemy",
+        "schedule": {
+          "hits": 3,
+          "interval": 30,
+          "followCaster": true,
+          "interruptOnMove": false
+        },
+        "statuses": []
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 120,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 120
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#blade_fury",
+        "browser": "browser/combat-55.json#blade_fury",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK03",
+      "skillId": "execute",
+      "name": "斩杀",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "enemy",
+        "statuses": [],
+        "execute": {
+          "threshold": 0.2,
+          "bonus": 0.5
+        }
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 150,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 150
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#execute",
+        "browser": "browser/combat-55.json#execute",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK04",
+      "skillId": "blood_rage",
+      "name": "血怒",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "self",
+        "statuses": [
+          {
+            "kind": "attack_up",
+            "duration": 180,
+            "strength": 0.25,
+            "scope": "self",
+            "interval": 30,
+            "cleanse": false,
+            "breakOnDamage": false,
+            "removeWithSource": false,
+            "hpDrainRatio": 0.02
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0,
+        "baseCooldown": 240,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 240
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#blood_rage",
+        "browser": "browser/combat-55.json#blood_rage",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK05",
+      "skillId": "vortex_blade",
+      "name": "漩涡之刃",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "enemy",
+        "statuses": []
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 85,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 85
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#vortex_blade",
+        "browser": "browser/combat-55.json#vortex_blade",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK06",
+      "skillId": "counter_strike",
+      "name": "反击",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "self",
+        "statuses": [
+          {
+            "kind": "counter",
+            "duration": 60,
+            "strength": 1,
+            "scope": "self",
+            "cleanse": false,
+            "breakOnDamage": false,
+            "removeWithSource": false
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0,
+        "baseCooldown": 180,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 180
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#counter_strike",
+        "browser": "browser/combat-55.json#counter_strike",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK07",
+      "skillId": "berserker",
+      "name": "狂战士",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "enemy",
+        "statuses": [
+          {
+            "kind": "armor_down",
+            "duration": 60,
+            "strength": 0.2,
+            "scope": "self",
+            "cleanse": true,
+            "breakOnDamage": false,
+            "removeWithSource": false
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 120,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 120
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#berserker",
+        "browser": "browser/combat-55.json#berserker",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK08",
+      "skillId": "war_cry",
+      "name": "战吼",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "enemy",
+        "statuses": [
+          {
+            "kind": "armor_down",
+            "duration": 120,
+            "strength": 0.2,
+            "scope": "hit",
+            "cleanse": true,
+            "breakOnDamage": false,
+            "removeWithSource": false
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 150,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 150
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#war_cry",
+        "browser": "browser/combat-55.json#war_cry",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK09",
+      "skillId": "multi_shot",
+      "name": "多重箭",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "enemy",
+        "projectile": {
+          "collisionRadius": 0.3,
+          "penetrations": 0,
+          "turnRate": 0,
+          "explosionRadius": 0
+        },
+        "statuses": []
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 40,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 40
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#multi_shot",
+        "browser": "browser/combat-55.json#multi_shot",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK10",
+      "skillId": "pierce_arrow",
+      "name": "穿透箭",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "enemy",
+        "projectile": {
+          "collisionRadius": 0.4,
+          "penetrations": 2,
+          "turnRate": 0,
+          "explosionRadius": 0
+        },
+        "statuses": []
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 55,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 55
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#pierce_arrow",
+        "browser": "browser/combat-55.json#pierce_arrow",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK11",
+      "skillId": "rain_of_arrows",
+      "name": "箭雨",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "ground",
+        "zone": {
+          "mode": "periodic",
+          "hits": 3,
+          "interval": 30,
+          "firstDelay": 0,
+          "pullSpeed": 0,
+          "budget": "total"
+        },
+        "statuses": []
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 110,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 110
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#rain_of_arrows",
+        "browser": "browser/combat-55.json#rain_of_arrows",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK12",
+      "skillId": "explosive_shot",
+      "name": "爆破箭",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "enemy",
+        "projectile": {
+          "collisionRadius": 0.3,
+          "penetrations": 0,
+          "turnRate": 0,
+          "explosionRadius": 2
+        },
+        "statuses": []
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 80,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 80
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#explosive_shot",
+        "browser": "browser/combat-55.json#explosive_shot",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK13",
+      "skillId": "poison_arrow",
+      "name": "毒箭",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "poison",
+        "targeting": "enemy",
+        "projectile": {
+          "collisionRadius": 0.35,
+          "penetrations": 0,
+          "turnRate": 0,
+          "explosionRadius": 0
+        },
+        "statuses": [
+          {
+            "kind": "poison",
+            "duration": 90,
+            "strength": 0,
+            "scope": "hit",
+            "interval": 30,
+            "damageType": "poison",
+            "cleanse": true,
+            "breakOnDamage": false,
+            "removeWithSource": false,
+            "total": 29
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 70,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 70
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#poison_arrow",
+        "browser": "browser/combat-55.json#poison_arrow",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK14",
+      "skillId": "volley",
+      "name": "齐射",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "enemy",
+        "schedule": {
+          "hits": 3,
+          "interval": 3,
+          "followCaster": false,
+          "interruptOnMove": false
+        },
+        "projectile": {
+          "collisionRadius": 0.3,
+          "penetrations": 0,
+          "turnRate": 0,
+          "explosionRadius": 0
+        },
+        "statuses": []
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 45,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 45
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#volley",
+        "browser": "browser/combat-55.json#volley",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK15",
+      "skillId": "arcane_missile",
+      "name": "奥术飞弹",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "arcane",
+        "targeting": "enemy",
+        "projectile": {
+          "collisionRadius": 0.4,
+          "penetrations": 0,
+          "turnRate": 0.1,
+          "explosionRadius": 0
+        },
+        "statuses": []
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 60,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 60
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#arcane_missile",
+        "browser": "browser/combat-55.json#arcane_missile",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK16",
+      "skillId": "meteor",
+      "name": "陨石术",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "fire",
+        "targeting": "ground",
+        "zone": {
+          "mode": "burst",
+          "hits": 1,
+          "interval": 30,
+          "firstDelay": 0,
+          "pullSpeed": 0,
+          "budget": "per_tick"
+        },
+        "statuses": []
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 180,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 180
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#meteor",
+        "browser": "browser/combat-55.json#meteor",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK17",
+      "skillId": "frost_bolt",
+      "name": "冰霜箭",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "cold",
+        "targeting": "enemy",
+        "projectile": {
+          "collisionRadius": 0.4,
+          "penetrations": 0,
+          "turnRate": 0,
+          "explosionRadius": 0
+        },
+        "statuses": [
+          {
+            "kind": "slow",
+            "duration": 60,
+            "strength": 0.3,
+            "scope": "hit",
+            "cleanse": true,
+            "breakOnDamage": false,
+            "removeWithSource": false
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 50,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 50
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#frost_bolt",
+        "browser": "browser/combat-55.json#frost_bolt",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK18",
+      "skillId": "fireball",
+      "name": "火球术",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "fire",
+        "targeting": "enemy",
+        "projectile": {
+          "collisionRadius": 0.3,
+          "penetrations": 0,
+          "turnRate": 0,
+          "explosionRadius": 1.5
+        },
+        "statuses": []
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 85,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 85
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#fireball",
+        "browser": "browser/combat-55.json#fireball",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK19",
+      "skillId": "dark_arrow",
+      "name": "暗影箭",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "shadow",
+        "targeting": "enemy",
+        "projectile": {
+          "collisionRadius": 0.35,
+          "penetrations": 0,
+          "turnRate": 0,
+          "explosionRadius": 0
+        },
+        "statuses": [],
+        "penetration": 0.3
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 65,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 65
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#dark_arrow",
+        "browser": "browser/combat-55.json#dark_arrow",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK20",
+      "skillId": "stun_strike",
+      "name": "震慑",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "enemy",
+        "statuses": [
+          {
+            "kind": "stun",
+            "duration": 30,
+            "strength": 1,
+            "scope": "hit",
+            "cleanse": true,
+            "breakOnDamage": false,
+            "removeWithSource": false
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 80,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 80
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#stun_strike",
+        "browser": "browser/combat-55.json#stun_strike",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK21",
+      "skillId": "gravity_well",
+      "name": "重力陷阱",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "ground",
+        "zone": {
+          "mode": "periodic",
+          "hits": 3,
+          "interval": 30,
+          "firstDelay": 0,
+          "pullSpeed": 2,
+          "budget": "per_tick"
+        },
+        "statuses": [
+          {
+            "kind": "slow",
+            "duration": 2,
+            "strength": 0.3,
+            "scope": "zone",
+            "cleanse": true,
+            "breakOnDamage": false,
+            "removeWithSource": false
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 140,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 140
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#gravity_well",
+        "browser": "browser/combat-55.json#gravity_well",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK22",
+      "skillId": "silence",
+      "name": "沉默",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "enemy",
+        "statuses": [
+          {
+            "kind": "silence",
+            "duration": 60,
+            "strength": 1,
+            "scope": "hit",
+            "cleanse": true,
+            "breakOnDamage": false,
+            "removeWithSource": false
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 180,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 180
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#silence",
+        "browser": "browser/combat-55.json#silence",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK23",
+      "skillId": "petrify",
+      "name": "石化",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "enemy",
+        "statuses": [
+          {
+            "kind": "petrify",
+            "duration": 90,
+            "strength": 1,
+            "scope": "hit",
+            "cleanse": true,
+            "breakOnDamage": true,
+            "removeWithSource": false
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 200,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 200
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#petrify",
+        "browser": "browser/combat-55.json#petrify",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK24",
+      "skillId": "slow_field",
+      "name": "减速场",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "ground",
+        "zone": {
+          "mode": "periodic",
+          "hits": 5,
+          "interval": 30,
+          "firstDelay": 0,
+          "pullSpeed": 0,
+          "budget": "per_tick"
+        },
+        "statuses": [
+          {
+            "kind": "slow",
+            "duration": 2,
+            "strength": 0.3,
+            "scope": "zone",
+            "cleanse": true,
+            "breakOnDamage": false,
+            "removeWithSource": false
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 120,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 120
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#slow_field",
+        "browser": "browser/combat-55.json#slow_field",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK25",
+      "skillId": "fear",
+      "name": "恐惧术",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "enemy",
+        "statuses": [
+          {
+            "kind": "fear",
+            "duration": 45,
+            "strength": 1,
+            "scope": "hit",
+            "cleanse": true,
+            "breakOnDamage": false,
+            "removeWithSource": false
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 160,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 160
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#fear",
+        "browser": "browser/combat-55.json#fear",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK26",
+      "skillId": "root",
+      "name": "束缚",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "ground",
+        "zone": {
+          "mode": "periodic",
+          "hits": 2,
+          "interval": 30,
+          "firstDelay": 0,
+          "pullSpeed": 0,
+          "budget": "per_tick"
+        },
+        "statuses": [
+          {
+            "kind": "root",
+            "duration": 2,
+            "strength": 1,
+            "scope": "zone",
+            "cleanse": true,
+            "breakOnDamage": false,
+            "removeWithSource": false
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 100,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 100
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#root",
+        "browser": "browser/combat-55.json#root",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK27",
+      "skillId": "blind",
+      "name": "致盲",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "enemy",
+        "statuses": [
+          {
+            "kind": "blind",
+            "duration": 75,
+            "strength": 0.25,
+            "scope": "hit",
+            "cleanse": true,
+            "breakOnDamage": false,
+            "removeWithSource": false
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 140,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 140
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#blind",
+        "browser": "browser/combat-55.json#blind",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK28",
+      "skillId": "vortex",
+      "name": "虚空漩涡",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "ground",
+        "zone": {
+          "mode": "periodic",
+          "hits": 3,
+          "interval": 30,
+          "firstDelay": 0,
+          "pullSpeed": 2.5,
+          "budget": "per_tick"
+        },
+        "statuses": []
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 170,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 170
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#vortex",
+        "browser": "browser/combat-55.json#vortex",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK29",
+      "skillId": "time_stop",
+      "name": "时间停滞",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "enemy",
+        "statuses": [
+          {
+            "kind": "time_stop",
+            "duration": 30,
+            "strength": 1,
+            "scope": "hit",
+            "cleanse": true,
+            "breakOnDamage": false,
+            "removeWithSource": false
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 300,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 300
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#time_stop",
+        "browser": "browser/combat-55.json#time_stop",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK30",
+      "skillId": "haste",
+      "name": "加速",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "self",
+        "statuses": [
+          {
+            "kind": "speed_up",
+            "duration": 120,
+            "strength": 0.25,
+            "scope": "self",
+            "cleanse": false,
+            "breakOnDamage": false,
+            "removeWithSource": false
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0,
+        "baseCooldown": 180,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 180
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#haste",
+        "browser": "browser/combat-55.json#haste",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK31",
+      "skillId": "regen",
+      "name": "再生",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "self",
+        "statuses": [
+          {
+            "kind": "regen",
+            "duration": 180,
+            "strength": 0,
+            "scope": "self",
+            "interval": 30,
+            "cleanse": false,
+            "breakOnDamage": false,
+            "removeWithSource": false,
+            "total": 74
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0,
+        "baseCooldown": 200,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 200
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#regen",
+        "browser": "browser/combat-55.json#regen",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "22538866-2056-46fc-97b6-4d29e2f01253"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK32",
+      "skillId": "blink",
+      "name": "闪现",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "direction",
+        "statuses": []
+      },
+      "resolution": {
+        "attackShare": 0.5263157894736842,
+        "baseCooldown": 120,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 120
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#blink",
+        "browser": "browser/combat-55.json#blink",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "3c786b46-b787-4a8e-b8de-89688f8ce9ff"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK33",
+      "skillId": "cleanse",
+      "name": "净化",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "self",
+        "statuses": [],
+        "cleanse": {
+          "kinds": [
+            "burn",
+            "poison",
+            "slow",
+            "stun",
+            "silence",
+            "petrify",
+            "fear",
+            "root",
+            "blind",
+            "time_stop"
+          ],
+          "count": 2
+        }
+      },
+      "resolution": {
+        "attackShare": 0,
+        "baseCooldown": 150,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 150
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#cleanse",
+        "browser": "browser/combat-55.json#cleanse",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "8b614ab1-2fdd-4b6c-9e9d-f4884aa68ed6"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK34",
+      "skillId": "phase_shift",
+      "name": "相位转换",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "self",
+        "statuses": [
+          {
+            "kind": "immunity",
+            "duration": 90,
+            "strength": 1,
+            "scope": "self",
+            "cleanse": false,
+            "breakOnDamage": false,
+            "removeWithSource": false,
+            "immunityTypes": [
+              "physical"
+            ]
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0,
+        "baseCooldown": 180,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 180
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#phase_shift",
+        "browser": "browser/combat-55.json#phase_shift",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "8b614ab1-2fdd-4b6c-9e9d-f4884aa68ed6"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK35",
+      "skillId": "second_wind",
+      "name": "回气",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "self",
+        "statuses": [],
+        "restoreMana": 50
+      },
+      "resolution": {
+        "attackShare": 0,
+        "baseCooldown": 300,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 300
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#second_wind",
+        "browser": "browser/combat-55.json#second_wind",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "3fc5cfce-da66-4571-9f08-4339b181ed90"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "SK36",
+      "skillId": "guardian_angel",
+      "name": "守护天使",
+      "status": "已修复并实机验证",
+      "rules": {
+        "damageType": "physical",
+        "targeting": "self",
+        "statuses": [
+          {
+            "kind": "guardian",
+            "duration": 300,
+            "strength": 1,
+            "scope": "self",
+            "cleanse": false,
+            "breakOnDamage": false,
+            "removeWithSource": false,
+            "reviveRatio": 0.3
+          }
+        ]
+      },
+      "resolution": {
+        "attackShare": 0,
+        "baseCooldown": 600,
+        "skillCooldownReduction": 0,
+        "statsCooldownReduction": 0,
+        "effectiveCooldownReduction": 0,
+        "cooldownCap": 0.75,
+        "finalCooldown": 600
+      },
+      "sources": [
+        "packages/content/skills-expanded.ts",
+        "packages/contracts/skill-mechanics.ts",
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts"
+      ],
+      "evidence": {
+        "core": "current-source-matrix.json#guardian_angel",
+        "browser": "browser/combat-55.json#guardian_angel",
+        "tests": "tests/skill-mechanisms.test.ts",
+        "actualRelease": true,
+        "sourceIds": [
+          "3fc5cfce-da66-4571-9f08-4339b181ed90"
+        ],
+        "checkpointEqual": true
+      },
+      "limits": "实机为受控授予与场景准备；成功释放和事件与核心、真实PG恢复证据合并核对。"
+    },
+    {
+      "id": "C01",
+      "name": "燃烧自续、伤害触发边界与来源归属",
+      "status": "已修复并实机验证",
+      "sources": [
+        "packages/simulation/index.ts",
+        "packages/simulation/index.ts",
+        "packages/content/index.ts"
+      ],
+      "evidence": [
+        "current-source-matrix.json",
+        "browser/result.json",
+        "vitest.json",
+        "regression.json",
+        "service/result.json"
+      ]
+    },
+    {
+      "id": "C02",
+      "name": "龙之祝福永久累乘",
+      "status": "已修复并实机验证",
+      "sources": [
+        "packages/simulation/index.ts",
+        "packages/content/chapter-combat.ts"
+      ],
+      "evidence": [
+        "current-source-matrix.json",
+        "browser/result.json",
+        "vitest.json",
+        "regression.json",
+        "service/result.json"
+      ]
+    },
+    {
+      "id": "C03",
+      "name": "敌方减速与眩晕声明未执行",
+      "status": "已修复并实机验证",
+      "sources": [
+        "packages/simulation/index.ts",
+        "packages/simulation/index.ts",
+        "packages/content/chapter-combat.ts"
+      ],
+      "evidence": [
+        "current-source-matrix.json",
+        "browser/result.json",
+        "vitest.json",
+        "regression.json",
+        "service/result.json"
+      ]
+    },
+    {
+      "id": "C04",
+      "name": "最终冷却、上限与UI口径",
+      "status": "已修复并实机验证",
+      "sources": [
+        "packages/rules/deep-progression.ts",
+        "packages/simulation/index.ts",
+        "apps/web/src/ui/skill-effects.ts"
+      ],
+      "evidence": [
+        "current-source-matrix.json",
+        "browser/result.json",
+        "vitest.json",
+        "regression.json",
+        "service/result.json"
+      ]
+    },
+    {
+      "id": "I01",
+      "name": "未保存装配关闭后丢失",
+      "status": "已修复并实机验证",
+      "sources": [
+        "apps/web/src/main.ts",
+        "apps/web/src/skills-panel.ts"
+      ],
+      "evidence": [
+        "current-source-matrix.json",
+        "browser/result.json",
+        "vitest.json",
+        "regression.json",
+        "service/result.json"
+      ],
+      "adoptedBehavior": "保留并发源码的即时装配；没有未保存草稿。未知结果沿原Outbox编号恢复，不混用升级意图。"
+    },
+    {
+      "id": "I02",
+      "name": "自动施法顺序缺可见调整入口",
+      "status": "阻碍及原因",
+      "sources": [
+        "apps/web/src/main.ts",
+        "apps/web/src/skills-panel.ts"
+      ],
+      "evidence": [
+        "current-source-matrix.json",
+        "browser/result.json",
+        "vitest.json",
+        "regression.json",
+        "service/result.json"
+      ],
+      "adoptedBehavior": "服务端保留技能数组顺序及自动检查规则；界面排序入口待明确交互归属。",
+      "reason": "同工作区并发修改于2026-10-03 22:07再次移除已接出的排序控件和动作；当前实机无可见顺序调整入口，未通过验收。为保留其他任务修改，未再次覆盖。"
+    },
+    {
+      "id": "I03",
+      "name": "费用未显示持有与缺口",
+      "status": "已修复并实机验证",
+      "sources": [
+        "apps/web/src/skills-panel.ts",
+        "apps/web/src/ui/primitives.ts"
+      ],
+      "evidence": [
+        "current-source-matrix.json",
+        "browser/result.json",
+        "vitest.json",
+        "regression.json",
+        "service/result.json"
+      ]
+    },
+    {
+      "id": "I04",
+      "name": "本场冻结构筑与升级后生效时机不清楚",
+      "status": "已修复并实机验证",
+      "sources": [
+        "apps/web/src/dungeon-controller.ts",
+        "apps/web/src/main.ts",
+        "apps/web/src/skills-panel.ts"
+      ],
+      "evidence": [
+        "current-source-matrix.json",
+        "browser/result.json",
+        "vitest.json",
+        "regression.json",
+        "service/result.json"
+      ]
+    },
+    {
+      "id": "I05",
+      "name": "效果参数与升级差异不易比较",
+      "status": "已修复并实机验证",
+      "sources": [
+        "apps/web/src/ui/skill-effects.ts",
+        "apps/web/src/skills-panel.ts"
+      ],
+      "evidence": [
+        "current-source-matrix.json",
+        "browser/result.json",
+        "vitest.json",
+        "regression.json",
+        "service/result.json"
+      ]
+    },
+    {
+      "id": "I06",
+      "name": "缺跨分类检索与可用筛选",
+      "status": "已修复并实机验证",
+      "sources": [
+        "apps/web/src/skills-panel.ts"
+      ],
+      "evidence": [
+        "current-source-matrix.json",
+        "browser/result.json",
+        "vitest.json",
+        "regression.json",
+        "service/result.json"
+      ]
+    },
+    {
+      "id": "T01",
+      "name": "零伤害能力升级没有实际收益",
+      "status": "已修复并实机验证",
+      "sources": [
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts"
+      ],
+      "evidence": [
+        "current-source-matrix.json",
+        "browser/result.json",
+        "vitest.json",
+        "regression.json",
+        "service/result.json"
+      ],
+      "limits": "预算复测以逐技能受控矩阵为主，自然养成与多人真实执行另由回归核对；未重新调整整套经济或怪物曲线。"
+    },
+    {
+      "id": "T02",
+      "name": "装配的资源与输出/防护效率复测",
+      "status": "已修复并实机验证",
+      "sources": [
+        "packages/rules/index.ts",
+        "packages/rules/deep-progression.ts",
+        "tools/measured-build.ts",
+        "tools/balance.ts",
+        "tools/dungeon-model.ts"
+      ],
+      "evidence": [
+        "current-source-matrix.json",
+        "browser/result.json",
+        "vitest.json",
+        "regression.json",
+        "service/result.json"
+      ],
+      "limits": "预算复测以逐技能受控矩阵为主，自然养成与多人真实执行另由回归核对；未重新调整整套经济或怪物曲线。"
+    }
+  ],
+  "coreSourceBefore": {
+    "sha256": "5993ad93a97eab492998081940c63436a0f8e1163a047ab50784daa9b4bdccfa",
+    "file_count": 757,
+    "scope": "Application, packages, tests, tools and dependency lock; excludes generated assets and builds"
+  },
+  "coreSourceAfter": {
+    "sha256": "5993ad93a97eab492998081940c63436a0f8e1163a047ab50784daa9b4bdccfa",
+    "file_count": 757,
+    "scope": "Application, packages, tests, tools and dependency lock; excludes generated assets and builds"
+  },
+  "coreFingerprints": {
+    "before": {
+      "packages/content/skills-expanded.ts": "939e99d6eacdfcd41cba17bf56844c52a0a2acf890e30e25b955abc59198fc57",
+      "packages/content/index.ts": "a375f7b6c2414194413e0fc6ae2e643ff03348b0a187ea4d62300760086f691f",
+      "packages/simulation/index.ts": "185b6be51244dffef3438ca8daa6f749fb5f3d3f0e938edf3d4defb3bd93fea1",
+      "packages/rules/index.ts": "30f809bf1dba3a29a5d18ca2cb76d52d84946ef91fbe1b9c2f4b9df6e2e8b9f7",
+      "packages/rules/deep-progression.ts": "68e5b53b6ef6c12163861300d75f53e8482a5e527ee7d83d867f303e1df350b8",
+      "packages/content/chapter-combat.ts": "4d091c869f0927d3debe43ef66f34239d76a4af308ef98c91d6bd1b9a1579b35",
+      "packages/contracts/index.ts": "00bc4301937bae40391bef3556e8fccb3ad78cae95b71244266c3104d3fc080d",
+      "packages/contracts/skill-mechanics.ts": "2c9db4b5731a9e2fa6bbb39a1cc14dc681f07f3a0c6cb779075c765822151128",
+      "packages/simulation/skill-runtime.ts": "dfd8204157cfb67c4d4545731d8e2cc28ea3e6eb7b5715ae26f84ef8936ee218"
+    },
+    "after": {
+      "packages/content/skills-expanded.ts": "939e99d6eacdfcd41cba17bf56844c52a0a2acf890e30e25b955abc59198fc57",
+      "packages/content/index.ts": "a375f7b6c2414194413e0fc6ae2e643ff03348b0a187ea4d62300760086f691f",
+      "packages/simulation/index.ts": "185b6be51244dffef3438ca8daa6f749fb5f3d3f0e938edf3d4defb3bd93fea1",
+      "packages/rules/index.ts": "30f809bf1dba3a29a5d18ca2cb76d52d84946ef91fbe1b9c2f4b9df6e2e8b9f7",
+      "packages/rules/deep-progression.ts": "68e5b53b6ef6c12163861300d75f53e8482a5e527ee7d83d867f303e1df350b8",
+      "packages/content/chapter-combat.ts": "4d091c869f0927d3debe43ef66f34239d76a4af308ef98c91d6bd1b9a1579b35",
+      "packages/contracts/index.ts": "00bc4301937bae40391bef3556e8fccb3ad78cae95b71244266c3104d3fc080d",
+      "packages/contracts/skill-mechanics.ts": "2c9db4b5731a9e2fa6bbb39a1cc14dc681f07f3a0c6cb779075c765822151128",
+      "packages/simulation/skill-runtime.ts": "dfd8204157cfb67c4d4545731d8e2cc28ea3e6eb7b5715ae26f84ef8936ee218"
+    }
+  },
+  "legacySnapshotModified": false,
+  "originalInvestmentsReset": false,
+  "uiScopeAdjustment": "工作区20:33并发移除草稿并改为即时装配；保留该修改后补即时排序。",
+  "evidenceLimit": "受控授予不作为自然取得证明。单项边界、多人来源、恢复及资源核对由浏览器、核心与独立临时PG交叉覆盖。",
+  "completion": {
+    "playerMechanisms": 36,
+    "registeredSkills": 55,
+    "fullRegression": 468,
+    "remaining": [
+      "I02 visible order controls removed by concurrent edits"
+    ],
+    "coreSourceStable": true
+  }
+}

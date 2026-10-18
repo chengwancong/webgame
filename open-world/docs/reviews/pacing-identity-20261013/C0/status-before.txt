@@ -1,0 +1,927 @@
+ M AGENTS.md
+ M README.md
+ M client/app/battle_runner.gd
+ M client/combat/battle_core.gd
+ M client/presentation/battle_view.gd
+ M client/presentation/battle_view.tscn
+ M client/presentation/main_menu.gd
+ M client/presentation/main_menu.tscn
+ M client/presentation/ui_theme.tres
+ M client/project.godot
+ M client/tests/compile_all.gd
+ M docs/reviews/m0-check-report.json
+ M open-world/apps/api/src/app.ts
+ M open-world/apps/api/src/equipment-drop-rules.json
+ M open-world/apps/api/src/field-activities.ts
+ M open-world/apps/api/src/main.ts
+ M open-world/apps/web/public/world/maps/ss-dg-forge-1-1.json
+ M open-world/apps/web/public/world/maps/ss-dg-forge-1-2.json
+ M open-world/apps/web/public/world/maps/ss-dg-forge-1-3.json
+ M open-world/apps/web/public/world/maps/ss-dg-forge-2-1.json
+ M open-world/apps/web/public/world/maps/ss-dg-forge-2-2.json
+ M open-world/apps/web/public/world/maps/ss-dg-forge-2-3.json
+ M open-world/apps/web/public/world/maps/ss-dg-forge-3-1.json
+ M open-world/apps/web/public/world/maps/ss-dg-forge-3-2.json
+ M open-world/apps/web/public/world/maps/ss-dg-forge-3-3.json
+ M open-world/apps/web/public/world/maps/ss-dg-frost-1-1.json
+ M open-world/apps/web/public/world/maps/ss-dg-frost-1-2.json
+ M open-world/apps/web/public/world/maps/ss-dg-frost-1-3.json
+ M open-world/apps/web/public/world/maps/ss-dg-frost-2-1.json
+ M open-world/apps/web/public/world/maps/ss-dg-frost-2-2.json
+ M open-world/apps/web/public/world/maps/ss-dg-frost-2-3.json
+ M open-world/apps/web/public/world/maps/ss-dg-frost-3-1.json
+ M open-world/apps/web/public/world/maps/ss-dg-frost-3-2.json
+ M open-world/apps/web/public/world/maps/ss-dg-frost-3-3.json
+ M open-world/apps/web/public/world/maps/ss-dg-mist-1-1.json
+ M open-world/apps/web/public/world/maps/ss-dg-mist-1-2.json
+ M open-world/apps/web/public/world/maps/ss-dg-mist-1-3.json
+ M open-world/apps/web/public/world/maps/ss-dg-mist-2-1.json
+ M open-world/apps/web/public/world/maps/ss-dg-mist-2-2.json
+ M open-world/apps/web/public/world/maps/ss-dg-mist-2-3.json
+ M open-world/apps/web/public/world/maps/ss-dg-mist-3-1.json
+ M open-world/apps/web/public/world/maps/ss-dg-mist-3-2.json
+ M open-world/apps/web/public/world/maps/ss-dg-mist-3-3.json
+ M open-world/apps/web/public/world/maps/ss-dg-wind-1-1.json
+ M open-world/apps/web/public/world/maps/ss-dg-wind-1-2.json
+ M open-world/apps/web/public/world/maps/ss-dg-wind-1-3.json
+ M open-world/apps/web/public/world/maps/ss-dg-wind-2-1.json
+ M open-world/apps/web/public/world/maps/ss-dg-wind-2-2.json
+ M open-world/apps/web/public/world/maps/ss-dg-wind-2-3.json
+ M open-world/apps/web/public/world/maps/ss-dg-wind-3-1.json
+ M open-world/apps/web/public/world/maps/ss-dg-wind-3-2.json
+ M open-world/apps/web/public/world/maps/ss-dg-wind-3-3.json
+ M open-world/apps/web/public/world/maps/ss-map-dragon.json
+ M open-world/apps/web/public/world/maps/ss-map-forge.json
+ M open-world/apps/web/public/world/maps/ss-map-frost.json
+ M open-world/apps/web/public/world/maps/ss-map-mist.json
+ M open-world/apps/web/public/world/maps/ss-map-rift.json
+ M open-world/apps/web/public/world/maps/ss-map-wind.json
+ M open-world/apps/web/src/appearance-panel.css
+ M open-world/apps/web/src/appearance-panel.ts
+ M open-world/apps/web/src/bag-panel.css
+ M open-world/apps/web/src/character-equipment.css
+ M open-world/apps/web/src/combat-vfx.ts
+ M open-world/apps/web/src/components/BagPanel.ts
+ M open-world/apps/web/src/components/CharacterPanel.ts
+ M open-world/apps/web/src/components/CharacterPaperdoll.ts
+ M open-world/apps/web/src/components/GearCard.ts
+ D open-world/apps/web/src/components/GearComparison.ts
+ M open-world/apps/web/src/components/GearDetails.ts
+ M open-world/apps/web/src/components/gear-metadata.ts
+ M open-world/apps/web/src/field-activities.ts
+ M open-world/apps/web/src/gear-ui.css
+ M open-world/apps/web/src/ground-loot-renderer.ts
+ M open-world/apps/web/src/hero-appearance.ts
+ M open-world/apps/web/src/hit-feedback.ts
+ M open-world/apps/web/src/hud-context.ts
+ M open-world/apps/web/src/hud-icons.ts
+ M open-world/apps/web/src/layout-density-check.ts
+ M open-world/apps/web/src/main.ts
+ M open-world/apps/web/src/physical-actions.ts
+ M open-world/apps/web/src/physical-vfx-qa.ts
+ M open-world/apps/web/src/physical-vfx-spec.ts
+ M open-world/apps/web/src/presentation.ts
+ M open-world/apps/web/src/progression-panel.css
+ M open-world/apps/web/src/progression-panel.ts
+ M open-world/apps/web/src/qa/combat-feel.ts
+ M open-world/apps/web/src/scene.ts
+ M open-world/apps/web/src/shield-feedback.ts
+ M open-world/apps/web/src/skills-panel.css
+ M open-world/apps/web/src/skills-panel.ts
+ M open-world/apps/web/src/starsea-vfx-layout.ts
+ M open-world/apps/web/src/starsea-world-renderer.ts
+ M open-world/apps/web/src/story-panel.css
+ M open-world/apps/web/src/task-panel.css
+ M open-world/apps/web/src/task-panel.ts
+ M open-world/apps/web/src/travel-browser.css
+ M open-world/apps/web/src/ui-system-showcase.ts
+ M open-world/apps/web/src/ui/auth-panels.ts
+ M open-world/apps/web/src/ui/controls.css
+ M open-world/apps/web/src/ui/hud-layout.css
+ M open-world/apps/web/src/ui/hud.css
+ M open-world/apps/web/src/ui/icons.ts
+ M open-world/apps/web/src/ui/item-slots.css
+ M open-world/apps/web/src/ui/minimap-data.ts
+ M open-world/apps/web/src/ui/minimap.css
+ M open-world/apps/web/src/ui/minimap.ts
+ M open-world/apps/web/src/ui/primitives.ts
+ M open-world/apps/web/src/ui/settings-panel.ts
+ M open-world/apps/web/src/ui/settings.css
+ M open-world/apps/web/src/ui/showcase.css
+ M open-world/apps/web/src/ui/skill-effects.ts
+ M open-world/apps/web/src/ui/tokens.css
+ M open-world/apps/web/src/ui/tokens.ts
+ D open-world/apps/web/src/v2-layout.css
+ M open-world/apps/web/src/vfx-physical.ts
+ M open-world/apps/web/src/vfx-pool.ts
+ M open-world/apps/web/src/vfx-profiles.ts
+ M open-world/apps/web/src/world-numbers.ts
+ M open-world/apps/web/vite.config.ts
+ M open-world/assets/skill-fx/source.json
+ M open-world/assets/starsea/npc/manifest.json
+ M open-world/assets/starsea/scenes/export.mjs
+ M open-world/assets/starsea/scenes/manifest.json
+ M open-world/assets/starsea/scenes/maps/ss-map-boss-1.json
+ M open-world/assets/starsea/scenes/maps/ss-map-boss-2.json
+ M open-world/assets/starsea/scenes/maps/ss-map-boss-3.json
+ M open-world/assets/starsea/scenes/maps/ss-map-boss-4.json
+ M open-world/assets/starsea/scenes/maps/ss-map-boss-5.json
+ M open-world/assets/starsea/scenes/maps/ss-map-boss-6.json
+ M open-world/assets/starsea/scenes/maps/ss-map-dragon.json
+ M open-world/assets/starsea/scenes/maps/ss-map-forge.json
+ M open-world/assets/starsea/scenes/maps/ss-map-frost.json
+ M open-world/assets/starsea/scenes/maps/ss-map-mist.json
+ M open-world/assets/starsea/scenes/maps/ss-map-port.json
+ M open-world/assets/starsea/scenes/maps/ss-map-rift.json
+ M open-world/assets/starsea/scenes/maps/ss-map-wind.json
+ M open-world/assets/ui-source/v2/equipment-handdrawn/catalog.json
+ M open-world/assets/ui-source/v2/skill-handdrawn/provenance.json
+ M open-world/assets/ui-source/v2/ui-source.json
+ M open-world/assets/wardrobe/style-overrides.json
+ M open-world/assets/wardrobe/stylized/provenance.json
+ M open-world/config/excel/NPC.xlsx
+ M "open-world/config/excel/\344\270\226\347\225\214.xlsx"
+ M open-world/config/json/npcs.json
+ M open-world/config/json/world.json
+ M open-world/docs/balance-30h-design.md
+ M open-world/docs/character-equipment-ui.md
+ M open-world/docs/enemy-vfx.md
+ M open-world/docs/equipment-item-catalog.md
+ M open-world/docs/ground-loot.md
+ M open-world/docs/hud-layout.md
+ M open-world/docs/minimap.md
+ M open-world/docs/reviews/build-variety-r1-20261006/frames-77/README.md
+ M open-world/docs/reviews/build-variety-r3-20261006/regression-first.log
+ M open-world/docs/reviews/build-variety-r3-20261006/regression.log
+ M open-world/docs/reviews/build-variety-r3-20261006/review-directed.log
+ M open-world/docs/reviews/build-variety-r3-20261006/types.log
+ M open-world/docs/reviews/build-variety-r4-20261006/directed/tests.log
+ M open-world/docs/reviews/build-variety-r4-20261006/independent-review-final.log
+ M open-world/docs/reviews/build-variety-r4-20261006/independent-review.log
+ M open-world/docs/reviews/build-variety-r4-20261006/legacy-registration-review.log
+ M open-world/docs/reviews/build-variety-r4-20261006/regression.log
+ M open-world/docs/reviews/build-variety-r5-20261006/archive/restore.log
+ M open-world/docs/reviews/build-variety-r5-20261006/directed-repaired/tests.log
+ M open-world/docs/reviews/build-variety-r5-20261006/directed/tests.log
+ M open-world/docs/reviews/build-variety-r5-20261006/lifesteal-review.log
+ M open-world/docs/reviews/build-variety-r5-20261006/regression.log
+ M open-world/docs/reviews/build-variety-r5-20261006/stage-preview-review.log
+ M open-world/docs/reviews/build-variety-r5-20261006/types.log
+ M open-world/docs/reviews/build-variety-r6-20261006/burn-mask-review.log
+ M open-world/docs/reviews/build-variety-r6-20261006/charges-module.log
+ M open-world/docs/reviews/build-variety-r6-20261006/directed-gear-repaired/tests.log
+ M open-world/docs/reviews/build-variety-r6-20261006/directed-gear/tests.log
+ M open-world/docs/reviews/build-variety-r6-20261006/independent-modules.log
+ M open-world/docs/reviews/build-variety-r6-20261006/inscription-description-review.log
+ M open-world/docs/reviews/build-variety-r6-20261006/inscriptions-module.log
+ M open-world/docs/reviews/build-variety-r6-20261006/issuance-weapon-review.log
+ M open-world/docs/reviews/build-variety-r6-20261006/legacy-dash-review.log
+ M open-world/docs/reviews/build-variety-r6-20261006/mechanism-review.log
+ M open-world/docs/reviews/build-variety-r6-20261006/orbit-sweep-first.log
+ M open-world/docs/reviews/build-variety-r6-20261006/orbit-sweep-review.log
+ M open-world/docs/reviews/build-variety-r6-20261006/orbit-wall-first.log
+ M open-world/docs/reviews/build-variety-r6-20261006/orbit-wall-los-first.log
+ M open-world/docs/reviews/build-variety-r6-20261006/patches-review-final.log
+ M open-world/docs/reviews/build-variety-r6-20261006/regression-repaired/tests.log
+ M open-world/docs/reviews/build-variety-r6-20261006/regression.log
+ M open-world/docs/reviews/build-variety-r6-20261006/single-reroll-module.log
+ M open-world/docs/reviews/build-variety-r6-20261006/stat-conversions.log
+ M open-world/docs/reviews/build-variety-r6-20261006/thorns-attribute-first.log
+ M open-world/docs/reviews/build-variety-r6-20261006/thorns-attribute-review.log
+ M open-world/docs/reviews/build-variety-r6-final-20261006/regression.log
+ M open-world/docs/reviews/build-variety-r6-release-20261006/regression.log
+ M open-world/docs/reviews/build-variety-r6-release-20261006/types.log
+ M open-world/docs/reviews/build-variety-r7-20261006/build-final/build.json
+ M open-world/docs/reviews/build-variety-r7-20261006/directed-final/tests.json
+ M open-world/docs/reviews/build-variety-r7-20261006/directed-final/tests.log
+ M open-world/docs/reviews/build-variety-r7-20261006/directed-repaired/tests.json
+ M open-world/docs/reviews/build-variety-r7-20261006/directed-repaired/tests.log
+ M open-world/docs/reviews/build-variety-r7-20261006/directed/tests.json
+ M open-world/docs/reviews/build-variety-r7-20261006/directed/tests.log
+ M open-world/docs/reviews/build-variety-r7-20261006/draft-schema-audit.json
+ M open-world/docs/reviews/build-variety-r7-20261006/dungeon-policy-review.log
+ M open-world/docs/reviews/build-variety-r7-20261006/field-semantics-first.log
+ M open-world/docs/reviews/build-variety-r7-20261006/field-semantics-review.log
+ M open-world/docs/reviews/build-variety-r7-20261006/frozen-attributes-review.log
+ M open-world/docs/reviews/build-variety-r7-20261006/frozen-context-review.log
+ M open-world/docs/reviews/build-variety-r7-20261006/frozen-skills-review.log
+ M open-world/docs/reviews/build-variety-r7-20261006/independent-types.log
+ M open-world/docs/reviews/build-variety-r7-20261006/iv-choice-diagnostic/tests.json
+ M open-world/docs/reviews/build-variety-r7-20261006/iv-choice-diagnostic/tests.log
+ M open-world/docs/reviews/build-variety-r7-20261006/iv-pg-first.log
+ M open-world/docs/reviews/build-variety-r7-20261006/iv-pg-fixed/tests.json
+ M open-world/docs/reviews/build-variety-r7-20261006/iv-pg-fixed/tests.log
+ M open-world/docs/reviews/build-variety-r7-20261006/iv-pg-review/tests.json
+ M open-world/docs/reviews/build-variety-r7-20261006/iv-pg-review/tests.log
+ M open-world/docs/reviews/build-variety-r7-20261006/iv-pg-stage-ready/tests.json
+ M open-world/docs/reviews/build-variety-r7-20261006/iv-pg-stage-ready/tests.log
+ M open-world/docs/reviews/build-variety-r7-20261006/iv-pg-synchronized-final/tests.log
+ M open-world/docs/reviews/build-variety-r7-20261006/numeric-flow/flow.log
+ M open-world/docs/reviews/build-variety-r7-20261006/numeric-flow/standard-probes.json
+ M open-world/docs/reviews/build-variety-r7-20261006/offer-applicability-first.log
+ M open-world/docs/reviews/build-variety-r7-20261006/offer-applicability-review.log
+ M open-world/docs/reviews/build-variety-r7-20261006/pg-choice-synchronized/tests.json
+ M open-world/docs/reviews/build-variety-r7-20261006/pg-choice-synchronized/tests.log
+ M open-world/docs/reviews/build-variety-r7-20261006/pg-final-stable/tests.json
+ M open-world/docs/reviews/build-variety-r7-20261006/pg-final-stable/tests.log
+ M open-world/docs/reviews/build-variety-r7-20261006/pg-round-synchronized/tests.json
+ M open-world/docs/reviews/build-variety-r7-20261006/pg-round-synchronized/tests.log
+ M open-world/docs/reviews/build-variety-r7-20261006/policy-pg-review/tests.json
+ M open-world/docs/reviews/build-variety-r7-20261006/policy-pg-review/tests.log
+ M open-world/docs/reviews/build-variety-r7-20261006/public-panels.log
+ M open-world/docs/reviews/build-variety-r7-20261006/regression.log
+ M open-world/docs/reviews/build-variety-r7-20261006/replace-build.log
+ M open-world/docs/reviews/build-variety-r7-20261006/sparse-stats-review.log
+ M open-world/docs/reviews/build-variety-r7-20261006/stage-continuity-review.log
+ M open-world/docs/reviews/build-variety-r7-20261006/story-manual-fixed/tests.json
+ M open-world/docs/reviews/build-variety-r7-20261006/story-manual-fixed/tests.log
+ M open-world/docs/reviews/build-variety-r7-20261006/story-manual-repair/tests.json
+ M open-world/docs/reviews/build-variety-r7-20261006/story-manual-repair/tests.log
+ M open-world/docs/reviews/build-variety-r7-20261006/types-final.log
+ M open-world/docs/reviews/build-variety-r7-final-20261006/regression.log
+ M open-world/docs/reviews/build-variety-r8-20261006/assembly-review.log
+ M open-world/docs/reviews/build-variety-r8-20261006/benchmark-module.log
+ M open-world/docs/reviews/build-variety-r8-20261006/build-final/build.json
+ M open-world/docs/reviews/build-variety-r8-20261006/build-polished/build.json
+ M open-world/docs/reviews/build-variety-r8-20261006/directed-fixed/tests.json
+ M open-world/docs/reviews/build-variety-r8-20261006/directed-fixed/tests.log
+ M open-world/docs/reviews/build-variety-r8-20261006/directed/tests.json
+ M open-world/docs/reviews/build-variety-r8-20261006/directed/tests.log
+ M open-world/docs/reviews/build-variety-r8-20261006/frozen-source-default-review.log
+ M open-world/docs/reviews/build-variety-r8-20261006/functional-layout.json
+ M open-world/docs/reviews/build-variety-r8-20261006/numeric-flow.log
+ M open-world/docs/reviews/build-variety-r8-20261006/orbit-auto-first.log
+ M open-world/docs/reviews/build-variety-r8-20261006/orbit-auto-review.log
+ M open-world/docs/reviews/build-variety-r8-20261006/orbit-wall-current.log
+ M open-world/docs/reviews/build-variety-r8-20261006/panel-model.log
+ M open-world/docs/reviews/build-variety-r8-20261006/parameter-regression/tests.json
+ M open-world/docs/reviews/build-variety-r8-20261006/parameter-regression/tests.log
+ M open-world/docs/reviews/build-variety-r8-20261006/pool-display-review.log
+ M open-world/docs/reviews/build-variety-r8-20261006/result-audit-review.log
+ M open-world/docs/reviews/build-variety-r8-20261006/skill-damage-accounting.log
+ M open-world/docs/reviews/build-variety-r8-20261006/tuning-1.log
+ M open-world/docs/reviews/build-variety-r8-20261006/types-before-regression.log
+ M open-world/docs/reviews/build-variety-r8-20261006/types-first.log
+ M open-world/docs/reviews/build-variety-r8-final-20261006/regression.log
+ M open-world/docs/reviews/build-variety-r8-release-20261006/regression.log
+ M open-world/docs/reviews/build-variety-r8-release-20261006/types.log
+ M open-world/docs/reviews/open-world-m2-m4/W0/content-id-whitelist.json
+ M open-world/docs/reviews/open-world-m2-m4/W10/all-quests.json
+ M open-world/docs/reviews/open-world-m2-m4/W10/natural-calendar-attempt-all-tasks.json
+ M open-world/docs/reviews/open-world-m2-m4/W10/natural-calendar.json
+ M open-world/docs/reviews/open-world-m2-m4/W11/loot-cadence-detail.json
+ M open-world/docs/reviews/open-world-m2-m4/W4/config-deliberate-breaks.json
+ M open-world/docs/reviews/open-world-m2-m4/W4/wind-driver.json
+ M open-world/docs/skill-vfx-v2.md
+ M open-world/docs/starsea/rpg-flow-plan.md
+ M open-world/docs/starsea/world.md
+ M open-world/docs/ui-design-system.md
+ M open-world/docs/ui-system-progress.md
+ M open-world/packages/asset-manifest/skill-fx.json
+ M open-world/packages/asset-manifest/ui.v2.json
+ M open-world/packages/asset-manifest/wardrobe.json
+ M open-world/packages/content/appearance.json
+ M open-world/packages/content/appearance.ts
+ M open-world/packages/content/deep-progression.ts
+ M open-world/packages/content/field-kill-talents.json
+ M open-world/packages/content/gear-affixes.json
+ M open-world/packages/content/index.ts
+ M open-world/packages/content/inscriptions.json
+ M open-world/packages/content/inscriptions.ts
+ M open-world/packages/content/open-world/production.json
+ M open-world/packages/content/skill-tags.ts
+ M open-world/packages/content/skill-weapons.ts
+ M open-world/packages/content/skills-expanded.ts
+ M open-world/packages/content/stats.json
+ M open-world/packages/contracts/deep-progression.ts
+ M open-world/packages/contracts/index.ts
+ M open-world/packages/contracts/open-world.ts
+ M open-world/packages/contracts/task-tables.ts
+ M open-world/packages/rules/affix-generator.ts
+ M open-world/packages/rules/appearance.ts
+ M open-world/packages/rules/damage-zones.ts
+ M open-world/packages/rules/deep-progression.ts
+ M open-world/packages/rules/frozen-augment-build.ts
+ M open-world/packages/rules/index.ts
+ M open-world/packages/rules/skill-patches.ts
+ M open-world/packages/rules/weapon-skills.ts
+ M open-world/packages/simulation/index.ts
+ M open-world/packages/simulation/story-encounter.ts
+ M open-world/packages/ui-tokens/tokens.json
+ M open-world/tests/appearance-api.test.ts
+ M open-world/tests/appearance-rules.test.ts
+ M open-world/tests/bag-ui.test.ts
+ M open-world/tests/balance-integrity.test.ts
+ M open-world/tests/battle-result.database.test.ts
+ M open-world/tests/build-variety-frozen-attributes.test.ts
+ M open-world/tests/build-variety-r3.test.ts
+ M open-world/tests/build-variety-r4.database.test.ts
+ M open-world/tests/build-variety-r4.test.ts
+ M open-world/tests/build-variety-r6.database.test.ts
+ M open-world/tests/build-variety-rs.test.ts
+ M open-world/tests/build-variety-skill-patches.test.ts
+ M open-world/tests/combat-collision.test.ts
+ M open-world/tests/copy-voice-surfaces.test.ts
+ M open-world/tests/database.test.ts
+ M open-world/tests/deep-progression-api.test.ts
+ M open-world/tests/deep-progression-rules.test.ts
+ M open-world/tests/dungeon-instance.database.test.ts
+ M open-world/tests/earned-all-quests.database.test.ts
+ M open-world/tests/equipment-runtime.database.test.ts
+ M open-world/tests/equipment-runtime.test.ts
+ M open-world/tests/field-activities.database.test.ts
+ M open-world/tests/field-camps.database.test.ts
+ M open-world/tests/field-kill-talents.test.ts
+ M open-world/tests/field-readiness.test.ts
+ M open-world/tests/fixtures/build-variety-rs/poison-before.json
+ M open-world/tests/gameres-motion-timing.test.ts
+ M open-world/tests/ground-loot.test.ts
+ M open-world/tests/hit-feedback.test.ts
+ M open-world/tests/hud-art-layout.test.ts
+ M open-world/tests/hud-context.test.ts
+ M open-world/tests/inventory-ui-system.test.ts
+ M open-world/tests/item-affix-power.database.test.ts
+ M open-world/tests/progression-challenges.test.ts
+ M open-world/tests/progression-ui-system.test.ts
+ M open-world/tests/quest-v2.test.ts
+ M open-world/tests/shield-feedback.test.ts
+ M open-world/tests/simulation.test.ts
+ M open-world/tests/skill-progression.test.ts
+ M open-world/tests/skills-ui-system.test.ts
+ M open-world/tests/tasks.database.test.ts
+ M open-world/tests/test-login.test.ts
+ M open-world/tests/travel-browser.test.ts
+ M open-world/tests/ui-components.test.ts
+ M open-world/tests/ui-tokens.test.ts
+ M open-world/tests/weapon-combos.test.ts
+ M open-world/tests/wind-island-driver.database.test.ts
+ M open-world/tests/world-loot-cadence.database.test.ts
+ M open-world/tests/world-phase.database.test.ts
+ M open-world/tests/world-production.database.test.ts
+ M open-world/tests/world-tables.test.ts
+ M open-world/tools/accept-deep-progression.mjs
+ M open-world/tools/accept-handdrawn-skill-icons.mjs
+ M open-world/tools/accept-skill-fx.mjs
+ M open-world/tools/balance-30h-model.mjs
+ M open-world/tools/build-production-islands.ts
+ M open-world/tools/build-skill-fx.mjs
+ M open-world/tools/drop-expectations.ts
+ M open-world/tools/equipment-art/accept-published.mjs
+ M open-world/tools/generate-field-dungeon.ts
+ M open-world/tools/measure-build-variety-standard.ts
+ M open-world/tools/qa.mjs
+ M open-world/tools/standard-player-model.ts
+ M open-world/tools/test-equipment-runtime.mjs
+ M open-world/tools/verify-build-variety-r0.mjs
+ M open-world/tools/verify-build-variety-rs-live.mjs
+ M open-world/tools/verify-starsea-login.mjs
+ M open-world/tools/world-content-id-scan.mjs
+ M tools/dev.py
+ M tools/setup
+?? .design/
+?? client/assets/art/
+?? client/presentation/actor_visual.gd
+?? client/presentation/actor_visual.gd.uid
+?? client/presentation/battle_arena.gd
+?? client/presentation/battle_arena.gd.uid
+?? client/presentation/body_font.tres
+?? client/presentation/display_font.tres
+?? client/presentation/game_ui.gd
+?? client/presentation/game_ui.gd.uid
+?? client/tests/presentation_controls.gd
+?? client/tests/presentation_controls.gd.uid
+?? docs/00-project/
+?? docs/03-presentation/
+?? docs/04-open-world/
+?? docs/05-art/
+?? docs/reviews/20260928-game-interface.md
+?? docs/reviews/20260928-game-interface/
+?? docs/reviews/20260928-third-independent-acceptance.md
+?? docs/reviews/20260928-third-independent-evidence/
+?? docs/reviews/20260928-user-art-correction.md
+?? docs/reviews/20260928-user-art-correction/
+?? docs/reviews/apk-dynamic-20261002/
+?? docs/reviews/apk-extraction-20261002/
+?? docs/reviews/open-world/
+?? experiments/
+?? node_modules/
+?? open-world/.design/aspect-lock-20261007/
+?? open-world/.design/build-variety-augments-20261006/
+?? open-world/.design/build-variety-damage-panel-20261006/
+?? open-world/.design/five-islands-art/
+?? open-world/.design/hero-face-20261007/
+?? open-world/.design/open-world-art-first/
+?? open-world/.design/open-world-m0/acceptance.json
+?? open-world/.design/open-world-m0/aoi-bench.json
+?? open-world/.design/open-world-m0/build.json
+?? open-world/.design/open-world-m0/field-browser-1280-first.json
+?? open-world/.design/open-world-m0/field-browser-1280.json
+?? open-world/.design/open-world-m0/graybox-100-1280-end.png
+?? open-world/.design/open-world-m0/graybox-100-1280-start.png
+?? open-world/.design/open-world-m0/graybox-150-1280-end.png
+?? open-world/.design/open-world-m0/graybox-150-1280-start.png
+?? open-world/.design/open-world-m0/graybox-60-1280-end.png
+?? open-world/.design/open-world-m0/graybox-60-1280-start.png
+?? open-world/.design/open-world-m0/graybox-field-1280-end.png
+?? open-world/.design/open-world-m0/graybox-field-1280-start.png
+?? open-world/.design/open-world-m0/horde-browser-1280.json
+?? open-world/.design/open-world-m0/map-metadata-repair.json
+?? open-world/.design/open-world-m0/numeric-rerun.txt
+?? open-world/.design/open-world-m0/tests-first.json
+?? open-world/.design/open-world-m0/tests.json
+?? open-world/.design/open-world-m1/
+?? open-world/.design/open-world-m2-m4-events/
+?? open-world/.design/open-world-m2-m4-workbooks/NPC-phase.xlsx
+?? open-world/.design/open-world-m2-m4-workbooks/NPC-phase.xlsx.inspect.ndjson
+?? "open-world/.design/open-world-m2-m4-workbooks/after-\344\272\213\344\273\266.png"
+?? "open-world/.design/open-world-m2-m4-workbooks/after-\344\274\240\351\200\201\347\202\271.png"
+?? "open-world/.design/open-world-m2-m4-workbooks/after-\345\205\245\345\217\243.png"
+?? "open-world/.design/open-world-m2-m4-workbooks/after-\345\210\206\345\214\272.png"
+?? "open-world/.design/open-world-m2-m4-workbooks/after-\345\234\260\346\240\207.png"
+?? "open-world/.design/open-world-m2-m4-workbooks/after-\345\256\235\347\256\261.png"
+?? "open-world/.design/open-world-m2-m4-workbooks/after-\345\257\274\345\207\272.png"
+?? "open-world/.design/open-world-m2-m4-workbooks/after-\345\262\233\345\261\277.png"
+?? "open-world/.design/open-world-m2-m4-workbooks/after-\345\267\241\351\200\273.png"
+?? "open-world/.design/open-world-m2-m4-workbooks/after-\347\250\200\346\234\211.png"
+?? "open-world/.design/open-world-m2-m4-workbooks/after-\350\220\245\345\234\260.png"
+?? "open-world/.design/open-world-m2-m4-workbooks/after-\351\201\223\350\267\257.png"
+?? "open-world/.design/open-world-m2-m4-workbooks/after-\351\227\250.png"
+?? open-world/.design/open-world-m2-m4-workbooks/before-zones.png
+?? open-world/.design/open-world-m2-m4-workbooks/feature-labels.png
+?? open-world/.design/open-world-m2-m4-workbooks/fixture-zones-variant.png
+?? open-world/.design/open-world-m2-m4-workbooks/fixture-zones.png
+?? open-world/.design/open-world-m2-m4-workbooks/phase-after-merchants.png
+?? open-world/.design/open-world-m2-m4-workbooks/phase-after-outposts.png
+?? open-world/.design/open-world-m2-m4-workbooks/phase-after-positions.png
+?? open-world/.design/open-world-m2-m4-workbooks/phase-before-npc.png
+?? open-world/.design/open-world-m2-m4-workbooks/phase-before-world.png
+?? open-world/.design/open-world-m2-m4-workbooks/two-zone.json
+?? open-world/.design/open-world-m2-m4-workbooks/version.patch
+?? open-world/.design/open-world-m2-m4-workbooks/world-workbook-inspect.ndjson
+?? "open-world/.design/open-world-m2-m4-workbooks/\344\270\226\347\225\214-phase.xlsx"
+?? "open-world/.design/open-world-m2-m4-workbooks/\344\270\226\347\225\214-phase.xlsx.inspect.ndjson"
+?? "open-world/.design/open-world-m2-m4-workbooks/\344\270\226\347\225\214.xlsx"
+?? "open-world/.design/open-world-m2-m4-workbooks/\344\270\226\347\225\214.xlsx.inspect.ndjson"
+?? "open-world/.design/open-world-m2-m4-workbooks/\347\253\240\350\212\202-feature-labels.xlsx"
+?? "open-world/.design/open-world-m2-m4-workbooks/\347\253\240\350\212\202-feature-labels.xlsx.inspect.ndjson"
+?? open-world/.design/progression-audit-20261005/
+?? open-world/.design/progression-fix-20261005/
+?? open-world/.design/quest-v2/
+?? open-world/.design/route-choice-20261005/
+?? "open-world/.design/standard-player-20261005/QT05_\346\230\237\346\275\256\346\265\267\346\240\207\345\207\206\344\272\272\345\261\236\346\200\247\350\247\204\345\210\222.xlsx"
+?? "open-world/.design/standard-player-20261005/QT05_\346\230\237\346\275\256\346\265\267\346\240\207\345\207\206\344\272\272\345\261\236\346\200\247\350\247\204\345\210\222_v2.xlsx"
+?? open-world/.design/standard-player-20261005/efficiency.json
+?? open-world/.design/starsea-balance-20261005/accept/
+?? open-world/.design/starsea-balance-20261005/boss-L6-start.png
+?? open-world/.design/starsea-balance-20261005/boss-L6-win.png
+?? open-world/.design/starsea-balance-20261005/boss-L8-semi-approach-start.png
+?? open-world/.design/starsea-balance-20261005/boss-L8-semi-approach-win.png
+?? open-world/.design/starsea-balance-20261005/boss-L8-start.png
+?? open-world/.design/starsea-balance-20261005/boss-L8-win.png
+?? open-world/.design/starsea-balance-20261005/browser-failure.png
+?? open-world/.design/starsea-balance-20261005/browser.json
+?? open-world/.design/starsea-balance-20261005/camp-login.png
+?? open-world/.design/starsea-balance-20261005/camp-restored.png
+?? open-world/.design/starsea-balance-20261005/candidate-balance.json
+?? open-world/.design/starsea-balance-20261005/candidate-encounter.json
+?? open-world/.design/starsea-balance-20261005/candidate-monsters.json
+?? open-world/.design/starsea-balance-20261005/cut-approach-intent.png
+?? open-world/.design/starsea-balance-20261005/first-kill.png
+?? open-world/.design/starsea-balance-20261005/fitted-encounter.json
+?? open-world/.design/starsea-balance-20261005/fitted-monsters.json
+?? open-world/.design/starsea-balance-20261005/fitted-settings.json
+?? open-world/.design/starsea-balance-20261005/health.json
+?? open-world/.design/starsea-balance-20261005/initial-model.json
+?? open-world/.design/starsea-balance-20261005/model.md
+?? open-world/.design/starsea-balance-20261005/new-character-wind.png
+?? open-world/.design/starsea-balance-20261005/respawn-r1.png
+?? open-world/.design/starsea-balance-20261005/respawn-reward.png
+?? open-world/.design/starsea-balance-20261005/respawn-wait-far.png
+?? open-world/.design/starsea-balance-20261005/result.md
+?? open-world/.design/starsea-collision-20261005/
+?? open-world/.vite-copy/
+?? open-world/apps/web/appearance-style-review.html
+?? open-world/apps/web/open-world-art-qa.html
+?? open-world/apps/web/open-world-five-art-qa.html
+?? open-world/apps/web/public/world/maps/ss-field-wind.json
+?? open-world/apps/web/src/appearance-style-review.css
+?? open-world/apps/web/src/appearance-style-review.ts
+?? open-world/apps/web/src/authoritative-motion.ts
+?? open-world/apps/web/src/components/ForgePanel.ts
+?? open-world/apps/web/src/island-edge.ts
+?? open-world/apps/web/src/open-world-art-qa.css
+?? open-world/apps/web/src/open-world-art-qa.ts
+?? open-world/apps/web/src/open-world-five-art-qa.ts
+?? open-world/apps/web/src/open-world-water-preview.ts
+?? open-world/apps/web/src/qa/legacy/
+?? open-world/apps/web/src/qa/telegraph-preview.ts
+?? open-world/apps/web/src/ui/minimap-art.ts
+?? open-world/apps/web/src/ui/minimap-scene.ts
+?? open-world/apps/web/src/vfx-showcase.ts
+?? open-world/apps/web/src/wardrobe-icon-bake.ts
+?? open-world/apps/web/src/wardrobe-icon-review.css
+?? open-world/apps/web/src/wardrobe-icon-review.ts
+?? open-world/apps/web/src/wardrobe-v2-review.css
+?? open-world/apps/web/src/wardrobe-v2-review.ts
+?? open-world/apps/web/src/world-dressing.ts
+?? open-world/apps/web/src/world-graybox.ts
+?? open-world/apps/web/telegraph-preview.html
+?? open-world/apps/web/wardrobe-icon-bake.html
+?? open-world/apps/web/wardrobe-icon-review.html
+?? open-world/apps/web/wardrobe-v2-review.html
+?? open-world/apps/web/world-graybox.html
+?? open-world/assets/equipment-remake-20261003/acceptance.env
+?? open-world/assets/equipment-remake-20261003/runtime-acceptance.env
+?? open-world/assets/mini-hero/extensions/
+?? open-world/assets/mini-hero/icons-v2/
+?? open-world/assets/mini-hero/navy/headA2-resolute-v1.py
+?? open-world/assets/mini-hero/thumbs/
+?? open-world/assets/open-world/README.md
+?? open-world/assets/open-world/five-islands/README.md
+?? open-world/assets/open-world/five-islands/generation-queue.json
+?? open-world/assets/open-world/five-islands/generation.json
+?? open-world/assets/open-world/five-islands/review.json
+?? open-world/assets/open-world/generation.json
+?? open-world/assets/open-world/water-shader.glsl
+?? open-world/assets/skill-fx/combat-library-source/_physical-incoming/
+?? open-world/assets/skill-fx/combat-library-source/blade-charge/
+?? open-world/assets/skill-fx/combat-library-source/blade-flight/
+?? open-world/assets/skill-fx/combat-library-source/fire-rain/
+?? open-world/assets/skill-fx/combat-library-source/flame-burst/
+?? open-world/assets/skill-fx/combat-library-source/ice-burst/
+?? open-world/assets/skill-fx/combat-library-source/ice-wave/
+?? open-world/assets/skill-fx/combat-library-source/slash/
+?? open-world/assets/skill-fx/combat-library-source/summon/
+?? open-world/assets/skill-fx/combat-library-source/void-burst/
+?? open-world/assets/skill-fx/combat-library-source/void-charge/
+?? open-world/assets/skill-fx/combat-library-source/void-cloud/
+?? open-world/assets/skill-fx/combat-library-source/void-flight/
+?? open-world/assets/skill-fx/combat-library-source/void-impact/
+?? open-world/assets/skill-fx/combat-library-source/warm-burst/
+?? open-world/assets/skill-fx/hit-library-source/
+?? open-world/assets/skill-fx/source/lightning-arrow-flight/
+?? open-world/assets/skill-fx/source/lightning-arrow-hit/
+?? open-world/assets/skill-fx/source/lightning-charge/
+?? open-world/assets/starsea/bosses/evidence/
+?? open-world/assets/starsea/integration/evidence/
+?? open-world/assets/starsea/monsters/evidence/
+?? open-world/assets/starsea/npc/evidence/
+?? open-world/assets/starsea/props/evidence/
+?? open-world/assets/starsea/scenes/evidence/
+?? open-world/assets/starsea/scenes/preview/ss-field-wind.svg
+?? open-world/assets/starsea/scenes/preview/ss-map-dragon.svg
+?? open-world/assets/starsea/scenes/preview/ss-map-forge.svg
+?? open-world/assets/starsea/scenes/preview/ss-map-frost.svg
+?? open-world/assets/starsea/scenes/preview/ss-map-mist.svg
+?? open-world/assets/starsea/scenes/preview/ss-map-rift.svg
+?? open-world/assets/starsea/scenes/preview/ss-map-wind.svg
+?? open-world/assets/starsea/vfx/evidence/
+?? open-world/assets/ui-source/v2/skill-handdrawn/originals/skill-assassinate.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/originals/skill-blade_flurry.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/originals/skill-death_lotus.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/originals/skill-explosive_kunai.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/originals/skill-fan_of_knives.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/originals/skill-pole_vault.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/originals/skill-seismic_staff.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/originals/skill-shadow_step.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/originals/skill-staff_cyclone.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/originals/skill-staff_flurry.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/originals/skill-staff_strike.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/originals/skill-staff_sweep.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/originals/skill-throwing_knife.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/originals/skill-venom_needle.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/skill-assassinate.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/skill-blade_flurry.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/skill-death_lotus.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/skill-explosive_kunai.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/skill-fan_of_knives.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/skill-pole_vault.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/skill-seismic_staff.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/skill-shadow_step.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/skill-staff_cyclone.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/skill-staff_flurry.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/skill-staff_strike.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/skill-staff_sweep.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/skill-throwing_knife.png
+?? open-world/assets/ui-source/v2/skill-handdrawn/skill-venom_needle.png
+?? open-world/assets/ui-source/v2/weapon-bow/bow-source.png
+?? open-world/assets/wardrobe/art-variants/20261001/parts-only.zip
+?? open-world/assets/wardrobe/stylized/100011-face-resolute-v1.png
+?? open-world/assets/wardrobe/stylized/100011-face-resolute-v1.py
+?? open-world/docs/05-art/vfx-mokazhiy-reserve-20261004.md
+?? open-world/docs/appearance-style-unification.md
+?? open-world/docs/build-depth-design.md
+?? open-world/docs/equipment-names.md
+?? open-world/docs/equipment-runtime.md
+?? open-world/docs/forge-workshop.md
+?? open-world/docs/hybrid-implementation.md
+?? open-world/docs/minimap-fix-plan.md
+?? open-world/docs/minimap-upgrade-handoff-20261011.md
+?? open-world/docs/open-world-build-variety.md
+?? open-world/docs/open-world-content-plan.md
+?? open-world/docs/open-world-grind-feel.md
+?? open-world/docs/open-world-implementation-progress.md
+?? open-world/docs/open-world-quest-steps-1-3-report.md
+?? open-world/docs/pacing-identity-knobs-handoff-20261013.md
+?? open-world/docs/pacing-tool-handoff-20261010.md
+?? open-world/docs/physical-skill-vfx-handoff-20261011.md
+?? open-world/docs/physical-vfx-rollout-handoff-20261013.md
+?? open-world/docs/playability-fix-handoff-20261008.md
+?? open-world/docs/progression-ui-execution.md
+?? open-world/docs/progression-ui-fix-plan.md
+?? open-world/docs/progression-ui-redesign-plan.md
+?? open-world/docs/progression-ui.md
+?? open-world/docs/reviews/build-variety-r0-20261006/failure.png
+?? open-world/docs/reviews/build-variety-r1-extended-20261006/
+?? open-world/docs/reviews/build-variety-r4-20261006/player-path/failure.png
+?? open-world/docs/reviews/build-variety-r4-20261006/player-path/video/
+?? open-world/docs/reviews/build-variety-r5-20261006/live/failure.png
+?? open-world/docs/reviews/build-variety-r5-20261006/player-path/failure.png
+?? open-world/docs/reviews/build-variety-r5-20261006/player-path/video/
+?? open-world/docs/reviews/build-variety-r6-20261006/gear-path/video/
+?? open-world/docs/reviews/build-variety-r6-20261006/imprint-path/video/
+?? open-world/docs/reviews/build-variety-r6-20261006/player-path/video/
+?? open-world/docs/reviews/build-variety-r7-20261006/player-path/video/
+?? open-world/docs/reviews/build-variety-r8-20261006/augmented-calibration/result.json
+?? open-world/docs/reviews/build-variety-r8-20261006/four-arrow-build/result.json
+?? open-world/docs/reviews/build-variety-r8-20261006/functional-preview.html
+?? open-world/docs/reviews/build-variety-r8-20261006/initial-augmented/result.json
+?? open-world/docs/reviews/build-variety-r8-20261006/multi-arrow-build/result.json
+?? open-world/docs/reviews/build-variety-r8-20261006/new-arrow-build/result.json
+?? open-world/docs/reviews/build-variety-r8-20261006/player-path/video/
+?? open-world/docs/reviews/build-variety-r8-20261006/preflight/result.json
+?? open-world/docs/reviews/build-variety-r8-20261006/rain-opener-build/result.json
+?? open-world/docs/reviews/build-variety-r8-20261006/tuning-1/result.json
+?? open-world/docs/reviews/build-variety-r8-20261006/tuning-2/result.json
+?? open-world/docs/reviews/build-variety-r8-20261006/tuning-3/result.json
+?? open-world/docs/reviews/build-variety-r8-20261006/uncensored-1/result.json
+?? open-world/docs/reviews/build-variety-r8-20261006/uncensored-2/result.json
+?? open-world/docs/reviews/build-variety-r8-20261006/uncensored-3/result.json
+?? open-world/docs/reviews/build-variety-rs-20261006/fx/failure.png
+?? open-world/docs/reviews/build-variety-rs-20261006/fx/operations.webm
+?? open-world/docs/reviews/build-variety-rs-20261006/fx/result.json
+?? open-world/docs/reviews/build-variety-rs-20261006/measurements.json
+?? open-world/docs/reviews/build-variety-rs-20261006/player-path/failure.png
+?? open-world/docs/reviews/build-variety-rs-20261006/player-path/result.json
+?? open-world/docs/reviews/build-variety-rs-20261006/visible/
+?? open-world/docs/reviews/combat-feel-20261005/baseline-metrics.json
+?? open-world/docs/reviews/combat-feel-20261005/boss.json
+?? open-world/docs/reviews/combat-feel-20261005/boss.png
+?? open-world/docs/reviews/combat-feel-20261005/break.json
+?? open-world/docs/reviews/combat-feel-20261005/break.png
+?? open-world/docs/reviews/combat-feel-20261005/camp.png
+?? open-world/docs/reviews/combat-feel-20261005/crit.json
+?? open-world/docs/reviews/combat-feel-20261005/crit.png
+?? open-world/docs/reviews/combat-feel-20261005/expire.json
+?? open-world/docs/reviews/combat-feel-20261005/expire.png
+?? open-world/docs/reviews/combat-feel-20261005/heal.json
+?? open-world/docs/reviews/combat-feel-20261005/heal.png
+?? open-world/docs/reviews/combat-feel-20261005/hit.json
+?? open-world/docs/reviews/combat-feel-20261005/hit.png
+?? open-world/docs/reviews/combat-feel-20261005/hurt.json
+?? open-world/docs/reviews/combat-feel-20261005/hurt.png
+?? open-world/docs/reviews/combat-feel-20261005/ice.json
+?? open-world/docs/reviews/combat-feel-20261005/ice.png
+?? open-world/docs/reviews/combat-feel-20261005/kill.json
+?? open-world/docs/reviews/combat-feel-20261005/kill.png
+?? open-world/docs/reviews/combat-feel-20261005/minor.json
+?? open-world/docs/reviews/combat-feel-20261005/minor.png
+?? open-world/docs/reviews/combat-feel-20261005/miss.json
+?? open-world/docs/reviews/combat-feel-20261005/miss.png
+?? open-world/docs/reviews/combat-feel-20261005/reduced.json
+?? open-world/docs/reviews/combat-feel-20261005/reduced.png
+?? open-world/docs/reviews/combat-feel-20261005/shield.json
+?? open-world/docs/reviews/combat-feel-20261005/shield.png
+?? open-world/docs/reviews/combat-feel-20261005/snapshot.json
+?? open-world/docs/reviews/combat-feel-20261005/snapshot.png
+?? open-world/docs/reviews/combat-feel-20261005/stress.json
+?? open-world/docs/reviews/combat-feel-20261005/stress.png
+?? open-world/docs/reviews/copy-voice-20261009/after-browser.json
+?? open-world/docs/reviews/copy-voice-20261009/after-entries-browser.json
+?? open-world/docs/reviews/copy-voice-20261009/build-location.json
+?? open-world/docs/reviews/copy-voice-20261009/evidence/after-failure.png
+?? open-world/docs/reviews/copy-voice-20261009/evidence/before-failure.png
+?? open-world/docs/reviews/copy-voice-20261009/host-control.json
+?? open-world/docs/reviews/copy-voice-20261009/host.json
+?? open-world/docs/reviews/copy-voice-20261009/polish-20261010/after-browser.json
+?? open-world/docs/reviews/copy-voice-20261009/polish-20261010/evidence/after-failure.png
+?? open-world/docs/reviews/copy-voice-20261009/polish-20261010/host-control.json
+?? open-world/docs/reviews/copy-voice-20261009/review-selected.diff
+?? open-world/docs/reviews/field-event-performance-20261011/
+?? open-world/docs/reviews/mini-hero-release/
+?? open-world/docs/reviews/minimap-style-20261011/
+?? open-world/docs/reviews/monster-ai-stall-20261011/
+?? open-world/docs/reviews/open-world-m2-m4/W0/content-id-initial-including-dist.json
+?? open-world/docs/reviews/open-world-m2-m4/W10/natural-calendar-no-quests.json
+?? open-world/docs/reviews/open-world-m2-m4/W10/publication-save-after.json
+?? open-world/docs/reviews/open-world-m2-m4/W10/publication-save-before.json
+?? open-world/docs/reviews/open-world-m2-m4/W11/publication-save-after.json
+?? open-world/docs/reviews/open-world-m2-m4/W11/publication-save-before.json
+?? open-world/docs/reviews/open-world-m2-m4/W2/publication-save-after.json
+?? open-world/docs/reviews/open-world-m2-m4/W2/publication-save-before.json
+?? open-world/docs/reviews/open-world-m2-m4/W3/publication-save-after.json
+?? open-world/docs/reviews/open-world-m2-m4/W3/publication-save-before.json
+?? open-world/docs/reviews/open-world-m2-m4/W4/publication-save-after.json
+?? open-world/docs/reviews/open-world-m2-m4/W4/publication-save-before.json
+?? open-world/docs/reviews/open-world-m2-m4/W5/publication-save-after.json
+?? open-world/docs/reviews/open-world-m2-m4/W5/publication-save-before.json
+?? open-world/docs/reviews/open-world-m2-m4/W5/source-before/
+?? open-world/docs/reviews/open-world-m2-m4/W6/publication-save-after.json
+?? open-world/docs/reviews/open-world-m2-m4/W6/publication-save-before.json
+?? open-world/docs/reviews/open-world-m2-m4/W6/source-before/
+?? open-world/docs/reviews/open-world-m2-m4/W7/publication-save-after.json
+?? open-world/docs/reviews/open-world-m2-m4/W7/publication-save-before.json
+?? open-world/docs/reviews/open-world-m2-m4/W7/source-before/
+?? open-world/docs/reviews/open-world-m2-m4/W8/publication-save-after.json
+?? open-world/docs/reviews/open-world-m2-m4/W8/publication-save-before.json
+?? open-world/docs/reviews/open-world-m2-m4/W8/source-before/
+?? open-world/docs/reviews/open-world-m2-m4/W9/publication-save-after.json
+?? open-world/docs/reviews/open-world-m2-m4/W9/publication-save-before.json
+?? open-world/docs/reviews/open-world-m2-m4/W9/source-before/
+?? open-world/docs/reviews/open-world/
+?? open-world/docs/reviews/pacing-identity-20261013/
+?? open-world/docs/reviews/pacing-tool-20261010/P4-copy/
+?? open-world/docs/reviews/pacing-tool-20261010/P4-gui/control.json
+?? open-world/docs/reviews/pacing-tool-20261010/P4-gui/evidence/failure.png
+?? open-world/docs/reviews/pacing-tool-20261010/P4-tests/
+?? open-world/docs/reviews/pacing-tool-20261010/P5-directed/
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/bolt-f0.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/bolt-f3.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/bolt-f8.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/pole_vault-f0.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/pole_vault-f3.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/pole_vault-f8.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/seismic_staff-f0.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/seismic_staff-f3.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/seismic_staff-f8.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/snipe-f0.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/snipe-f3.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/snipe-f8.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/staff_cyclone-f0.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/staff_cyclone-f3.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/staff_cyclone-f8.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/staff_flurry-f0.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/staff_flurry-f3.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/staff_flurry-f8.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/staff_strike-f0.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/staff_strike-f3.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/staff_strike-f8.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/staff_sweep-f0.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/staff_sweep-f3.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/staff_sweep-f8.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/throwing_knife-f0.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/throwing_knife-f3.png
+?? open-world/docs/reviews/physical-vfx-20261011/after-samples/throwing_knife-f8.png
+?? open-world/docs/reviews/physical-vfx-20261011/claude-diagnosis-timeline.png
+?? open-world/docs/reviews/physical-vfx-20261011/metrics/after-samples-actions-captures.json
+?? open-world/docs/reviews/physical-vfx-20261011/metrics/regression-evidence/
+?? open-world/docs/reviews/playability-fix-20261008/f1-own-delta.patch
+?? open-world/docs/reviews/playability-fix-20261008/f1-own-final.patch
+?? open-world/docs/reviews/playability-fix-20261008/f2-own.patch
+?? open-world/docs/reviews/playability-fix-20261008/f3-own.patch
+?? open-world/docs/reviews/playability-fix-20261008/f4-own.patch
+?? open-world/docs/reviews/playability-fix-20261008/f5-own.patch
+?? open-world/docs/reviews/playability-fix-20261008/f6-own.patch
+?? open-world/docs/reviews/playability-fix-20261008/final-own.patch
+?? open-world/docs/reviews/playability-fix-20261008/host-control.json
+?? open-world/docs/reviews/playability-fix-20261008/isolated-session.json
+?? open-world/docs/reviews/playability-fix-20261008/workspace-baseline.patch
+?? open-world/docs/reviews/playability-fix-20261008/workspace-baseline.txt
+?? open-world/docs/reviews/progression-ui-20261005/
+?? open-world/docs/reviews/scene-ground-20261011/
+?? open-world/docs/reviews/skill-vfx-20261011/
+?? open-world/docs/reviews/ui-game-feel-20261005/
+?? open-world/docs/reviews/ui-icon-refinement-20261005/
+?? open-world/docs/scene-dressing.md
+?? open-world/docs/skill-talent-redesign-20261007.md
+?? open-world/docs/skill-vfx-optimization-handoff-20261004.md
+?? open-world/docs/starsea-balance-ttk-plan.md
+?? open-world/docs/starsea/reviews/
+?? open-world/docs/starsea/rpg-flow-implementation.md
+?? open-world/docs/ui-game-feel-typography-plan.md
+?? open-world/docs/ui-graphic-expression-plan.md
+?? open-world/docs/wardrobe-v2-dev-spec.md
+?? open-world/packages/asset-manifest/combat-hit-fx.json
+?? open-world/packages/content/talent-trees.ts
+?? open-world/screenshots/boss-gate-enter.png
+?? open-world/screenshots/boss-gate-fail.png
+?? open-world/screenshots/boss-gate-walk.png
+?? open-world/screenshots/probe-c01.png
+?? open-world/screenshots/probe-grind.png
+?? open-world/screenshots/probe-live.png
+?? open-world/screenshots/probe-quest-gate.png
+?? open-world/screenshots/probe-quest.png
+?? open-world/screenshots/ss-probe1.png
+?? open-world/tests/authoritative-motion.test.ts
+?? open-world/tests/bounty.test.ts
+?? open-world/tests/build-variety-build-sources.test.ts
+?? open-world/tests/build-variety-replace-build.test.ts
+?? open-world/tests/element-resist.test.ts
+?? open-world/tests/equipment-names.test.ts
+?? open-world/tests/field-activity-input.test.ts
+?? open-world/tests/field-activity-view.test.ts
+?? open-world/tests/fixtures/combat-feedback-current.json
+?? open-world/tests/fixtures/production-two-zone-variant.xlsx.inspect.ndjson
+?? open-world/tests/fixtures/production-two-zone.xlsx.inspect.ndjson
+?? open-world/tests/ground-zone-vfx.test.ts
+?? open-world/tests/ice-vfx.test.ts
+?? open-world/tests/level-stats.test.ts
+?? open-world/tests/lightning-arrow-vfx.test.ts
+?? open-world/tests/mini-native-loading.test.ts
+?? open-world/tests/minimap-scene.test.ts
+?? open-world/tests/monster-pursuit.test.ts
+?? open-world/tests/native-skin-composition.test.ts
+?? open-world/tests/pool-resilience.database.test.ts
+?? open-world/tests/progression-layouts.test.ts
+?? open-world/tests/progression-ui-fix.test.ts
+?? open-world/tests/review-path.ts
+?? open-world/tests/skill-approach.test.ts
+?? open-world/tests/starsea-boss-enrage.test.ts
+?? open-world/tests/starsea-boss-pressure.test.ts
+?? open-world/tests/starsea-collision.test.ts
+?? open-world/tests/starsea-dialogue.test.ts
+?? open-world/tests/starsea-reputation.test.ts
+?? open-world/tests/story-gates-ui.test.ts
+?? open-world/tests/ui-graphics.test.ts
+?? open-world/tests/vfx-presence.test.ts
+?? open-world/tests/wardrobe-icon-content.test.ts
+?? open-world/tests/weapon-affinity.test.ts
+?? open-world/tests/weapon-story-flow.test.ts
+?? open-world/tests/weapon-story.database.test.ts
+?? open-world/tests/world-aoi.test.ts
+?? open-world/tests/world-camps.test.ts
+?? open-world/tests/world-chunks.test.ts
+?? open-world/tests/world-dressing.test.ts
+?? open-world/tests/world-exploration.test.ts
+?? open-world/tests/world-inventory.test.ts
+?? open-world/tests/world-navigation.test.ts
+?? open-world/tests/world-sprint.test.ts
+?? open-world/tests/world-warehouse.test.ts
+?? open-world/tests/zone-guide.test.ts
+?? open-world/tests/zone-roam.test.ts
+?? open-world/tools/_b4-list.txt
+?? open-world/tools/_validate-standard-dps.ts
+?? open-world/tools/accept-field-camps.mjs
+?? open-world/tools/audit-five-island-publication.mjs
+?? open-world/tools/audit-open-world-art-save.mjs
+?? open-world/tools/balance-equipment-runtime.ts
+?? open-world/tools/build-combat-fx-metrics.mjs
+?? open-world/tools/build-combat-hit-fx.mjs
+?? open-world/tools/build-combat-layer-fx.mjs
+?? open-world/tools/build-open-world-m0.mjs
+?? open-world/tools/build-starsea-campaign.mjs
+?? open-world/tools/build-starsea-monsters.mjs
+?? open-world/tools/build-variety-visible-api.mjs
+?? open-world/tools/build-wardrobe-thumbs.mjs
+?? open-world/tools/capture-combat-presence.mjs
+?? open-world/tools/capture-ground-zone-vfx.mjs
+?? open-world/tools/capture-lightning-bolt.mjs
+?? open-world/tools/capture-projectile-emitters.mjs
+?? open-world/tools/damage-depth-model.mjs
+?? open-world/tools/draw-hidden-skill-icons.py
+?? open-world/tools/draw-staff-skill-icons.py
+?? open-world/tools/export-world-stage-timing.py
+?? open-world/tools/horde-bench.mjs
+?? open-world/tools/import-lightning-bolt-source.mjs
+?? open-world/tools/measure-build-variety-preflight.ts
+?? open-world/tools/measure-engine-defense.ts
+?? open-world/tools/prepare-build-variety-r1-reference.mjs
+?? open-world/tools/probe-live.mjs
+?? open-world/tools/probe-quest.mjs
+?? open-world/tools/record-current-combat-fixtures.ts
+?? open-world/tools/render-build-variety-damage-preview.ts
+?? open-world/tools/run-starsea-checks.mjs
+?? open-world/tools/serve-build-variety-visible.mjs
+?? open-world/tools/serve-m1-qa.mjs
+?? open-world/tools/setup-ui-game-feel-fixture.mjs
+?? open-world/tools/spine-hit-export/export.html
+?? open-world/tools/standard-player-xlsx.py
+?? open-world/tools/starsea-boss-tune.ts
+?? open-world/tools/starsea-fight-model.ts
+?? open-world/tools/starsea-island-walk.ts
+?? open-world/tools/sync-starsea-map-metadata.mjs
+?? open-world/tools/test-open-world-m0.mjs
+?? open-world/tools/test-weapon-story.mjs
+?? open-world/tools/tmp-dump.ts
+?? open-world/tools/verify-build-variety-r1-frames.ts
+?? open-world/tools/verify-combat-presence-runtime.mjs
+?? open-world/tools/verify-equipment-runtime-browser.mjs
+?? open-world/tools/verify-field-camps-db.mjs
+?? open-world/tools/verify-field-event-performance.mjs
+?? open-world/tools/verify-five-island-art.mjs
+?? open-world/tools/verify-open-world-art.mjs
+?? open-world/tools/verify-progression-ui-fix.mjs
+?? open-world/tools/verify-progression-ui-redesign.mjs
+?? open-world/tools/verify-projectile-built-login.mjs
+?? open-world/tools/verify-starsea-balance-browser.mjs
+?? open-world/tools/verify-ui-game-feel-interactions.mjs
+?? open-world/tools/verify-ui-game-feel.mjs
+?? open-world/tools/verify-ui-graphic-conflicts.mjs
+?? open-world/tools/verify-ui-graphic-dungeon.mjs
+?? open-world/tools/verify-weapon-story-browser.mjs
+?? open-world/tools/verify-wind-art-expansion.mjs
+?? open-world/tools/world-aoi-bench.ts
+?? open-world/tools/world-graybox.mjs
+?? tests/core/test_presentation_controls.py
+?? tools/clean-reviewed-cache.ps1
+?? "\351\241\271\347\233\256.md"

@@ -1,0 +1,12 @@
+import {randomUUID} from 'node:crypto';
+import {mkdir,writeFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {storyChapters} from '../packages/content/story-campaign.ts';
+import {rewardFor} from '../apps/api/src/economy.ts';
+import {applyXp,makeGear} from '../packages/rules/index.ts';
+import {newStoryState} from '../packages/rules/story-campaign.ts';
+import type {CharacterState} from '../packages/contracts/index.ts';
+const character:CharacterState={id:randomUUID(),name:'推进节奏计算',revision:0,build:1,level:1,xp:0,gold:0,material:0,gear:[makeGear(0,randomUUID())],equipment:{},skills:['cut','bolt','ward'],skillRanks:{cut:1,bolt:1,ward:1},skillBooks:{},progress:{kills:0,regions:['town','meadow'],bosses:[],safe:'town',tasks:[]},story:newStoryState()};
+const rows=storyChapters.map(chapter=>{const before=character.level,phases=chapter.phases.reduce((n,p)=>n+p.xp,0),waves=[...chapter.phases.flatMap(p=>p.waves??[]),...chapter.routes[0].waves],normal=waves.reduce((n,w)=>n+(w.elite?0:w.count),0),elite=waves.reduce((n,w)=>n+(w.elite?w.count:0),0),combat=normal*rewardFor(chapter.area,'normal').xp+elite*rewardFor(chapter.area,'elite').xp+rewardFor(chapter.boss,'boss').xp,total=phases+combat+chapter.closeXp;
+ if(before<chapter.level)throw Error('Story progression cannot reach '+chapter.id+' without extra grinding');applyXp(character,total);return {chapter:chapter.id,requiredLevel:chapter.level,entryLevel:before,endLevel:character.level,endXp:character.xp,normal,elite,phaseXp:phases,combatXp:combat,returnXp:chapter.closeXp,totalXp:total,defendSeconds:chapter.phases.at(-1)!.seconds};});
+const folder=resolve('../docs/reviews/open-world/story-campaign-20261003');await mkdir(folder,{recursive:true});await writeFile(resolve(folder,'progression-budget.json'),JSON.stringify({basis:'Published per-kill XP, first branch waves, all real story milestones and one return per chapter. No optional tasks, repeated kills, purchased XP or extra dungeon rewards.',limitation:'Reachability arithmetic; does not claim player completion time or combat win rate.',rows},null,2));console.log(JSON.stringify(rows));

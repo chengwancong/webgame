@@ -1,0 +1,11 @@
+import './qa.css';
+import {sampleBank} from './sample-bank.ts';
+import {soundProfiles} from './sound-profiles.ts';
+import {cueRecipes} from './sound-recipes.ts';
+import {SoundMixer} from './mixer.ts';
+import {productionRecipe} from './production-recipes.ts';
+import {escapeHtml} from '../ui/primitives.ts';
+const player=document.querySelector<HTMLAudioElement>('#player')!,rows=document.querySelector<HTMLElement>('#rows')!,filter=document.querySelector<HTMLInputElement>('#filter')!,summary=document.querySelector<HTMLElement>('#summary')!,mixer=new SoundMixer();
+const items=Object.entries(sampleBank).flatMap(([key,stages])=>Object.entries(stages).flatMap(([stage,entry])=>entry.files.map((file,index)=>({key,stage,entry,file,index}))));
+function render(){const q=filter.value.trim().toLowerCase(),visible=items.filter(r=>(r.key+' '+r.stage+' '+r.entry.source).toLowerCase().includes(q));summary.textContent=`共 ${items.length} 个文件，显示 ${visible.length} 个；点击采样后才请求文件。`;rows.replaceChildren();for(const item of visible){const row=document.createElement('p'),button=document.createElement('button'),fallback=document.createElement('button'),status=document.createElement('span');button.className=fallback.className='ui-button ui-button--secondary ui-button--compact';button.textContent='播放采样';fallback.textContent='试听合成兜底';status.textContent='未加载';button.onclick=()=>{player.pause();player.src=item.file;player.onloadeddata=()=>status.textContent='采样';player.onerror=()=>status.textContent='缺失：可试听合成兜底';void player.play().catch(()=>status.textContent='播放未开始，请使用播放器播放');};fallback.onclick=()=>{player.pause();const p=soundProfiles[item.key],r=p?.[item.stage as 'cast']??cueRecipes[item.key.slice(4)]??productionRecipe(item.key,item.stage);mixer.unlock();mixer.play({...r,samples:undefined,sample:undefined},Math.floor(performance.now()),.8,4);status.textContent='合成兜底';};const label=document.createElement('span');label.innerHTML=`${escapeHtml(item.key)} / ${escapeHtml(item.stage)} / v${item.index+1} · ${escapeHtml(item.entry.tier)} · ${escapeHtml(item.entry.source)} · ${item.entry.wired?'已登记接入':'待接入'} `;row.append(label,button,fallback,status);rows.append(row);}}
+filter.addEventListener('input',render);render();

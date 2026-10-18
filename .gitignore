@@ -1,0 +1,53 @@
+# 版本与环境
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 凭据与本地环境配置
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+deploy/secrets/
+deploy/*.local.*
+
+# Godot 临时数据（旧版与新版本工程使用不同目录名；此处仅忽略本工程自身）
+client/.godot/
+client/.import/
+client/*.translation
+export/
+*.tmp
+*.tmp.*
+
+# 本轮/历史运行日志与临时目录
+*.log
+logs/
+tmp/
+.runs/
+awr-run-*/
+awr-pg-*/
+
+# 构建产物（可由 make content / make web 重新生成）
+content/build/
+client/data/
+web-build/
+client/build/
+client/web/
+.DS_Store
+Thumbs.db
+
+# 留档原始数据只留本地：结论、数字与复现方式（提交号/命令/种子）写进 report.md 或小汇总
+open-world/docs/reviews/**/*.png
+open-world/docs/reviews/**/*.webm
+open-world/docs/reviews/**/*.dump
+open-world/docs/reviews/**/*.gz
+open-world/docs/reviews/**/bd-measurements*.json
+open-world/docs/reviews/**/natural-calendar*.json
+open-world/docs/reviews/**/arms/

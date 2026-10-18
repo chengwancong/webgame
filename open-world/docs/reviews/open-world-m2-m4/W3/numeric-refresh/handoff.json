@@ -1,0 +1,197 @@
+{
+  "generated": "2026-10-07T08:48:07.849Z",
+  "decisionDate": "2026-10-07",
+  "formalWritten": false,
+  "audit": {
+    "versions": {
+      "client": "0.11.14",
+      "protocol": 30,
+      "rules": "ow-55",
+      "assets": "world-art-20261007-v24-world-runtime",
+      "db": 16
+    },
+    "modelSha256": "25ab67c0428780f3d3eb73860ee23cbc66afe1ece2578af62bd3995da1d0bdf8",
+    "stages": 24
+  },
+  "decision": "一刀优先：各阶段群怪生命取本阶段及之后各阶段一刀线的后缀最小值，使用一条单调不降曲线。",
+  "sources": {
+    "model": {
+      "path": ".design/standard-player-20261005/model.json",
+      "sha256": "25ab67c0428780f3d3eb73860ee23cbc66afe1ece2578af62bd3995da1d0bdf8"
+    },
+    "flow": {
+      "path": ".design/numeric-flow-20261006/flow.json",
+      "sha256": "dd6d0d1a15eeaf7a062680ee1d3364b7bc2c0b5b9a9a4c0b48d03a185c671341"
+    },
+    "phaseHits": {
+      "path": "docs/reviews/open-world-m2-m4/W3/stage-aoe-hits.json",
+      "sha256": "a3379a9cbc34fffe74b97001fb7527d5eadcfee4f98c1398177c147bd957891e"
+    },
+    "sourceBasis": {
+      "path": "docs/reviews/open-world-m2-m4/W3/key-source-basis.json",
+      "sha256": "dd937d0359bdae978076d21e15589925a8c2bba25b1fda866289b3a117412a5e"
+    },
+    "timing": {
+      "path": "assets/numerics/world-stage-timing.json",
+      "sha256": "ed1501a81decd0f9d79bbffd571ed91b88b22e71fb81b640ffc90778cab70ee2"
+    },
+    "formalMonsters": {
+      "path": "packages/content/monsters.json",
+      "sha256": "a51155084c8c1799917257ea28ec95a58d63ea0ae0ccce6ac94eb5896ba88c22"
+    },
+    "proposedMonsters": {
+      "path": "docs/reviews/open-world-m2-m4/W3/monsters-proposed.json",
+      "sha256": "793628f45d36a098b10b7759098ed84117d6eaf777365ad1257ec885c6186bb1"
+    },
+    "formalTiers": {
+      "path": "packages/content/world-tiers.json",
+      "sha256": "cfbfd0974fd3075fd32847305233ac1bbb4ecbcb8702c37c5b16b3b0fa16e727"
+    },
+    "formalPools": {
+      "path": "apps/api/src/stage-key-pools.json",
+      "sha256": "0cd601f02ec61b160df0b76ff6fdd53bafa24ea3021a3b8cbca82cac9637e6e9"
+    },
+    "tierReference": {
+      "path": "docs/reviews/open-world-m2-m4/W3/numeric-refresh/proposal.json",
+      "sha256": "e1b39256cb66b2bfba2633bdbd4a41b39203c5be96a494f66648d722afd8f5ce"
+    }
+  },
+  "items": [
+    {
+      "item": "怪物曲线",
+      "formalDestination": "packages/content/monsters.json",
+      "artifact": {
+        "path": "docs/reviews/open-world-m2-m4/W3/monsters-proposed.json",
+        "sha256": "793628f45d36a098b10b7759098ed84117d6eaf777365ad1257ec885c6186bb1"
+      },
+      "command": "node --import tsx tools/apply-monster-curve.ts",
+      "sources": [
+        "model",
+        "flow",
+        "phaseHits",
+        "timing",
+        "formalMonsters"
+      ]
+    },
+    {
+      "item": "群怪模板",
+      "formalDestination": "packages/content/monsters.json",
+      "artifact": {
+        "path": "docs/reviews/open-world-m2-m4/W3/monsters-proposed.json",
+        "sha256": "793628f45d36a098b10b7759098ed84117d6eaf777365ad1257ec885c6186bb1"
+      },
+      "templateIds": [
+        "ow-mon-wind-1",
+        "ow-mon-mist-1",
+        "ow-mon-forge-1",
+        "ow-mon-frost-1",
+        "ow-mon-rift-1",
+        "ow-mon-dragon-1"
+      ],
+      "command": "node --import tsx tools/apply-monster-curve.ts",
+      "sources": [
+        "formalMonsters",
+        "phaseHits",
+        "flow"
+      ]
+    },
+    {
+      "item": "营地生命预算",
+      "formalDestination": "config/excel/世界.xlsx 对应营地budget/healthWeights；由主集成导出",
+      "artifact": {
+        "path": "docs/reviews/open-world-m2-m4/W3/numeric-refresh/camp-health-targets.json",
+        "sha256": "57fe2bb3f68ae8905fc284a60c4e61bd2eaa7bfeccd6581cfcf1696ed2e4ee4b"
+      },
+      "command": "node --import tsx tools/camp-health-budget-proposal.ts",
+      "sources": [
+        "model",
+        "flow",
+        "phaseHits",
+        "formalMonsters"
+      ]
+    },
+    {
+      "item": "24个钥匙池",
+      "formalDestination": "apps/api/src/stage-key-pools.json",
+      "artifact": {
+        "path": "docs/reviews/open-world-m2-m4/W3/numeric-refresh/stage-key-pools-proposed.json",
+        "sha256": "da4059e04b181018fa45e8a8fd735ac982df78dc474f975f411de4dbe66eeea1"
+      },
+      "command": "node --import tsx tools/build-w3-numeric-handoff.ts",
+      "sources": [
+        "model",
+        "flow",
+        "sourceBasis",
+        "formalPools"
+      ]
+    },
+    {
+      "item": "世界层级基准",
+      "formalDestination": "packages/content/world-tiers.json",
+      "artifact": {
+        "path": "docs/reviews/open-world-m2-m4/W3/numeric-refresh/world-tiers-proposed.json",
+        "sha256": "445a12d2a1a01cb03bff1c6986d1cefacbb9c158eefdcc7f5ea6d2b6abaacfef"
+      },
+      "command": "node --import tsx tools/build-w3-numeric-handoff.ts",
+      "sources": [
+        "model",
+        "flow",
+        "formalTiers",
+        "formalMonsters",
+        "proposedMonsters",
+        "tierReference"
+      ],
+      "basis": {
+        "template": "ow-boss-dragon-3",
+        "monsterLevel": 53,
+        "rawBossHp": 75461701,
+        "measuredRawDps": 170.83333333333334,
+        "seed": 41,
+        "seconds": 30
+      },
+      "hpOnlyReferenceUpdate": {
+        "measuredBossHp": 73826261,
+        "proposedBossHp": 75461701,
+        "attackAiSkillsUnchanged": true
+      },
+      "proposal": {
+        "hp": 8.450924992448973,
+        "attack": 4.225076994768009
+      }
+    }
+  ],
+  "acceptance": {
+    "owner": "main integration",
+    "heavyLock": ".runtime/heavy-job.lock",
+    "sequence": [
+      "推导一次并写正式配置",
+      "固定种子、小样本，清群速度与墙验收各跑一次",
+      "通过即由主集成提交W3",
+      "失败按交接单调参规则调一次，再测"
+    ],
+    "pack": {
+      "targets": [
+        12,
+        20
+      ],
+      "growthThreshold": 1.5,
+      "sampleSeeds": [
+        41,
+        73,
+        107
+      ],
+      "command": "node --import tsx tools/measure-world-pack-growth.ts --region 实际正式region --camp 实际营地 --stages 实际阶段 --samples 3 --seed 41"
+    },
+    "wall": {
+      "ratios": [
+        0.8,
+        0.85,
+        1,
+        1.2
+      ],
+      "sampleSeedBase": 41,
+      "command": "node --import tsx tools/wall-probe.ts --dungeon 实际声明地城 --stage 实际阶段 --seed 41 --samples 20"
+    }
+  },
+  "note": "World-tier reference is the registered dragon-island third field boss at planned hardmode zone upper52+1. Main integration confirms this tuple in the actual dungeon declaration during the one acceptance pass. No capacity scan or dual-threshold report is required. Numeric session ends after delivery."
+}

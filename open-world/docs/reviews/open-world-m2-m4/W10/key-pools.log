@@ -1,0 +1,10 @@
+G:\webgame\abyss-walker-migration\abyss-walker-rewrite\open-world\tools\build-stage-key-pools.ts:32
+const pools=flow.stages.map((s:any,i:number)=>{const rate=basis.rows.find((r:any)=>r.stage===s.index)?.elitePerMinute;if(!Number.isFinite(rate)||rate<=0||!Number.isFinite(s.lam)||s.lam<=0)throw Error('Missing actual positive source rate '+s.index);const [a,oa,b,ob]=specs[i],required=Math.max(1,Math.ceil(s.push*1.4*rate));const endgameChoices=s.index===24?[{id:'endgame-paragon',name:'巅峰领悟',description:'取得3个真实巅峰点，可在巅峰盘分配。',weight:1,outputs:[{kind:'paragon',points:3}]},{id:'endgame-glyph',name:'雕文研习',description:'本职业已镶嵌或对应雕文提升1级，最高21级，溢出等级转为巅峰点。',weight:1,outputs:[{kind:'glyph',levels:1}]},{id:'endgame-codex',name:'裂星法典',description:'对应武器的法典威能升至5阶，已满阶时转为巅峰点。',weight:1,outputs:[{kind:'codex',rank:5}]}]:undefined;return {...(endgameChoices?{endgameChoices}:{}),stage:s.index,level:Math.max(1,Math.ceil(s.level)),dropProbability:1-Math.exp(-s.lam/rate),chestLoot:'field-chest',materialsPerSource:{elite:1,rare:3,chest:4},required,choices:[{id:'stage-'+s.index+'-a',name:a,description:a+'，只由本阶段地城掉落或制作。',weight:1,outputs:oa},{id:'stage-'+s.index+'-b',name:b,description:b+'，只由本阶段地城掉落或制作。',weight:1,outputs:ob}],basis:{elitePerMinute:rate,lambdaPerMinute:s.lam,targetMinutes:s.push,materialTargetMinutes:s.push*1.4}};});
+                                                                                                                                                                                                  ^
+
+Error: Missing actual positive source rate 23
+    at <anonymous> (G:\webgame\abyss-walker-migration\abyss-walker-rewrite\open-world\tools\build-stage-key-pools.ts:32:195)
+    at Array.map (<anonymous>)
+    at <anonymous> (G:\webgame\abyss-walker-migration\abyss-walker-rewrite\open-world\tools\build-stage-key-pools.ts:32:25)
+
+Node.js v24.14.0

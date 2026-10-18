@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "id": "ss-boss-port-vanguard-phase-active",
+  "runtime": {
+    "json": "/art/starsea/bosses/ss-boss-port-vanguard/Character.json",
+    "atlas": "/art/starsea/bosses/ss-boss-port-vanguard/Character.atlas",
+    "pma": true
+  },
+  "skinNames": [
+    "BODY/ss-boss-port-vanguard",
+    "HEAD/ss-boss-port-vanguard",
+    "SS/ss-boss-port-vanguard"
+  ],
+  "acceptedBodySets": [
+    "ss-boss-port-vanguard"
+  ],
+  "nativeFacing": "left",
+  "referenceHeight": 190.49598935720775,
+  "ground": [
+    -0.25,
+    0
+  ],
+  "fps": 60,
+  "previewBounds": {
+    "minX": -216.6999118066214,
+    "maxX": 108.40038284828947,
+    "minY": -65.12207714183256,
+    "maxY": 272.1097238454606
+  },
+  "weapons": {
+    "ss-boss-port-vanguard": {
+      "family": "sword",
+      "skinNames": [
+        "RIGHTHAND/ss-boss-port-vanguard"
+      ],
+      "actions": {
+        "idle": {
+          "name": "SS_idle_active",
+          "loop": true,
+          "sourceAnimation": "Wait2"
+        },
+        "move": {
+          "name": "SS_move_active",
+          "loop": true,
+          "sourceAnimation": "Run2"
+        },
+        "attack": {
+          "name": "SS_attack_active",
+          "loop": false,
+          "sourceAnimation": "Attack_TwoHand1",
+          "impactTime": 0.4166666666666667
+        },
+        "hurt": {
+          "name": "SS_hurt_active",
+          "loop": false,
+          "sourceAnimation": "Damage1"
+        },
+        "death": {
+          "name": "SS_death",
+          "loop": false,
+          "sourceAnimation": "Die"
+        },
+        "skill": {
+          "name": "SS_skill2_active",
+          "sourceAnimation": "Guard2",
+          "impactTime": 0.3333333333333333,
+          "loop": false,
+          "mount": "ground",
+          "mechanism": {
+            "id": "ss-fx-b01-stomp",
+            "name": "先锋震甲",
+            "rule": "frost_stomp",
+            "kind": "zone",
+            "windupTicks": 30,
+            "delayTicks": 20,
+            "mount": "ground",
+            "visual": "冷能装甲震地，蓝白冲击与真实圆形等距预警",
+            "owner": "monster_vfx",
+            "mechanismStatus": "existing-rule-reference; new actor binding not implemented",
+            "chapter": [
+              1
+            ]
+          },
+          "limitations": "原生双手格挡作为震甲蓄势，震地命中由真实执行事件驱动。",
+          "profile": "/art/starsea/bosses/ss-boss-port-vanguard/profile-skill2.json"
+        },
+        "projectile": {
+          "name": "SS_skill2_active",
+          "sourceAnimation": "Guard2",
+          "impactTime": 0.3333333333333333,
+          "loop": false,
+          "mount": "ground",
+          "mechanism": {
+            "id": "ss-fx-b01-stomp",
+            "name": "先锋震甲",
+            "rule": "frost_stomp",
+            "kind": "zone",
+            "windupTicks": 30,
+            "delayTicks": 20,
+            "mount": "ground",
+            "visual": "冷能装甲震地，蓝白冲击与真实圆形等距预警",
+            "owner": "monster_vfx",
+            "mechanismStatus": "existing-rule-reference; new actor binding not implemented",
+            "chapter": [
+              1
+            ]
+          },
+          "limitations": "原生双手格挡作为震甲蓄势，震地命中由真实执行事件驱动。",
+          "profile": "/art/starsea/bosses/ss-boss-port-vanguard/profile-skill2.json"
+        }
+      },
+      "sockets": {
+        "weapon": {
+          "slot": "RIGHTHAND",
+          "pixel": [
+            39.5,
+            12
+          ],
+          "imageSize": [
+            79,
+            243
+          ]
+        },
+        "muzzle": {
+          "slot": "RIGHTHAND",
+          "pixel": [
+            39.5,
+            12
+          ],
+          "imageSize": [
+            79,
+            243
+          ]
+        }
+      },
+      "muzzlePolicy": "weapon-tip"
+    }
+  },
+  "renderAppearance": {
+    "rig": "modular-hero",
+    "family": "sword",
+    "styleProfile": "v2-soft",
+    "revision": 1,
+    "parts": {
+      "head": {
+        "setId": "ss-boss-port-vanguard"
+      },
+      "body": {
+        "setId": "ss-boss-port-vanguard"
+      },
+      "hands": {
+        "setId": "ss-boss-port-vanguard"
+      },
+      "legs": {
+        "setId": "ss-boss-port-vanguard"
+      },
+      "feet": {
+        "setId": "ss-boss-port-vanguard"
+      },
+      "back": {
+        "setId": "ss-boss-port-vanguard"
+      },
+      "weapon": {
+        "setId": "ss-boss-port-vanguard"
+      }
+    }
+  },
+  "sourceNativeVersion": "4.2.43",
+  "actionSelection": {
+    "priority": [
+      "death",
+      "living-phase-transition",
+      "selected-living-action"
+    ],
+    "deathAction": "SS_death",
+    "deathCancelsPhaseTransition": true,
+    "phaseActive": "modifier for living actions only",
+    "deathCleanupTime": 0.65
+  }
+}

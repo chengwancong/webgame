@@ -1,0 +1,154 @@
+{
+  "type": "map",
+  "version": "1.10",
+  "tiledversion": "1.12.2",
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "width": 32,
+  "height": 32,
+  "tilewidth": 32,
+  "tileheight": 32,
+  "infinite": false,
+  "nextobjectid": 5,
+  "nextlayerid": 5,
+  "properties": [
+    {
+      "name": "id",
+      "type": "string",
+      "value": "forest-boss"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "value": "祭司的仪式"
+    },
+    {
+      "name": "subtitle",
+      "type": "string",
+      "value": "危险圈出现后请及时移动"
+    },
+    {
+      "name": "theme",
+      "type": "string",
+      "value": "forest"
+    },
+    {
+      "name": "boss",
+      "type": "bool",
+      "value": true
+    },
+    {
+      "name": "auto",
+      "type": "bool",
+      "value": true
+    }
+  ],
+  "layers": [
+    {
+      "id": 1,
+      "name": "navigation",
+      "type": "objectgroup",
+      "visible": true,
+      "opacity": 1,
+      "objects": []
+    },
+    {
+      "id": 2,
+      "name": "spawns",
+      "type": "objectgroup",
+      "visible": true,
+      "opacity": 1,
+      "objects": [
+        {
+          "id": 1,
+          "name": "forest-lord",
+          "x": 704,
+          "y": 544,
+          "point": true,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "monster",
+              "type": "string",
+              "value": "forest-boss"
+            },
+            {
+              "name": "level",
+              "type": "int",
+              "value": 2
+            },
+            {
+              "name": "rank",
+              "type": "string",
+              "value": "boss"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "landmarks",
+      "type": "objectgroup",
+      "visible": true,
+      "opacity": 1,
+      "objects": [
+        {
+          "id": 2,
+          "name": "离开试炼",
+          "x": 96,
+          "y": 544,
+          "point": true,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "kind",
+              "type": "string",
+              "value": "portal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "connections",
+      "type": "objectgroup",
+      "visible": true,
+      "opacity": 1,
+      "objects": [
+        {
+          "id": 3,
+          "name": "safe",
+          "x": 256,
+          "y": 544,
+          "point": true,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "properties": []
+        },
+        {
+          "id": 4,
+          "name": "portal",
+          "x": 96,
+          "y": 544,
+          "point": true,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "properties": []
+        }
+      ]
+    }
+  ],
+  "tilesets": []
+}

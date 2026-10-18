@@ -1,0 +1,2 @@
+import {startDatabase,child,stopChild} from './runtime.mjs';
+let db,test;try{db=await startDatabase({temporary:true});test=child(process.execPath,['node_modules/vitest/vitest.mjs','run','tests/battle-result.database.test.ts','tests/database.test.ts'],{AW_DATABASE_URL:db.dsn});const code=await new Promise(r=>test.once('exit',r));if(code)process.exitCode=code;}finally{await stopChild(test);if(db)console.log(JSON.stringify(await db.stop()));}

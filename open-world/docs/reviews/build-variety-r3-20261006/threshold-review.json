@@ -1,0 +1,65 @@
+{
+  "ok": true,
+  "scope": "normal threshold conversion, boss slow fallback, non-cold break; actual World executors; not full R3 acceptance",
+  "observations": [
+    {
+      "boss": false,
+      "statuses": [
+        {
+          "id": "hero:t:frost_blade:freeze",
+          "sourceId": "hero",
+          "targetId": "t",
+          "skill": "frost_blade",
+          "effect": {
+            "kind": "freeze",
+            "duration": 45,
+            "strength": 0,
+            "scope": "hit",
+            "cleanse": true,
+            "breakOnDamage": false,
+            "removeWithSource": false
+          },
+          "started": 0,
+          "ends": 45,
+          "next": 45,
+          "emitted": 0,
+          "sourcePosition": {
+            "x": 10,
+            "y": 10
+          },
+          "penetration": 0
+        }
+      ]
+    },
+    {
+      "boss": true,
+      "statuses": [
+        {
+          "id": "hero:t:frost_blade:slow",
+          "sourceId": "hero",
+          "targetId": "t",
+          "skill": "frost_blade",
+          "effect": {
+            "kind": "slow",
+            "duration": 45,
+            "strength": 0.5,
+            "scope": "hit",
+            "cleanse": true,
+            "breakOnDamage": false,
+            "removeWithSource": false,
+            "maxStacks": 1
+          },
+          "started": 0,
+          "ends": 16,
+          "next": 45,
+          "emitted": 0,
+          "sourcePosition": {
+            "x": 10,
+            "y": 10
+          },
+          "penetration": 0
+        }
+      ]
+    }
+  ]
+}

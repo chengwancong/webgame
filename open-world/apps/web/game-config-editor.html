@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>游戏配置中心 - 策划工具</title>
+<style>
+:root {
+  --bg-0: #05070C;
+  --bg-1: #0A0D12;
+  --bg-2: #0F131C;
+  --bg-3: #161D2B;
+  --bg-4: #1E2636;
+  --accent: #38BDF8;
+  --accent-warn: #F59E0B;
+  --accent-danger: #F87171;
+  --text: #E8EDF2;
+  --text-dim: #9BA5B0;
+  --border: #2A3441;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg-0);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  line-height: 1.6;
+  overflow: hidden;
+}
+
+.app-layout {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+}
+
+.app-header {
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem 2rem;
+}
+
+.app-header h1 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.02em;
+}
+
+.app-header p {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+.main-container {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  overflow: hidden;
+}
+
+.sidebar {
+  background: var(--bg-1);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+}
+
+.nav-section {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-section:last-child {
+  border-bottom: none;
+}
+
+.nav-label {
+  padding: 0 1.5rem;
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+}
+
+.nav-item:hover {
+  background: var(--bg-2);
+  color: var(--text);
+}
+
+.nav-item.active {
+  background: var(--bg-2);
+  color: var(--accent);
+  border-left-color: var(--accent);
+}
+
+.nav-icon {
+  font-size: 1.2rem;
+}
+
+.content-area {
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+.panel {
+  display: none;
+}
+
+.panel.active {
+  display: block;
+}
+
+.panel-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-header h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.panel-header p {
+  color: var(--text-dim);
+}
+
+.toolbar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+button {
+  background: var(--bg-3);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+button:hover:not(:disabled) {
+  background: var(--bg-4);
+  border-color: var(--accent);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button.primary {
+  background: var(--accent);
+  color: var(--bg-0);
+  border-color: var(--accent);
+}
+
+button.primary:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+button.danger {
+  background: #7F1D1D;
+  border-color: #991B1B;
+}
+
+button.danger:hover:not(:disabled) {
+  background: #991B1B;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.stat-label {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.table-container {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: auto;
+  max-height: calc(100vh - 300px);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: var(--bg-2);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+th {
+  text-align: left;
+  padding: 1rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+tbody tr:hover {
+  background: var(--bg-2);
+}
+
+input, select, textarea {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+input[type="number"] {
+  width: 5.5rem;
+}
+
+input.short {
+  width: 4rem;
+}
+
+input.id {
+  width: 8rem;
+  font-family: 'Consolas', monospace;
+}
+
+input.name {
+  width: 9rem;
+}
+
+textarea {
+  width: 14rem;
+  min-height: 3rem;
+  resize: vertical;
+}
+
+select {
+  width: 8rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-dim);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  max-width: 500px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.ops {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.ops button {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: var(--bg-3);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(5, 7, 12, 0.95);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal-overlay.visible {
+  display: flex;
+}
+
+.modal {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow: auto;
+}
+
+.modal h2 {
+  margin-bottom: 1.5rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.export-text {
+  width: 100%;
+  min-height: 400px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.85rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-dim);
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.3;
+}
+
+.scrollable {
+  overflow-x: auto;
+}
+</style>
+</head>
+<body>
+
+<div class="app-layout">
+  <header class="app-header">
+    <h1>游戏配置中心</h1>
+    <p>数据驱动配置管理 - 策划工具集</p>
+  </header>
+
+  <div class="main-container">
+    <nav class="sidebar">
+      <div class="nav-section">
+        <div class="nav-label">核心配置</div>
+        <a class="nav-item active" data-panel="skills">
+          <span class="nav-icon">⚔️</span>
+          <span>技能配置</span>
+        </a>
+        <a class="nav-item" data-panel="gear">
+          <span class="nav-icon">🛡️</span>
+          <span>装备配置</span>
+        </a>
+        <a class="nav-item" data-panel="sets">
+          <span class="nav-icon">💎</span>
+          <span>套装配置</span>
+        </a>
+        <a class="nav-item" data-panel="monsters">
+          <span class="nav-icon">👾</span>
+          <span>怪物配置</span>
+        </a>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-label">数值配置</div>
+        <a class="nav-item" data-panel="progression">
+          <span class="nav-icon">📊</span>
+          <span>升级配置</span>
+        </a>
+        <a class="nav-item" data-panel="economy">
+          <span class="nav-icon">💰</span>
+          <span>经济配置</span>
+        </a>
+        <a class="nav-item" data-panel="effects">
+          <span class="nav-icon">✨</span>
+          <span>效果配置</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">工具</div>
+        <a class="nav-item" data-panel="export">
+          <span class="nav-icon">📦</span>
+          <span>批量导出</span>
+        </a>
+      </div>
+    </nav>
+
+    <main class="content-area">
+      <!-- 技能配置面板 -->
+      <div class="panel active" id="panel-skills">
+        <div class="panel-header">
+          <h2>技能配置</h2>
+          <p>配置技能效果、解锁条件、伤害数值</p>
+        </div>
+        
+        <div class="card-grid">
+          <div class="stat-card">
+            <div class="stat-label">总技能数</div>
+            <div class="stat-value" id="skill-count">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">近战技能</div>
+            <div class="stat-value" id="skill-melee">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">远程技能</div>
+            <div class="stat-value" id="skill-ranged">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">辅助技能</div>
+            <div class="stat-value" id="skill-support">0</div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <button class="primary" onclick="addSkill()">+ 新增技能</button>
+          <button onclick="exportData('skills')">导出配置</button>
+        </div>
+
+        <div class="table-container scrollable">
+          <table id="skills-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>名称</th>
+                <th>分类</th>
+                <th>类型</th>
+                <th>解锁等级</th>
+                <th>伤害</th>
+                <th>冷却(帧)</th>
+                <th>能量消耗</th>
+                <th>距离</th>
+                <th>范围</th>
+                <th>描述</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="skills-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 装备配置面板 -->
+      <div class="panel" id="panel-gear">
+        <div class="panel-header">
+          <h2>装备配置</h2>
+          <p>配置装备基础属性、强化成长</p>
+        </div>
+
+        <div class="card-grid">
+          <div class="stat-card">
+            <div class="stat-label">装备种类</div>
+            <div class="stat-value" id="gear-count">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">武器</div>
+            <div class="stat-value" id="gear-weapon">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">防具</div>
+            <div class="stat-value" id="gear-armor">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">饰品</div>
+            <div class="stat-value" id="gear-accessory">0</div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <button class="primary" onclick="addGear()">+ 新增装备</button>
+          <button onclick="exportData('gear')">导出配置</button>
+        </div>
+
+        <div class="table-container scrollable">
+          <table id="gear-table">
+            <thead>
+              <tr>
+                <th>Base ID</th>
+                <th>名称</th>
+                <th>部位</th>
+                <th>主属性</th>
+                <th>攻击力</th>
+                <th>护甲</th>
+                <th>每级成长</th>
+                <th>特效</th>
+                <th>套装</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="gear-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 套装配置面板 -->
+      <div class="panel" id="panel-sets">
+        <div class="panel-header">
+          <h2>套装配置</h2>
+          <p>配置装备套装效果和加成</p>
+        </div>
+
+        <div class="toolbar">
+          <button class="primary" onclick="addSet()">+ 新增套装</button>
+          <button onclick="exportData('sets')">导出配置</button>
+        </div>
+
+        <div id="sets-container"></div>
+      </div>
+
+      <!-- 怪物配置面板 -->
+      <div class="panel" id="panel-monsters">
+        <div class="panel-header">
+          <h2>怪物配置</h2>
+          <p>配置怪物AI类型、属性数值</p>
+        </div>
+
+        <div class="toolbar">
+          <button onclick="exportData('monsters')">导出AI配置</button>
+        </div>
+
+        <div class="table-container scrollable">
+          <table>
+            <thead>
+              <tr>
+                <th>AI类型</th>
+                <th>移动速度</th>
+                <th>攻击距离</th>
+                <th>说明</th>
+              </tr>
+            </thead>
+            <tbody id="monsters-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 升级配置面板 -->
+      <div class="panel" id="panel-progression">
+        <div class="panel-header">
+          <h2>升级配置</h2>
+          <p>配置玩家升级经验需求曲线</p>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>经验公式基数</label>
+            <input type="number" id="xp-base" value="85" min="1">
+            <small style="color: var(--text-dim)">当前公式: 等级 × 基数</small>
+          </div>
+        </div>
+
+        <div class="table-container scrollable">
+          <table>
+            <thead>
+              <tr>
+                <th>等级</th>
+                <th>升级所需经验</th>
+                <th>累计经验</th>
+                <th>生命值</th>
+                <th>攻击力</th>
+              </tr>
+            </thead>
+            <tbody id="progression-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 经济配置面板 -->
+      <div class="panel" id="panel-economy">
+        <div class="panel-header">
+          <h2>经济配置</h2>
+          <p>配置装备强化、技能升级消耗</p>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>强化金币基数</label>
+            <input type="number" id="upgrade-gold-base" value="35" min="0">
+          </div>
+          <div class="form-group">
+            <label>强化金币成长</label>
+            <input type="number" id="upgrade-gold-growth" value="25" min="0">
+          </div>
+          <div class="form-group">
+            <label>强化材料基数</label>
+            <input type="number" id="upgrade-mat-base" value="2" min="0">
+          </div>
+          <div class="form-group">
+            <label>强化材料成长</label>
+            <input type="number" id="upgrade-mat-growth" value="1" min="0">
+          </div>
+        </div>
+
+        <p style="color: var(--text-dim); margin-bottom: 1rem;">当前公式: 金币 = 基数 + 等级 × 成长；材料 = 基数 + 等级 × 成长</p>
+
+        <div class="table-container scrollable">
+          <table>
+            <thead>
+              <tr>
+                <th>装备等级</th>
+                <th>强化金币消耗</th>
+                <th>强化材料消耗</th>
+              </tr>
+            </thead>
+            <tbody id="economy-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 效果配置面板 -->
+      <div class="panel" id="panel-effects">
+        <div class="panel-header">
+          <h2>效果配置</h2>
+          <p>配置装备特效、Buff数值</p>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>雷链传导比例</label>
+            <input type="number" id="chain-ratio" value="0.3" step="0.1" min="0" max="1">
+          </div>
+          <div class="form-group">
+            <label>燃烧伤害/跳</label>
+            <input type="number" id="burn-damage" value="8" min="1">
+          </div>
+          <div class="form-group">
+            <label>燃烧持续(帧)</label>
+            <input type="number" id="burn-ticks" value="90" min="1">
+          </div>
+          <div class="form-group">
+            <label>护盾吸收量</label>
+            <input type="number" id="ward-amount" value="15" min="1">
+          </div>
+          <div class="form-group">
+            <label>护盾冷却(帧)</label>
+            <input type="number" id="ward-ticks" value="90" min="1">
+          </div>
+        </div>
+
+        <button class="primary" onclick="saveEffects()">保存效果配置</button>
+      </div>
+
+      <!-- 批量导出面板 -->
+      <div class="panel" id="panel-export">
+        <div class="panel-header">
+          <h2>批量导出</h2>
+          <p>一键导出所有配置数据</p>
+        </div>
+
+        <div class="card-grid">
+          <button class="primary" onclick="exportAll()">导出全部配置</button>
+          <button onclick="exportData('skills')">仅导出技能</button>
+          <button onclick="exportData('gear')">仅导出装备</button>
+          <button onclick="exportData('sets')">仅导出套装</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- 导出弹窗 -->
+<div class="modal-overlay" id="export-modal">
+  <div class="modal">
+    <h2 id="export-title">导出配置</h2>
+    <textarea class="export-text" id="export-text" readonly></textarea>
+    <div class="modal-actions">
+      <button class="primary" onclick="copyExport()">复制到剪贴板</button>
+      <button onclick="downloadExport()">下载文件</button>
+      <button onclick="closeModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import {skillCatalog, skillCategories} from './src/main.ts';
+import {gearBases} from '../../packages/rules/index.ts';
+import {gearSets} from '../../packages/content/gear-sets.ts';
+import {aiRules, effects} from '../../packages/content/index.ts';
+
+// 全局数据存储
+window.gameData = {
+  skills: [...skillCatalog],
+  gear: [...gearBases],
+  sets: [...gearSets],
+  monsters: aiRules,
+  effects: {...effects},
+  progression: { xpBase: 85 },
+  economy: { goldBase: 35, goldGrowth: 25, matBase: 2, matGrowth: 1 }
+};
+
+const categories = ['melee', 'ranged', 'control', 'support'];
+const categoryLabels = {melee: '近战', ranged: '远程', control: '控制', support: '辅助'};
+const kinds = ['single', 'area', 'projectile', 'zone', 'shield', 'heal', 'dash', 'chain'];
+const kindLabels = {
+  single: '单体', area: '范围', projectile: '投射', zone: '持续区域',
+  shield: '护盾', heal: '治疗', dash: '突进', chain: '连锁'
+};
+
+const slots = ['weapon', 'armor', 'accessory', 'core'];
+const slotLabels = {weapon: '武器', armor: '防具', accessory: '饰品', core: '核心'};
+const effectsList = ['none', 'pierce', 'chain', 'ward', 'burn'];
+const effectLabels = {none: '无', pierce: '穿透', chain: '雷链', ward: '护盾', burn: '燃烧'};
+
+// 导航切换
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const panel = item.dataset.panel;
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    item.classList.add('active');
+    document.getElementById('panel-' + panel).classList.add('active');
+  });
+});
+
+// 技能配置
+function renderSkills() {
+  const skills = window.gameData.skills;
+  document.getElementById('skill-count').textContent = skills.length;
+  categories.forEach(cat => {
+    const count = skills.filter(s => s.category === cat).length;
+    document.getElementById('skill-' + cat).textContent = count;
+  });
+
+  const tbody = document.getElementById('skills-body');
+  tbody.innerHTML = skills.map((skill, i) => `
+    <tr>
+      <td><input class="id" value="${skill.id}" onchange="updateSkill(${i}, 'id', this.value)"></td>
+      <td><input class="name" value="${skill.name}" onchange="updateSkill(${i}, 'name', this.value)"></td>
+      <td>
+        <select onchange="updateSkill(${i}, 'category', this.value)">
+          ${categories.map(c => `<option value="${c}" ${skill.category === c ? 'selected' : ''}>${categoryLabels[c]}</option>`).join('')}
+        </select>
+      </td>
+      <td>
+        <select onchange="updateSkill(${i}, 'kind', this.value)">
+          ${kinds.map(k => `<option value="${k}" ${skill.kind === k ? 'selected' : ''}>${kindLabels[k]}</option>`).join('')}
+        </select>
+      </td>
+      <td><input type="number" class="short" value="${skill.unlockLevel}" onchange="updateSkill(${i}, 'unlockLevel', parseInt(this.value))"></td>
+      <td><input type="number" class="short" value="${skill.damage}" onchange="updateSkill(${i}, 'damage', parseInt(this.value))"></td>
+      <td><input type="number" class="short" value="${skill.cooldown}" onchange="updateSkill(${i}, 'cooldown', parseInt(this.value))"></td>
+      <td><input type="number" class="short" value="${skill.cost}" onchange="updateSkill(${i}, 'cost', parseInt(this.value))"></td>
+      <td><input type="number" class="short" value="${skill.range}" onchange="updateSkill(${i}, 'range', parseFloat(this.value))"></td>
+      <td><input type="number" class="short" value="${skill.radius}" onchange="updateSkill(${i}, 'radius', parseFloat(this.value))"></td>
+      <td><textarea onchange="updateSkill(${i}, 'description', this.value)">${skill.description}</textarea></td>
+      <td><div class="ops"><button class="danger" onclick="deleteSkill(${i})">删除</button></div></td>
+    </tr>
+  `).join('');
+}
+
+window.updateSkill = (i, field, value) => {
+  window.gameData.skills[i][field] = value;
+};
+
+window.addSkill = () => {
+  window.gameData.skills.push({
+    id: 'new_skill_' + Date.now(),
+    category: 'melee',
+    unlockLevel: 1,
+    name: '新技能',
+    kind: 'single',
+    damage: 10,
+    range: 2,
+    radius: 0,
+    cooldown: 30,
+    cost: 0,
+    windup: 3,
+    duration: 0,
+    description: '技能描述'
+  });
+  renderSkills();
+};
+
+window.deleteSkill = (i) => {
+  if (confirm('确定删除？')) {
+    window.gameData.skills.splice(i, 1);
+    renderSkills();
+  }
+};
+
+// 装备配置
+function renderGear() {
+  const gear = window.gameData.gear;
+  document.getElementById('gear-count').textContent = gear.length;
+  slots.forEach(slot => {
+    const count = gear.filter(g => g.slot === slot).length;
+    const elem = document.getElementById('gear-' + slot);
+    if (elem) elem.textContent = count;
+  });
+
+  const tbody = document.getElementById('gear-body');
+  tbody.innerHTML = gear.map((g, i) => `
+    <tr>
+      <td><input class="id" value="${g.base}" onchange="updateGear(${i}, 'base', this.value)"></td>
+      <td><input class="name" value="${g.name}" onchange="updateGear(${i}, 'name', this.value)"></td>
+      <td>
+        <select onchange="updateGear(${i}, 'slot', this.value)">
+          ${slots.map(s => `<option value="${s}" ${g.slot === s ? 'selected' : ''}>${slotLabels[s]}</option>`).join('')}
+        </select>
+      </td>
+      <td>
+        <select onchange="updateGear(${i}, 'primary_attribute', this.value)">
+          <option value="attack" ${g.primary_attribute === 'attack' ? 'selected' : ''}>攻击</option>
+          <option value="armor" ${g.primary_attribute === 'armor' ? 'selected' : ''}>护甲</option>
+        </select>
+      </td>
+      <td><input type="number" class="short" value="${g.attack}" onchange="updateGear(${i}, 'attack', parseInt(this.value))"></td>
+      <td><input type="number" class="short" value="${g.armor}" onchange="updateGear(${i}, 'armor', parseInt(this.value))"></td>
+      <td><input type="number" class="short" value="${g.reinforcement_per_rank}" onchange="updateGear(${i}, 'reinforcement_per_rank', parseInt(this.value))"></td>
+      <td>
+        <select onchange="updateGear(${i}, 'effect', this.value)">
+          ${effectsList.map(e => `<option value="${e}" ${g.effect === e ? 'selected' : ''}>${effectLabels[e]}</option>`).join('')}
+        </select>
+      </td>
+      <td><input class="id" value="${g.setId || ''}" onchange="updateGear(${i}, 'setId', this.value)" placeholder="可选"></td>
+      <td><div class="ops"><button class="danger" onclick="deleteGear(${i})">删除</button></div></td>
+    </tr>
+  `).join('');
+}
+
+window.updateGear = (i, field, value) => {
+  window.gameData.gear[i][field] = value;
+};
+
+window.addGear = () => {
+  window.gameData.gear.push({
+    base: 'new_gear_' + Date.now(),
+    slot: 'weapon',
+    name: '新装备',
+    primary_attribute: 'attack',
+    attack: 10,
+    armor: 0,
+    reinforcement_per_rank: 2,
+    effect: 'none',
+    quality: 'common',
+    affixes: []
+  });
+  renderGear();
+};
+
+window.deleteGear = (i) => {
+  if (confirm('确定删除？')) {
+    window.gameData.gear.splice(i, 1);
+    renderGear();
+  }
+};
+
+// 套装配置
+function renderSets() {
+  const container = document.getElementById('sets-container');
+  container.innerHTML = window.gameData.sets.map((set, i) => `
+    <div class="stat-card" style="margin-bottom: 1.5rem;">
+      <h3 style="margin-bottom: 1rem;">
+        <input class="name" value="${set.name}" onchange="updateSet(${i}, 'name', this.value)">
+        <small style="color: var(--text-dim); font-weight: normal;"> (${set.id})</small>
+      </h3>
+      <div style="color: var(--text-dim); margin-bottom: 0.5rem;">套装组成：</div>
+      <div style="margin-bottom: 1rem;">${set.pieces.join(', ')}</div>
+      ${set.bonuses.map((bonus, j) => `
+        <div style="padding: 0.75rem; background: var(--bg-3); border-radius: 6px; margin-bottom: 0.5rem;">
+          <strong>${bonus.pieces}件套：</strong> ${bonus.description}
+        </div>
+      `).join('')}
+      <button class="danger" style="margin-top: 1rem;" onclick="deleteSet(${i})">删除套装</button>
+    </div>
+  `).join('');
+}
+
+window.updateSet = (i, field, value) => {
+  window.gameData.sets[i][field] = value;
+  renderSets();
+};
+
+window.deleteSet = (i) => {
+  if (confirm('确定删除？')) {
+    window.gameData.sets.splice(i, 1);
+    renderSets();
+  }
+};
+
+// 怪物配置
+function renderMonsters() {
+  const profiles = window.gameData.monsters.profiles;
+  const tbody = document.getElementById('monsters-body');
+  tbody.innerHTML = Object.entries(profiles).map(([type, data]) => `
+    <tr>
+      <td><strong>${type}</strong></td>
+      <td><input type="number" step="0.1" value="${data.speed}" onchange="updateMonster('${type}', 'speed', parseFloat(this.value))"></td>
+      <td><input type="number" step="0.1" value="${data.range}" onchange="updateMonster('${type}', 'range', parseFloat(this.value))"></td>
+      <td style="color: var(--text-dim);">
+        ${type === 'melee' ? '近战' : type === 'ranged' ? '远程' : type === 'charger' ? '冲锋' : 
+          type === 'shaman' ? '萨满' : type === 'guard' ? '守卫' : type === 'assassin' ? '刺客' : 
+          type === 'summoner' ? '召唤' : '炮台'}型敌人
+      </td>
+    </tr>
+  `).join('');
+}
+
+window.updateMonster = (type, field, value) => {
+  window.gameData.monsters.profiles[type][field] = value;
+};
+
+// 升级配置
+function renderProgression() {
+  const base = window.gameData.progression.xpBase;
+  const tbody = document.getElementById('progression-body');
+  const levels = Array.from({length: 20}, (_, i) => i + 1);
+  
+  let cumulative = 0;
+  tbody.innerHTML = levels.map(lv => {
+    const xp = lv * base;
+    cumulative += xp;
+    const hp = 180 + lv * 18;
+    const atk = 10 + lv * 2;
+    return `
+      <tr>
+        <td><strong>Lv.${lv}</strong></td>
+        <td>${xp}</td>
+        <td>${cumulative}</td>
+        <td>${hp}</td>
+        <td>${atk}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+document.getElementById('xp-base').addEventListener('input', (e) => {
+  window.gameData.progression.xpBase = parseInt(e.target.value);
+  renderProgression();
+});
+
+// 经济配置
+function renderEconomy() {
+  const {goldBase, goldGrowth, matBase, matGrowth} = window.gameData.economy;
+  const tbody = document.getElementById('economy-body');
+  const ranks = Array.from({length: 10}, (_, i) => i);
+  
+  tbody.innerHTML = ranks.map(rank => {
+    const gold = goldBase + rank * goldGrowth;
+    const mat = matBase + rank * matGrowth;
+    return `
+      <tr>
+        <td><strong>+${rank}</strong></td>
+        <td>${gold}</td>
+        <td>${mat}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+['upgrade-gold-base', 'upgrade-gold-growth', 'upgrade-mat-base', 'upgrade-mat-growth'].forEach(id => {
+  document.getElementById(id).addEventListener('input', (e) => {
+    const key = id.replace('upgrade-', '').replace('-', '');
+    const field = key.includes('gold') ? (key.includes('base') ? 'goldBase' : 'goldGrowth') : 
+                  (key.includes('base') ? 'matBase' : 'matGrowth');
+    window.gameData.economy[field] = parseInt(e.target.value);
+    renderEconomy();
+  });
+});
+
+// 效果配置
+['chain-ratio', 'burn-damage', 'burn-ticks', 'ward-amount', 'ward-ticks'].forEach(id => {
+  const elem = document.getElementById(id);
+  const key = id.replace('-', '_').replace('-', '_');
+  elem.value = window.gameData.effects[key] || elem.value;
+});
+
+window.saveEffects = () => {
+  window.gameData.effects.chainRatio = parseFloat(document.getElementById('chain-ratio').value);
+  window.gameData.effects.burnDamage = parseInt(document.getElementById('burn-damage').value);
+  window.gameData.effects.burnTicks = parseInt(document.getElementById('burn-ticks').value);
+  window.gameData.effects.wardAmount = parseInt(document.getElementById('ward-amount').value);
+  window.gameData.effects.wardTicks = parseInt(document.getElementById('ward-ticks').value);
+  alert('效果配置已保存');
+};
+
+// 导出功能
+window.exportData = (type) => {
+  let data, filename;
+  switch(type) {
+    case 'skills':
+      data = window.gameData.skills;
+      filename = 'skills.json';
+      break;
+    case 'gear':
+      data = window.gameData.gear;
+      filename = 'gear-bases.json';
+      break;
+    case 'sets':
+      data = window.gameData.sets;
+      filename = 'gear-sets.json';
+      break;
+    case 'monsters':
+      data = window.gameData.monsters;
+      filename = 'ai-rules.json';
+      break;
+    default:
+      data = window.gameData;
+      filename = 'game-config.json';
+  }
+  
+  const json = JSON.stringify(data, null, 2);
+  document.getElementById('export-title').textContent = '导出：' + filename;
+  document.getElementById('export-text').value = json;
+  document.getElementById('export-modal').classList.add('visible');
+  window.currentExport = { content: json, filename, type: 'application/json' };
+};
+
+window.exportAll = () => {
+  exportData('all');
+};
+
+window.copyExport = () => {
+  const text = document.getElementById('export-text');
+  text.select();
+  document.execCommand('copy');
+  alert('已复制到剪贴板');
+};
+
+window.downloadExport = () => {
+  const blob = new Blob([window.currentExport.content], { type: window.currentExport.type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = window.currentExport.filename;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+window.closeModal = () => {
+  document.getElementById('export-modal').classList.remove('visible');
+};
+
+// 初始化
+renderSkills();
+renderGear();
+renderSets();
+renderMonsters();
+renderProgression();
+renderEconomy();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,346 @@
+{
+  "meta": {
+    "recorded": "2026-10-06",
+    "versions": {
+      "client": "0.10.20",
+      "protocol": 23,
+      "rules": "ow-38",
+      "assets": "world-art-20261005-v21-collision",
+      "db": 13
+    },
+    "reason": "Historical files predate the approved skill damage/range, armor and 8-direction navigation changes. Keep those files immutable and freeze current inputs separately.",
+    "source": [
+      {
+        "file": "packages/simulation/index.ts",
+        "sha256": "36a9302f076049b84b90a9ce9169ed4dda26b406a8aabfe5108bfadefaffb3af"
+      },
+      {
+        "file": "packages/simulation/navigation.ts",
+        "sha256": "28c47706169b9dc749d0a605e8a9b5b6bd0f49417c724ed4703e2b8086f17e1e"
+      },
+      {
+        "file": "packages/simulation/navigation-grid.ts",
+        "sha256": "115e4098c28623405cd1e5f492f37489e792239dccf353ef9e639bbd1178ae24"
+      },
+      {
+        "file": "packages/simulation/collision.ts",
+        "sha256": "fe8a9c7dd24ba61245b2558d1a3cd2e2cdd9a9868640fa29e73bbbc629881962"
+      },
+      {
+        "file": "packages/content/skills-expanded.ts",
+        "sha256": "f7a5df1958f95e201d05692b4fb9605964693479de4f6dfe8144ab20a2c24909"
+      },
+      {
+        "file": "packages/content/combat-numerics.json",
+        "sha256": "3474b24f4524247634fce049a99d9c4b4f3848a1ca13e4f6f4e0d4e349d8bbc9"
+      },
+      {
+        "file": "tests/fixtures/combat-feedback-scenario.ts",
+        "sha256": "c353cc12e3e466224d3c83fb803d058cc572aed85225cdc92cf8d717ad75cc2f"
+      },
+      {
+        "file": "tests/fixtures/vfx-scenarios.ts",
+        "sha256": "31c8d77c2e15f04b9d520bcf771e8f4aac4516003e2f24ae0d4842e560a792cb"
+      }
+    ]
+  },
+  "seed": 41,
+  "stats": {
+    "hp": 900,
+    "attack": 30,
+    "armor": 5,
+    "speed": 6,
+    "mana": 100,
+    "regen": 10,
+    "effects": [],
+    "critChance": 0.35,
+    "critMultiplier": 1.5
+  },
+  "skills": [
+    "cut",
+    "bolt",
+    "ward"
+  ],
+  "trace": {
+    "hits": [
+      {
+        "tick": 12,
+        "id": "meadow-0",
+        "amount": 33,
+        "skill": "bolt"
+      },
+      {
+        "tick": 33,
+        "id": "meadow-0",
+        "amount": 29,
+        "skill": "cut"
+      },
+      {
+        "tick": 33,
+        "id": "meadow-0",
+        "amount": 22,
+        "skill": "bolt"
+      },
+      {
+        "tick": 49,
+        "id": "hero",
+        "amount": 0,
+        "skill": "basic-melee"
+      },
+      {
+        "tick": 55,
+        "id": "meadow-0",
+        "amount": 33,
+        "skill": "bolt"
+      },
+      {
+        "tick": 58,
+        "id": "meadow-0",
+        "amount": 29,
+        "skill": "cut"
+      },
+      {
+        "tick": 78,
+        "id": "hero",
+        "amount": 0,
+        "skill": "basic-ranged"
+      },
+      {
+        "tick": 80,
+        "id": "meadow-0",
+        "amount": 33,
+        "skill": "bolt"
+      },
+      {
+        "tick": 83,
+        "id": "meadow-0",
+        "amount": 11,
+        "skill": "cut"
+      },
+      {
+        "tick": 111,
+        "id": "meadow-2",
+        "amount": 33,
+        "skill": "bolt"
+      },
+      {
+        "tick": 125,
+        "id": "meadow-2",
+        "amount": 29,
+        "skill": "cut"
+      },
+      {
+        "tick": 132,
+        "id": "meadow-2",
+        "amount": 22,
+        "skill": "bolt"
+      },
+      {
+        "tick": 149,
+        "id": "meadow-2",
+        "amount": 1,
+        "skill": "cut"
+      },
+      {
+        "tick": 154,
+        "id": "hero",
+        "amount": 0,
+        "skill": "basic-melee"
+      },
+      {
+        "tick": 156,
+        "id": "meadow-8",
+        "amount": 22,
+        "skill": "bolt"
+      },
+      {
+        "tick": 165,
+        "id": "hero",
+        "amount": 0,
+        "skill": "basic-ranged"
+      },
+      {
+        "tick": 173,
+        "id": "meadow-8",
+        "amount": 29,
+        "skill": "cut"
+      },
+      {
+        "tick": 180,
+        "id": "meadow-8",
+        "amount": 22,
+        "skill": "bolt"
+      },
+      {
+        "tick": 197,
+        "id": "meadow-8",
+        "amount": 22,
+        "skill": "cut"
+      },
+      {
+        "tick": 222,
+        "id": "meadow-3",
+        "amount": 22,
+        "skill": "bolt"
+      },
+      {
+        "tick": 241,
+        "id": "meadow-3",
+        "amount": 22,
+        "skill": "bolt"
+      },
+      {
+        "tick": 256,
+        "id": "hero",
+        "amount": 5,
+        "skill": "basic-ranged"
+      },
+      {
+        "tick": 266,
+        "id": "meadow-3",
+        "amount": 22,
+        "skill": "bolt"
+      },
+      {
+        "tick": 291,
+        "id": "meadow-3",
+        "amount": 19,
+        "skill": "bolt"
+      },
+      {
+        "tick": 316,
+        "id": "meadow-1",
+        "amount": 33,
+        "skill": "bolt"
+      },
+      {
+        "tick": 341,
+        "id": "meadow-1",
+        "amount": 22,
+        "skill": "bolt"
+      },
+      {
+        "tick": 355,
+        "id": "hero",
+        "amount": 0,
+        "skill": "basic-ranged"
+      },
+      {
+        "tick": 365,
+        "id": "hero",
+        "amount": 0,
+        "skill": "basic-ranged"
+      },
+      {
+        "tick": 366,
+        "id": "meadow-1",
+        "amount": 22,
+        "skill": "bolt"
+      },
+      {
+        "tick": 391,
+        "id": "meadow-1",
+        "amount": 3,
+        "skill": "bolt"
+      },
+      {
+        "tick": 417,
+        "id": "meadow-9",
+        "amount": 33,
+        "skill": "bolt"
+      },
+      {
+        "tick": 441,
+        "id": "hero",
+        "amount": 5,
+        "skill": "basic-ranged"
+      },
+      {
+        "tick": 442,
+        "id": "meadow-9",
+        "amount": 22,
+        "skill": "bolt"
+      },
+      {
+        "tick": 467,
+        "id": "meadow-9",
+        "amount": 22,
+        "skill": "bolt"
+      },
+      {
+        "tick": 492,
+        "id": "meadow-9",
+        "amount": 3,
+        "skill": "bolt"
+      },
+      {
+        "tick": 510,
+        "id": "meadow-10",
+        "amount": 33,
+        "skill": "bolt"
+      },
+      {
+        "tick": 534,
+        "id": "meadow-10",
+        "amount": 22,
+        "skill": "bolt"
+      },
+      {
+        "tick": 539,
+        "id": "meadow-10",
+        "amount": 29,
+        "skill": "cut"
+      },
+      {
+        "tick": 555,
+        "id": "meadow-10",
+        "amount": 1,
+        "skill": "bolt"
+      }
+    ],
+    "hero": {
+      "position": {
+        "x": 16.077191764493413,
+        "y": 8.60193067764418
+      },
+      "hp": 890,
+      "mana": 98.66666666666663,
+      "shield": 45,
+      "shieldUntil": 672,
+      "facing": 1,
+      "action": "skill",
+      "actionUntil": 604
+    },
+    "kills": [
+      {
+        "source_id": "meadow-0",
+        "tick": 83
+      },
+      {
+        "source_id": "meadow-2",
+        "tick": 149
+      },
+      {
+        "source_id": "meadow-8",
+        "tick": 197
+      },
+      {
+        "source_id": "meadow-3",
+        "tick": 291
+      },
+      {
+        "source_id": "meadow-1",
+        "tick": 391
+      },
+      {
+        "source_id": "meadow-9",
+        "tick": 492
+      },
+      {
+        "source_id": "meadow-10",
+        "tick": 555
+      }
+    ],
+    "randomState": 1867672850
+  }
+}

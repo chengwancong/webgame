@@ -1,0 +1,57 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+ ✓ tests/build-variety-r6.test.ts (74 tests) 357ms
+ ✓ tests/build-variety-r6.database.test.ts (1 test) 845ms
+   ✓ a confirmed drop has a real main stat, claims once, equips, rerolls without touching it, and survives reads  747ms
+ ✓ tests/build-variety-r6-review.test.ts (6 tests) 115ms
+ ✓ tests/pacing-ablation.test.ts (1 test) 126ms
+ ✓ tests/pacing-budget-close.test.ts (1 test) 53ms
+ ✓ tests/build-variety-r6-issuance-review.test.ts (5 tests) 35ms
+ ✓ tests/pacing-derive.test.ts (4 tests) 41ms
+ ✓ tests/pacing-completion.test.ts (2 tests) 25ms
+ ✓ tests/pacing-mechanisms.test.ts (5 tests) 27ms
+ ❯ tests/pacing-calibrate.test.ts (1 test | 1 failed) 17ms
+   × 一次修正保持通过构筑，仅改变失败构筑的声明旋钮且正确限幅 17ms
+ ✓ tests/pacing-identity.test.ts (7 tests) 25ms
+ ✓ tests/build-variety-r6-item-rules.test.ts (3 tests) 6ms
+ ✓ tests/pacing-targets.test.ts (3 tests) 4ms
+ ✓ tests/pacing-validation.test.ts (3 tests) 5ms
+ ✓ tests/aspect-description-consistency.test.ts (9 tests) 6ms
+ ❯ tests/pacing-refine.test.ts (1 test | 1 failed) 5ms
+   × 旧refine入口使用同一调整规则，不保留单构筑分支 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/pacing-calibrate.test.ts > 一次修正保持通过构筑，仅改变失败构筑的声明旋钮且正确限幅
+AssertionError: 缺少C3固定锚点比值
+
+simple
+
+ ❯ deriveMechanismPlan tools/pacing/derive-model.ts:29:93
+
+ ❯ calibratePacingPlan tools/pacing/calibrate-model.ts:3:143
+ ❯ tests/pacing-calibrate.test.ts:8:524
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/pacing-refine.test.ts > 旧refine入口使用同一调整规则，不保留单构筑分支
+AssertionError: expected 0.1 to be 0.08 // Object.is equality
+
+- Expected
++ Received
+
+- 0.08
++ 0.1
+
+ ❯ tests/pacing-refine.test.ts:5:187
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 14 passed (16)
+      Tests  2 failed | 124 passed (126)
+   Start at  15:25:23
+   Duration  13.68s (transform 1.20s, setup 0ms, import 10.35s, tests 1.69s, environment 1ms)
+

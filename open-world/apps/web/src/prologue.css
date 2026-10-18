@@ -1,0 +1,42 @@
+/* 开场「坠星觉醒」覆盖层（prologue-controller.ts）。沿用象牙金令牌；天幕只在坠落/三选一时铺满。 */
+body.prologue-active #hud,body.prologue-active #story-hud,body.prologue-active #starsea-hud,body.prologue-active #dungeon-hud{display:none}
+#prologue{position:absolute;inset:0;z-index:40;pointer-events:none;font-family:var(--font-family);color:var(--color-text-primary)}
+#prologue:empty{display:none}
+#prologue button{pointer-events:auto}
+.prologue-sky{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at 50% 18%,#3a5470 0%,#1a2633 46%,#0d141c 100%);pointer-events:auto}
+.prologue-rift{position:absolute;left:50%;top:-10%;width:6px;height:46%;transform:translateX(-50%) rotate(8deg);background:linear-gradient(#fff8e0,var(--color-primary) 40%,transparent);box-shadow:0 0 28px 10px #f6d27a88;animation:prologue-rift 8s var(--motion-ease) both}
+.prologue-faller{position:absolute;left:50%;top:6%;width:14px;height:14px;border-radius:var(--radius-round);background:#fffbe9;box-shadow:0 0 18px 8px var(--color-primary),0 -60px 30px -6px #f6d27a66;animation:prologue-fall 8s cubic-bezier(.5,0,.9,.6) both}
+.prologue-sky--still .prologue-rift,.prologue-sky--still .prologue-faller{animation:none}
+@keyframes prologue-rift{0%{height:0;opacity:0}15%{opacity:1}40%{height:46%}100%{height:52%;opacity:.8}}
+@keyframes prologue-fall{0%{top:4%;opacity:0;transform:scale(.6)}12%{opacity:1}88%{top:86%;transform:scale(1.1)}96%{top:92%;transform:scale(2.6);opacity:1}100%{top:92%;transform:scale(5);opacity:0}}
+.prologue-line{position:absolute;left:50%;top:var(--space-16);transform:translateX(-50%);width:min(760px,90%);margin:0;text-align:center;font-size:var(--font-size-h3);line-height:var(--font-line-heading);color:#f2efe7;text-shadow:0 2px 8px #000a}
+.prologue-choice{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-6);pointer-events:auto}
+.prologue-choice .prologue-line{position:static;transform:none}
+.prologue-cards{display:flex;gap:var(--space-6)}
+.prologue-card{display:flex;flex-direction:column;align-items:center;gap:var(--space-2);width:240px;padding:var(--space-6) var(--space-4);border:2px solid var(--color-primary-border);border-radius:var(--radius-panel);background:var(--color-panel);box-shadow:var(--shadow-panel);color:var(--color-text-primary);font:inherit;cursor:pointer;transition:transform var(--motion-normal) var(--motion-ease),box-shadow var(--motion-normal) var(--motion-ease)}
+.prologue-card:hover,.prologue-card:focus-visible{transform:translateY(-6px);box-shadow:0 0 0 3px var(--color-primary),var(--shadow-panel);outline:none}
+.prologue-card:disabled{opacity:.6;cursor:progress}
+.prologue-card img{width:72px;height:72px;border-radius:var(--radius-slot)}
+.prologue-card b{font-size:var(--font-size-h2);color:var(--color-emphasis)}
+.prologue-card span{font-size:var(--font-size-body);line-height:var(--font-line-body);color:var(--color-text-secondary);text-align:center}
+.prologue-card .prologue-weapon{font-size:var(--font-size-caption);color:var(--color-highlight);font-weight:var(--font-weight-semibold)}
+.prologue-note{margin:0;color:#f2efe7}
+.prologue-skip{position:absolute;right:var(--space-6);top:var(--space-6)}
+.prologue-error{position:absolute;left:50%;bottom:var(--space-16);transform:translateX(-50%);display:flex;gap:var(--space-3);align-items:center;padding:var(--space-3) var(--space-4);border-radius:var(--radius-panel);background:var(--color-panel);color:var(--color-danger);pointer-events:auto}
+.prologue-caption{position:absolute;left:50%;top:var(--space-12);transform:translateX(-50%);margin:0;padding:var(--space-2) var(--space-6);border-radius:var(--radius-round);background:#0d141cb0;color:#f2efe7;font-size:var(--font-size-h3);white-space:nowrap}
+.prologue-tag{position:absolute;left:var(--space-6);top:var(--space-6);padding:var(--space-1) var(--space-3);border-radius:var(--radius-round);background:var(--color-panel);border:1px solid var(--color-primary-border);font-size:var(--font-size-caption);color:var(--color-highlight)}
+.prologue-boss{position:absolute;left:50%;top:var(--space-6);transform:translateX(-50%);width:520px;display:flex;flex-direction:column;align-items:center;gap:var(--space-1)}
+.prologue-boss b{color:#f2efe7;text-shadow:0 2px 6px #000a}
+.prologue-boss span{width:100%;height:12px;border-radius:var(--radius-round);background:linear-gradient(90deg,var(--color-danger) calc(var(--fill)*100%),#0d141c99 0);border:1px solid var(--color-primary-border)}
+.prologue-bar{position:absolute;left:50%;bottom:var(--space-6);transform:translateX(-50%);display:flex;align-items:flex-end;gap:var(--space-3)}
+.prologue-skill{width:56px;height:56px;border-radius:var(--radius-slot);border:2px solid var(--color-primary-border);box-shadow:var(--shadow-control);transition:filter 600ms var(--motion-ease),opacity 600ms var(--motion-ease)}
+.prologue-bar.is-fading .prologue-skill{filter:grayscale(1) brightness(.6);opacity:.5;transition-delay:calc(var(--i)*500ms)}
+.prologue-burst{position:relative;display:flex;flex-direction:column;align-items:center;gap:var(--space-1);margin-left:var(--space-4);padding:0;border:0;background:none;font:inherit;color:#f2efe7;cursor:pointer}
+.prologue-burst img{width:80px;height:80px;border-radius:var(--radius-round);border:3px solid var(--color-primary-border);filter:grayscale(calc(1 - var(--fill)));background:conic-gradient(var(--color-primary) calc(var(--fill)*360deg),#0d141c 0);padding:4px}
+.prologue-burst span{font-size:var(--font-size-caption);font-weight:var(--font-weight-semibold);text-shadow:0 1px 4px #000c}
+.prologue-burst:disabled{cursor:default}
+.prologue-burst.is-full img{box-shadow:0 0 18px 6px var(--color-primary);animation:prologue-ready 1s ease-in-out infinite alternate}
+@keyframes prologue-ready{to{box-shadow:0 0 28px 12px var(--color-primary-hover)}}
+.prologue-fade{position:absolute;inset:0;backdrop-filter:grayscale(1);background:#0d141c40;animation:prologue-fade 4s var(--motion-ease) both}
+@keyframes prologue-fade{from{backdrop-filter:grayscale(0);background:#0d141c00}to{backdrop-filter:grayscale(1);background:#0d141c66}}
+html[data-motion-reduced="true"] .prologue-rift,html[data-motion-reduced="true"] .prologue-faller,html[data-motion-reduced="true"] .prologue-burst.is-full img,html[data-motion-reduced="true"] .prologue-fade{animation:none}

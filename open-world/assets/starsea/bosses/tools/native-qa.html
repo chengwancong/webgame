@@ -1,0 +1,9 @@
+<!doctype html><html><meta charset="utf-8"><link rel="icon" href="data:,"><title>Production MiniNativePreview boss compatibility</title><body style="background:#f8f6ef;margin:20px"><canvas id="native" width="840" height="360"></canvas><canvas id="portrait" width="120" height="120"></canvas><pre id="status"></pre>
+<script type="module">
+import {MiniNativePreview} from '/src/mini-native-renderer.ts';
+const qa=window.bossProductionQA={ready:false,errors:[]};let painter;
+qa.load=async(asset,profile=asset.runtime.profile)=>{painter?.destroy();painter=new MiniNativePreview(document.querySelector('#native'),{height:150,footX:.5,footY:2/3,profileUrl:profile,fitBounds:false});await painter.setAppearance(asset.runtime.renderAppearance);qa.ready=painter.ready;qa.errors=painter.errors;return painter.diagnostics();};
+qa.pose=(action,clock,facing=-1,cast)=>{painter.render({action,clock,facing,cast});const canvas=document.querySelector('#native'),data=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;let alpha=0,hash=0;for(let i=0;i<data.length;i+=4){if(data[i+3])alpha++;hash=(hash*31+data[i]+data[i+1]+data[i+2]+data[i+3])>>>0;}const d={...painter.diagnostics(),pixels:{alpha,hash}};document.querySelector('#status').textContent=JSON.stringify(d,null,2);return d;};
+qa.portrait=()=>{const canvas=document.querySelector('#portrait'),success=painter.drawPortrait(canvas),d=canvas.getContext('2d').getImageData(0,0,120,120).data;let alpha=0;for(let i=3;i<d.length;i+=4)if(d[i])alpha++;return {success,alpha};};
+qa.dispose=()=>painter?.destroy();qa.imported=true;
+</script></body></html>

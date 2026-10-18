@@ -1,0 +1,28 @@
+/* 海域难度：列表用星级，倍率数值收进「详细数值」。布局只做分栏，视觉值全部走 token。 */
+.sea-difficulty__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-4);align-items:start}
+.sea-list{max-height:calc(100vh - var(--space-8)*6);overflow-y:auto;scrollbar-gutter:stable;display:flex;flex-direction:column;gap:var(--space-2);min-width:0}
+.sea-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) var(--space-8);align-items:center;gap:var(--space-3);width:100%;padding:var(--space-3);background:var(--color-panel);border:var(--border-width) solid var(--color-border-subtle);border-radius:var(--radius-control);text-align:start}
+.sea-row:hover:not(:disabled){border-color:var(--color-border-strong)}
+.sea-row.is-picked{border-color:var(--color-primary-border);background:var(--color-panel-raised)}
+.sea-row.is-current{border-color:var(--color-primary-border);background:var(--color-panel-selected)}
+.sea-row.is-locked{color:var(--color-text-secondary);background:var(--color-panel-inset)}
+.sea-row b{font-size:var(--font-size-item-name);font-weight:var(--font-weight-semibold);white-space:nowrap}
+.sea-row__lock{display:flex;align-items:flex-start;gap:var(--space-2);grid-column:2/4;font-size:var(--font-size-caption);line-height:var(--font-line-body)}
+.sea-row__tag{justify-self:end;font-size:var(--font-size-micro);font-weight:var(--font-weight-semibold);color:var(--color-panel-raised);background:var(--color-success);padding:var(--space-1);border-radius:var(--radius-tag);white-space:nowrap}
+.sea-stars{white-space:nowrap;flex-shrink:0;display:inline-flex;letter-spacing:var(--space-1);font-size:var(--font-size-body);line-height:1}
+.sea-stars__on{color:var(--color-primary)}
+.sea-stars__off{color:var(--color-border-strong)}
+.sea-stars.is-threat .sea-stars__on{color:var(--color-danger)}
+.sea-stars.is-loot .sea-stars__on{color:var(--color-warning)}
+.sea-detail{display:flex;flex-direction:column;gap:var(--space-2);padding:var(--space-4);background:var(--color-panel-inset);border-radius:var(--radius-well)}
+.sea-detail h3{margin:0;font-size:var(--font-size-h3);font-weight:var(--font-weight-bold);color:var(--color-text-primary)}
+.sea-detail p{margin:0;font-size:var(--font-size-body);line-height:var(--font-line-body);color:var(--color-text-secondary)}
+.sea-detail__rows{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:var(--space-2);margin:0;font-size:var(--font-size-caption);color:var(--color-text-secondary)}
+.sea-detail__rows dt{margin:0}
+.sea-detail__rows dd{margin:0;display:flex;align-items:center;gap:var(--space-2)}
+.sea-detail__numbers{font-size:var(--font-size-caption);color:var(--color-text-secondary)}
+.sea-detail__numbers summary{cursor:pointer}
+.sea-detail__numbers p{margin:var(--space-1) 0 0;line-height:var(--font-line-body)}
+.sea-detail .ui-button{margin-top:auto;width:100%;justify-content:center}
+
+.sea-list__head{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) var(--space-8);gap:var(--space-3);padding:0 var(--space-3);font-size:var(--font-size-caption);line-height:var(--font-line-body);color:var(--color-text-secondary)}

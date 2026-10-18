@@ -1,0 +1,22 @@
+import {it,expect} from 'vitest';
+import {existsSync} from 'node:fs';
+import hitManifest from '../packages/asset-manifest/combat-hit-fx.json';
+import {vfxProfiles} from '../apps/web/src/vfx-profiles.ts';
+import {hitLayer,areaLayer,critLayer,freezeLayer,iceStatusLayer} from '../apps/web/src/vfx-hit-style.ts';
+
+const clips=hitManifest.clips as Record<string,{image:string;source:{library:string}}>;
+
+it('gives every skill profile a registered library hit layer with a real sheet',()=>{
+ const used=new Set([critLayer.clip,freezeLayer.clip,iceStatusLayer.clip]);
+ for(const p of Object.values(vfxProfiles)){const hit=hitLayer(p),area=areaLayer(p);used.add(hit.clip);if(area)used.add(area.clip);expect(hit.size,p.key).toBeGreaterThan(40);}
+ for(const id of used){const clip=clips[id];expect(clip,id).toBeTruthy();expect(clip.source.library,id).toMatch(/^\d{3}-/);expect(existsSync('apps/web/public'+clip.image),id).toBe(true);}
+});
+
+it('keeps element identity: each element hits with its own layer, monsters read smaller than the hero',()=>{
+ const byElement=new Map<string,Set<string>>();
+ for(const p of Object.values(vfxProfiles).filter(p=>p.key.startsWith('player/'))){const set=byElement.get(p.element)??new Set();set.add(hitLayer(p).clip);byElement.set(p.element,set);}
+ const owners=new Map<string,string>();for(const [element,set] of byElement)for(const clip of set){const identity=element==='earth'?'steel':element;if(owners.has(clip))expect(owners.get(clip),clip).toBe(identity);owners.set(clip,identity);}
+ for(const p of Object.values(vfxProfiles).filter(p=>p.element==='earth'))if(p.key.startsWith('player/')){expect(hitLayer(p).clip).not.toBe('hit-earth');expect(areaLayer(p)).toBeUndefined();}else if(p.key.startsWith('monster/'))expect(hitLayer(p).clip).toBe('hit-earth');
+ const hero=Object.values(vfxProfiles).find(p=>p.key.startsWith('player/')&&p.element==='fire'&&p.power===2)!,monster=Object.values(vfxProfiles).find(p=>p.key.startsWith('monster/')&&p.element==='fire'&&p.power===2);
+ if(monster)expect(hitLayer(monster).size).toBeLessThan(hitLayer(hero).size);
+});

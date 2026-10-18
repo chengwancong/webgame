@@ -1,0 +1,159 @@
+- generic "游戏世界"
+- region "角色状态":
+  - button "打开人物":
+    - img "角色外观"
+    - generic "自然日程驾驶器"
+    - generic: Lv. 30
+  - meter "生命":
+    - generic: 943 / 943
+  - meter "灵力":
+    - generic: 100 / 100
+- button "展开区域地图":
+  - generic "拾星港"
+- heading "拾星港" [level=1]
+- text: 群岛的主港，每次远航都从这里出发
+- status
+- generic "金币":
+  - generic: "662"
+- toolbar "系统入口":
+  - button "背包，装备 22/60，待领取 0 件":
+    - generic: 行囊
+  - button "技能":
+    - generic: 技能
+  - button "养成" [expanded]:
+    - generic: 养成
+  - button "外观":
+    - generic: 外观
+  - button "任务":
+    - generic: 任务
+  - button "设置":
+    - generic: 设置
+- generic: 消耗 20 金币
+- generic: 消耗 30 金币
+- generic: 消耗 50 金币
+- dialog "养成":
+  - banner:
+    - heading "养成" [level=2]
+    - button "关闭":
+      - generic: 关闭
+  - tablist "养成分类":
+    - tab "武器盘":
+      - generic: 武器盘
+    - tab "铭纹拓印":
+      - generic: 铭纹拓印
+    - tab "天赋" [selected]:
+      - generic: 天赋
+    - tab "突破觉醒":
+      - generic: 突破觉醒
+    - tab "声望专业":
+      - generic: 声望专业
+    - tab "挑战赛季":
+      - generic: 挑战赛季
+    - tab "巅峰雕文 尚未开放":
+      - generic: 巅峰雕文
+      - img "尚未开放"
+    - tab "召唤石 尚未开放":
+      - generic: 召唤石
+      - img "尚未开放"
+  - tablist "天赋模块":
+    - tab "伤害":
+      - generic: 伤害
+    - tab "防御" [selected]:
+      - generic: 防御
+    - tab "辅助":
+      - generic: 辅助
+    - tab "特殊":
+      - generic: 特殊
+  - button "生命、护甲、抗性与减伤，关键天赋三选一。等级与声望奖励提供天赋点，四棵树共用。":
+  - generic "天赋点，可用 0，总数 29":
+    - generic: 可用天赋点
+    - generic: "0"
+  - button "总加成":
+    - generic: 总加成
+  - tabpanel "防御天赋":
+    - region "防御天赋条目":
+      - generic "防御天赋":
+        - region "第 1 层":
+          - generic "第 1 层":
+            - generic: "1"
+          - button "体魄，5/5，已投入，每级 生命增幅 +2%，已投入满":
+            - meter "体魄投入 5/5"
+          - generic: 体魄
+          - generic: +2%
+          - button "铁甲，5/5，已投入，每级 防御增幅 +3%，已投入满":
+            - meter "铁甲投入 5/5"
+          - generic: 铁甲
+          - generic: +3%
+        - region "第 2 层":
+          - generic "第 2 层":
+            - generic: "2"
+          - button "元素抗性，0/3，未解锁，每级 全抗性 +3%，天赋点不足":
+            - meter "元素抗性投入 0/3"
+          - generic: 元素抗性
+          - generic: +3%
+          - button "格挡，0/3，未解锁，每级 格挡几率 +3%，天赋点不足":
+            - meter "格挡投入 0/3"
+          - generic: 格挡
+          - generic: +3%
+        - region "第 3 层":
+          - generic "第 3 层":
+            - generic: "3"
+          - button "伤害减免，2/3，已投入，每级 伤害减免 +2%" [pressed]:
+            - meter "伤害减免投入 2/3"
+          - generic: 伤害减免
+          - generic: +2%
+          - button "生命偷取，3/3，已投入，每级 吸血 +1%，已投入满":
+            - meter "生命偷取投入 3/3"
+          - generic: 生命偷取
+          - generic: +1%
+        - region "第 4 层，二选一":
+          - generic "第 4 层":
+            - generic: "4"
+          - generic: 二选一
+          - button "荆棘，0/3，未解锁，每级 荆棘 +0.4 倍，天赋点不足":
+            - meter "荆棘投入 0/3"
+          - generic: 荆棘
+          - generic: "+0.4"
+          - button "受治疗，0/3，未解锁，每级 受治疗加成 +8%，天赋点不足":
+            - meter "受治疗投入 0/3"
+          - generic: 受治疗
+          - generic: +8%
+        - region "第 5 层，三选一":
+          - generic "第 5 层"
+          - generic: 三选一
+          - button "坚韧，0/1，未解锁，伤害减免 +6%，生命增幅 +10%，天赋点不足，关键天赋":
+            - meter "坚韧投入 0/1"
+          - generic: 坚韧
+          - button "击杀回血，0/1，未解锁，击杀回复生命 +2%，天赋点不足，关键天赋":
+            - meter "击杀回血投入 0/1"
+          - generic: 击杀回血
+          - button "守护，0/1，未解锁，全抗性 +10%，格挡几率 +8%，天赋点不足，关键天赋":
+            - meter "守护投入 0/1"
+          - generic: 守护
+    - complementary "养成详情":
+      - heading "伤害减免" [level=3]
+      - meter "伤害减免等级 2/3"
+      - region "效果":
+        - heading "效果" [level=3]:
+          - generic: 效果
+        - text: 伤害减免
+        - strong: +2%
+      - region "条件与消耗":
+        - heading "条件 / 消耗" [level=3]:
+          - generic: 条件 / 消耗
+        - paragraph: 天赋点不足
+      - status:
+        - img "已确认"
+        - generic: 已投入 2 点天赋。
+      - button "投入 1 点" [disabled]:
+        - generic: 投入 1 点
+      - button "批量投入" [disabled]:
+        - generic: 批量投入
+      - button "重置天赋":
+        - generic: 重置天赋
+- status: 拾星港
+- complementary "星潮海任务":
+  - generic: 阶段
+  - generic: 前往沉星岛，挑战裂隙督军·乌洛
+  - button "→":
+    - generic: →

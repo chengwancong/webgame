@@ -1,0 +1,38 @@
+import {freezeAnchor,withAnchor} from './anchor.ts';
+import {auditShared} from './identity-audit.ts';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {performance} from 'node:perf_hooks';
+import {runPacingCalendar} from './run-calendar.mjs';
+import {measurePacingBuilds,median} from './measure.ts';
+import {pacingTargets,pacingSettings,pacingWeights,pacingBuildTargets} from '../../packages/content/pacing-targets.ts';
+import {pacingScenes} from '../../packages/contracts/pacing.ts';
+import {pacingCompletion} from './completion.ts';
+import {versions} from '../../packages/contracts/index.ts';
+import {mechanismTargetScenes,mechanismAspectIds} from './mechanisms.ts';
+import {newAspects} from '../../packages/content/aspects.ts';
+
+export function validationSeeds(args:string[]){const raw=args.find(a=>a.startsWith('--seeds='))?.slice(8),seeds=raw?raw.split(',').map(Number):[41,42,43];if(!seeds.length||seeds.some(s=>!Number.isSafeInteger(s))||new Set(seeds).size!==seeds.length)throw Error('种子必须为互不重复的整数');return seeds;}
+export function assessPacingMatrix(matrix:any[]){return matrix.map(row=>{
+ const target=pacingBuildTargets.find(t=>t.id===row.bd)!;
+ const sceneChecks=Object.fromEntries(pacingScenes.map(scene=>[scene,{target:target[scene],median:row.ratios[scene],relativeError:row.ratios[scene]===null?null:row.ratios[scene]/target[scene]-1,passed:row.ratios[scene]!==null&&row.ratios[scene]>=.6&&row.ratios[scene]<=1.5&&Math.abs(row.ratios[scene]/target[scene]-1)<=target.tolerance}]));
+ const mechanismChecks=Object.entries(row.mechanisms??{}).map(([rule,counts]:[string,any])=>{const targets=mechanismTargetScenes[rule]??pacingScenes;return {rule,targets,scenes:pacingScenes.filter(s=>counts[s].total>0||counts[s].uptime>0),diagnostics:targets.filter(s=>counts[s].min===0&&!(counts[s].uptime>0)).map(s=>{const r=newAspects.flatMap(a=>a.parts.rules).find(r=>r.id===rule),windows=[r?.icd??0,...(r?.trigger==='interval'&&!r.startReady?[r.every??0]:[]),...(r?.when.filter(c=>c.kind==='combat_time').map(c=>(c as any).value*30)??[])];return {scene:s,seconds:counts[s].seconds,reason:Math.max(...windows)>counts[s].seconds*30?'场景时长不足':'条件空窗/失效'};}),passed:targets.length>0&&targets.every(s=>counts[s].min>0||counts[s].samples.every((r:any)=>r.uptime>0))};});
+ return {...row,budgetRange:{...row.budgetRange,median:row.budgetRange?.seedBudgets?median(row.budgetRange.seedBudgets):row.budgetRange?.median,weightedSceneMedian:row.budget},targets:Object.fromEntries(pacingScenes.map(s=>[s,target[s]])),sceneChecks,scenePassed:Object.values(sceneChecks).every(c=>c.passed),budgetPassed:Math.abs(row.budget-1)<=target.tolerance,mechanismChecks,mechanismPassed:mechanismChecks.length>0&&mechanismChecks.every(c=>c.passed)};
+});}
+export async function runPacingValidation(args=process.argv.slice(2)){
+ const out=resolve(args.find(a=>a.startsWith('--out='))?.slice(6)??'.qa/pacing/latest'),seeds=validationSeeds(args),began=performance.now(),errors:string[]=[],natural:any[]=[];await mkdir(out,{recursive:true});await auditShared(out);const timelineOnly=args.includes('--timeline-only');
+ await writeFile(resolve(out,'aspects-before.json'),JSON.stringify(newAspects.filter(a=>mechanismAspectIds.has(a.id)),null,2)+'\n');
+ // 自然日程、数据库、三种子完整/消融战斗全部串行，不访问正式库。
+ for(const seed of seeds){const directory=resolve(out,'natural/seed-'+seed);try{await runPacingCalendar(directory,seed);}catch(e){errors.push(String(e));}const report=await readFile(resolve(directory,'natural-calendar-no-quests.json'),'utf8').then(JSON.parse).catch(()=>null);if(report?.results[0])natural.push({seed,...report.results[0],actualRuntimeSeconds:report.actualRuntimeSeconds});}
+ let combat:Awaited<ReturnType<typeof measurePacingBuilds>>|null=null;try{if(!timelineOnly)combat=await measurePacingBuilds({output:resolve(out,'combat'),ablation:true,weights:pacingWeights,seeds});}catch(e){errors.push(String(e));}
+ const tolerance=pacingSettings.get('tolerance') as number,goal=pacingSettings.get('mainGoal') as number,band=pacingSettings.get('targetBand') as number[],hard=pacingSettings.get('hardLimit') as number,minutes=natural.map(r=>r.minutes),virtualMinutes=minutes.length===seeds.length?median(minutes):null;
+ const calendarPassed=virtualMinutes!==null&&natural.every(r=>r.level>=50&&r.minutes<=hard)&&virtualMinutes>=band[0]&&virtualMinutes<=band[1]&&Math.abs(virtualMinutes/goal-1)<=tolerance;
+ const timeline=pacingTargets.milestones.map(target=>{const values=natural.map(route=>(target.kind==='level'?route.milestones.find((m:any)=>!m.boss&&!m.region&&m.level>=target.level):route.milestones.find((m:any)=>m.boss===target.id))?.minutes??null),actual=values.every(v=>v!==null)&&values.length===seeds.length?median(values):null;return {id:target.id,name:target.name,targetVirtualMinutes:target.targetMinutes,actualVirtualMinutes:actual,min:actual===null?null:Math.min(...values),max:actual===null?null:Math.max(...values),withinTolerance:actual!==null&&Math.abs(actual/target.targetMinutes-1)<=tolerance};});
+ const anchorPath=resolve('docs/reviews/pacing-identity-20261013/C3/anchor.json'),frozen=await readFile(anchorPath,'utf8').then(JSON.parse).catch(()=>null),anchor=frozen??(combat?freezeAnchor(combat.rows):null);if(anchor&&!frozen){await mkdir(resolve(anchorPath,'..'),{recursive:true});await writeFile(anchorPath,JSON.stringify(anchor,null,2)+'\n');}if(anchor)await writeFile(resolve(out,'anchor.json'),JSON.stringify(anchor,null,2)+'\n');
+ const matrix=assessPacingMatrix(combat&&anchor?withAnchor(combat.matrix,combat.rows,anchor):[]),bdPassed=matrix.length===pacingBuildTargets.length&&matrix.every(r=>r.scenePassed&&r.budgetPassed&&r.mechanismPassed&&!r.failures.length),report={versions,seeds,samples:{naturalRoutes:natural.length,controlledCombats:combat?.samples??0},virtualMinutes,calendarRange:{median:virtualMinutes,min:minutes.length?Math.min(...minutes):null,max:minutes.length?Math.max(...minutes):null,samples:natural.map(r=>({seed:r.seed,minutes:r.minutes,level:r.level}))},actualRuntimeSeconds:(performance.now()-began)/1000,goal,band,hardLimit:hard,calendarPassed,bdPassed,timelineOnly,anchorSource:anchorPath,accepted:calendarPassed&&(timelineOnly||bdPassed)&&!errors.length,errors,timeline,matrix,completion:natural[0]?pacingCompletion(natural[0].finalState,natural[0].observations):[],limits:['三种子自然路线与同种子归一的构筑场景中位数；min/max原样保留，失败样本不删除。','机制规则须在预先声明的目标场景、全部三个种子中真实触发；未触发与数值偏差一起列入待办。','完整/消融逐场原始数据保存在combat/bd-measurements.json。','虚拟日程不等同真人读字、整理、探索和操作时间。']};
+ await writeFile(resolve(out,'validation.json'),JSON.stringify(report,null,2)+'\n');
+ const fmt=(n:number|null)=>n===null?'未测':n.toFixed(3);
+ await writeFile(resolve(out,'report.md'),'# 三种子节奏与机制验证\n\n种子'+seeds.join('、')+'。自然日程中位数'+fmt(virtualMinutes)+'分钟，范围'+fmt(report.calendarRange.min)+'–'+fmt(report.calendarRange.max)+'。节奏'+(calendarPassed?'通过':'未通过')+'，构筑'+(bdPassed?'通过':'未通过')+'。\n\n| 构筑 | 单体 | 清怪 | 生存 | 精英 | 安全 | 预算 | 机制 |\n|---|---|---|---|---|---|---|---|\n'+matrix.map(r=>'|'+r.name+'|'+pacingScenes.map(s=>fmt(r.ratios[s])+' ['+fmt(r.ranges[s].min)+', '+fmt(r.ranges[s].max)+']').join('|')+'|'+fmt(r.budget)+'|'+(r.mechanismPassed?'通过':'有未触发规则')+'|').join('\n')+'\n\n## 机制触发\n\n'+matrix.flatMap(r=>r.mechanismChecks.map((c:any)=>'- '+r.name+' '+c.rule+'：'+(c.scenes.length?c.scenes.join('、'):'所有场景0次')+'；'+(c.passed?'至少一个场景三种子均触发':'未覆盖'))).join('\n')+'\n');
+ console.log(JSON.stringify({calendarPassed,bdPassed,virtualMinutes,seeds,matrix:matrix.map(r=>({bd:r.bd,ratios:r.ratios,budget:r.budget,mechanismPassed:r.mechanismPassed})),errors,out}));if(!report.accepted)process.exitCode=1;return report;
+}
+if(process.argv[1]&&resolve(process.argv[1])===resolve(import.meta.filename))await runPacingValidation();

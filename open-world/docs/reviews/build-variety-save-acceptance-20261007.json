@@ -1,0 +1,154 @@
+{
+  "accepted": true,
+  "decisionDate": "2026-10-07",
+  "authority": "Direct user confirmation in this chat: Claude was authorized to wipe the full development database on 2026-10-06 at 22:24, after a full backup; no real players; old Starsea chapter progress conflicted with the new quest system; wipe chosen instead of migration.",
+  "disposition": "Keep current live post-wipe database. Do not restore old data or overwrite current data. Retain original backup.",
+  "versions": {
+    "client": "0.11.11",
+    "protocol": 28,
+    "rules": "ow-52",
+    "assets": "world-art-20261006-v23-build-variety",
+    "db": 15
+  },
+  "criteria": {
+    "newPostWipeCharacterFullPath": {
+      "passed": true,
+      "evidence": "build-variety-r8-20261006/player-path/result.json",
+      "scope": "compiled Chrome; real isolated PostgreSQL; level/wallet/legendary weapon with legal half-tier cold inscription fixture; actual skill activation/equip, real field combat/drop/pickup/equip with controlled private drop template/chance, public three-choice reroll/select, reload reconnect and unmodified authoritative full dungeon victory",
+      "limitations": [
+        "Isolated real PostgreSQL QA; level, wallet, legal weapon/inscription and private drop template/chance are declared controlled fixtures. This is not natural acquisition or full chapter pacing acceptance."
+      ]
+    },
+    "existingPostWipeCharactersAcrossServiceRestartAndBuild": {
+      "passed": true,
+      "evidence": "build-variety-r8-20261006/build-polished/build.json",
+      "before": {
+        "cluster": "7691198998141381160",
+        "tables": {
+          "ow_accounts": {
+            "count": 4,
+            "sha256": "d6b0cba890d74d475afc2844769521862d0ce951cca92eaa6765d10e50ab1d59"
+          },
+          "ow_characters": {
+            "count": 4,
+            "sha256": "ea4e0035120dc404f1b03c96420ae9e4e45c8e7a003ff95e2e4e0f1c4dc1cd2a"
+          },
+          "ow_receipts": {
+            "count": 222,
+            "sha256": "3cd87ba6e0b7c82683789c03a84f2e034c0189c0e6625fd6345ed3d9af933e91"
+          },
+          "ow_ledger": {
+            "count": 222,
+            "sha256": "8b53858bf8ce845e7004b3f386469aa4bf561f183708bf6884dfce61fc19c1ac"
+          }
+        }
+      },
+      "after": {
+        "cluster": "7691198998141381160",
+        "tables": {
+          "ow_accounts": {
+            "count": 4,
+            "sha256": "d6b0cba890d74d475afc2844769521862d0ce951cca92eaa6765d10e50ab1d59"
+          },
+          "ow_characters": {
+            "count": 4,
+            "sha256": "ea4e0035120dc404f1b03c96420ae9e4e45c8e7a003ff95e2e4e0f1c4dc1cd2a"
+          },
+          "ow_receipts": {
+            "count": 222,
+            "sha256": "3cd87ba6e0b7c82683789c03a84f2e034c0189c0e6625fd6345ed3d9af933e91"
+          },
+          "ow_ledger": {
+            "count": 222,
+            "sha256": "8b53858bf8ce845e7004b3f386469aa4bf561f183708bf6884dfce61fc19c1ac"
+          }
+        }
+      }
+    },
+    "existingCharacterLoginReloadGearAndWarehouse": {
+      "passed": true,
+      "evidence": "build-variety-r8-20261006/live/result.json"
+    },
+    "currentLiveReadOnlyRecheck": {
+      "passed": true,
+      "before": {
+        "cluster": "7691198998141381160",
+        "tables": {
+          "ow_accounts": {
+            "count": 4,
+            "sha256": "d6b0cba890d74d475afc2844769521862d0ce951cca92eaa6765d10e50ab1d59"
+          },
+          "ow_characters": {
+            "count": 4,
+            "sha256": "592808d050fe348f633ec2aeae53fd517ec60e1f654c344923b5520e0662bea8"
+          },
+          "ow_receipts": {
+            "count": 228,
+            "sha256": "044a000f07ae68f18156e83b43bb0f2583d3440bb211e0003bf5a9bb5975bfe2"
+          },
+          "ow_ledger": {
+            "count": 228,
+            "sha256": "d583f16c7465f27d7c863a723a1f0fd3227f637e4e56c2518cdad97853e5d587"
+          }
+        }
+      },
+      "after": {
+        "cluster": "7691198998141381160",
+        "tables": {
+          "ow_accounts": {
+            "count": 4,
+            "sha256": "d6b0cba890d74d475afc2844769521862d0ce951cca92eaa6765d10e50ab1d59"
+          },
+          "ow_characters": {
+            "count": 4,
+            "sha256": "592808d050fe348f633ec2aeae53fd517ec60e1f654c344923b5520e0662bea8"
+          },
+          "ow_receipts": {
+            "count": 228,
+            "sha256": "044a000f07ae68f18156e83b43bb0f2583d3440bb211e0003bf5a9bb5975bfe2"
+          },
+          "ow_ledger": {
+            "count": 228,
+            "sha256": "d583f16c7465f27d7c863a723a1f0fd3227f637e4e56c2518cdad97853e5d587"
+          }
+        }
+      },
+      "writePerformed": false
+    }
+  },
+  "backup": {
+    "file": ".runtime/backups/wipe-before-r5-20261006-222451.dump",
+    "bytes": 20291485,
+    "sha256": "b7883ad748596ea93e8000fe4e101a6cd67d6f7ad3e5ed710dd99fa1241fda6e",
+    "retained": true,
+    "historicalTables": {
+      "ow_accounts": {
+        "count": 267,
+        "sha256": "550e7c78cd3a36729908ee00a12712adc13697ed54c301ad2f56faad65d5bd07"
+      },
+      "ow_characters": {
+        "count": 148,
+        "sha256": "0912fbe36f246c5dc7100c73236a28a026cd1788dc6766664fa431e89b21f854"
+      },
+      "ow_receipts": {
+        "count": 1910,
+        "sha256": "40e9672377f52ce7aed8d40b589398fd6543fc81a364eb300847ce3207e59b47"
+      },
+      "ow_ledger": {
+        "count": 1910,
+        "sha256": "45f9d33662f1f7511ca84f4bfc9ea5c667cb457e86aef920b37c821ef263eb47"
+      }
+    }
+  },
+  "isolatedArchiveRestoreCleanup": {
+    "temporary": true,
+    "stopped": true,
+    "bytes_before": 140946921,
+    "bytes_after": 0,
+    "bytes_removed": 140946921,
+    "verified": "Original cleanup receipt reports stopped and zero bytes; current process inventory has only the separate active M1 QA database and live database. No archive restore process remains.",
+    "otherQaDisposition": "Active .qa/run-U6OCtu belongs to serve-m1-qa.mjs and is kept."
+  },
+  "status": "All build-variety handoff §7 criteria complete under the user-authorized development-wipe exception; no hard blocker remains.",
+  "futurePolicy": "When old-save compatibility arises, first ask the user whether a wipe is allowed. Do not implement migration first or perform an unauthorized wipe."
+}

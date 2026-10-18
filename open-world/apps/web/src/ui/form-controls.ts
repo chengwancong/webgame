@@ -1,0 +1,10 @@
+import {escapeHtml} from './primitives.ts';
+export function toggleHtml(options:{id:string;label:string;checked:boolean;description?:string;disabled?:boolean}){
+ return `<label class="ui-toggle" data-ui="toggle" for="${escapeHtml(options.id)}"><span><b>${escapeHtml(options.label)}</b>${options.description?`<small id="${escapeHtml(options.id)}-hint">${escapeHtml(options.description)}</small>`:''}</span><input type="checkbox" id="${escapeHtml(options.id)}" ${options.checked?'checked':''} ${options.disabled?'disabled':''} ${options.description?`aria-describedby="${escapeHtml(options.id)}-hint"`:''}><span class="ui-toggle__track" aria-hidden="true"></span></label>`;
+}
+export function selectFieldHtml(options:{id:string;label:string;value:string;options:{value:string;label:string}[];description?:string;disabled?:boolean;compact?:boolean}){
+ return `<div class="ui-select-field${options.compact?' ui-select-field--compact':''}" data-ui="select"><label for="${escapeHtml(options.id)}">${escapeHtml(options.label)}</label><select class="ui-select" id="${escapeHtml(options.id)}" ${options.disabled?'disabled':''} ${options.description?`aria-describedby="${escapeHtml(options.id)}-hint"`:''}>${options.options.map(item=>`<option value="${escapeHtml(item.value)}" ${options.value===item.value?'selected':''}>${escapeHtml(item.label)}</option>`).join('')}</select>${options.description?`<p id="${escapeHtml(options.id)}-hint" class="ui-caption">${escapeHtml(options.description)}</p>`:''}</div>`;
+}
+export function rangeFieldHtml(options:{id:string;label:string;value:number;min:number;max:number;step:number;valueLabel:string}){
+ return `<div class="ui-range" data-ui="range"><label for="${escapeHtml(options.id)}">${escapeHtml(options.label)}</label><output class="ui-number" for="${escapeHtml(options.id)}" id="${escapeHtml(options.id)}-output">${escapeHtml(options.valueLabel)}</output><input id="${escapeHtml(options.id)}" type="range" value="${options.value}" min="${options.min}" max="${options.max}" step="${options.step}" aria-describedby="${escapeHtml(options.id)}-output"></div>`;
+}

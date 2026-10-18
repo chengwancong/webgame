@@ -1,0 +1,1550 @@
+[
+  {
+    "id": "aspect-tf-whirl",
+    "name": "风暴回旋",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 16,
+    "description": "旋风随你移动，连击压住强敌并拨开追击。",
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "pacing-aspect-tf-whirl-expose-boss",
+          "name": "命中强敌时揭开弱点",
+          "description": "命中强敌时揭开弱点",
+          "source": "aspect-tf-whirl",
+          "tier": 1,
+          "trigger": "hit",
+          "chance": 1,
+          "icd": 30,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "boss"
+              ]
+            }
+          ],
+          "action": {
+            "type": "status",
+            "ref": "hit",
+            "status": "vulnerable",
+            "duration": 90,
+            "strength": 0.25,
+            "ratio": 0
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-tf-whirl-focus-boss",
+          "name": "集中火力压制强敌",
+          "description": "集中火力压制强敌",
+          "source": "aspect-tf-whirl",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "boss"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 1.208281,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-tf-whirl-expose-elite",
+          "name": "命中强敌时揭开弱点",
+          "description": "命中强敌时揭开弱点",
+          "source": "aspect-tf-whirl",
+          "tier": 1,
+          "trigger": "hit",
+          "chance": 1,
+          "icd": 30,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "elite"
+              ]
+            }
+          ],
+          "action": {
+            "type": "status",
+            "ref": "hit",
+            "status": "vulnerable",
+            "duration": 90,
+            "strength": 0.25,
+            "ratio": 0
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-tf-whirl-focus-elite",
+          "name": "集中火力压制强敌",
+          "description": "集中火力压制强敌",
+          "source": "aspect-tf-whirl",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "elite"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 2.510307,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-tf-whirl-guard",
+          "name": "持续交战时稳住防线",
+          "description": "持续交战时稳住防线",
+          "source": "aspect-tf-whirl",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "reduce",
+            "ratio": 0.357485
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-tf-whirl-evasion",
+          "name": "旋风拨开追击",
+          "description": "旋风拨开追击",
+          "source": "aspect-tf-whirl",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 1,
+            "maxStacks": 1,
+            "mods": {
+              "dodge": 0.343556
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        }
+      ],
+      "patches": [
+        {
+          "skills": [
+            "whirl"
+          ],
+          "ops": [
+            {
+              "path": "damage",
+              "op": "mul",
+              "value": 1.6
+            },
+            {
+              "path": "mechanics.schedule",
+              "op": "set",
+              "value": {
+                "hits": 4,
+                "interval": 15,
+                "followCaster": true,
+                "interruptOnMove": false
+              }
+            },
+            {
+              "path": "weapons",
+              "op": "set",
+              "value": [
+                "sword",
+                "hammer",
+                "axe"
+              ]
+            }
+          ]
+        },
+        {
+          "skills": [
+            "whirl",
+            "ground_slam",
+            "cleave"
+          ],
+          "scalePeriodicBudget": true,
+          "ops": [
+            {
+              "path": "damage",
+              "op": "mul",
+              "value": 0.935501
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "statMultipliers": {
+        "attack": 0.9
+      }
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true,
+    "weapons": [
+      "sword",
+      "hammer",
+      "axe"
+    ]
+  },
+  {
+    "id": "aspect-tf-knife",
+    "name": "环刃",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 16,
+    "description": "飞刀环绕身边，千刃压住首领破绽。",
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "pacing-aspect-tf-knife-focus-elite",
+          "name": "集中火力压制强敌",
+          "description": "集中火力压制强敌",
+          "source": "aspect-tf-knife",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "elite"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 2.435944,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-tf-knife-focus-normal",
+          "name": "集中火力压制强敌",
+          "description": "集中火力压制强敌",
+          "source": "aspect-tf-knife",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "normal"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 4.11722,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-tf-knife-guard",
+          "name": "持续交战时稳住防线",
+          "description": "持续交战时稳住防线",
+          "source": "aspect-tf-knife",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "reduce",
+            "ratio": 0.316979
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-tf-knife-evasion",
+          "name": "转移时避开追击",
+          "description": "转移时避开追击",
+          "source": "aspect-tf-knife",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 1,
+            "maxStacks": 1,
+            "mods": {
+              "dodge": 0.46225
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-tf-knife-focus-boss",
+          "name": "压住强敌的破绽",
+          "description": "压住强敌的破绽",
+          "source": "aspect-tf-knife",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "boss"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.03,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        }
+      ],
+      "patches": [
+        {
+          "skills": [
+            "throwing_knife",
+            "fan_of_knives"
+          ],
+          "ops": [
+            {
+              "path": "mechanics.projectile.orbit",
+              "op": "set",
+              "value": {
+                "duration": 90,
+                "radius": 1.4,
+                "interval": 15,
+                "speed": 0.14
+              }
+            },
+            {
+              "path": "mechanics.targeting",
+              "op": "set",
+              "value": "self"
+            },
+            {
+              "path": "mechanics.projectile.collisionRadius",
+              "op": "set",
+              "value": 1
+            },
+            {
+              "path": "damage",
+              "op": "mul",
+              "value": 0.095
+            }
+          ],
+          "scalePeriodicBudget": true
+        },
+        {
+          "skills": [
+            "throwing_knife",
+            "fan_of_knives",
+            "blade_flurry"
+          ],
+          "scalePeriodicBudget": true,
+          "ops": [
+            {
+              "path": "damage",
+              "op": "mul",
+              "value": 0.240168
+            }
+          ]
+        }
+      ],
+      "overrides": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true,
+    "weapons": [
+      "hidden"
+    ]
+  },
+  {
+    "id": "aspect-st-ember",
+    "name": "余烬之心",
+    "slots": [
+      "accessory"
+    ],
+    "requiredLevel": 16,
+    "description": "燃烧可暴击，火球轮转更快；引爆间隔1秒。",
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-st-ember-burn",
+          "name": "余烬之心",
+          "description": "燃烧伤害 ×1.2",
+          "source": "aspect-st-ember",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "statusKinds": [
+              "burn"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.2,
+            "against": []
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/ember"
+        },
+        {
+          "id": "pacing-aspect-st-ember-expose-boss",
+          "name": "命中强敌时揭开弱点",
+          "description": "命中强敌时揭开弱点",
+          "source": "aspect-st-ember",
+          "tier": 1,
+          "trigger": "hit",
+          "chance": 1,
+          "icd": 30,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "boss"
+              ]
+            }
+          ],
+          "action": {
+            "type": "status",
+            "ref": "hit",
+            "status": "vulnerable",
+            "duration": 90,
+            "strength": 0.25,
+            "ratio": 0
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-st-ember-focus-boss",
+          "name": "集中火力压制强敌",
+          "description": "集中火力压制强敌",
+          "source": "aspect-st-ember",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "boss"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 1.075031,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-st-ember-expose-elite",
+          "name": "命中强敌时揭开弱点",
+          "description": "命中强敌时揭开弱点",
+          "source": "aspect-st-ember",
+          "tier": 1,
+          "trigger": "hit",
+          "chance": 1,
+          "icd": 30,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "elite"
+              ]
+            }
+          ],
+          "action": {
+            "type": "status",
+            "ref": "hit",
+            "status": "vulnerable",
+            "duration": 90,
+            "strength": 0.25,
+            "ratio": 0
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-st-ember-focus-elite",
+          "name": "集中火力压制强敌",
+          "description": "集中火力压制强敌",
+          "source": "aspect-st-ember",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "elite"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 1.587326,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-st-ember-focus-normal",
+          "name": "集中火力压制强敌",
+          "description": "集中火力压制强敌",
+          "source": "aspect-st-ember",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "normal"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.164085,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-st-ember-evasion",
+          "name": "转移时避开追击",
+          "description": "转移时避开追击",
+          "source": "aspect-st-ember",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 1,
+            "maxStacks": 1,
+            "mods": {
+              "dodge": 0.338983
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        }
+      ],
+      "patches": [
+        {
+          "skills": [
+            "fireball",
+            "meteor",
+            "ember"
+          ],
+          "scalePeriodicBudget": true,
+          "ops": [
+            {
+              "path": "damage",
+              "op": "mul",
+              "value": 0.583333
+            }
+          ]
+        },
+        {
+          "skills": [
+            "fireball"
+          ],
+          "ops": [
+            {
+              "path": "cooldown",
+              "op": "mul",
+              "value": 0.685918
+            }
+          ]
+        }
+      ],
+      "overrides": [
+        {
+          "target": "atom-detonate",
+          "set": {
+            "icd": 30
+          }
+        }
+      ],
+      "flags": {
+        "dotCrit": true
+      },
+      "flagFilter": {
+        "statusKinds": [
+          "burn"
+        ]
+      },
+      "statMultipliers": {
+        "attack": 0.65
+      }
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true,
+    "weapons": []
+  },
+  {
+    "id": "aspect-st-permafrost",
+    "name": "永冻",
+    "slots": [
+      "armor"
+    ],
+    "requiredLevel": 18,
+    "description": "冰甲提升闪避，冰霜控场更短，压制强敌。",
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "pacing-aspect-st-permafrost-focus-boss",
+          "name": "集中火力压制强敌",
+          "description": "集中火力压制强敌",
+          "source": "aspect-st-permafrost",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "boss"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.334119,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-st-permafrost-focus-elite",
+          "name": "集中火力压制强敌",
+          "description": "集中火力压制强敌",
+          "source": "aspect-st-permafrost",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "elite"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.619243,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-st-permafrost-guard",
+          "name": "持续交战时稳住防线",
+          "description": "持续交战时稳住防线",
+          "source": "aspect-st-permafrost",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "reduce",
+            "ratio": 0.377437
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-st-permafrost-control-cycle",
+          "name": "冰霜控制时间更短",
+          "description": "冰霜控制时间更短",
+          "source": "aspect-st-permafrost",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 1,
+            "maxStacks": 1,
+            "mods": {},
+            "statusMultipliers": {
+              "freeze": 0.278571,
+              "slow": 0.527798
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-st-permafrost-evasion",
+          "name": "冰甲避开追击",
+          "description": "冰甲避开追击",
+          "source": "aspect-st-permafrost",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 1,
+            "maxStacks": 1,
+            "mods": {
+              "dodge": 0.325185
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        }
+      ],
+      "patches": [
+        {
+          "skills": [
+            "frost",
+            "nova",
+            "frost_bolt"
+          ],
+          "scalePeriodicBudget": true,
+          "ops": [
+            {
+              "path": "damage",
+              "op": "mul",
+              "value": 0.767591
+            }
+          ]
+        }
+      ],
+      "overrides": [
+        {
+          "target": "atom-chill",
+          "set": {
+            "action.onStacks.duration": 75
+          }
+        },
+        {
+          "target": "atom-shatter",
+          "mul": {
+            "action.radius": 2
+          }
+        }
+      ],
+      "statMultipliers": {
+        "attack": 0.7
+      }
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true,
+    "weapons": []
+  },
+  {
+    "id": "aspect-tr-headhunter",
+    "name": "猎首",
+    "slots": [
+      "helmet"
+    ],
+    "requiredLevel": 24,
+    "description": "击败强敌重整技能，命中群敌留刃阵。",
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tr-headhunter:26",
+          "name": "猎首",
+          "description": "击杀精英或首领时，所有技能冷却重置",
+          "source": "aspect-tr-headhunter",
+          "tier": 1,
+          "trigger": "kill_elite",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "cooldown",
+            "mode": "all",
+            "reset": true
+          },
+          "vfxKey": "player/whirl",
+          "scale": []
+        },
+        {
+          "id": "pacing-aspect-tr-headhunter-focus-boss",
+          "name": "集中火力压制强敌",
+          "description": "集中火力压制强敌",
+          "source": "aspect-tr-headhunter",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "boss"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.522059,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-tr-headhunter-crowd-field",
+          "name": "命中群敌后留下残影刃阵",
+          "description": "命中群敌后留下残影刃阵",
+          "source": "aspect-tr-headhunter",
+          "tier": 1,
+          "trigger": "hit",
+          "chance": 1,
+          "icd": 180,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "normal"
+              ]
+            },
+            {
+              "kind": "crowd",
+              "op": "gte",
+              "value": 4,
+              "radius": 6
+            }
+          ],
+          "action": {
+            "type": "field",
+            "ratio": 0.064067,
+            "damageType": "physical",
+            "radius": 6,
+            "duration": 120,
+            "interval": 30,
+            "at": "target"
+          },
+          "scale": [],
+          "vfxKey": "player/blade_fury"
+        },
+        {
+          "id": "pacing-aspect-tr-headhunter-guard",
+          "name": "持续交战时稳住防线",
+          "description": "持续交战时稳住防线",
+          "source": "aspect-tr-headhunter",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "reduce",
+            "ratio": 0.04792
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-tr-headhunter-evasion",
+          "name": "转移时避开追击",
+          "description": "转移时避开追击",
+          "source": "aspect-tr-headhunter",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 1,
+            "maxStacks": 1,
+            "mods": {
+              "dodge": 0.296842
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        }
+      ],
+      "patches": [
+        {
+          "skills": [
+            "execute"
+          ],
+          "ops": [
+            {
+              "path": "cooldown",
+              "op": "set",
+              "value": 120
+            }
+          ]
+        },
+        {
+          "skills": [
+            "execute"
+          ],
+          "scalePeriodicBudget": true,
+          "ops": [
+            {
+              "path": "damage",
+              "op": "mul",
+              "value": 0.585681
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "statMultipliers": {
+        "attack": 0.4
+      }
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true,
+    "weapons": []
+  },
+  {
+    "id": "aspect-tr-tempo",
+    "name": "节拍",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 20,
+    "description": "每3次施法追加回响，压住敌群。",
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tr-tempo:30",
+          "name": "节拍",
+          "description": "每 6 秒，下一个技能 ×1.5 且必定暴击",
+          "source": "aspect-tr-tempo",
+          "tier": 1,
+          "trigger": "interval",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 180,
+            "maxStacks": 1,
+            "mods": {
+              "damageMult": 0.5
+            },
+            "consume": "nextCast",
+            "flags": {
+              "forceCrit": true
+            }
+          },
+          "vfxKey": "player/whirl",
+          "scale": [],
+          "every": 180
+        },
+        {
+          "id": "pacing-aspect-tr-tempo-focus-boss",
+          "name": "集中火力压制强敌",
+          "description": "集中火力压制强敌",
+          "source": "aspect-tr-tempo",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "boss"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 1.379962,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-tr-tempo-focus-normal",
+          "name": "集中火力压制强敌",
+          "description": "集中火力压制强敌",
+          "source": "aspect-tr-tempo",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "normal"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.227618,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-tr-tempo-guard",
+          "name": "持续交战时稳住防线",
+          "description": "持续交战时稳住防线",
+          "source": "aspect-tr-tempo",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "reduce",
+            "ratio": 0.237013
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        }
+      ],
+      "patches": [
+        {
+          "skills": [
+            "arcane_missile",
+            "gravity_well",
+            "static_field"
+          ],
+          "scalePeriodicBudget": true,
+          "ops": [
+            {
+              "path": "damage",
+              "op": "mul",
+              "value": 0.563201
+            }
+          ]
+        },
+        {
+          "skills": [
+            "arcane_missile",
+            "gravity_well",
+            "static_field"
+          ],
+          "scalePeriodicBudget": true,
+          "ops": [
+            {
+              "path": "damage",
+              "op": "mul",
+              "value": 0.912524
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "statMultipliers": {
+        "attack": 3.3
+      }
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true,
+    "weapons": []
+  },
+  {
+    "id": "aspect-df-burst",
+    "name": "爆盾",
+    "slots": [
+      "helmet"
+    ],
+    "requiredLevel": 20,
+    "description": "破盾反击，持盾增伤，避开追击。",
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-df-burst:37",
+          "name": "爆盾",
+          "description": "护盾破裂时爆炸，伤害 = 护盾值 150%（半径 3）",
+          "source": "aspect-df-burst",
+          "tier": 1,
+          "trigger": "shield_break",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "nova",
+            "ratio": 1.5,
+            "radius": 3,
+            "damageType": "physical",
+            "ref": "shield",
+            "at": "self"
+          },
+          "vfxKey": "player/whirl",
+          "scale": [
+            "action.ratio"
+          ]
+        },
+        {
+          "id": "pacing-aspect-df-burst-expose-boss",
+          "name": "命中强敌时揭开弱点",
+          "description": "命中强敌时揭开弱点",
+          "source": "aspect-df-burst",
+          "tier": 1,
+          "trigger": "hit",
+          "chance": 1,
+          "icd": 30,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "boss"
+              ]
+            }
+          ],
+          "action": {
+            "type": "status",
+            "ref": "hit",
+            "status": "vulnerable",
+            "duration": 90,
+            "strength": 0.25,
+            "ratio": 0
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-df-burst-focus-boss",
+          "name": "集中火力压制强敌",
+          "description": "集中火力压制强敌",
+          "source": "aspect-df-burst",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "boss"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.718248,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-df-burst-expose-elite",
+          "name": "命中强敌时揭开弱点",
+          "description": "命中强敌时揭开弱点",
+          "source": "aspect-df-burst",
+          "tier": 1,
+          "trigger": "hit",
+          "chance": 1,
+          "icd": 30,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "elite"
+              ]
+            }
+          ],
+          "action": {
+            "type": "status",
+            "ref": "hit",
+            "status": "vulnerable",
+            "duration": 90,
+            "strength": 0.25,
+            "ratio": 0
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-df-burst-focus-elite",
+          "name": "集中火力压制强敌",
+          "description": "集中火力压制强敌",
+          "source": "aspect-df-burst",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "elite"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.781484,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-df-burst-guard",
+          "name": "持续交战时稳住防线",
+          "description": "持续交战时稳住防线",
+          "source": "aspect-df-burst",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "reduce",
+            "ratio": 0.320747
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-df-burst-evasion",
+          "name": "转移时避开追击",
+          "description": "转移时避开追击",
+          "source": "aspect-df-burst",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 1,
+            "maxStacks": 1,
+            "mods": {
+              "dodge": 0.483791
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-df-burst-shield-pressure",
+          "name": "持盾时反击更重",
+          "description": "持盾时反击更重",
+          "source": "aspect-df-burst",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "self_state",
+              "state": "shield"
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.188737,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        }
+      ],
+      "patches": [
+        {
+          "skills": [
+            "ground_slam",
+            "rampage"
+          ],
+          "scalePeriodicBudget": true,
+          "ops": [
+            {
+              "path": "damage",
+              "op": "mul",
+              "value": 0.825442
+            }
+          ]
+        }
+      ],
+      "overrides": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true,
+    "weapons": []
+  },
+  {
+    "id": "aspect-mv-tailwind",
+    "name": "追风之力",
+    "slots": [
+      "boots"
+    ],
+    "requiredLevel": 18,
+    "description": "移速提高伤害，群敌间留刃阵；闪避有所降低。",
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "pacing-aspect-mv-tailwind-focus-elite",
+          "name": "集中火力压制强敌",
+          "description": "集中火力压制强敌",
+          "source": "aspect-mv-tailwind",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "elite"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.683052,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "pacing-aspect-mv-tailwind-crowd-field",
+          "name": "命中群敌后留下残影刃阵",
+          "description": "命中群敌后留下残影刃阵",
+          "source": "aspect-mv-tailwind",
+          "tier": 1,
+          "trigger": "hit",
+          "chance": 1,
+          "icd": 180,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "normal"
+              ]
+            },
+            {
+              "kind": "crowd",
+              "op": "gte",
+              "value": 4,
+              "radius": 6
+            }
+          ],
+          "action": {
+            "type": "field",
+            "ratio": 0.898566,
+            "damageType": "physical",
+            "radius": 6,
+            "duration": 90,
+            "interval": 33,
+            "at": "target"
+          },
+          "scale": [],
+          "vfxKey": "player/blade_fury"
+        },
+        {
+          "id": "pacing-aspect-mv-tailwind-focus-boss",
+          "name": "压住强敌的破绽",
+          "description": "压住强敌的破绽",
+          "source": "aspect-mv-tailwind",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "boss"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.172311,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        }
+      ],
+      "patches": [
+        {
+          "skills": [
+            "shadow_step",
+            "shadow_blade",
+            "blade_flurry"
+          ],
+          "scalePeriodicBudget": true,
+          "ops": [
+            {
+              "path": "damage",
+              "op": "mul",
+              "value": 0.426793
+            }
+          ]
+        },
+        {
+          "skills": [
+            "shadow_step"
+          ],
+          "ops": [
+            {
+              "path": "cooldown",
+              "op": "mul",
+              "value": 1.686468
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "conversions": [
+        {
+          "fromStat": "speedBonus",
+          "toStat": "damageAdd",
+          "ratio": 0.5
+        }
+      ],
+      "statMultipliers": {
+        "attack": 3,
+        "dodge": 0.778511
+      }
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true,
+    "weapons": []
+  }
+]

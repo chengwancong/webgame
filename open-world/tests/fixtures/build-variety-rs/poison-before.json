@@ -1,0 +1,3538 @@
+{
+  "versions": {
+    "client": "0.11.1",
+    "protocol": 25,
+    "rules": "ow-42",
+    "assets": "world-art-20261005-v21-collision",
+    "db": 15
+  },
+  "seed": 41,
+  "ticks": 240,
+  "region": {
+    "id": "rs-baseline",
+    "name": "基线",
+    "subtitle": "",
+    "width": 60,
+    "height": 40,
+    "theme": "meadow",
+    "safe": {
+      "x": 10,
+      "y": 10
+    },
+    "portal": {
+      "x": 4,
+      "y": 4
+    },
+    "boss": false,
+    "auto": false,
+    "obstacles": [],
+    "spawns": [],
+    "landmarks": []
+  },
+  "rows": [
+    {
+      "id": "poison_arrow",
+      "level": 1,
+      "rank": 1,
+      "stats": {
+        "hp": 100000,
+        "attack": 12,
+        "armor": 0,
+        "speed": 6,
+        "mana": 10000,
+        "regen": 0,
+        "effects": [],
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 0
+          }
+        ],
+        "damageAdd": 0,
+        "damageMult": 1,
+        "critChance": 0.2,
+        "lifesteal": 0.1
+      },
+      "skill": {
+        "id": "poison_arrow",
+        "category": "ranged",
+        "unlockLevel": 12,
+        "name": "毒箭",
+        "kind": "projectile",
+        "damage": 24,
+        "range": 11,
+        "radius": 0.35,
+        "cooldown": 70,
+        "cost": 14,
+        "windup": 6,
+        "duration": 90,
+        "description": "造成持续毒性伤害",
+        "weapons": [
+          "bow"
+        ],
+        "mechanics": {
+          "damageType": "poison",
+          "targeting": "enemy",
+          "projectile": {
+            "collisionRadius": 0.35,
+            "penetrations": 0,
+            "turnRate": 0,
+            "explosionRadius": 0
+          },
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 12
+            }
+          ]
+        },
+        "tags": [
+          "martial",
+          "ranged",
+          "poison",
+          "projectile",
+          "dot"
+        ],
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 70,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 70
+        }
+      },
+      "events": [
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "cast_started",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "poison_arrow",
+          "windup": 6,
+          "radius": 0.35,
+          "tick": 0
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "cast_released",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "poison_arrow",
+          "radius": 0.35,
+          "duration": 90,
+          "tick": 6,
+          "part": 1
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "direction": {
+            "x": 1,
+            "y": 0
+          },
+          "damage": 24,
+          "life": 37,
+          "enemy": false,
+          "pierce": false,
+          "skill": "poison_arrow",
+          "radius": 0.35,
+          "owner": "hero",
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "hit": {},
+          "resolvedSkill": {
+            "id": "poison_arrow",
+            "category": "ranged",
+            "unlockLevel": 12,
+            "name": "毒箭",
+            "kind": "projectile",
+            "damage": 24,
+            "range": 11,
+            "radius": 0.35,
+            "cooldown": 70,
+            "cost": 14,
+            "windup": 6,
+            "duration": 90,
+            "description": "造成持续毒性伤害",
+            "weapons": [
+              "bow"
+            ],
+            "mechanics": {
+              "damageType": "poison",
+              "targeting": "enemy",
+              "projectile": {
+                "collisionRadius": 0.35,
+                "penetrations": 0,
+                "turnRate": 0,
+                "explosionRadius": 0
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "interval": 30,
+                  "damageType": "poison",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false,
+                  "total": 12
+                }
+              ]
+            },
+            "tags": [
+              "martial",
+              "ranged",
+              "poison",
+              "projectile",
+              "dot"
+            ],
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 70,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 70
+            }
+          },
+          "damageType": "poison",
+          "turnRate": 0,
+          "penetrations": 0,
+          "explosionRadius": 0,
+          "previous": {
+            "x": 11,
+            "y": 10
+          },
+          "projectileId": 1,
+          "contact": {
+            "x": 11.1,
+            "y": 10
+          },
+          "type": "hit_resolved",
+          "amount": 12,
+          "tick": 8,
+          "category": "direct"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 4,
+          "skill": "poison_arrow",
+          "tick": 38,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 4,
+          "skill": "poison_arrow",
+          "tick": 68,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 4,
+          "skill": "poison_arrow",
+          "tick": 98,
+          "category": "periodic",
+          "damageType": "poison"
+        }
+      ]
+    },
+    {
+      "id": "poison_arrow",
+      "level": 1,
+      "rank": 5,
+      "stats": {
+        "hp": 100000,
+        "attack": 12,
+        "armor": 0,
+        "speed": 6,
+        "mana": 10000,
+        "regen": 0,
+        "effects": [],
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 0
+          }
+        ],
+        "damageAdd": 0,
+        "damageMult": 1,
+        "critChance": 0.2,
+        "lifesteal": 0.1
+      },
+      "skill": {
+        "id": "poison_arrow",
+        "category": "ranged",
+        "unlockLevel": 12,
+        "name": "毒箭",
+        "kind": "projectile",
+        "damage": 36,
+        "range": 11,
+        "radius": 0.35,
+        "cooldown": 70,
+        "cost": 14,
+        "windup": 6,
+        "duration": 90,
+        "description": "造成持续毒性伤害",
+        "weapons": [
+          "bow"
+        ],
+        "mechanics": {
+          "damageType": "poison",
+          "targeting": "enemy",
+          "projectile": {
+            "collisionRadius": 0.35,
+            "penetrations": 0,
+            "turnRate": 0,
+            "explosionRadius": 0
+          },
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 18
+            }
+          ]
+        },
+        "tags": [
+          "martial",
+          "ranged",
+          "poison",
+          "projectile",
+          "dot"
+        ],
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 70,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 70
+        }
+      },
+      "events": [
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "cast_started",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "poison_arrow",
+          "windup": 6,
+          "radius": 0.35,
+          "tick": 0
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "cast_released",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "poison_arrow",
+          "radius": 0.35,
+          "duration": 90,
+          "tick": 6,
+          "part": 1
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "direction": {
+            "x": 1,
+            "y": 0
+          },
+          "damage": 36,
+          "life": 37,
+          "enemy": false,
+          "pierce": false,
+          "skill": "poison_arrow",
+          "radius": 0.35,
+          "owner": "hero",
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "hit": {},
+          "resolvedSkill": {
+            "id": "poison_arrow",
+            "category": "ranged",
+            "unlockLevel": 12,
+            "name": "毒箭",
+            "kind": "projectile",
+            "damage": 36,
+            "range": 11,
+            "radius": 0.35,
+            "cooldown": 70,
+            "cost": 14,
+            "windup": 6,
+            "duration": 90,
+            "description": "造成持续毒性伤害",
+            "weapons": [
+              "bow"
+            ],
+            "mechanics": {
+              "damageType": "poison",
+              "targeting": "enemy",
+              "projectile": {
+                "collisionRadius": 0.35,
+                "penetrations": 0,
+                "turnRate": 0,
+                "explosionRadius": 0
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "interval": 30,
+                  "damageType": "poison",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false,
+                  "total": 18
+                }
+              ]
+            },
+            "tags": [
+              "martial",
+              "ranged",
+              "poison",
+              "projectile",
+              "dot"
+            ],
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 70,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 70
+            }
+          },
+          "damageType": "poison",
+          "turnRate": 0,
+          "penetrations": 0,
+          "explosionRadius": 0,
+          "previous": {
+            "x": 11,
+            "y": 10
+          },
+          "projectileId": 1,
+          "contact": {
+            "x": 11.1,
+            "y": 10
+          },
+          "type": "hit_resolved",
+          "amount": 18,
+          "tick": 8,
+          "category": "direct"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 6,
+          "skill": "poison_arrow",
+          "tick": 38,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 6,
+          "skill": "poison_arrow",
+          "tick": 68,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 6,
+          "skill": "poison_arrow",
+          "tick": 98,
+          "category": "periodic",
+          "damageType": "poison"
+        }
+      ]
+    },
+    {
+      "id": "poison_arrow",
+      "level": 20,
+      "rank": 1,
+      "stats": {
+        "hp": 100000,
+        "attack": 50,
+        "armor": 0,
+        "speed": 6,
+        "mana": 10000,
+        "regen": 0,
+        "effects": [],
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 0.57
+          }
+        ],
+        "damageAdd": 0.57,
+        "damageMult": 1,
+        "critChance": 0.2,
+        "lifesteal": 0.1
+      },
+      "skill": {
+        "id": "poison_arrow",
+        "category": "ranged",
+        "unlockLevel": 12,
+        "name": "毒箭",
+        "kind": "projectile",
+        "damage": 157,
+        "range": 11,
+        "radius": 0.35,
+        "cooldown": 70,
+        "cost": 14,
+        "windup": 6,
+        "duration": 90,
+        "description": "造成持续毒性伤害",
+        "weapons": [
+          "bow"
+        ],
+        "mechanics": {
+          "damageType": "poison",
+          "targeting": "enemy",
+          "projectile": {
+            "collisionRadius": 0.35,
+            "penetrations": 0,
+            "turnRate": 0,
+            "explosionRadius": 0
+          },
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 78
+            }
+          ]
+        },
+        "tags": [
+          "martial",
+          "ranged",
+          "poison",
+          "projectile",
+          "dot"
+        ],
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 70,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 70
+        }
+      },
+      "events": [
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "cast_started",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "poison_arrow",
+          "windup": 6,
+          "radius": 0.35,
+          "tick": 0
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "cast_released",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "poison_arrow",
+          "radius": 0.35,
+          "duration": 90,
+          "tick": 6,
+          "part": 1
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "direction": {
+            "x": 1,
+            "y": 0
+          },
+          "damage": 157,
+          "life": 37,
+          "enemy": false,
+          "pierce": false,
+          "skill": "poison_arrow",
+          "radius": 0.35,
+          "owner": "hero",
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "hit": {},
+          "resolvedSkill": {
+            "id": "poison_arrow",
+            "category": "ranged",
+            "unlockLevel": 12,
+            "name": "毒箭",
+            "kind": "projectile",
+            "damage": 157,
+            "range": 11,
+            "radius": 0.35,
+            "cooldown": 70,
+            "cost": 14,
+            "windup": 6,
+            "duration": 90,
+            "description": "造成持续毒性伤害",
+            "weapons": [
+              "bow"
+            ],
+            "mechanics": {
+              "damageType": "poison",
+              "targeting": "enemy",
+              "projectile": {
+                "collisionRadius": 0.35,
+                "penetrations": 0,
+                "turnRate": 0,
+                "explosionRadius": 0
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "interval": 30,
+                  "damageType": "poison",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false,
+                  "total": 78
+                }
+              ]
+            },
+            "tags": [
+              "martial",
+              "ranged",
+              "poison",
+              "projectile",
+              "dot"
+            ],
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 70,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 70
+            }
+          },
+          "damageType": "poison",
+          "turnRate": 0,
+          "penetrations": 0,
+          "explosionRadius": 0,
+          "previous": {
+            "x": 11,
+            "y": 10
+          },
+          "projectileId": 1,
+          "contact": {
+            "x": 11.1,
+            "y": 10
+          },
+          "type": "hit_resolved",
+          "amount": 79,
+          "tick": 8,
+          "category": "direct"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 26,
+          "skill": "poison_arrow",
+          "tick": 38,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 26,
+          "skill": "poison_arrow",
+          "tick": 68,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 26,
+          "skill": "poison_arrow",
+          "tick": 98,
+          "category": "periodic",
+          "damageType": "poison"
+        }
+      ]
+    },
+    {
+      "id": "poison_arrow",
+      "level": 20,
+      "rank": 5,
+      "stats": {
+        "hp": 100000,
+        "attack": 50,
+        "armor": 0,
+        "speed": 6,
+        "mana": 10000,
+        "regen": 0,
+        "effects": [],
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 0.57
+          }
+        ],
+        "damageAdd": 0.57,
+        "damageMult": 1,
+        "critChance": 0.2,
+        "lifesteal": 0.1
+      },
+      "skill": {
+        "id": "poison_arrow",
+        "category": "ranged",
+        "unlockLevel": 12,
+        "name": "毒箭",
+        "kind": "projectile",
+        "damage": 232,
+        "range": 11,
+        "radius": 0.35,
+        "cooldown": 70,
+        "cost": 14,
+        "windup": 6,
+        "duration": 90,
+        "description": "造成持续毒性伤害",
+        "weapons": [
+          "bow"
+        ],
+        "mechanics": {
+          "damageType": "poison",
+          "targeting": "enemy",
+          "projectile": {
+            "collisionRadius": 0.35,
+            "penetrations": 0,
+            "turnRate": 0,
+            "explosionRadius": 0
+          },
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 116
+            }
+          ]
+        },
+        "tags": [
+          "martial",
+          "ranged",
+          "poison",
+          "projectile",
+          "dot"
+        ],
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 70,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 70
+        }
+      },
+      "events": [
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "cast_started",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "poison_arrow",
+          "windup": 6,
+          "radius": 0.35,
+          "tick": 0
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "cast_released",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "poison_arrow",
+          "radius": 0.35,
+          "duration": 90,
+          "tick": 6,
+          "part": 1
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "direction": {
+            "x": 1,
+            "y": 0
+          },
+          "damage": 232,
+          "life": 37,
+          "enemy": false,
+          "pierce": false,
+          "skill": "poison_arrow",
+          "radius": 0.35,
+          "owner": "hero",
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "hit": {},
+          "resolvedSkill": {
+            "id": "poison_arrow",
+            "category": "ranged",
+            "unlockLevel": 12,
+            "name": "毒箭",
+            "kind": "projectile",
+            "damage": 232,
+            "range": 11,
+            "radius": 0.35,
+            "cooldown": 70,
+            "cost": 14,
+            "windup": 6,
+            "duration": 90,
+            "description": "造成持续毒性伤害",
+            "weapons": [
+              "bow"
+            ],
+            "mechanics": {
+              "damageType": "poison",
+              "targeting": "enemy",
+              "projectile": {
+                "collisionRadius": 0.35,
+                "penetrations": 0,
+                "turnRate": 0,
+                "explosionRadius": 0
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "interval": 30,
+                  "damageType": "poison",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false,
+                  "total": 116
+                }
+              ]
+            },
+            "tags": [
+              "martial",
+              "ranged",
+              "poison",
+              "projectile",
+              "dot"
+            ],
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 70,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 70
+            }
+          },
+          "damageType": "poison",
+          "turnRate": 0,
+          "penetrations": 0,
+          "explosionRadius": 0,
+          "previous": {
+            "x": 11,
+            "y": 10
+          },
+          "projectileId": 1,
+          "contact": {
+            "x": 11.1,
+            "y": 10
+          },
+          "type": "hit_resolved",
+          "amount": 116,
+          "tick": 8,
+          "category": "direct"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 38,
+          "skill": "poison_arrow",
+          "tick": 38,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 38,
+          "skill": "poison_arrow",
+          "tick": 68,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 40,
+          "skill": "poison_arrow",
+          "tick": 98,
+          "category": "periodic",
+          "damageType": "poison"
+        }
+      ]
+    },
+    {
+      "id": "poison_arrow",
+      "level": 50,
+      "rank": 1,
+      "stats": {
+        "hp": 100000,
+        "attack": 110,
+        "armor": 0,
+        "speed": 6,
+        "mana": 10000,
+        "regen": 0,
+        "effects": [],
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 1.47
+          }
+        ],
+        "damageAdd": 1.47,
+        "damageMult": 1,
+        "critChance": 0.2,
+        "lifesteal": 0.1
+      },
+      "skill": {
+        "id": "poison_arrow",
+        "category": "ranged",
+        "unlockLevel": 12,
+        "name": "毒箭",
+        "kind": "projectile",
+        "damage": 543,
+        "range": 11,
+        "radius": 0.35,
+        "cooldown": 70,
+        "cost": 14,
+        "windup": 6,
+        "duration": 90,
+        "description": "造成持续毒性伤害",
+        "weapons": [
+          "bow"
+        ],
+        "mechanics": {
+          "damageType": "poison",
+          "targeting": "enemy",
+          "projectile": {
+            "collisionRadius": 0.35,
+            "penetrations": 0,
+            "turnRate": 0,
+            "explosionRadius": 0
+          },
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 271
+            }
+          ]
+        },
+        "tags": [
+          "martial",
+          "ranged",
+          "poison",
+          "projectile",
+          "dot"
+        ],
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 70,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 70
+        }
+      },
+      "events": [
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "cast_started",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "poison_arrow",
+          "windup": 6,
+          "radius": 0.35,
+          "tick": 0
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "cast_released",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "poison_arrow",
+          "radius": 0.35,
+          "duration": 90,
+          "tick": 6,
+          "part": 1
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "direction": {
+            "x": 1,
+            "y": 0
+          },
+          "damage": 543,
+          "life": 37,
+          "enemy": false,
+          "pierce": false,
+          "skill": "poison_arrow",
+          "radius": 0.35,
+          "owner": "hero",
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "hit": {},
+          "resolvedSkill": {
+            "id": "poison_arrow",
+            "category": "ranged",
+            "unlockLevel": 12,
+            "name": "毒箭",
+            "kind": "projectile",
+            "damage": 543,
+            "range": 11,
+            "radius": 0.35,
+            "cooldown": 70,
+            "cost": 14,
+            "windup": 6,
+            "duration": 90,
+            "description": "造成持续毒性伤害",
+            "weapons": [
+              "bow"
+            ],
+            "mechanics": {
+              "damageType": "poison",
+              "targeting": "enemy",
+              "projectile": {
+                "collisionRadius": 0.35,
+                "penetrations": 0,
+                "turnRate": 0,
+                "explosionRadius": 0
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "interval": 30,
+                  "damageType": "poison",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false,
+                  "total": 271
+                }
+              ]
+            },
+            "tags": [
+              "martial",
+              "ranged",
+              "poison",
+              "projectile",
+              "dot"
+            ],
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 70,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 70
+            }
+          },
+          "damageType": "poison",
+          "turnRate": 0,
+          "penetrations": 0,
+          "explosionRadius": 0,
+          "previous": {
+            "x": 11,
+            "y": 10
+          },
+          "projectileId": 1,
+          "contact": {
+            "x": 11.1,
+            "y": 10
+          },
+          "type": "hit_resolved",
+          "amount": 272,
+          "tick": 8,
+          "category": "direct"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 90,
+          "skill": "poison_arrow",
+          "tick": 38,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 90,
+          "skill": "poison_arrow",
+          "tick": 68,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 91,
+          "skill": "poison_arrow",
+          "tick": 98,
+          "category": "periodic",
+          "damageType": "poison"
+        }
+      ]
+    },
+    {
+      "id": "poison_arrow",
+      "level": 50,
+      "rank": 5,
+      "stats": {
+        "hp": 100000,
+        "attack": 110,
+        "armor": 0,
+        "speed": 6,
+        "mana": 10000,
+        "regen": 0,
+        "effects": [],
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 1.47
+          }
+        ],
+        "damageAdd": 1.47,
+        "damageMult": 1,
+        "critChance": 0.2,
+        "lifesteal": 0.1
+      },
+      "skill": {
+        "id": "poison_arrow",
+        "category": "ranged",
+        "unlockLevel": 12,
+        "name": "毒箭",
+        "kind": "projectile",
+        "damage": 804,
+        "range": 11,
+        "radius": 0.35,
+        "cooldown": 70,
+        "cost": 14,
+        "windup": 6,
+        "duration": 90,
+        "description": "造成持续毒性伤害",
+        "weapons": [
+          "bow"
+        ],
+        "mechanics": {
+          "damageType": "poison",
+          "targeting": "enemy",
+          "projectile": {
+            "collisionRadius": 0.35,
+            "penetrations": 0,
+            "turnRate": 0,
+            "explosionRadius": 0
+          },
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 402
+            }
+          ]
+        },
+        "tags": [
+          "martial",
+          "ranged",
+          "poison",
+          "projectile",
+          "dot"
+        ],
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 70,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 70
+        }
+      },
+      "events": [
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "cast_started",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "poison_arrow",
+          "windup": 6,
+          "radius": 0.35,
+          "tick": 0
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "cast_released",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "poison_arrow",
+          "radius": 0.35,
+          "duration": 90,
+          "tick": 6,
+          "part": 1
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "direction": {
+            "x": 1,
+            "y": 0
+          },
+          "damage": 804,
+          "life": 37,
+          "enemy": false,
+          "pierce": false,
+          "skill": "poison_arrow",
+          "radius": 0.35,
+          "owner": "hero",
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "hit": {},
+          "resolvedSkill": {
+            "id": "poison_arrow",
+            "category": "ranged",
+            "unlockLevel": 12,
+            "name": "毒箭",
+            "kind": "projectile",
+            "damage": 804,
+            "range": 11,
+            "radius": 0.35,
+            "cooldown": 70,
+            "cost": 14,
+            "windup": 6,
+            "duration": 90,
+            "description": "造成持续毒性伤害",
+            "weapons": [
+              "bow"
+            ],
+            "mechanics": {
+              "damageType": "poison",
+              "targeting": "enemy",
+              "projectile": {
+                "collisionRadius": 0.35,
+                "penetrations": 0,
+                "turnRate": 0,
+                "explosionRadius": 0
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "interval": 30,
+                  "damageType": "poison",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false,
+                  "total": 402
+                }
+              ]
+            },
+            "tags": [
+              "martial",
+              "ranged",
+              "poison",
+              "projectile",
+              "dot"
+            ],
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 70,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 70
+            }
+          },
+          "damageType": "poison",
+          "turnRate": 0,
+          "penetrations": 0,
+          "explosionRadius": 0,
+          "previous": {
+            "x": 11,
+            "y": 10
+          },
+          "projectileId": 1,
+          "contact": {
+            "x": 11.1,
+            "y": 10
+          },
+          "type": "hit_resolved",
+          "amount": 402,
+          "tick": 8,
+          "category": "direct"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 134,
+          "skill": "poison_arrow",
+          "tick": 38,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 134,
+          "skill": "poison_arrow",
+          "tick": 68,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/poison_arrow",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 134,
+          "skill": "poison_arrow",
+          "tick": 98,
+          "category": "periodic",
+          "damageType": "poison"
+        }
+      ]
+    },
+    {
+      "id": "venom_needle",
+      "level": 1,
+      "rank": 1,
+      "stats": {
+        "hp": 100000,
+        "attack": 12,
+        "armor": 0,
+        "speed": 6,
+        "mana": 10000,
+        "regen": 0,
+        "effects": [],
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 0
+          }
+        ],
+        "damageAdd": 0,
+        "damageMult": 1,
+        "critChance": 0.2,
+        "lifesteal": 0.1
+      },
+      "skill": {
+        "id": "venom_needle",
+        "category": "ranged",
+        "unlockLevel": 4,
+        "name": "淬毒针",
+        "kind": "projectile",
+        "damage": 22,
+        "range": 11,
+        "radius": 0.25,
+        "cooldown": 50,
+        "cost": 10,
+        "windup": 4,
+        "duration": 90,
+        "description": "穿透两名敌人并使其中毒",
+        "weapons": [
+          "hidden"
+        ],
+        "mechanics": {
+          "damageType": "poison",
+          "targeting": "enemy",
+          "projectile": {
+            "collisionRadius": 0.25,
+            "penetrations": 2,
+            "turnRate": 0,
+            "explosionRadius": 0
+          },
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 11
+            }
+          ]
+        },
+        "tags": [
+          "martial",
+          "ranged",
+          "poison",
+          "projectile",
+          "dot"
+        ],
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 50,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 50
+        }
+      },
+      "events": [
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "cast_started",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "venom_needle",
+          "windup": 4,
+          "radius": 0.25,
+          "tick": 0
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "cast_released",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "venom_needle",
+          "radius": 0.25,
+          "duration": 90,
+          "tick": 4,
+          "part": 1
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "direction": {
+            "x": 1,
+            "y": 0
+          },
+          "damage": 22,
+          "life": 37,
+          "enemy": false,
+          "pierce": true,
+          "skill": "venom_needle",
+          "radius": 0.25,
+          "owner": "hero",
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "hit": {},
+          "resolvedSkill": {
+            "id": "venom_needle",
+            "category": "ranged",
+            "unlockLevel": 4,
+            "name": "淬毒针",
+            "kind": "projectile",
+            "damage": 22,
+            "range": 11,
+            "radius": 0.25,
+            "cooldown": 50,
+            "cost": 10,
+            "windup": 4,
+            "duration": 90,
+            "description": "穿透两名敌人并使其中毒",
+            "weapons": [
+              "hidden"
+            ],
+            "mechanics": {
+              "damageType": "poison",
+              "targeting": "enemy",
+              "projectile": {
+                "collisionRadius": 0.25,
+                "penetrations": 2,
+                "turnRate": 0,
+                "explosionRadius": 0
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "interval": 30,
+                  "damageType": "poison",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false,
+                  "total": 11
+                }
+              ]
+            },
+            "tags": [
+              "martial",
+              "ranged",
+              "poison",
+              "projectile",
+              "dot"
+            ],
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 50,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 50
+            }
+          },
+          "damageType": "poison",
+          "turnRate": 0,
+          "penetrations": 2,
+          "explosionRadius": 0,
+          "previous": {
+            "x": 11,
+            "y": 10
+          },
+          "projectileId": 1,
+          "contact": {
+            "x": 11.2,
+            "y": 10
+          },
+          "type": "hit_resolved",
+          "amount": 11,
+          "tick": 6,
+          "category": "direct"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 3,
+          "skill": "venom_needle",
+          "tick": 36,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 3,
+          "skill": "venom_needle",
+          "tick": 66,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 5,
+          "skill": "venom_needle",
+          "tick": 96,
+          "category": "periodic",
+          "damageType": "poison"
+        }
+      ]
+    },
+    {
+      "id": "venom_needle",
+      "level": 1,
+      "rank": 5,
+      "stats": {
+        "hp": 100000,
+        "attack": 12,
+        "armor": 0,
+        "speed": 6,
+        "mana": 10000,
+        "regen": 0,
+        "effects": [],
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 0
+          }
+        ],
+        "damageAdd": 0,
+        "damageMult": 1,
+        "critChance": 0.2,
+        "lifesteal": 0.1
+      },
+      "skill": {
+        "id": "venom_needle",
+        "category": "ranged",
+        "unlockLevel": 4,
+        "name": "淬毒针",
+        "kind": "projectile",
+        "damage": 33,
+        "range": 11,
+        "radius": 0.25,
+        "cooldown": 50,
+        "cost": 10,
+        "windup": 4,
+        "duration": 90,
+        "description": "穿透两名敌人并使其中毒",
+        "weapons": [
+          "hidden"
+        ],
+        "mechanics": {
+          "damageType": "poison",
+          "targeting": "enemy",
+          "projectile": {
+            "collisionRadius": 0.25,
+            "penetrations": 2,
+            "turnRate": 0,
+            "explosionRadius": 0
+          },
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 16
+            }
+          ]
+        },
+        "tags": [
+          "martial",
+          "ranged",
+          "poison",
+          "projectile",
+          "dot"
+        ],
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 50,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 50
+        }
+      },
+      "events": [
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "cast_started",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "venom_needle",
+          "windup": 4,
+          "radius": 0.25,
+          "tick": 0
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "cast_released",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "venom_needle",
+          "radius": 0.25,
+          "duration": 90,
+          "tick": 4,
+          "part": 1
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "direction": {
+            "x": 1,
+            "y": 0
+          },
+          "damage": 33,
+          "life": 37,
+          "enemy": false,
+          "pierce": true,
+          "skill": "venom_needle",
+          "radius": 0.25,
+          "owner": "hero",
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "hit": {},
+          "resolvedSkill": {
+            "id": "venom_needle",
+            "category": "ranged",
+            "unlockLevel": 4,
+            "name": "淬毒针",
+            "kind": "projectile",
+            "damage": 33,
+            "range": 11,
+            "radius": 0.25,
+            "cooldown": 50,
+            "cost": 10,
+            "windup": 4,
+            "duration": 90,
+            "description": "穿透两名敌人并使其中毒",
+            "weapons": [
+              "hidden"
+            ],
+            "mechanics": {
+              "damageType": "poison",
+              "targeting": "enemy",
+              "projectile": {
+                "collisionRadius": 0.25,
+                "penetrations": 2,
+                "turnRate": 0,
+                "explosionRadius": 0
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "interval": 30,
+                  "damageType": "poison",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false,
+                  "total": 16
+                }
+              ]
+            },
+            "tags": [
+              "martial",
+              "ranged",
+              "poison",
+              "projectile",
+              "dot"
+            ],
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 50,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 50
+            }
+          },
+          "damageType": "poison",
+          "turnRate": 0,
+          "penetrations": 2,
+          "explosionRadius": 0,
+          "previous": {
+            "x": 11,
+            "y": 10
+          },
+          "projectileId": 1,
+          "contact": {
+            "x": 11.2,
+            "y": 10
+          },
+          "type": "hit_resolved",
+          "amount": 17,
+          "tick": 6,
+          "category": "direct"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 5,
+          "skill": "venom_needle",
+          "tick": 36,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 5,
+          "skill": "venom_needle",
+          "tick": 66,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 6,
+          "skill": "venom_needle",
+          "tick": 96,
+          "category": "periodic",
+          "damageType": "poison"
+        }
+      ]
+    },
+    {
+      "id": "venom_needle",
+      "level": 20,
+      "rank": 1,
+      "stats": {
+        "hp": 100000,
+        "attack": 50,
+        "armor": 0,
+        "speed": 6,
+        "mana": 10000,
+        "regen": 0,
+        "effects": [],
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 0.57
+          }
+        ],
+        "damageAdd": 0.57,
+        "damageMult": 1,
+        "critChance": 0.2,
+        "lifesteal": 0.1
+      },
+      "skill": {
+        "id": "venom_needle",
+        "category": "ranged",
+        "unlockLevel": 4,
+        "name": "淬毒针",
+        "kind": "projectile",
+        "damage": 146,
+        "range": 11,
+        "radius": 0.25,
+        "cooldown": 50,
+        "cost": 10,
+        "windup": 4,
+        "duration": 90,
+        "description": "穿透两名敌人并使其中毒",
+        "weapons": [
+          "hidden"
+        ],
+        "mechanics": {
+          "damageType": "poison",
+          "targeting": "enemy",
+          "projectile": {
+            "collisionRadius": 0.25,
+            "penetrations": 2,
+            "turnRate": 0,
+            "explosionRadius": 0
+          },
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 73
+            }
+          ]
+        },
+        "tags": [
+          "martial",
+          "ranged",
+          "poison",
+          "projectile",
+          "dot"
+        ],
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 50,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 50
+        }
+      },
+      "events": [
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "cast_started",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "venom_needle",
+          "windup": 4,
+          "radius": 0.25,
+          "tick": 0
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "cast_released",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "venom_needle",
+          "radius": 0.25,
+          "duration": 90,
+          "tick": 4,
+          "part": 1
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "direction": {
+            "x": 1,
+            "y": 0
+          },
+          "damage": 146,
+          "life": 37,
+          "enemy": false,
+          "pierce": true,
+          "skill": "venom_needle",
+          "radius": 0.25,
+          "owner": "hero",
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "hit": {},
+          "resolvedSkill": {
+            "id": "venom_needle",
+            "category": "ranged",
+            "unlockLevel": 4,
+            "name": "淬毒针",
+            "kind": "projectile",
+            "damage": 146,
+            "range": 11,
+            "radius": 0.25,
+            "cooldown": 50,
+            "cost": 10,
+            "windup": 4,
+            "duration": 90,
+            "description": "穿透两名敌人并使其中毒",
+            "weapons": [
+              "hidden"
+            ],
+            "mechanics": {
+              "damageType": "poison",
+              "targeting": "enemy",
+              "projectile": {
+                "collisionRadius": 0.25,
+                "penetrations": 2,
+                "turnRate": 0,
+                "explosionRadius": 0
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "interval": 30,
+                  "damageType": "poison",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false,
+                  "total": 73
+                }
+              ]
+            },
+            "tags": [
+              "martial",
+              "ranged",
+              "poison",
+              "projectile",
+              "dot"
+            ],
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 50,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 50
+            }
+          },
+          "damageType": "poison",
+          "turnRate": 0,
+          "penetrations": 2,
+          "explosionRadius": 0,
+          "previous": {
+            "x": 11,
+            "y": 10
+          },
+          "projectileId": 1,
+          "contact": {
+            "x": 11.2,
+            "y": 10
+          },
+          "type": "hit_resolved",
+          "amount": 73,
+          "tick": 6,
+          "category": "direct"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 24,
+          "skill": "venom_needle",
+          "tick": 36,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 24,
+          "skill": "venom_needle",
+          "tick": 66,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 25,
+          "skill": "venom_needle",
+          "tick": 96,
+          "category": "periodic",
+          "damageType": "poison"
+        }
+      ]
+    },
+    {
+      "id": "venom_needle",
+      "level": 20,
+      "rank": 5,
+      "stats": {
+        "hp": 100000,
+        "attack": 50,
+        "armor": 0,
+        "speed": 6,
+        "mana": 10000,
+        "regen": 0,
+        "effects": [],
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 0.57
+          }
+        ],
+        "damageAdd": 0.57,
+        "damageMult": 1,
+        "critChance": 0.2,
+        "lifesteal": 0.1
+      },
+      "skill": {
+        "id": "venom_needle",
+        "category": "ranged",
+        "unlockLevel": 4,
+        "name": "淬毒针",
+        "kind": "projectile",
+        "damage": 216,
+        "range": 11,
+        "radius": 0.25,
+        "cooldown": 50,
+        "cost": 10,
+        "windup": 4,
+        "duration": 90,
+        "description": "穿透两名敌人并使其中毒",
+        "weapons": [
+          "hidden"
+        ],
+        "mechanics": {
+          "damageType": "poison",
+          "targeting": "enemy",
+          "projectile": {
+            "collisionRadius": 0.25,
+            "penetrations": 2,
+            "turnRate": 0,
+            "explosionRadius": 0
+          },
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 108
+            }
+          ]
+        },
+        "tags": [
+          "martial",
+          "ranged",
+          "poison",
+          "projectile",
+          "dot"
+        ],
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 50,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 50
+        }
+      },
+      "events": [
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "cast_started",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "venom_needle",
+          "windup": 4,
+          "radius": 0.25,
+          "tick": 0
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "cast_released",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "venom_needle",
+          "radius": 0.25,
+          "duration": 90,
+          "tick": 4,
+          "part": 1
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "direction": {
+            "x": 1,
+            "y": 0
+          },
+          "damage": 216,
+          "life": 37,
+          "enemy": false,
+          "pierce": true,
+          "skill": "venom_needle",
+          "radius": 0.25,
+          "owner": "hero",
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "hit": {},
+          "resolvedSkill": {
+            "id": "venom_needle",
+            "category": "ranged",
+            "unlockLevel": 4,
+            "name": "淬毒针",
+            "kind": "projectile",
+            "damage": 216,
+            "range": 11,
+            "radius": 0.25,
+            "cooldown": 50,
+            "cost": 10,
+            "windup": 4,
+            "duration": 90,
+            "description": "穿透两名敌人并使其中毒",
+            "weapons": [
+              "hidden"
+            ],
+            "mechanics": {
+              "damageType": "poison",
+              "targeting": "enemy",
+              "projectile": {
+                "collisionRadius": 0.25,
+                "penetrations": 2,
+                "turnRate": 0,
+                "explosionRadius": 0
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "interval": 30,
+                  "damageType": "poison",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false,
+                  "total": 108
+                }
+              ]
+            },
+            "tags": [
+              "martial",
+              "ranged",
+              "poison",
+              "projectile",
+              "dot"
+            ],
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 50,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 50
+            }
+          },
+          "damageType": "poison",
+          "turnRate": 0,
+          "penetrations": 2,
+          "explosionRadius": 0,
+          "previous": {
+            "x": 11,
+            "y": 10
+          },
+          "projectileId": 1,
+          "contact": {
+            "x": 11.2,
+            "y": 10
+          },
+          "type": "hit_resolved",
+          "amount": 108,
+          "tick": 6,
+          "category": "direct"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 36,
+          "skill": "venom_needle",
+          "tick": 36,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 36,
+          "skill": "venom_needle",
+          "tick": 66,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 36,
+          "skill": "venom_needle",
+          "tick": 96,
+          "category": "periodic",
+          "damageType": "poison"
+        }
+      ]
+    },
+    {
+      "id": "venom_needle",
+      "level": 50,
+      "rank": 1,
+      "stats": {
+        "hp": 100000,
+        "attack": 110,
+        "armor": 0,
+        "speed": 6,
+        "mana": 10000,
+        "regen": 0,
+        "effects": [],
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 1.47
+          }
+        ],
+        "damageAdd": 1.47,
+        "damageMult": 1,
+        "critChance": 0.2,
+        "lifesteal": 0.1
+      },
+      "skill": {
+        "id": "venom_needle",
+        "category": "ranged",
+        "unlockLevel": 4,
+        "name": "淬毒针",
+        "kind": "projectile",
+        "damage": 505,
+        "range": 11,
+        "radius": 0.25,
+        "cooldown": 50,
+        "cost": 10,
+        "windup": 4,
+        "duration": 90,
+        "description": "穿透两名敌人并使其中毒",
+        "weapons": [
+          "hidden"
+        ],
+        "mechanics": {
+          "damageType": "poison",
+          "targeting": "enemy",
+          "projectile": {
+            "collisionRadius": 0.25,
+            "penetrations": 2,
+            "turnRate": 0,
+            "explosionRadius": 0
+          },
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 252
+            }
+          ]
+        },
+        "tags": [
+          "martial",
+          "ranged",
+          "poison",
+          "projectile",
+          "dot"
+        ],
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 50,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 50
+        }
+      },
+      "events": [
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "cast_started",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "venom_needle",
+          "windup": 4,
+          "radius": 0.25,
+          "tick": 0
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "cast_released",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "venom_needle",
+          "radius": 0.25,
+          "duration": 90,
+          "tick": 4,
+          "part": 1
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "direction": {
+            "x": 1,
+            "y": 0
+          },
+          "damage": 505,
+          "life": 37,
+          "enemy": false,
+          "pierce": true,
+          "skill": "venom_needle",
+          "radius": 0.25,
+          "owner": "hero",
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "hit": {},
+          "resolvedSkill": {
+            "id": "venom_needle",
+            "category": "ranged",
+            "unlockLevel": 4,
+            "name": "淬毒针",
+            "kind": "projectile",
+            "damage": 505,
+            "range": 11,
+            "radius": 0.25,
+            "cooldown": 50,
+            "cost": 10,
+            "windup": 4,
+            "duration": 90,
+            "description": "穿透两名敌人并使其中毒",
+            "weapons": [
+              "hidden"
+            ],
+            "mechanics": {
+              "damageType": "poison",
+              "targeting": "enemy",
+              "projectile": {
+                "collisionRadius": 0.25,
+                "penetrations": 2,
+                "turnRate": 0,
+                "explosionRadius": 0
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "interval": 30,
+                  "damageType": "poison",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false,
+                  "total": 252
+                }
+              ]
+            },
+            "tags": [
+              "martial",
+              "ranged",
+              "poison",
+              "projectile",
+              "dot"
+            ],
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 50,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 50
+            }
+          },
+          "damageType": "poison",
+          "turnRate": 0,
+          "penetrations": 2,
+          "explosionRadius": 0,
+          "previous": {
+            "x": 11,
+            "y": 10
+          },
+          "projectileId": 1,
+          "contact": {
+            "x": 11.2,
+            "y": 10
+          },
+          "type": "hit_resolved",
+          "amount": 253,
+          "tick": 6,
+          "category": "direct"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 84,
+          "skill": "venom_needle",
+          "tick": 36,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 84,
+          "skill": "venom_needle",
+          "tick": 66,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 84,
+          "skill": "venom_needle",
+          "tick": 96,
+          "category": "periodic",
+          "damageType": "poison"
+        }
+      ]
+    },
+    {
+      "id": "venom_needle",
+      "level": 50,
+      "rank": 5,
+      "stats": {
+        "hp": 100000,
+        "attack": 110,
+        "armor": 0,
+        "speed": 6,
+        "mana": 10000,
+        "regen": 0,
+        "effects": [],
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 1.47
+          }
+        ],
+        "damageAdd": 1.47,
+        "damageMult": 1,
+        "critChance": 0.2,
+        "lifesteal": 0.1
+      },
+      "skill": {
+        "id": "venom_needle",
+        "category": "ranged",
+        "unlockLevel": 4,
+        "name": "淬毒针",
+        "kind": "projectile",
+        "damage": 747,
+        "range": 11,
+        "radius": 0.25,
+        "cooldown": 50,
+        "cost": 10,
+        "windup": 4,
+        "duration": 90,
+        "description": "穿透两名敌人并使其中毒",
+        "weapons": [
+          "hidden"
+        ],
+        "mechanics": {
+          "damageType": "poison",
+          "targeting": "enemy",
+          "projectile": {
+            "collisionRadius": 0.25,
+            "penetrations": 2,
+            "turnRate": 0,
+            "explosionRadius": 0
+          },
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 373
+            }
+          ]
+        },
+        "tags": [
+          "martial",
+          "ranged",
+          "poison",
+          "projectile",
+          "dot"
+        ],
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 50,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 50
+        }
+      },
+      "events": [
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "cast_started",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "venom_needle",
+          "windup": 4,
+          "radius": 0.25,
+          "tick": 0
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "cast_released",
+          "id": "hero",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "skill": "venom_needle",
+          "radius": 0.25,
+          "duration": 90,
+          "tick": 4,
+          "part": 1
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "direction": {
+            "x": 1,
+            "y": 0
+          },
+          "damage": 747,
+          "life": 37,
+          "enemy": false,
+          "pierce": true,
+          "skill": "venom_needle",
+          "radius": 0.25,
+          "owner": "hero",
+          "origin": {
+            "x": 10,
+            "y": 10
+          },
+          "target": {
+            "x": 12,
+            "y": 10
+          },
+          "hit": {},
+          "resolvedSkill": {
+            "id": "venom_needle",
+            "category": "ranged",
+            "unlockLevel": 4,
+            "name": "淬毒针",
+            "kind": "projectile",
+            "damage": 747,
+            "range": 11,
+            "radius": 0.25,
+            "cooldown": 50,
+            "cost": 10,
+            "windup": 4,
+            "duration": 90,
+            "description": "穿透两名敌人并使其中毒",
+            "weapons": [
+              "hidden"
+            ],
+            "mechanics": {
+              "damageType": "poison",
+              "targeting": "enemy",
+              "projectile": {
+                "collisionRadius": 0.25,
+                "penetrations": 2,
+                "turnRate": 0,
+                "explosionRadius": 0
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "interval": 30,
+                  "damageType": "poison",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false,
+                  "total": 373
+                }
+              ]
+            },
+            "tags": [
+              "martial",
+              "ranged",
+              "poison",
+              "projectile",
+              "dot"
+            ],
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 50,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 50
+            }
+          },
+          "damageType": "poison",
+          "turnRate": 0,
+          "penetrations": 2,
+          "explosionRadius": 0,
+          "previous": {
+            "x": 11,
+            "y": 10
+          },
+          "projectileId": 1,
+          "contact": {
+            "x": 11.2,
+            "y": 10
+          },
+          "type": "hit_resolved",
+          "amount": 374,
+          "tick": 6,
+          "category": "direct"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 124,
+          "skill": "venom_needle",
+          "tick": 36,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 124,
+          "skill": "venom_needle",
+          "tick": 66,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 1,
+          "sourceId": "hero",
+          "targetId": "target",
+          "vfxKey": "player/venom_needle",
+          "type": "hit_resolved",
+          "id": "target",
+          "position": {
+            "x": 12,
+            "y": 10
+          },
+          "amount": 125,
+          "skill": "venom_needle",
+          "tick": 96,
+          "category": "periodic",
+          "damageType": "poison"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+ ✓ tests/build-variety-r2.test.ts (48 tests) 1307ms
+   ✓ upper-bound chance is guaranteed in 100 seeds; telemetry survives checkpoint  594ms
+ ✓ tests/vfx-v2.test.ts (5 tests) 306ms
+ ✓ tests/combat-event-feedback.test.ts (4 tests) 156ms
+ ❯ tests/pacing-budget-close.test.ts (1 test | 1 failed) 79ms
+   × 显式修正偏离目标的经验需求，同时只调整已有身份机制参数 78ms
+ ✓ tests/copy-voice.test.ts (4 tests) 6ms
+ ✓ tests/pacing-derive.test.ts (3 tests) 40ms
+ ✓ tests/pacing-mechanisms.test.ts (5 tests) 38ms
+ ✓ tests/pacing-calibrate.test.ts (1 test) 30ms
+ ✓ tests/aspect-description-consistency.test.ts (9 tests) 10ms
+ ✓ tests/pacing-validation.test.ts (3 tests) 7ms
+ ✓ tests/pacing-refine.test.ts (1 test) 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/pacing-budget-close.test.ts > 显式修正偏离目标的经验需求，同时只调整已有身份机制参数
+AssertionError: expected [ { skills: [ …(2) ], …(2) } ] to deeply equal [ { skills: [ …(2) ], …(2) } ]
+
+- Expected
++ Received
+
+@@ -22,11 +22,11 @@
+          "value": 1,
+        },
+        {
+          "op": "mul",
+          "path": "damage",
+-         "value": 0.1,
++         "value": 0.15,
+        },
+      ],
+      "scalePeriodicBudget": true,
+      "skills": [
+        "throwing_knife",
+
+ ❯ tests/pacing-budget-close.test.ts:12:247
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 10 passed (11)
+      Tests  1 failed | 83 passed (84)
+   Start at  00:06:51
+   Duration  12.27s (transform 1.73s, setup 0ms, import 8.34s, tests 1.98s, environment 1ms)
+

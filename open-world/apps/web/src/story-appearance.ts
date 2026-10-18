@@ -1,0 +1,4 @@
+import type {ResolvedAppearance} from '../../../packages/contracts/index.ts';
+import {storyNpcs} from '../../../packages/content/story-campaign.ts';
+const families:Record<string,ResolvedAppearance['family']>={keeper:'magic',scout:'bow',smith:'fist',herbalist:'magic',warden:'sword',scholar:'magic',dragonkin:'axe'};
+export function storyNpcAppearance(id:string):ResolvedAppearance{const npc=storyNpcs.find(n=>n.id===id);if(!npc)throw Error('Unknown story NPC '+id);const family=families[npc.id];if(!family)throw Error('Story NPC has no appearance family '+id);return {rig:'modular-hero',family,styleProfile:'v2-soft',revision:0,parts:Object.fromEntries(['head','body','hands','legs','feet','back','weapon'].map(part=>[part,{setId:part==='head'&&npc.id==='scholar'?'100011':npc.setId}])) as ResolvedAppearance['parts']};}

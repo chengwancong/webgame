@@ -1,0 +1,29 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+ ❯ tests/build-variety-augment-offers.test.ts (7 tests | 1 failed) 23ms
+   ✓ 100 deterministic seeds yield unique same-tier options with a build match and respect set requirements 15ms
+   ✓ rerolls retain the tier, avoid the old group, consume once and survive serialize/reconnect 1ms
+   ✓ chooses only the current offer, rejects stale versions and deduplicates matching commands 1ms
+   ✓ public views have no private RNG or command ledger and own their arrays 0ms
+   ✓ disabled, exhausted, pending and malformed tables fail explicitly 1ms
+   ✓ requires enough candidates and one applicable option without inventing a hidden fallback 0ms
+   × reroll keeps the only applicable option when replacing it would leave three incompatible choices 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/build-variety-augment-offers.test.ts > reroll keeps the only applicable option when replacing it would leave three incompatible choices
+Error: No option can match this build
+ ❯ offerAugments packages/rules/run-augments.ts:16:195
+
+ ❯ rerollAugments packages/rules/run-augments.ts:30:151
+ ❯ tests/build-variety-augment-offers.test.ts:43:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  01:42:14
+   Duration  254ms (transform 54ms, setup 0ms, import 112ms, tests 23ms, environment 0ms)
+

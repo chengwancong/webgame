@@ -1,0 +1,150 @@
+- generic "游戏世界"
+- region "角色状态":
+  - button "打开人物":
+    - img "角色外观"
+    - generic "自然日程驾驶器"
+    - generic: Lv. 31
+  - meter "生命":
+    - generic: 963 / 963
+  - meter "灵力":
+    - generic: 100 / 100
+- button "展开区域地图":
+  - generic "拾星港"
+- heading "拾星港" [level=1]
+- text: 群岛的主港，每次远航都从这里出发
+- status:
+  - strong: 背包已满 73/60
+  - button "整理":
+    - generic: 整理
+  - generic: 整理装备后再出发
+- generic "金币":
+  - generic: "8358"
+- toolbar "系统入口":
+  - button "背包，装备 73/60，待领取 0 件":
+    - generic: 行囊
+  - button "技能":
+    - generic: 技能
+  - button "养成" [expanded]:
+    - generic: 养成
+  - button "外观":
+    - generic: 外观
+  - button "任务":
+    - generic: 任务
+  - button "设置":
+    - generic: 设置
+- generic: 消耗 10 金币
+- generic: 消耗 30 金币
+- generic: 消耗 30 金币
+- dialog "养成":
+  - banner:
+    - heading "养成" [level=2]
+    - button "关闭":
+      - generic: 关闭
+  - tablist "养成分类":
+    - tab "武器盘":
+      - generic: 武器盘
+    - tab "铭纹拓印":
+      - generic: 铭纹拓印
+    - tab "天赋" [selected]:
+      - generic: 天赋
+    - tab "召唤石":
+      - generic: 召唤石
+    - tab "突破觉醒":
+      - generic: 突破觉醒
+    - tab "声望专业":
+      - generic: 声望专业
+    - tab "挑战赛季":
+      - generic: 挑战赛季
+    - tab "巅峰雕文 尚未开放":
+      - generic: 巅峰雕文
+      - img "尚未开放"
+  - tablist "天赋模块":
+    - tab "伤害" [selected]:
+      - generic: 伤害
+    - tab "防御":
+      - generic: 防御
+    - tab "辅助":
+      - generic: 辅助
+    - tab "特殊":
+      - generic: 特殊
+  - button "攻击、暴击与武技／法术精通，关键天赋三选一。等级与声望奖励提供天赋点，四棵树共用。":
+  - generic "天赋点，可用 0，总数 30":
+    - generic: 可用天赋点
+    - generic: "0"
+  - button "总加成":
+    - generic: 总加成
+  - tabpanel "伤害天赋":
+    - region "伤害天赋条目":
+      - generic "伤害天赋":
+        - region "第 1 层":
+          - generic "第 1 层":
+            - generic: "1"
+          - button "锋锐，5/5，已投入，每级 攻击增幅 +2%，已投入满":
+            - meter "锋锐投入 5/5"
+          - generic: 锋锐
+          - generic: +2%
+          - button "致命，5/5，已投入，每级 暴击率 +1%，已投入满":
+            - meter "致命投入 5/5"
+          - generic: 致命
+          - generic: +1%
+        - region "第 2 层":
+          - generic "第 2 层":
+            - generic: "2"
+          - button "武技精通，3/3，已投入，每级 武技技能伤害 [×] +4%，已投入满":
+            - meter "武技精通投入 3/3"
+          - generic: 武技精通
+          - generic: +4%
+          - button "法术精通，0/3，未解锁，每级 法术技能伤害 [×] +4%，天赋点不足":
+            - meter "法术精通投入 0/3"
+          - generic: 法术精通
+          - generic: +4%
+        - region "第 3 层":
+          - generic "第 3 层":
+            - generic: "3"
+          - button "暴伤，1/3，已投入，每级 暴击倍率增幅 +6%" [pressed]:
+            - meter "暴伤投入 1/3"
+          - generic: 暴伤
+          - generic: +6%
+          - button "穿透，0/3，未解锁，每级 穿透 +4%，天赋点不足":
+            - meter "穿透投入 0/3"
+          - generic: 穿透
+          - generic: +4%
+        - region "第 4 层，二选一":
+          - generic "第 4 层"
+          - generic: 二选一
+          - button "猎杀残血，0/3，未解锁，每级 对残血伤害 +8%，天赋点不足":
+            - meter "猎杀残血投入 0/3"
+          - generic: 猎杀残血
+          - generic: +8%
+          - button "先发制人，0/3，未解锁，每级 对满血伤害 +8%，天赋点不足":
+            - meter "先发制人投入 0/3"
+          - generic: 先发制人
+          - generic: +8%
+        - paragraph: 第 5–5 层：本树投入更多点数后开放
+    - complementary "养成详情":
+      - heading "暴伤" [level=3]
+      - meter "暴伤等级 1/3"
+      - region "效果":
+        - heading "效果" [level=3]:
+          - generic: 效果
+        - text: 暴击倍率增幅
+        - strong: +6%
+      - region "条件与消耗":
+        - heading "条件 / 消耗" [level=3]:
+          - generic: 条件 / 消耗
+        - paragraph: 天赋点不足
+      - status:
+        - img "已确认"
+        - generic: 成长已保存。
+      - button "投入 1 点" [disabled]:
+        - generic: 投入 1 点
+      - button "批量投入" [disabled]:
+        - generic: 批量投入
+      - button "重置天赋":
+        - generic: 重置天赋
+- status: 拾星港
+- complementary "星潮海任务":
+  - generic: 阶段
+  - generic: 前往龙眠岛，挑战暮界提督·维洛
+  - button "→":
+    - generic: →

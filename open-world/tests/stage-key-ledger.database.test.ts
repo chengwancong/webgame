@@ -1,0 +1,35 @@
+import {beforeAll,afterAll,it,expect} from 'vitest';
+import {randomUUID} from 'node:crypto';
+import {Pool} from 'pg';
+import WebSocket from 'ws';
+import {createApp} from '../apps/api/src/app.ts';
+import {migrate} from '../apps/api/src/database.ts';
+import raw from '../packages/content/dungeons.json';
+import {resolveDungeonContent} from '../packages/content/dungeons.ts';
+import {regions,regionById,registerDungeonRegion} from '../packages/content/index.ts';
+import {resolveMonsterSpawn} from '../packages/rules/monster-stats.ts';
+import {monsterContent} from '../packages/content/monsters.ts';
+import {stageKeyPools} from '../apps/api/src/stage-key-pools.ts';
+import {starseaHub} from '../packages/content/starsea/index.ts';
+const dsn=process.env.AW_DATABASE_URL;if(!dsn)throw Error('Stage key ledger proof requires actual isolated PostgreSQL');
+const schema='qa_key_ledger_'+randomUUID().replaceAll('-',''),owner=new Pool({connectionString:dsn}),pool=new Pool({connectionString:dsn,options:'-c search_path='+schema,max:4});
+const template=monsterContent.templates.find(t=>t.curve==='starsea'&&!t.bossKey)!,boss=regionById('meadow-boss').spawns.find(s=>s.boss)!;
+const region={...regionById('meadow-boss'),id:'key-ledger-instance',width:48,height:48,safe:{x:10,y:10},portal:{x:5,y:10},obstacles:[],landmarks:[],spawns:[...Array.from({length:3},(_,i)=>resolveMonsterSpawn({id:'ledger-elite:'+i,template:template.id,rank:'elite',level:4,x:14+i*3,y:10})),resolveMonsterSpawn({id:'ledger-boss',template:boss.monster!.template,rank:'boss',level:4,x:28,y:10})]};
+registerDungeonRegion(region,'ss-map-wind');const source=structuredClone(raw) as any;source.definitions.push({id:'key-ledger-fixture',name:'回执与流水材料核验',kind:'normal',profiles:['realtime'],area:'ss-map-wind',stages:[region.id],numericStage:1,worldDrops:true,policy:{feature:'field-dungeon',monsterLevel:4,enemyScale:{hp:.000001,attack:.000001},timeLimitSeconds:30,returnRegion:starseaHub,augments:{enabled:false}}});const content=resolveDungeonContent(source);
+let app:ReturnType<typeof createApp>,origin:string,socket:WebSocket|undefined;const oldProbability=stageKeyPools[0].dropProbability;
+beforeAll(async()=>{await owner.query('CREATE SCHEMA '+schema);await migrate(pool);stageKeyPools[0].dropProbability=0;app=createApp(pool,{testLogin:true,dungeons:content});await app.listen({host:'127.0.0.1',port:0});origin='http://127.0.0.1:'+((app.server.address() as any).port);});
+afterAll(async()=>{stageKeyPools[0].dropProbability=oldProbability;socket?.close();await app?.close();await pool.end();await owner.query('DROP SCHEMA '+schema+' CASCADE');await owner.end();regions.splice(regions.indexOf(region),1);});
+it('keeps every actual elite fragment in character progress, instance gains, receipt and immutable ledger when ordinary world progression also awards',async()=>{
+ const login=await app.inject({method:'POST',url:'/api/session/login',payload:{username:'keyledger_'+randomUUID().replaceAll('-','').slice(0,10)}}),cookie=String(login.headers['set-cookie']).split(';')[0];
+ const request=(path:string,body?:unknown)=>app.inject({method:body===undefined?'GET':'POST',url:'/api/'+path,headers:{cookie},payload:body as any}),created=(await request('character',{name:'流水受控验证'})).json(),lease=(await request('control',{client_id:randomUUID()})).json().lease_id;
+ const state=(await pool.query('SELECT state FROM ow_characters WHERE id=$1',[created.id])).rows[0].state;state.level=50;await pool.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[state,created.id]);
+ const command=(op:string,extra:object={})=>request('dungeons/command',{command_id:randomUUID(),lease_id:lease,op,...extra}),createdRun=await command('create',{dungeon_id:'key-ledger-fixture'});expect(createdRun.statusCode,createdRun.body).toBe(200);const id=createdRun.json().instance.id;let frame:any;
+ socket=new WebSocket(origin.replace('http','ws')+'/api/dungeons/'+id+'/live',{headers:{cookie}});socket.on('message',raw=>{const message=JSON.parse(String(raw));if(message.type==='state')frame=message.instance;});await new Promise<void>((resolve,reject)=>{socket!.once('open',resolve);socket!.once('error',reject);});socket.send(JSON.stringify({type:'hello',lease_id:lease}));
+ const wait=async(predicate:()=>boolean)=>{const deadline=Date.now()+15000;while(!predicate()){if(Date.now()>deadline)throw Error('Actual server combat did not complete the controlled ledger encounter');await new Promise(r=>setTimeout(r,30));}};await wait(()=>Boolean(frame));expect((await command('ready',{instance_id:id})).statusCode).toBe(200);const started=await command('start',{instance_id:id});expect(started.statusCode).toBe(200);const eliteSources=new Set<string>(started.json().instance.battle.data.enemies.filter((e:any)=>e.monster?.rank==='elite'&&!e.boss).map((e:any)=>'kill:'+e.id));expect(eliteSources.size).toBe(3);socket.send(JSON.stringify({type:'input',input:{seq:1,kind:'mode',mode:'auto'}}));await wait(()=>frame?.status==='success');
+ const after=(await request('character')).json(),awards=(await pool.query("SELECT source,receipt FROM ow_dungeon_awards WHERE instance=$1 AND character=$2 AND source LIKE 'kill:%' ORDER BY created",[id,created.id])).rows.filter(r=>eliteSources.has(r.source));
+ expect(awards).toHaveLength(3);expect(after.world.stageKeys['stage:1'].materials).toBe(3);expect(frame.self.gains.materials['stage-key-fragment-1']).toBe(3);
+ const commandIds=awards.map(row=>row.receipt.command_id),ledger=(await pool.query('SELECT command,delta FROM ow_ledger WHERE character=$1 AND command=ANY($2::uuid[])',[created.id,commandIds])).rows;expect(ledger).toHaveLength(3);
+ for(const row of awards){expect(row.receipt.delta.progression.materials['stage-key-fragment-1']).toBe(1);expect(ledger.find(l=>l.command===row.receipt.command_id)!.delta).toEqual(row.receipt.delta);}
+ const received=awards.reduce((n,row)=>n+row.receipt.delta.progression.materials['stage-key-fragment-1'],0);expect(received).toBe(after.world.stageKeys['stage:1'].materials);
+ socket.close();socket=undefined;await app.close();app=createApp(pool,{testLogin:true,dungeons:content});await app.listen({host:'127.0.0.1',port:0});const response=await request('dungeons/'+id+'/result');expect(response.statusCode,response.body).toBe(200);const restored=response.json();expect(restored.instance.status).toBe('success');expect((await pool.query('SELECT count(*)::int n FROM ow_dungeon_awards WHERE instance=$1 AND character=$2 AND source=ANY($3::text[])',[id,created.id,[...eliteSources]])).rows[0].n).toBe(3);expect((await request('character')).json().world.stageKeys['stage:1'].materials).toBe(3);
+},30000);

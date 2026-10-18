@@ -1,0 +1,8 @@
+import {it,expect} from 'vitest';
+import {conversionZones,statConversionSchema} from '../packages/rules/stat-conversions.ts';
+import type {Stats} from '../packages/contracts/index.ts';
+const base:Stats={hp:1000,attack:20,armor:20,speed:6,mana:500,regen:0,effects:[]},speed={source:'tailwind',name:'疾行转伤',fromStat:'speedBonus' as const,toStat:'damageAdd' as const,ratio:.5};
+it('converts extra movement speed as a ratio rather than treating cells per second as percent',()=>{expect(conversionZones({...base,speed:9},{speed:6},[speed])[0].value).toBe(.25);expect(conversionZones(base,{speed:6},[speed])[0].value).toBe(0);});
+it('only converts cooldown reduction above the declared threshold',()=>{const c={source:'perpetual',name:'余时转伤',fromStat:'cdr' as const,toStat:'damageAdd' as const,threshold:.3,ratio:1};expect(conversionZones({...base,cdr:.5},{speed:6},[c])[0].value).toBeCloseTo(.2);expect(conversionZones({...base,cdr:.2},{speed:6},[c])[0].value).toBe(0);});
+it('a movement penalty cannot silently create negative damage and resolving never mutates stats',()=>{const stats={...base,speed:3.6},before=structuredClone(stats);expect(conversionZones(stats,{speed:6},[speed])[0].value).toBe(0);expect(stats).toEqual(before);});
+it('rejects unknown source fields, recursive target conversions and duplicate identities',()=>{expect(statConversionSchema.safeParse({...speed,fromStat:'unknown'}).success).toBe(false);expect(statConversionSchema.safeParse({...speed,toStat:'speed'}).success).toBe(false);expect(()=>conversionZones(base,{speed:0},[speed])).toThrow();expect(()=>conversionZones(base,{speed:6},[speed,speed])).toThrow('Duplicate');});

@@ -1,0 +1,5 @@
+import {readFile,writeFile} from 'node:fs/promises';
+const out='docs/reviews/playability-20261008/evidence',files=['api.log','api-mid.log','api-late.log','api-end.log','api-endfresh.log'];const result=[];
+for(const file of files){let source;try{source=await readFile(out+'/'+file,'utf8');}catch{continue;}const requests=new Map(),events=[];for(const line of source.split(/\r?\n/)){let r;try{r=JSON.parse(line);}catch{continue;}if(r.req)requests.set(r.reqId,r);if(r.res){const q=requests.get(r.reqId);if(q&&(r.res.statusCode>=400||/\/api\/(skills|quest|gear\/equip|reward|dungeons\/command|bounty\/board)/.test(q.req.url)))events.push({at:new Date(q.time).toISOString(),method:q.req.method,url:q.req.url,status:r.res.statusCode,ms:r.responseTime,requestId:r.reqId});}}
+ result.push({file,events,uncompleted:[...requests].filter(([id])=>!source.includes('"reqId":"'+id+'","res"')).length});}
+await writeFile(out+'/network-summary.json',JSON.stringify(result,null,2));console.log(result.map(r=>({file:r.file,events:r.events.length,errors:r.events.filter(e=>e.status>=400).length})));

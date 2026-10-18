@@ -1,0 +1,34 @@
+import assert from 'node:assert/strict';
+import {mkdir,writeFile,readFile,readdir} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {join} from 'node:path';
+import {randomUUID} from 'node:crypto';
+import {Pool} from 'pg';
+import {chromium} from 'playwright';
+import {root,startDatabase,child,stopChild,freePort,waitFor,registerApi} from './runtime.mjs';
+import {sourceVersion} from './source-version.mjs';
+import {apiSourceSignature} from './api-source-guard.mjs';
+async function runtimeSignature(){const files=[];async function scan(dir){for(const item of await readdir(dir,{withFileTypes:true})){const file=join(dir,item.name);if(item.isDirectory())await scan(file);else if(item.isFile())files.push(file);}}await scan(join(root,'apps/web/src'));const hash=createHash('sha256');hash.update(await apiSourceSignature(root));for(const file of files.sort()){hash.update(file);hash.update(await readFile(file));}return hash.digest('hex');}
+const folder=join(root,'../docs/reviews/open-world/first-chapter-balance-20261001');await mkdir(folder,{recursive:true});
+const report={date:new Date().toISOString(),source:await sourceVersion(),runtimeSource:await runtimeSignature(),checks:[],errors:[],ok:false};let db,api,browser,pool,page;
+const record=(name,result)=>{report.checks.push({name,...result});console.log(name,JSON.stringify(result));};
+try{
+ db=await startDatabase({temporary:true});const port=await freePort(),base=`http://127.0.0.1:${port}`;
+ api=child(process.execPath,['--import','tsx','apps/api/src/main.ts'],{AW_DATABASE_URL:db.dsn,AW_API_PORT:String(port),AW_ORIGINS:base,AW_TEST_LOGIN:'1'},{stdio:['ignore','ignore','inherit','ipc']});await registerApi(db,api);await waitFor(base+'/api/health',api);
+ pool=new Pool({connectionString:db.dsn});browser=await chromium.launch({channel:'chrome',headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-webgl']});page=await browser.newPage({viewport:{width:1280,height:720}});
+ page.on('pageerror',e=>report.errors.push(e.message));
+ await page.goto(base);await page.locator('#username').fill('gate_'+randomUUID().replaceAll('-','').slice(0,20));await page.locator('[data-action=login]').click();await page.locator('#hero-name').fill('清剿验收');await page.locator('[data-action=create]').click();await page.waitForFunction(()=>window.awInspect?.().loggedIn);
+ const client_id=await page.evaluate(()=>sessionStorage.getItem('aw-controller')),lease=(await (await page.request.post(base+'/api/control',{data:{client_id}})).json()).lease_id;
+ const rejected=await page.request.post(base+'/api/permit',{data:{lease_id:lease,region:'meadow-boss'}});assert.equal(rejected.status(),409);assert.equal((await rejected.json()).code,'LOCKED');record('real-api-bypass-rejected',{code:'LOCKED'});
+ const townPortal=await page.request.get(base+'/api/content').then(r=>r.json()).then(c=>c.regions.find(r=>r.id==='town').portal);
+ await page.locator('[data-action=guide][data-id=portal]').click();await page.waitForFunction(p=>{const s=window.awInspect();return Math.hypot(s.hero.position.x-p.x,s.hero.position.y-p.y)<4;},townPortal,{timeout:30000});
+ await page.keyboard.press('e');await page.locator('[data-action=travel-mode][data-id=dungeon]').click();await page.locator('[data-action=travel-select][data-id=meadow-boss]').click();assert.equal(await page.locator('[data-action=travel-depart]').isDisabled(),true);await page.waitForFunction(()=>document.querySelector('.drop-note')?.textContent.includes('首次击败'));assert.ok((await page.locator('.drop-note').innerText()).includes('不掉落传说'));await page.screenshot({path:join(folder,'locked-boss-entry.png')});record('locked-entry-ui',{disabled:true,firstClearRewardNoteVisible:true});
+ await page.locator('[data-action=travel-mode][data-id=explore]').click();await page.locator('[data-action=travel-select][data-id=meadow]').click();await page.locator('[data-action=travel-depart]').click();await page.waitForFunction(()=>window.awInspect().region==='meadow');
+ await page.locator('[data-action=mode][data-id=auto]').click();await page.waitForFunction(()=>window.awInspect().snapshot.bossAccess['meadow-boss'].eligible,{},{timeout:60000});const cleared=await page.evaluate(()=>window.awInspect().snapshot);record('actual-field-combat-unlocks-gate',{kills:cleared.progress.regionKills.meadow,elites:cleared.progress.regionElites.meadow,region:'meadow'});
+ await page.locator('[data-action=guide][data-id=boss]').click();const content=await (await page.request.get(base+'/api/content')).json(),portal=content.regions.find(r=>r.id==='meadow').bossPortal;await page.waitForFunction(p=>{const s=window.awInspect();return Math.hypot(s.hero.position.x-p.x,s.hero.position.y-p.y)<3;},portal,{timeout:60000});await page.keyboard.press('e');await page.locator('[data-action=boss]').waitFor();assert.equal(await page.locator('[data-action=boss]').isEnabled(),true);await page.screenshot({path:join(folder,'unlocked-boss-confirmation.png')});
+ await page.locator('[data-action=boss]').click();await page.waitForFunction(()=>window.awInspect().region==='meadow-boss');await page.locator('[data-action=mode][data-id=auto]').click();await page.waitForFunction(()=>window.awInspect().snapshot.progress.bosses.includes('meadow-boss'),{},{timeout:90000});
+ const state=await page.evaluate(()=>window.awInspect().snapshot),bossReward=(await pool.query("SELECT data FROM ow_rewards WHERE character=$1 AND source LIKE 'meadow-boss:%' ORDER BY id",[state.id])).rows[0].data;
+ assert.equal(bossReward.gear.quality,'rare');assert.ok(bossReward.gear.affixes.every(a=>a.tier===1));assert.ok(state.progress.regions.includes('forest'));assert.equal(state.bossAccess['forest-boss'].eligible,false);await page.screenshot({path:join(folder,'actual-boss-victory.png')});record('actual-boss-victory-and-first-drop',{quality:bossReward.gear.quality,affixTierCap:1,nextRegionBossStillLocked:true,level:state.level});
+ assert.deepEqual(report.errors,[]);report.sourceAfter=await sourceVersion();report.sourceChanged=report.sourceAfter.sha256!==report.source.sha256;report.runtimeSourceAfter=await runtimeSignature();report.runtimeChanged=report.runtimeSourceAfter!==report.runtimeSource;report.validationScope='API dependencies plus frontend source; unrelated tests/tools may change without invalidating the player journey';report.ok=!report.runtimeChanged;if(report.runtimeChanged)throw Error('Runtime source changed during browser acceptance; rerun a stable release.');
+}catch(error){report.errors.push(error.stack);console.error(error);if(page)await page.screenshot({path:join(folder,'failure.png')}).catch(()=>{});process.exitCode=1;}
+finally{await browser?.close();await pool?.end();await stopChild(api);if(db)report.cleanup=await db.stop();await writeFile(join(folder,'browser-result.json'),JSON.stringify(report,null,2)+'\n');}

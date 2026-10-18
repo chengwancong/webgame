@@ -1,0 +1,30 @@
+<!doctype html><meta charset="utf-8"><title>spine export</title><body style="background:#333;color:#eee;font:12px sans-serif">
+<canvas id="stage" width="256" height="256"></canvas><div id="log"></div>
+<script src="/abyss-walker-rewrite/open-world/apps/web/public/art/starsea/vfx/vendor/spine36.js"></script><script>
+const q=new URLSearchParams(location.search),jobs=q.get('jobs').split(',').map(s=>{const [n,id,start]=s.split(':');return {n,id,start:+(start??0)};});
+const canvas=document.getElementById('stage'),gl=canvas.getContext('webgl',{alpha:true,premultipliedAlpha:false,preserveDrawingBuffer:true}),renderer=new spine.webgl.SceneRenderer(canvas,gl,true);
+const root='/Q%E7%89%88%E6%97%A5%E5%BC%8F%E6%89%8B%E6%B8%B8SPINE%E7%89%B9%E6%95%88300%E5%A5%97/',CELL=256,COLS=4,FPS=30;
+const log=t=>{document.getElementById('log').append(t,document.createElement('br'));};
+function sample(s,st,a,t){s.setToSetupPose();st.clearTracks();st.setAnimation(0,a.name,false);st.update(t);st.apply(s);s.updateWorldTransform();}
+(async()=>{const list=await (await fetch("/library-index.json")).json();window.exported=[];
+for(const job of jobs){const it=list.find(i=>i.dir.startsWith(job.n+'-'));const base=root+encodeURIComponent(it.dir)+'/';
+ const raw=await (await fetch(base+encodeURIComponent(it.json))).json(),text=await (await fetch(base+encodeURIComponent(it.atlas))).text(),tex={};
+ for(const p of text.split(/\r?\n/).filter(l=>/\.png$/i.test(l.trim())&&!/^\s/.test(l)))tex[p.trim()]=new spine.webgl.GLTexture(gl,await createImageBitmap(await (await fetch(base+encodeURIComponent(p.trim()))).blob()));
+ const atlas=new spine.TextureAtlas(text,p=>tex[p.trim()]),d=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(raw),s=new spine.Skeleton(d),st=new spine.AnimationState(new spine.AnimationStateData(d)),a=d.animations.slice().sort((x,y)=>y.duration-x.duration)[0];
+ const t0=a.duration*job.start,count=Math.ceil((a.duration-t0)*FPS)+1;let x=1e9,y=1e9,r=-1e9,top=-1e9;
+ for(let i=0;i<count;i++){sample(s,st,a,Math.min(a.duration,t0+i/FPS));for(const slot of s.drawOrder){if(slot.color.a<.05)continue;const att=slot.getAttachment();if(!(att instanceof spine.RegionAttachment))continue;const v=new Float32Array(8);att.computeWorldVertices(slot.bone,v,0,2);for(let k=0;k<8;k+=2){x=Math.min(x,v[k]);y=Math.min(y,v[k+1]);r=Math.max(r,v[k]);top=Math.max(top,v[k+1]);}}}
+ const draw=(i,cx0,cy0,sc)=>{sample(s,st,a,Math.min(a.duration,t0+i/FPS));renderer.camera.viewportWidth=CELL/sc;renderer.camera.viewportHeight=CELL/sc;renderer.camera.position.x=cx0;renderer.camera.position.y=cy0;renderer.camera.update();gl.viewport(0,0,CELL,CELL);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);renderer.begin();renderer.drawSkeleton(s,false);renderer.end();const px=new Uint8Array(CELL*CELL*4);gl.readPixels(0,0,CELL,CELL,gl.RGBA,gl.UNSIGNED_BYTE,px);return px;};
+ // Pass 1: union of attachment quads; pass 2: tighten to pixels that are actually visible (alpha > 40).
+ let sc=(CELL-8)/Math.max(r-x,top-y),cx0=x+(r-x)/2,cy0=y+(top-y)/2,L=CELL,B=CELL,R=-1,T=-1;
+ for(let i=0;i<count;i++){const px=draw(i,cx0,cy0,sc);for(let row=0;row<CELL;row++)for(let col=0;col<CELL;col++)if(px[(row*CELL+col)*4+3]>40){L=Math.min(L,col);R=Math.max(R,col);B=Math.min(B,row);T=Math.max(T,row);}}
+ const wx0=cx0-CELL/2/sc+L/sc,wx1=cx0-CELL/2/sc+(R+1)/sc,wy0=cy0-CELL/2/sc+B/sc,wy1=cy0-CELL/2/sc+(T+1)/sc,w=wx1-wx0,h=wy1-wy0;sc=(CELL-8)/Math.max(w,h);cx0=wx0+w/2;cy0=wy0+h/2;
+ const sheet=document.createElement('canvas');sheet.width=COLS*CELL;sheet.height=Math.ceil(count/COLS)*CELL;const g=sheet.getContext('2d'),frames={},energy=[];
+ for(let i=0;i<count;i++){const px=draw(i,cx0,cy0,sc);let e=0;for(let k=3;k<px.length;k+=4)e+=px[k];energy.push(e);
+  const cx=i%COLS*CELL,cy=Math.floor(i/COLS)*CELL;g.drawImage(canvas,cx,cy);frames[String(i)]={frame:{x:cx,y:cy,w:CELL,h:CELL},rotated:false,trimmed:false,spriteSourceSize:{x:0,y:0,w:CELL,h:CELL},sourceSize:{w:CELL,h:CELL}};}
+ const active=energy.map((e,i)=>e>CELL*40?String(i):null).filter(Boolean),peak=String(energy.indexOf(Math.max(...energy)));
+ const info={id:job.id,library:it.dir,json:it.json,animation:a.name,start:t0,duration:a.duration-t0,fps:FPS,count,active,peak,visibleSize:[Math.round(w*sc),Math.round(h*sc)],cell:CELL};
+ await fetch('/save?name='+job.id+'.png',{method:'POST',body:sheet.toDataURL('image/png')});
+ await fetch('/save?name='+job.id+'.json',{method:'POST',body:JSON.stringify({frames,meta:{image:job.id+'.png',size:{w:sheet.width,h:sheet.height},scale:'1'},info})});
+ window.exported.push(info);log(job.id+' '+it.dir+' '+count+' frames');}
+window.exportDone=true;})().catch(e=>{log('ERR '+e.message);window.exportDone=true;});
+</script>

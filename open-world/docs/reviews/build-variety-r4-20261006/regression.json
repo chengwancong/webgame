@@ -1,0 +1,39 @@
+{
+  "ok": true,
+  "batch": "r4",
+  "checks": [
+    {
+      "name": "regression",
+      "code": 0,
+      "log": "regression.log"
+    },
+    {
+      "name": "types",
+      "code": 2,
+      "log": "types.log"
+    },
+    {
+      "name": "types repaired",
+      "code": 0,
+      "command": "node node_modules/typescript/bin/tsc --noEmit",
+      "note": "New independent skill-patch test parameter corrected from SkillDefinition to Skill; production source unchanged; original failure retained in types.log"
+    },
+    {
+      "name": "content",
+      "code": 0,
+      "command": "node --import tsx tools/validate-content.ts",
+      "stats": 63,
+      "atoms": 50
+    }
+  ],
+  "started": "2026-10-06T13:43:35.377Z",
+  "cleanup": {
+    "temporary": true,
+    "stopped": true,
+    "bytes_before": 401374414,
+    "bytes_after": 0,
+    "bytes_removed": 401374414
+  },
+  "finished": "2026-10-06T13:49:16.981Z",
+  "error_before_repair": "Error: types failed; retain and repair all failures"
+}

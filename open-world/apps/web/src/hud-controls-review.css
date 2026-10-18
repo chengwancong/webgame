@@ -1,0 +1,43 @@
+/* Isolated review; production HUD remains unchanged. */
+body[data-clean-layout=focus][data-preview-map=shown] .preview-auto-control{top:auto;right:auto;left:var(--space-5);bottom:var(--space-5)}
+.preview-auto{width:calc(calc(var(--space-16) + var(--space-8)) + var(--space-4));height:var(--space-12);gap:var(--space-2);border-radius:var(--radius-control);background:var(--color-panel);border-color:var(--color-border);color:var(--color-text-primary)}
+.preview-auto.is-on{background:var(--fill-primary);border-color:var(--color-primary-border);color:var(--color-primary-text)}
+.preview-auto svg{width:var(--space-5);height:var(--space-5)}.preview-auto b{font-size:var(--font-size-control)}.preview-auto small{display:block;font-size:var(--font-size-control)}
+body[data-clean-layout=focus] #skillbar{--hud-skill-size:var(--space-16);max-width:calc(100vw - 360px);gap:var(--space-2);bottom:var(--space-5);flex-wrap:wrap;justify-content:center}
+.skill-slot .state{display:block;font-size:var(--font-size-micro)}
+#sysbar .entry{width:var(--space-16);height:var(--space-16);min-width:var(--space-16);min-height:var(--space-16);flex-basis:var(--space-16)}#sysbar .entry-orb{width:var(--space-12);height:var(--space-12);flex-basis:var(--space-12)}#sysbar .badge{width:var(--space-3);height:var(--space-3);right:0;top:0}
+#sysbar{bottom:var(--space-5);right:var(--space-5);left:auto}
+.preview-bag-notice{display:flex!important;position:absolute;left:auto;top:auto;right:var(--space-5);bottom:calc(calc(var(--space-16) + var(--space-8)) + var(--space-2));width:calc(calc(var(--space-16) + var(--space-8))*2 + var(--space-6));padding:var(--space-2) var(--space-3);gap:var(--space-1);border:var(--border-width) solid var(--color-warning);border-radius:var(--radius-control);box-shadow:var(--shadow-control);background:var(--color-panel);pointer-events:auto}
+.preview-bag-notice>div{display:flex;align-items:center;justify-content:space-between;gap:var(--space-2)}.preview-bag-notice strong{font-size:var(--font-size-caption);font-weight:var(--font-weight-semibold);color:var(--color-warning);white-space:nowrap}.preview-bag-notice strong span{font-variant-numeric:tabular-nums}.preview-bag-notice .ui-button{padding-inline:var(--space-2);min-height:var(--size-control-compact);font-size:var(--font-size-caption)}.preview-bag-notice small{font-size:var(--font-size-micro);line-height:var(--font-line-body);color:var(--color-text-secondary)}
+.review-mode-menu{position:absolute;left:var(--space-5);bottom:calc(calc(var(--space-16) + var(--space-4)) + var(--space-2));width:calc(calc(var(--space-16) + var(--space-8))*2 + var(--space-4));padding:var(--space-2);display:flex;flex-direction:column;gap:var(--space-1);pointer-events:auto}.review-mode-menu .ui-button{justify-content:flex-start}.review-mode-menu small{font-size:var(--font-size-micro);color:var(--color-warning);padding:var(--space-2)}
+@media(max-width:700px){body[data-clean-layout=focus] #skillbar{max-width:calc(100vw - 32px);bottom:112px;--hud-skill-size:var(--space-12)}body[data-clean-layout=focus] .preview-auto-control{left:var(--space-3);bottom:var(--space-3)}#sysbar{right:var(--space-3);bottom:var(--space-3)}.preview-bag-notice{top:164px;bottom:auto;right:var(--space-3)}.review-mode-menu{left:var(--space-3);bottom:calc(var(--space-16) + var(--space-4))}#tracker{top:calc(var(--space-16) + var(--space-4))} }
+
+#hud[data-context=safe] #skillbar,#hud[data-context=safe] .preview-auto-control,#hud[data-context=safe] .review-mode-menu{display:none}#hud[data-context=safe] .preview-camp-actions{display:flex}
+
+/* Home exposes every existing non-combat entry. Combat keeps its compact controls. */
+#hud[data-ui-mode=home] #sysbar [data-id=skills],#hud[data-ui-mode=home] #sysbar [data-id=progression],#hud[data-ui-mode=home] #sysbar [data-id=appearance],#hud[data-ui-mode=home] #sysbar [data-id=tasks]{display:block}
+#hud[data-ui-mode=home] #vitals .who{display:block;height:var(--space-16)}#hud[data-ui-mode=home] #vitals .identity{display:block}
+#hud[data-ui-mode=home] #vitals .bars{left:calc(var(--space-16) + var(--space-2));right:0;top:var(--space-8);width:auto;height:var(--space-8)}
+#hud[data-ui-mode=home] #vitals{width:calc(var(--space-16)*4 + var(--space-4));height:calc(var(--space-16) + var(--space-4));min-height:calc(var(--space-16) + var(--space-4))}
+#hud[data-ui-mode=home] #vitals .who{padding-left:calc(var(--space-16) + var(--space-2));padding-top:var(--space-1)}#hud[data-ui-mode=home] #vitals .who img{width:var(--space-16);height:var(--space-16)}
+#hud[data-ui-mode=home] .hud-wallet{display:flex!important;left:var(--space-4);right:auto;top:calc(var(--space-16) + var(--space-10));bottom:auto;min-width:0;height:var(--space-8);border-radius:var(--radius-control)}
+#hud[data-ui-mode=home] .preview-camp-actions{gap:var(--space-2)}#hud[data-ui-mode=home] .preview-camp-actions .ui-button{min-height:var(--space-12);border-radius:var(--radius-control);padding-inline:var(--space-4)}
+@media(max-width:700px){#hud[data-ui-mode=home] #sysbar{left:var(--space-3);right:var(--space-3);display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:var(--space-1)}#hud[data-ui-mode=home] #sysbar .entry{width:100%;min-width:var(--size-touch-target);height:var(--space-12);min-height:var(--space-12)}#hud[data-ui-mode=home] .preview-camp-actions{bottom:calc(var(--space-16) + var(--space-4));left:var(--space-3)}}
+
+#hud[data-ui-mode=home] #vitals .identity{position:absolute;left:calc(var(--space-16) + var(--space-2));top:0;display:flex;align-items:baseline;gap:var(--space-2);height:var(--space-6);padding:0}#hud[data-ui-mode=home] #vitals .hero-name{font-size:var(--font-size-body)}#hud[data-ui-mode=home] #vitals .identity small{font-size:var(--font-size-caption)}#hud[data-ui-mode=home] #vitals .meter.hp .numv{display:block}
+
+/* Light quest strips share the HUD palette without a separate window shell. */
+#hud[data-ui-mode=home] .preview-camp-actions{display:none!important}
+#hud[data-ui-mode=home] #tracker{position:absolute;top:calc(var(--space-16)*2 + var(--space-4));left:0;transform:none;width:calc(var(--space-16)*4 + var(--space-8));padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;pointer-events:auto}
+.review-task-list{display:flex;flex-direction:column;gap:var(--space-1);max-height:calc(var(--space-16)*4);overflow:auto;scrollbar-width:thin}
+.review-quest-row{display:flex;flex-direction:column;align-items:stretch;width:100%;text-align:left;gap:var(--space-1);padding:var(--space-2) var(--space-3);background:linear-gradient(90deg,var(--fill-hud-card) 0%,var(--fill-hud-card) 86%,transparent 100%);border:0;border-radius:var(--radius-control) 0 0 var(--radius-control);color:var(--color-text-primary);box-shadow:none;min-height:var(--size-touch-target);transform:none}
+.review-quest-row.is-main{background:linear-gradient(90deg,var(--fill-primary) 0%,var(--fill-hud-card) 86%,transparent 100%)}
+.review-quest-row:hover{background:var(--color-panel-hover);transform:none}
+.review-quest-title{display:flex;align-items:baseline;gap:var(--space-2);min-width:0}.review-quest-title small{flex-shrink:0;font-size:var(--font-size-micro);color:var(--color-text-secondary)}.review-quest-title b{font-size:var(--font-size-body);font-weight:var(--font-weight-semibold);line-height:var(--font-line-body)}
+#hud[data-ui-mode=home] #tracker .hud-quest-kicker{display:inline-flex;align-items:center;gap:var(--space-1);font-size:var(--font-size-micro);font-weight:var(--font-weight-semibold);color:var(--color-category-main);white-space:nowrap}
+#hud[data-ui-mode=home] #tracker .hud-quest-kicker img{width:var(--space-4);height:var(--space-4);object-fit:contain}
+.review-quest-goal{font-size:var(--font-size-caption);font-weight:var(--font-weight-regular);line-height:var(--font-line-body);color:var(--color-text-secondary)}.review-quest-goal strong{font-weight:var(--font-weight-semibold);color:var(--color-success);font-variant-numeric:tabular-nums}
+
+/* Restore the confirmed A1 menu from the shared components layer.
+   Old review overrides must not shrink illustrations or replace pending counts. */
+#hud[data-ui-mode=home] #sysbar,#hud[data-ui-mode=home] #sysbar .entry,#hud[data-ui-mode=home] #sysbar .entry-orb,#hud[data-ui-mode=home] #sysbar .entry-name,#hud[data-ui-mode=home] #sysbar .entry .badge{all:revert-layer}

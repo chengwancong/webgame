@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>方案3：怪物猎人风格横向卡片</title>
+<style>
+body { margin: 0; padding: 20px; background: #0a0e14; font-family: sans-serif; }
+.container { max-width: 1100px; margin: 0 auto; }
+h1 { color: #ffe8b8; text-align: center; font-size: 24px; margin-bottom: 10px; }
+.desc { color: #b8d4e8; text-align: center; margin-bottom: 30px; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>方案3：怪物猎人风格 - 任务板横向卡片</h1>
+<p class="desc">参考：Monster Hunter World, Destiny 2 | 特点：横向滚动 + 3D卡片 + 怪物图标</p>
+
+<svg width="1100" height="700" viewBox="0 0 1100 700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="paperGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f5e6d3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e8d4b8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="lockGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a5a67;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2a3a47;stop-opacity:1" />
+    </linearGradient>
+    <filter id="cardShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dx="0" dy="8" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.4"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1100" height="700" fill="#1a2327"/>
+  
+  <!-- 木质背景板 -->
+  <rect x="50" y="80" width="1000" height="550" rx="12" fill="#3a2a1f" stroke="#5a4a3f" stroke-width="3"/>
+  <text x="550" y="40" fill="#ffe8b8" font-size="32" font-weight="bold" text-anchor="middle">远征任务板</text>
+  <text x="550" y="70" fill="#b8d4e8" font-size="14" text-anchor="middle">选择你的下一个冒险目的地</text>
+  
+  <!-- 左箭头 -->
+  <g transform="translate(90, 320)">
+    <circle r="30" fill="#2a3a47" stroke="#5a7a87" stroke-width="2"/>
+    <text x="0" y="10" fill="#b8d4e8" font-size="36" font-weight="bold" text-anchor="middle">‹</text>
+  </g>
+  
+  <!-- 右箭头 -->
+  <g transform="translate(1010, 320)">
+    <circle r="30" fill="#2a3a47" stroke="#5a7a87" stroke-width="2"/>
+    <text x="0" y="10" fill="#b8d4e8" font-size="36" font-weight="bold" text-anchor="middle">›</text>
+  </g>
+  
+  <!-- 卡片1：草木荒原（已激活，中心位置） -->
+  <g transform="translate(350, 140)">
+    <!-- 卡片主体 - 羊皮纸效果 -->
+    <rect width="300" height="420" rx="8" fill="url(#paperGrad)" stroke="#8b7355" stroke-width="3" filter="url(#cardShadow)"/>
+    <rect x="3" y="3" width="294" height="414" rx="6" fill="none" stroke="#d4c4aa" stroke-width="1" opacity="0.6"/>
+    
+    <!-- 顶部装饰线 -->
+    <line x1="30" y1="25" x2="270" y2="25" stroke="#8b7355" stroke-width="2"/>
+    <circle cx="150" cy="25" r="8" fill="#cd9a5b" stroke="#8b7355" stroke-width="2"/>
+    
+    <!-- 标题 -->
+    <text x="150" y="60" fill="#3a2a1f" font-size="26" font-weight="bold" text-anchor="middle">草木荒原</text>
+    <text x="150" y="85" fill="#5a4a3f" font-size="13" text-anchor="middle">广袤的荒野，风吹草低</text>
+    
+    <!-- 区域插画占位 -->
+    <rect x="25" y="100" width="250" height="140" rx="6" fill="#b8d4a8" stroke="#8b7355" stroke-width="2"/>
+    <text x="150" y="165" fill="#5a7a5f" font-size="14" text-anchor="middle">[草原景色插画]</text>
+    <text x="150" y="185" fill="#5a7a5f" font-size="11" text-anchor="middle">蓝天、草地、远处的山峦</text>
+    
+    <!-- 怪物图标 -->
+    <text x="150" y="265" fill="#5a4a3f" font-size="12" font-weight="bold" text-anchor="middle">区域怪物</text>
+    <g transform="translate(80, 275)">
+      <circle r="25" fill="#fff" stroke="#8b7355" stroke-width="2"/>
+      <text x="0" y="10" font-size="28" text-anchor="middle">🐺</text>
+    </g>
+    <g transform="translate(150, 275)">
+      <circle r="25" fill="#fff" stroke="#8b7355" stroke-width="2"/>
+      <text x="0" y="10" font-size="28" text-anchor="middle">💀</text>
+    </g>
+    <g transform="translate(220, 275)">
+      <circle r="25" fill="#fff" stroke="#8b7355" stroke-width="2"/>
+      <text x="0" y="10" font-size="28" text-anchor="middle">👹</text>
+    </g>
+    
+    <!-- 难度星级 -->
+    <text x="150" y="340" fill="#5a4a3f" font-size="12" text-anchor="middle">难度评级</text>
+    <g transform="translate(80, 350)">
+      <text x="0" y="0" fill="#ffc107" font-size="24">⭐⭐</text>
+      <text x="65" y="5" fill="#9e9e9e" font-size="20">⭐⭐⭐</text>
+    </g>
+    
+    <!-- 状态标签 -->
+    <rect x="50" y="370" width="200" height="30" rx="6" fill="#4caf50" stroke="#2e7d32" stroke-width="2" filter="url(#glow)"/>
+    <text x="150" y="392" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">✓ 已激活 可出发</text>
+  </g>
+  
+  <!-- 卡片2：迷雾林地（锁定，右侧） -->
+  <g transform="translate(700, 170)" opacity="0.7">
+    <!-- 卡片主体 - 暗色/金属效果 -->
+    <rect width="280" height="380" rx="8" fill="url(#lockGrad)" stroke="#1a2a37" stroke-width="3" filter="url(#cardShadow)"/>
+    
+    <!-- 大锁图标 -->
+    <text x="140" y="100" fill="#7a8a97" font-size="80" text-anchor="middle">🔒</text>
+    
+    <!-- 标题 -->
+    <text x="140" y="180" fill="#9aafbf" font-size="22" font-weight="bold" text-anchor="middle">迷雾林地</text>
+    <text x="140" y="205" fill="#7a8a97" font-size="12" text-anchor="middle">浓雾笼罩的古老森林</text>
+    
+    <!-- 区域预览（模糊/暗） -->
+    <rect x="40" y="220" width="200" height="80" rx="6" fill="#2a3a47" stroke="#4a5a67" stroke-width="2"/>
+    <text x="140" y="265" fill="#5a6a77" font-size="12" text-anchor="middle">[迷雾效果]</text>
+    
+    <!-- 解锁条件 -->
+    <rect x="30" y="315" width="220" height="50" rx="6" fill="#1a2a37" stroke="#4a5a67" stroke-width="2"/>
+    <text x="140" y="337" fill="#9aafbf" font-size="11" font-weight="bold" text-anchor="middle">解锁条件</text>
+    <text x="140" y="355" fill="#7a8a97" font-size="11" text-anchor="middle">击败草木荒原首领</text>
+  </g>
+  
+  <!-- 卡片0：营地（左侧，部分可见） -->
+  <g transform="translate(70, 200)" opacity="0.5">
+    <rect width="220" height="320" rx="8" fill="url(#paperGrad)" stroke="#8b7355" stroke-width="2"/>
+    <text x="110" y="60" fill="#3a2a1f" font-size="20" font-weight="bold" text-anchor="middle">归途营地</text>
+    <text x="110" y="85" fill="#5a4a3f" font-size="11" text-anchor="middle">安全的休息之所</text>
+    <rect x="35" y="100" width="150" height="100" rx="6" fill="#d4c4aa" stroke="#8b7355" stroke-width="2"/>
+    <text x="110" y="155" fill="#5a4a3f" font-size="12" text-anchor="middle">[营地插画]</text>
+  </g>
+  
+  <!-- 底部描述区 -->
+  <rect x="150" y="580" width="800" height="80" rx="8" fill="#2a3a47" stroke="#5a7a87" stroke-width="2" opacity="0.9"/>
+  <text x="550" y="610" fill="#ffe8b8" font-size="18" font-weight="bold" text-anchor="middle">当前选中：草木荒原</text>
+  <text x="550" y="635" fill="#b8d4e8" font-size="13" text-anchor="middle">广袤的荒野，适合初次远行的冒险者。敌人种类：柴狼人、骷髅战士、地精猎手</text>
+</svg>
+
+</div>
+</body>
+</html>

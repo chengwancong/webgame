@@ -1,0 +1,4129 @@
+{
+  "versions": {
+    "client": "0.11.16",
+    "protocol": 31,
+    "rules": "ow-57",
+    "assets": "world-art-20261007-v24-world-runtime",
+    "db": 16
+  },
+  "generated": "2026-10-07T14:46:39.949Z",
+  "dungeon": "field-mist-1",
+  "numericStage": 4,
+  "definition": {
+    "bossBudgetSeconds": 240,
+    "numericStage": 4,
+    "id": "field-mist-1",
+    "name": "雾铃树穴",
+    "kind": "normal",
+    "mode": "realtime",
+    "feature": "field-dungeon",
+    "area": "ss-map-mist",
+    "stages": [
+      "ss-dg-mist-1-1",
+      "ss-dg-mist-1-2",
+      "ss-dg-mist-1-3"
+    ],
+    "level": 10,
+    "requires": [],
+    "worldDrops": true,
+    "maxTier": 1,
+    "reward": {
+      "gold": 20,
+      "xp": 40,
+      "material": 0
+    },
+    "policy": {
+      "augments": {
+        "enabled": false,
+        "choices": 3,
+        "rerolls": 1,
+        "roundCount": 3
+      },
+      "entryLevel": 1,
+      "monsterLevel": 10,
+      "maxTier": 1,
+      "minTier": 1,
+      "tierRules": {
+        "hpPerTier": 0,
+        "attackPerTier": 0,
+        "rewardPerTier": 0,
+        "affixCount": 0,
+        "recordNightmareRank": false
+      },
+      "timeLimitSeconds": 1800,
+      "loadingSeconds": 120,
+      "retention": {
+        "enabled": true,
+        "seconds": 1800
+      },
+      "disconnect": "retain",
+      "buildLocked": true,
+      "checkpointJoin": true,
+      "quotaAt": "start",
+      "entryCost": {
+        "gold": 0,
+        "material": 0
+      },
+      "rescue": {
+        "seconds": 5,
+        "range": 2,
+        "hpRatio": 0.3
+      },
+      "allyRange": 6,
+      "overflow": "allow",
+      "returnRegion": "ss-map-port",
+      "refundSystemAbort": true,
+      "party": {
+        "min": 1,
+        "max": 1,
+        "roles": {},
+        "defaultRole": "damage"
+      },
+      "enemyScale": {
+        "hp": 1.0714661142976802,
+        "attack": 0.8627329502219818,
+        "hpPerStage": 0,
+        "attackPerStage": 0
+      },
+      "normalGoals": {
+        "killCount": 1,
+        "eliteCount": 1
+      }
+    },
+    "contentVersion": 4
+  },
+  "region": {
+    "keyChests": [],
+    "id": "ss-dg-mist-1-3",
+    "name": "雾铃树穴·深处",
+    "subtitle": "野外地城",
+    "width": 48,
+    "height": 48,
+    "theme": "mist",
+    "safe": {
+      "x": 7,
+      "y": 24
+    },
+    "portal": {
+      "x": 6,
+      "y": 24
+    },
+    "boss": true,
+    "auto": true,
+    "obstacles": [
+      {
+        "x": 0,
+        "y": 0,
+        "w": 48,
+        "h": 1
+      },
+      {
+        "x": 0,
+        "y": 47,
+        "w": 48,
+        "h": 1
+      },
+      {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 48
+      },
+      {
+        "x": 47,
+        "y": 0,
+        "w": 1,
+        "h": 48
+      },
+      {
+        "x": 29.6,
+        "y": 12.6,
+        "w": 0.8,
+        "h": 0.8
+      },
+      {
+        "x": 38.6,
+        "y": 37.6,
+        "w": 0.8,
+        "h": 0.8
+      },
+      {
+        "x": 9.6,
+        "y": 35.6,
+        "w": 0.8,
+        "h": 0.8
+      },
+      {
+        "x": 6.6,
+        "y": 15.6,
+        "w": 0.8,
+        "h": 0.8
+      },
+      {
+        "x": 34.6,
+        "y": 40.6,
+        "w": 0.8,
+        "h": 0.8
+      },
+      {
+        "x": 37.6,
+        "y": 13.6,
+        "w": 0.8,
+        "h": 0.8
+      },
+      {
+        "x": 8.6,
+        "y": 14.6,
+        "w": 0.8,
+        "h": 0.8
+      }
+    ],
+    "spawns": [
+      {
+        "id": "ss-dg-mist-1-3:0:0",
+        "x": 28,
+        "y": 24,
+        "name": "渡口雾钟守卫",
+        "art": "ow-boss-mist-1",
+        "kind": "shaman",
+        "hp": 17812,
+        "attack": 7,
+        "elite": true,
+        "boss": true,
+        "monster": {
+          "version": 1,
+          "template": "ow-boss-mist-1",
+          "level": 10,
+          "rank": "boss",
+          "role": "ranged",
+          "baseStats": {
+            "hp": 17811.79811901691,
+            "attack": 6.505621691239358,
+            "armor": 6.6
+          },
+          "difficulty": {
+            "hp": 1,
+            "attack": 1,
+            "armor": 1
+          },
+          "armor": 7,
+          "ai": {
+            "speed": 2.8,
+            "range": 9,
+            "cooldown": 65,
+            "skillChance": 0.3,
+            "basicAttackBonus": 0
+          },
+          "skills": [],
+          "bossKey": "forest-boss"
+        }
+      },
+      {
+        "id": "ss-dg-mist-1-3:1:0",
+        "x": 27,
+        "y": 21,
+        "name": "苔铃幼兽",
+        "art": "ow-mon-mist-1",
+        "kind": "guard",
+        "hp": 208,
+        "attack": 43,
+        "elite": false,
+        "boss": false,
+        "monster": {
+          "version": 1,
+          "template": "ow-mon-mist-1",
+          "level": 10,
+          "rank": "normal",
+          "role": "swarm",
+          "baseStats": {
+            "hp": 207.84169529532673,
+            "attack": 42.50000000000001,
+            "armor": 0
+          },
+          "difficulty": {
+            "hp": 1,
+            "attack": 1,
+            "armor": 1
+          },
+          "armor": 0,
+          "ai": {
+            "speed": 1.9549999999999998,
+            "range": 2,
+            "cooldown": 90,
+            "skillChance": 0.3,
+            "basicAttackBonus": 3,
+            "aggroRadius": 12
+          },
+          "skills": [
+            "shield_bash"
+          ],
+          "bossKey": null
+        }
+      },
+      {
+        "id": "ss-dg-mist-1-3:1:1",
+        "x": 23.52526255420235,
+        "y": 22.35098092731253,
+        "name": "苔铃幼兽",
+        "art": "ow-mon-mist-1",
+        "kind": "guard",
+        "hp": 208,
+        "attack": 43,
+        "elite": false,
+        "boss": false,
+        "monster": {
+          "version": 1,
+          "template": "ow-mon-mist-1",
+          "level": 10,
+          "rank": "normal",
+          "role": "swarm",
+          "baseStats": {
+            "hp": 207.84169529532673,
+            "attack": 42.50000000000001,
+            "armor": 0
+          },
+          "difficulty": {
+            "hp": 1,
+            "attack": 1,
+            "armor": 1
+          },
+          "armor": 0,
+          "ai": {
+            "speed": 1.9549999999999998,
+            "range": 2,
+            "cooldown": 90,
+            "skillChance": 0.3,
+            "basicAttackBonus": 3,
+            "aggroRadius": 12
+          },
+          "skills": [
+            "shield_bash"
+          ],
+          "bossKey": null
+        }
+      }
+    ],
+    "landmarks": []
+  },
+  "worldLine": "starsea",
+  "worldDifficulty": {
+    "hp": 1,
+    "attack": 1
+  },
+  "basis": {
+    "dungeon": "field-mist-1",
+    "stage": 4,
+    "bossHp": 19085,
+    "rawDps": 19.6,
+    "enemyScale": {
+      "hp": 1.0714661142976802,
+      "attack": 0.8627329502219818
+    },
+    "versions": {
+      "client": "0.11.16",
+      "protocol": 31,
+      "rules": "ow-57",
+      "assets": "world-art-20261007-v24-world-runtime",
+      "db": 16
+    },
+    "seed": 41,
+    "samples": 1,
+    "bossAttack": 6,
+    "bossArmor": 7,
+    "seconds": 30,
+    "hits": 49,
+    "position": {
+      "x": 30.5,
+      "y": 24
+    },
+    "controls": {
+      "stationary": true,
+      "zeroArmor": true,
+      "measurementTargetHp": 1000000000000000,
+      "playerSkills": [],
+      "bossPhase": "full-health",
+      "adds": false
+    }
+  },
+  "reference": {
+    "level": 10,
+    "requestedSkills": [
+      "cut",
+      "whirl",
+      "ward"
+    ],
+    "skillRanks": {
+      "cut": 2,
+      "whirl": 2,
+      "ward": 2
+    },
+    "build": {
+      "stats": {
+        "weapon": "sword",
+        "hp": 408,
+        "attack": 65,
+        "armor": 13,
+        "speed": 6,
+        "mana": 106,
+        "regen": 11,
+        "effects": [],
+        "fireResist": 0.05188999999999999,
+        "bleedChance": 0.025429999999999942,
+        "allResist": 0.024279999999999965,
+        "lightningResist": 0.05046999999999995,
+        "shockChance": 0.02546999999999998,
+        "poisonChance": 0.022939999999999964,
+        "lifeOnKill": 0.004429999999999994,
+        "igniteChance": 0.027739999999999942,
+        "chillChance": 0.024619999999999965,
+        "manaOnKill": 2.0540000000000003,
+        "poisonResist": 0.05150999999999995,
+        "coldResist": 0.052249999999999984,
+        "arcaneResist": 0.04805999999999995,
+        "shadowResist": 0.05060999999999998,
+        "critChance": 0.05,
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 0.27
+          },
+          {
+            "id": "weapon-affinity",
+            "label": "武器亲和 · 武技",
+            "kind": "mult",
+            "value": 1.14,
+            "tags": [
+              "martial"
+            ]
+          },
+          {
+            "id": "talent-martial-mastery",
+            "label": "天赋 · 武技精通",
+            "kind": "mult",
+            "value": 1.04,
+            "tags": [
+              "martial"
+            ]
+          },
+          {
+            "id": "island-1",
+            "label": "风栖之力",
+            "kind": "mult",
+            "value": 1.3
+          }
+        ],
+        "rules": [
+          {
+            "id": "innate-sword-qi",
+            "name": "剑气",
+            "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+            "source": "剑势流 · 固有",
+            "tier": 1,
+            "trigger": "nth",
+            "chance": 1,
+            "icd": 0,
+            "every": 3,
+            "count": "hit",
+            "filter": {
+              "weapons": [
+                "sword"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "nova",
+              "ratio": 0.35,
+              "radius": 2.2,
+              "damageType": "physical",
+              "ref": "hit",
+              "at": "target",
+              "vfx": "combo/sword-qi"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "combo/sword-qi"
+          },
+          {
+            "id": "stat-igniteChance",
+            "name": "点燃几率",
+            "description": "装备属性触发",
+            "source": "装备与养成属性",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 0.027739999999999942,
+            "icd": 0,
+            "filter": {
+              "categories": [
+                "direct"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "status",
+              "ref": "dealt",
+              "status": "burn",
+              "duration": 90,
+              "strength": 0,
+              "ratio": 0.3
+            },
+            "scale": [],
+            "vfxKey": "player/ember"
+          },
+          {
+            "id": "stat-chillChance",
+            "name": "冰缓几率",
+            "description": "装备属性触发",
+            "source": "装备与养成属性",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 0.024619999999999965,
+            "icd": 0,
+            "filter": {
+              "categories": [
+                "direct"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "status",
+              "ref": "dealt",
+              "status": "slow",
+              "duration": 60,
+              "strength": 0.3,
+              "ratio": 0
+            },
+            "scale": [],
+            "vfxKey": "player/frost"
+          },
+          {
+            "id": "stat-shockChance",
+            "name": "感电几率",
+            "description": "装备属性触发",
+            "source": "装备与养成属性",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 0.02546999999999998,
+            "icd": 0,
+            "filter": {
+              "categories": [
+                "direct"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "status",
+              "ref": "dealt",
+              "status": "shock",
+              "duration": 90,
+              "strength": 0.12,
+              "ratio": 0
+            },
+            "scale": [],
+            "vfxKey": "player/chain"
+          },
+          {
+            "id": "stat-poisonChance",
+            "name": "中毒几率",
+            "description": "装备属性触发",
+            "source": "装备与养成属性",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 0.022939999999999964,
+            "icd": 0,
+            "filter": {
+              "categories": [
+                "direct"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "status",
+              "ref": "dealt",
+              "status": "poison",
+              "duration": 90,
+              "strength": 0,
+              "ratio": 0.3
+            },
+            "scale": [],
+            "vfxKey": "player/poison_arrow"
+          },
+          {
+            "id": "stat-bleedChance",
+            "name": "流血几率",
+            "description": "装备属性触发",
+            "source": "装备与养成属性",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 0.025429999999999942,
+            "icd": 0,
+            "filter": {
+              "categories": [
+                "direct"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "status",
+              "ref": "dealt",
+              "status": "bleed",
+              "duration": 90,
+              "strength": 0,
+              "ratio": 0.3
+            },
+            "scale": [],
+            "vfxKey": "player/execute"
+          },
+          {
+            "id": "stat-manaOnKill",
+            "name": "击杀回复灵力",
+            "description": "装备属性触发",
+            "source": "装备与养成属性",
+            "tier": 1,
+            "trigger": "kill",
+            "chance": 1,
+            "icd": 0,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "mana",
+              "ratio": 0,
+              "ref": "maxMana",
+              "flat": 2.0540000000000003
+            },
+            "scale": [],
+            "vfxKey": "player/mend"
+          },
+          {
+            "id": "stat-lifeOnKill",
+            "name": "击杀回复生命",
+            "description": "装备属性触发",
+            "source": "装备与养成属性",
+            "tier": 1,
+            "trigger": "kill",
+            "chance": 1,
+            "icd": 0,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "heal",
+              "ratio": 0.004429999999999994,
+              "ref": "maxHp"
+            },
+            "scale": [],
+            "vfxKey": "player/mend"
+          }
+        ],
+        "damageAdd": 0.27,
+        "damageMult": 1.3,
+        "combos": [
+          {
+            "id": "innate-sword-qi",
+            "name": "剑气",
+            "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+            "source": "剑势流 · 固有",
+            "weapons": [
+              "sword"
+            ],
+            "trigger": "nth",
+            "chance": 1,
+            "cooldown": 0,
+            "every": 3,
+            "action": {
+              "type": "nova",
+              "radius": 2.2,
+              "ratio": 0.35,
+              "damageType": "physical",
+              "vfx": "combo/sword-qi"
+            }
+          }
+        ],
+        "lifesteal": 0
+      },
+      "skills": [
+        {
+          "id": "cut",
+          "category": "melee",
+          "unlockLevel": 1,
+          "name": "斩击",
+          "kind": "single",
+          "damage": 295,
+          "range": 3,
+          "radius": 0,
+          "cooldown": 24,
+          "cost": 0,
+          "windup": 3,
+          "duration": 0,
+          "description": "近距离斩击",
+          "weapons": [
+            "sword"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": []
+          },
+          "tags": [
+            "martial",
+            "melee",
+            "physical",
+            "single"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 24,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 24,
+            "encounterCooldownMultiplier": 1
+          }
+        },
+        {
+          "id": "whirl",
+          "category": "melee",
+          "unlockLevel": 2,
+          "name": "旋风斩",
+          "kind": "area",
+          "damage": 254,
+          "range": 0,
+          "radius": 4.5,
+          "cooldown": 75,
+          "cost": 15,
+          "windup": 7,
+          "duration": 0,
+          "description": "清剿身边敌群",
+          "weapons": [
+            "sword"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": []
+          },
+          "tags": [
+            "martial",
+            "melee",
+            "physical",
+            "area"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 75,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 75,
+            "encounterCooldownMultiplier": 1
+          }
+        },
+        {
+          "id": "ward",
+          "category": "support",
+          "unlockLevel": 1,
+          "name": "护身印",
+          "kind": "shield",
+          "damage": 91,
+          "range": 0,
+          "radius": 0,
+          "cooldown": 240,
+          "cost": 15,
+          "windup": 1,
+          "duration": 168,
+          "description": "吸收伤害",
+          "weapons": [],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "self",
+            "statuses": []
+          },
+          "resolution": {
+            "attackShare": 0,
+            "baseCooldown": 240,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 240,
+            "encounterCooldownMultiplier": 1
+          }
+        }
+      ]
+    },
+    "dps": 552.4666666666667,
+    "ehp": 2448,
+    "power": 1352438.4000000001,
+    "efficiency": 0.75,
+    "measurement": {
+      "initialTargets": [
+        {
+          "id": "ss-dg-mist-1-3:0:0",
+          "hp": 1000000000000000,
+          "maxHp": 1000000000000000,
+          "attack": 0
+        }
+      ],
+      "approachTargets": false,
+      "pressure": null,
+      "pressureChanges": [],
+      "versions": {
+        "client": "0.11.16",
+        "protocol": 31,
+        "rules": "ow-57",
+        "assets": "world-art-20261007-v24-world-runtime",
+        "db": 16
+      },
+      "seed": 41,
+      "budgetTicks": 900,
+      "mode": "auto",
+      "stopWhen": "window",
+      "goal": "all_targets",
+      "requested": [
+        "cut",
+        "whirl",
+        "ward"
+      ],
+      "executed": [
+        "cut",
+        "whirl",
+        "ward"
+      ],
+      "skillRanks": {
+        "cut": 2,
+        "whirl": 2,
+        "ward": 2
+      },
+      "build": {
+        "stats": {
+          "attack": 65,
+          "armor": 13,
+          "hp": 408,
+          "speed": 6,
+          "mana": 106,
+          "regen": 11,
+          "critChance": 0.05,
+          "lifesteal": 0,
+          "igniteChance": 0.027739999999999942,
+          "chillChance": 0.024619999999999965,
+          "shockChance": 0.02546999999999998,
+          "poisonChance": 0.022939999999999964,
+          "bleedChance": 0.025429999999999942,
+          "manaOnKill": 2.0540000000000003,
+          "allResist": 0.024279999999999965,
+          "fireResist": 0.05188999999999999,
+          "coldResist": 0.052249999999999984,
+          "lightningResist": 0.05046999999999995,
+          "arcaneResist": 0.04805999999999995,
+          "shadowResist": 0.05060999999999998,
+          "poisonResist": 0.05150999999999995,
+          "lifeOnKill": 0.004429999999999994,
+          "weapon": "sword",
+          "effects": [],
+          "damageAdd": 0.27,
+          "damageMult": 1.3,
+          "zones": [
+            {
+              "id": "mastery",
+              "label": "等级精通",
+              "kind": "add",
+              "value": 0.27
+            },
+            {
+              "id": "weapon-affinity",
+              "label": "武器亲和 · 武技",
+              "kind": "mult",
+              "value": 1.14,
+              "tags": [
+                "martial"
+              ]
+            },
+            {
+              "id": "talent-martial-mastery",
+              "label": "天赋 · 武技精通",
+              "kind": "mult",
+              "value": 1.04,
+              "tags": [
+                "martial"
+              ]
+            },
+            {
+              "id": "island-1",
+              "label": "风栖之力",
+              "kind": "mult",
+              "value": 1.3
+            }
+          ],
+          "combos": [
+            {
+              "id": "innate-sword-qi",
+              "name": "剑气",
+              "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+              "source": "剑势流 · 固有",
+              "weapons": [
+                "sword"
+              ],
+              "trigger": "nth",
+              "chance": 1,
+              "cooldown": 0,
+              "every": 3,
+              "action": {
+                "type": "nova",
+                "radius": 2.2,
+                "ratio": 0.35,
+                "damageType": "physical",
+                "vfx": "combo/sword-qi"
+              }
+            }
+          ],
+          "rules": [
+            {
+              "id": "innate-sword-qi",
+              "name": "剑气",
+              "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+              "source": "剑势流 · 固有",
+              "tier": 1,
+              "trigger": "nth",
+              "chance": 1,
+              "icd": 0,
+              "every": 3,
+              "count": "hit",
+              "filter": {
+                "weapons": [
+                  "sword"
+                ]
+              },
+              "when": [],
+              "action": {
+                "type": "nova",
+                "ratio": 0.35,
+                "radius": 2.2,
+                "damageType": "physical",
+                "ref": "hit",
+                "at": "target",
+                "vfx": "combo/sword-qi"
+              },
+              "scale": [
+                "action.ratio"
+              ],
+              "vfxKey": "combo/sword-qi"
+            },
+            {
+              "id": "stat-igniteChance",
+              "name": "点燃几率",
+              "description": "装备属性触发",
+              "source": "装备与养成属性",
+              "tier": 1,
+              "trigger": "hit",
+              "chance": 0.027739999999999942,
+              "icd": 0,
+              "filter": {
+                "categories": [
+                  "direct"
+                ]
+              },
+              "when": [],
+              "action": {
+                "type": "status",
+                "ref": "dealt",
+                "status": "burn",
+                "duration": 90,
+                "strength": 0,
+                "ratio": 0.3
+              },
+              "scale": [],
+              "vfxKey": "player/ember"
+            },
+            {
+              "id": "stat-chillChance",
+              "name": "冰缓几率",
+              "description": "装备属性触发",
+              "source": "装备与养成属性",
+              "tier": 1,
+              "trigger": "hit",
+              "chance": 0.024619999999999965,
+              "icd": 0,
+              "filter": {
+                "categories": [
+                  "direct"
+                ]
+              },
+              "when": [],
+              "action": {
+                "type": "status",
+                "ref": "dealt",
+                "status": "slow",
+                "duration": 60,
+                "strength": 0.3,
+                "ratio": 0
+              },
+              "scale": [],
+              "vfxKey": "player/frost"
+            },
+            {
+              "id": "stat-shockChance",
+              "name": "感电几率",
+              "description": "装备属性触发",
+              "source": "装备与养成属性",
+              "tier": 1,
+              "trigger": "hit",
+              "chance": 0.02546999999999998,
+              "icd": 0,
+              "filter": {
+                "categories": [
+                  "direct"
+                ]
+              },
+              "when": [],
+              "action": {
+                "type": "status",
+                "ref": "dealt",
+                "status": "shock",
+                "duration": 90,
+                "strength": 0.12,
+                "ratio": 0
+              },
+              "scale": [],
+              "vfxKey": "player/chain"
+            },
+            {
+              "id": "stat-poisonChance",
+              "name": "中毒几率",
+              "description": "装备属性触发",
+              "source": "装备与养成属性",
+              "tier": 1,
+              "trigger": "hit",
+              "chance": 0.022939999999999964,
+              "icd": 0,
+              "filter": {
+                "categories": [
+                  "direct"
+                ]
+              },
+              "when": [],
+              "action": {
+                "type": "status",
+                "ref": "dealt",
+                "status": "poison",
+                "duration": 90,
+                "strength": 0,
+                "ratio": 0.3
+              },
+              "scale": [],
+              "vfxKey": "player/poison_arrow"
+            },
+            {
+              "id": "stat-bleedChance",
+              "name": "流血几率",
+              "description": "装备属性触发",
+              "source": "装备与养成属性",
+              "tier": 1,
+              "trigger": "hit",
+              "chance": 0.025429999999999942,
+              "icd": 0,
+              "filter": {
+                "categories": [
+                  "direct"
+                ]
+              },
+              "when": [],
+              "action": {
+                "type": "status",
+                "ref": "dealt",
+                "status": "bleed",
+                "duration": 90,
+                "strength": 0,
+                "ratio": 0.3
+              },
+              "scale": [],
+              "vfxKey": "player/execute"
+            },
+            {
+              "id": "stat-manaOnKill",
+              "name": "击杀回复灵力",
+              "description": "装备属性触发",
+              "source": "装备与养成属性",
+              "tier": 1,
+              "trigger": "kill",
+              "chance": 1,
+              "icd": 0,
+              "filter": {},
+              "when": [],
+              "action": {
+                "type": "mana",
+                "ratio": 0,
+                "ref": "maxMana",
+                "flat": 2.0540000000000003
+              },
+              "scale": [],
+              "vfxKey": "player/mend"
+            },
+            {
+              "id": "stat-lifeOnKill",
+              "name": "击杀回复生命",
+              "description": "装备属性触发",
+              "source": "装备与养成属性",
+              "tier": 1,
+              "trigger": "kill",
+              "chance": 1,
+              "icd": 0,
+              "filter": {},
+              "when": [],
+              "action": {
+                "type": "heal",
+                "ratio": 0.004429999999999994,
+                "ref": "maxHp"
+              },
+              "scale": [],
+              "vfxKey": "player/mend"
+            }
+          ]
+        },
+        "skills": [
+          {
+            "weapons": [
+              "sword"
+            ],
+            "id": "cut",
+            "name": "斩击",
+            "kind": "single",
+            "damage": 295,
+            "range": 3,
+            "radius": 0,
+            "cooldown": 24,
+            "cost": 0,
+            "windup": 3,
+            "duration": 0,
+            "description": "近距离斩击",
+            "mechanics": {
+              "damageType": "physical",
+              "targeting": "enemy",
+              "statuses": []
+            },
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 24,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 24,
+              "encounterCooldownMultiplier": 1
+            },
+            "tags": [
+              "martial",
+              "melee",
+              "physical",
+              "single"
+            ]
+          },
+          {
+            "weapons": [
+              "sword"
+            ],
+            "id": "whirl",
+            "name": "旋风斩",
+            "kind": "area",
+            "damage": 254,
+            "range": 0,
+            "radius": 4.5,
+            "cooldown": 75,
+            "cost": 15,
+            "windup": 7,
+            "duration": 0,
+            "description": "清剿身边敌群",
+            "mechanics": {
+              "damageType": "physical",
+              "targeting": "enemy",
+              "statuses": []
+            },
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 75,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 75,
+              "encounterCooldownMultiplier": 1
+            },
+            "tags": [
+              "martial",
+              "melee",
+              "physical",
+              "area"
+            ]
+          },
+          {
+            "weapons": [],
+            "id": "ward",
+            "name": "护身印",
+            "kind": "shield",
+            "damage": 91,
+            "range": 0,
+            "radius": 0,
+            "cooldown": 240,
+            "cost": 15,
+            "windup": 1,
+            "duration": 168,
+            "description": "吸收伤害",
+            "mechanics": {
+              "damageType": "physical",
+              "targeting": "self",
+              "statuses": []
+            },
+            "resolution": {
+              "attackShare": 0,
+              "baseCooldown": 240,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 240,
+              "encounterCooldownMultiplier": 1
+            }
+          }
+        ]
+      },
+      "targetParams": [
+        {
+          "id": "ss-dg-mist-1-3:0:0",
+          "x": 28,
+          "y": 24,
+          "name": "渡口雾钟守卫",
+          "art": "ow-boss-mist-1",
+          "kind": "shaman",
+          "hp": 1000000000000000,
+          "attack": 0,
+          "elite": true,
+          "boss": true,
+          "monster": {
+            "version": 1,
+            "template": "ow-boss-mist-1",
+            "level": 10,
+            "rank": "boss",
+            "role": "ranged",
+            "baseStats": {
+              "hp": 1000000000000000,
+              "attack": 0,
+              "armor": 0
+            },
+            "difficulty": {
+              "hp": 1.0714661142976802,
+              "attack": 0.8627329502219818,
+              "armor": 1
+            },
+            "armor": 0,
+            "ai": {
+              "speed": 2.8,
+              "range": 9,
+              "cooldown": 65,
+              "skillChance": 0,
+              "basicAttackBonus": 0
+            },
+            "skills": [],
+            "bossKey": "forest-boss"
+          }
+        }
+      ],
+      "casts": {
+        "cut": 37,
+        "whirl": 12,
+        "ward": 4
+      },
+      "failures": {},
+      "firstCast": 1,
+      "kills": 0,
+      "damage": {
+        "direct": 14661,
+        "periodic": 165,
+        "derived": 1748
+      },
+      "damageBySkill": {
+        "cut": {
+          "direct": 11359,
+          "periodic": 0,
+          "derived": 0,
+          "hits": 37
+        },
+        "whirl": {
+          "direct": 3302,
+          "periodic": 0,
+          "derived": 0,
+          "hits": 12
+        },
+        "combo/sword-qi": {
+          "direct": 0,
+          "periodic": 0,
+          "derived": 1748,
+          "hits": 16
+        },
+        "stat-igniteChance": {
+          "direct": 0,
+          "periodic": 89,
+          "derived": 0,
+          "hits": 3
+        },
+        "stat-bleedChance": {
+          "direct": 0,
+          "periodic": 76,
+          "derived": 0,
+          "hits": 3
+        }
+      },
+      "totalDamage": 16574,
+      "dps": 552.4666666666667,
+      "incomingDamage": 0,
+      "elapsed": 30,
+      "clearSeconds": null,
+      "deathSeconds": null,
+      "survivalCensored": true,
+      "failed": null,
+      "remaining": [
+        {
+          "id": "ss-dg-mist-1-3:0:0",
+          "hp": 999999999983426
+        }
+      ],
+      "hero": {
+        "hp": 408,
+        "mana": 106
+      },
+      "rules": {
+        "innate-sword-qi": {
+          "count": 16,
+          "damage": 1748
+        },
+        "stat-igniteChance": {
+          "count": 1,
+          "damage": 89
+        },
+        "stat-chillChance": {
+          "count": 2,
+          "damage": 0
+        },
+        "stat-bleedChance": {
+          "count": 1,
+          "damage": 76
+        }
+      }
+    }
+  },
+  "seeds": [
+    41,
+    73,
+    105,
+    137,
+    169,
+    201,
+    233,
+    265,
+    297,
+    329,
+    361,
+    393,
+    425,
+    457,
+    489,
+    521,
+    553,
+    585,
+    617,
+    649
+  ],
+  "samplesPerRatio": 20,
+  "maxSeconds": 240,
+  "strategy": "existing World auto policy, identical actual player build at every rho",
+  "scenarios": [
+    {
+      "requestedRho": 0.8,
+      "observedRho": 0.800016531470367,
+      "hpFactor": 3.3895382098346283,
+      "enemyScale": {
+        "hp": 3.6317753349550244,
+        "attack": 0.8627329502219818,
+        "hpPerStage": 0,
+        "attackPerStage": 0
+      },
+      "targets": [
+        {
+          "id": "ss-dg-mist-1-3:0:0",
+          "x": 28,
+          "y": 24,
+          "name": "渡口雾钟守卫",
+          "art": "ow-boss-mist-1",
+          "kind": "shaman",
+          "hp": 64688,
+          "attack": 6,
+          "elite": true,
+          "boss": true,
+          "monster": {
+            "version": 1,
+            "template": "ow-boss-mist-1",
+            "level": 10,
+            "rank": "boss",
+            "role": "ranged",
+            "baseStats": {
+              "hp": 17811.79811901691,
+              "attack": 6.505621691239358,
+              "armor": 6.6
+            },
+            "difficulty": {
+              "hp": 3.6317753349550244,
+              "attack": 0.8627329502219818,
+              "armor": 1
+            },
+            "armor": 7,
+            "ai": {
+              "speed": 2.8,
+              "range": 9,
+              "cooldown": 65,
+              "skillChance": 0.3,
+              "basicAttackBonus": 0
+            },
+            "skills": [],
+            "bossKey": "forest-boss"
+          }
+        },
+        {
+          "id": "ss-dg-mist-1-3:1:0",
+          "x": 27,
+          "y": 21,
+          "name": "苔铃幼兽",
+          "art": "ow-mon-mist-1",
+          "kind": "guard",
+          "hp": 755,
+          "attack": 37,
+          "elite": false,
+          "boss": false,
+          "monster": {
+            "version": 1,
+            "template": "ow-mon-mist-1",
+            "level": 10,
+            "rank": "normal",
+            "role": "swarm",
+            "baseStats": {
+              "hp": 207.84169529532673,
+              "attack": 42.50000000000001,
+              "armor": 0
+            },
+            "difficulty": {
+              "hp": 3.6317753349550244,
+              "attack": 0.8627329502219818,
+              "armor": 1
+            },
+            "armor": 0,
+            "ai": {
+              "speed": 1.9549999999999998,
+              "range": 2,
+              "cooldown": 90,
+              "skillChance": 0.3,
+              "basicAttackBonus": 3,
+              "aggroRadius": 12
+            },
+            "skills": [
+              "shield_bash"
+            ],
+            "bossKey": null
+          }
+        },
+        {
+          "id": "ss-dg-mist-1-3:1:1",
+          "x": 23.52526255420235,
+          "y": 22.35098092731253,
+          "name": "苔铃幼兽",
+          "art": "ow-mon-mist-1",
+          "kind": "guard",
+          "hp": 755,
+          "attack": 37,
+          "elite": false,
+          "boss": false,
+          "monster": {
+            "version": 1,
+            "template": "ow-mon-mist-1",
+            "level": 10,
+            "rank": "normal",
+            "role": "swarm",
+            "baseStats": {
+              "hp": 207.84169529532673,
+              "attack": 42.50000000000001,
+              "armor": 0
+            },
+            "difficulty": {
+              "hp": 3.6317753349550244,
+              "attack": 0.8627329502219818,
+              "armor": 1
+            },
+            "armor": 0,
+            "ai": {
+              "speed": 1.9549999999999998,
+              "range": 2,
+              "cooldown": 90,
+              "skillChance": 0.3,
+              "basicAttackBonus": 3,
+              "aggroRadius": 12
+            },
+            "skills": [
+              "shield_bash"
+            ],
+            "bossKey": null
+          }
+        }
+      ],
+      "summary": {
+        "samples": 20,
+        "wins": 20,
+        "winRate": 1,
+        "deaths": 0,
+        "timeouts": 0,
+        "invalid": 0,
+        "meanWinSeconds": 133.0233333333333,
+        "medianWinSeconds": 133.31666666666666,
+        "maxWinSeconds": 135.96666666666667
+      },
+      "threshold": null,
+      "passes": null,
+      "samples": [
+        {
+          "seed": 41,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 131.8,
+          "clearSeconds": 131.8,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 156,
+            "whirl": 53,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 58874,
+            "periodic": 991,
+            "derived": 6333
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 93.12066666666612
+          }
+        },
+        {
+          "seed": 73,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 133.56666666666666,
+          "clearSeconds": 133.56666666666666,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 159,
+            "whirl": 53,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 59170,
+            "periodic": 659,
+            "derived": 6369
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 106
+          }
+        },
+        {
+          "seed": 105,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 133.56666666666666,
+          "clearSeconds": 133.56666666666666,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 158,
+            "whirl": 53,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 59245,
+            "periodic": 753,
+            "derived": 6200
+          },
+          "incomingDamage": 4,
+          "remaining": [],
+          "hero": {
+            "hp": 406,
+            "mana": 106
+          }
+        },
+        {
+          "seed": 137,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 133.16666666666666,
+          "clearSeconds": 133.16666666666666,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 158,
+            "whirl": 53,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 59157,
+            "periodic": 765,
+            "derived": 6276
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 103.02066666666595
+          }
+        },
+        {
+          "seed": 169,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 135.23333333333332,
+          "clearSeconds": 135.23333333333332,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 157,
+            "whirl": 54,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 59154,
+            "periodic": 806,
+            "derived": 6238
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 105.52066666666644
+          }
+        },
+        {
+          "seed": 201,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 132.3,
+          "clearSeconds": 132.3,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 157,
+            "whirl": 53,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 58776,
+            "periodic": 1163,
+            "derived": 6259
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 94.2206666666661
+          }
+        },
+        {
+          "seed": 233,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 131.76666666666668,
+          "clearSeconds": 131.76666666666668,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 153,
+            "whirl": 53,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 58921,
+            "periodic": 910,
+            "derived": 6367
+          },
+          "incomingDamage": 8,
+          "remaining": [],
+          "hero": {
+            "hp": 402,
+            "mana": 93.12066666666612
+          }
+        },
+        {
+          "seed": 265,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 133.83333333333334,
+          "clearSeconds": 133.83333333333334,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 158,
+            "whirl": 53,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 58944,
+            "periodic": 994,
+            "derived": 6260
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 106
+          }
+        },
+        {
+          "seed": 297,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 134.36666666666667,
+          "clearSeconds": 134.36666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 158,
+            "whirl": 53,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 59070,
+            "periodic": 955,
+            "derived": 6173
+          },
+          "incomingDamage": 4,
+          "remaining": [],
+          "hero": {
+            "hp": 406,
+            "mana": 106
+          }
+        },
+        {
+          "seed": 329,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 134.63333333333333,
+          "clearSeconds": 134.63333333333333,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 159,
+            "whirl": 54,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 59036,
+            "periodic": 654,
+            "derived": 6508
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 95.62066666666662
+          }
+        },
+        {
+          "seed": 361,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 135.96666666666667,
+          "clearSeconds": 135.96666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 159,
+            "whirl": 54,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 59136,
+            "periodic": 587,
+            "derived": 6475
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 106
+          }
+        },
+        {
+          "seed": 393,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 131.96666666666667,
+          "clearSeconds": 131.96666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 157,
+            "whirl": 53,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 59025,
+            "periodic": 755,
+            "derived": 6418
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 94.2206666666661
+          }
+        },
+        {
+          "seed": 425,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 130.96666666666667,
+          "clearSeconds": 130.96666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 156,
+            "whirl": 52,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 58730,
+            "periodic": 1130,
+            "derived": 6338
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 99.32066666666628
+          }
+        },
+        {
+          "seed": 457,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 133.46666666666667,
+          "clearSeconds": 133.46666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 159,
+            "whirl": 53,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 58823,
+            "periodic": 998,
+            "derived": 6377
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 106
+          }
+        },
+        {
+          "seed": 489,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 132.73333333333332,
+          "clearSeconds": 132.73333333333332,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 157,
+            "whirl": 53,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 59040,
+            "periodic": 736,
+            "derived": 6422
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 103.02066666666595
+          }
+        },
+        {
+          "seed": 521,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 133.5,
+          "clearSeconds": 133.5,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 159,
+            "whirl": 53,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 59007,
+            "periodic": 767,
+            "derived": 6424
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 106
+          }
+        },
+        {
+          "seed": 553,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 130.76666666666668,
+          "clearSeconds": 130.76666666666668,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 156,
+            "whirl": 52,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 58819,
+            "periodic": 1014,
+            "derived": 6365
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 90.52066666666644
+          }
+        },
+        {
+          "seed": 585,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 134.36666666666667,
+          "clearSeconds": 134.36666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 158,
+            "whirl": 54,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 59015,
+            "periodic": 586,
+            "derived": 6597
+          },
+          "incomingDamage": 4,
+          "remaining": [],
+          "hero": {
+            "hp": 406,
+            "mana": 95.62066666666662
+          }
+        },
+        {
+          "seed": 617,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 132.26666666666668,
+          "clearSeconds": 132.26666666666668,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 156,
+            "whirl": 53,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 59235,
+            "periodic": 538,
+            "derived": 6425
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 93.12066666666612
+          }
+        },
+        {
+          "seed": 649,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 130.23333333333332,
+          "clearSeconds": 130.23333333333332,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 153,
+            "whirl": 52,
+            "ward": 17
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 58544,
+            "periodic": 1285,
+            "derived": 6369
+          },
+          "incomingDamage": 4,
+          "remaining": [],
+          "hero": {
+            "hp": 406,
+            "mana": 86.48733333333318
+          }
+        }
+      ]
+    },
+    {
+      "requestedRho": 0.85,
+      "observedRho": 0.8500151008944221,
+      "hpFactor": 3.190153609256121,
+      "enemyScale": {
+        "hp": 3.418141491722376,
+        "attack": 0.8627329502219818,
+        "hpPerStage": 0,
+        "attackPerStage": 0
+      },
+      "targets": [
+        {
+          "id": "ss-dg-mist-1-3:0:0",
+          "x": 28,
+          "y": 24,
+          "name": "渡口雾钟守卫",
+          "art": "ow-boss-mist-1",
+          "kind": "shaman",
+          "hp": 60883,
+          "attack": 6,
+          "elite": true,
+          "boss": true,
+          "monster": {
+            "version": 1,
+            "template": "ow-boss-mist-1",
+            "level": 10,
+            "rank": "boss",
+            "role": "ranged",
+            "baseStats": {
+              "hp": 17811.79811901691,
+              "attack": 6.505621691239358,
+              "armor": 6.6
+            },
+            "difficulty": {
+              "hp": 3.418141491722376,
+              "attack": 0.8627329502219818,
+              "armor": 1
+            },
+            "armor": 7,
+            "ai": {
+              "speed": 2.8,
+              "range": 9,
+              "cooldown": 65,
+              "skillChance": 0.3,
+              "basicAttackBonus": 0
+            },
+            "skills": [],
+            "bossKey": "forest-boss"
+          }
+        },
+        {
+          "id": "ss-dg-mist-1-3:1:0",
+          "x": 27,
+          "y": 21,
+          "name": "苔铃幼兽",
+          "art": "ow-mon-mist-1",
+          "kind": "guard",
+          "hp": 710,
+          "attack": 37,
+          "elite": false,
+          "boss": false,
+          "monster": {
+            "version": 1,
+            "template": "ow-mon-mist-1",
+            "level": 10,
+            "rank": "normal",
+            "role": "swarm",
+            "baseStats": {
+              "hp": 207.84169529532673,
+              "attack": 42.50000000000001,
+              "armor": 0
+            },
+            "difficulty": {
+              "hp": 3.418141491722376,
+              "attack": 0.8627329502219818,
+              "armor": 1
+            },
+            "armor": 0,
+            "ai": {
+              "speed": 1.9549999999999998,
+              "range": 2,
+              "cooldown": 90,
+              "skillChance": 0.3,
+              "basicAttackBonus": 3,
+              "aggroRadius": 12
+            },
+            "skills": [
+              "shield_bash"
+            ],
+            "bossKey": null
+          }
+        },
+        {
+          "id": "ss-dg-mist-1-3:1:1",
+          "x": 23.52526255420235,
+          "y": 22.35098092731253,
+          "name": "苔铃幼兽",
+          "art": "ow-mon-mist-1",
+          "kind": "guard",
+          "hp": 710,
+          "attack": 37,
+          "elite": false,
+          "boss": false,
+          "monster": {
+            "version": 1,
+            "template": "ow-mon-mist-1",
+            "level": 10,
+            "rank": "normal",
+            "role": "swarm",
+            "baseStats": {
+              "hp": 207.84169529532673,
+              "attack": 42.50000000000001,
+              "armor": 0
+            },
+            "difficulty": {
+              "hp": 3.418141491722376,
+              "attack": 0.8627329502219818,
+              "armor": 1
+            },
+            "armor": 0,
+            "ai": {
+              "speed": 1.9549999999999998,
+              "range": 2,
+              "cooldown": 90,
+              "skillChance": 0.3,
+              "basicAttackBonus": 3,
+              "aggroRadius": 12
+            },
+            "skills": [
+              "shield_bash"
+            ],
+            "bossKey": null
+          }
+        }
+      ],
+      "summary": {
+        "samples": 20,
+        "wins": 20,
+        "winRate": 1,
+        "deaths": 0,
+        "timeouts": 0,
+        "invalid": 0,
+        "meanWinSeconds": 125.44666666666667,
+        "medianWinSeconds": 125.46666666666667,
+        "maxWinSeconds": 128.46666666666667
+      },
+      "threshold": 0.3,
+      "passes": true,
+      "samples": [
+        {
+          "seed": 41,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 124.36666666666666,
+          "clearSeconds": 124.36666666666666,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 148,
+            "whirl": 50,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55585,
+            "periodic": 771,
+            "derived": 5947
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 94.2206666666661
+          }
+        },
+        {
+          "seed": 73,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 126.06666666666666,
+          "clearSeconds": 126.06666666666666,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 150,
+            "whirl": 50,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55670,
+            "periodic": 614,
+            "derived": 6019
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 106
+          }
+        },
+        {
+          "seed": 105,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 125.26666666666667,
+          "clearSeconds": 125.26666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 148,
+            "whirl": 50,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55758,
+            "periodic": 695,
+            "derived": 5850
+          },
+          "incomingDamage": 4,
+          "remaining": [],
+          "hero": {
+            "hp": 406,
+            "mana": 103.75399999999927
+          }
+        },
+        {
+          "seed": 137,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 125.66666666666667,
+          "clearSeconds": 125.66666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 149,
+            "whirl": 50,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55612,
+            "periodic": 765,
+            "derived": 5926
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 103.75399999999927
+          }
+        },
+        {
+          "seed": 169,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 126.93333333333334,
+          "clearSeconds": 126.93333333333334,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 147,
+            "whirl": 51,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55609,
+            "periodic": 806,
+            "derived": 5888
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 96.7206666666666
+          }
+        },
+        {
+          "seed": 201,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 124.7,
+          "clearSeconds": 124.7,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 147,
+            "whirl": 50,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55231,
+            "periodic": 1163,
+            "derived": 5909
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 93.85399999999944
+          }
+        },
+        {
+          "seed": 233,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 124.26666666666667,
+          "clearSeconds": 124.26666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 144,
+            "whirl": 50,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55408,
+            "periodic": 878,
+            "derived": 6017
+          },
+          "incomingDamage": 8,
+          "remaining": [],
+          "hero": {
+            "hp": 402,
+            "mana": 93.48733333333278
+          }
+        },
+        {
+          "seed": 265,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 126.33333333333333,
+          "clearSeconds": 126.33333333333333,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 149,
+            "whirl": 50,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55522,
+            "periodic": 894,
+            "derived": 5887
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 106
+          }
+        },
+        {
+          "seed": 297,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 126.86666666666666,
+          "clearSeconds": 126.86666666666666,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 149,
+            "whirl": 50,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55555,
+            "periodic": 925,
+            "derived": 5823
+          },
+          "incomingDamage": 4,
+          "remaining": [],
+          "hero": {
+            "hp": 406,
+            "mana": 106
+          }
+        },
+        {
+          "seed": 329,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 126.33333333333333,
+          "clearSeconds": 126.33333333333333,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 150,
+            "whirl": 50,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55525,
+            "periodic": 620,
+            "derived": 6158
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 106
+          }
+        },
+        {
+          "seed": 361,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 128.46666666666667,
+          "clearSeconds": 128.46666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 150,
+            "whirl": 51,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55591,
+            "periodic": 587,
+            "derived": 6125
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 106
+          }
+        },
+        {
+          "seed": 393,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 124.46666666666667,
+          "clearSeconds": 124.46666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 148,
+            "whirl": 50,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55480,
+            "periodic": 755,
+            "derived": 6068
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 94.2206666666661
+          }
+        },
+        {
+          "seed": 425,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 123.46666666666667,
+          "clearSeconds": 123.46666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 147,
+            "whirl": 49,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55185,
+            "periodic": 1130,
+            "derived": 5988
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 99.32066666666628
+          }
+        },
+        {
+          "seed": 457,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 125.96666666666667,
+          "clearSeconds": 125.96666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 150,
+            "whirl": 50,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55329,
+            "periodic": 998,
+            "derived": 5976
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 106
+          }
+        },
+        {
+          "seed": 489,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 125.23333333333333,
+          "clearSeconds": 125.23333333333333,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 148,
+            "whirl": 50,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55669,
+            "periodic": 562,
+            "derived": 6072
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 103.02066666666595
+          }
+        },
+        {
+          "seed": 521,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 126,
+          "clearSeconds": 126,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 150,
+            "whirl": 50,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55572,
+            "periodic": 657,
+            "derived": 6074
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 106
+          }
+        },
+        {
+          "seed": 553,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 123.26666666666667,
+          "clearSeconds": 123.26666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 147,
+            "whirl": 49,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55350,
+            "periodic": 1014,
+            "derived": 5939
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 91.25399999999976
+          }
+        },
+        {
+          "seed": 585,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 126.86666666666666,
+          "clearSeconds": 126.86666666666666,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 149,
+            "whirl": 51,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55552,
+            "periodic": 528,
+            "derived": 6223
+          },
+          "incomingDamage": 4,
+          "remaining": [],
+          "hero": {
+            "hp": 406,
+            "mana": 95.62066666666662
+          }
+        },
+        {
+          "seed": 617,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 124.76666666666667,
+          "clearSeconds": 124.76666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 147,
+            "whirl": 50,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55726,
+            "periodic": 538,
+            "derived": 6039
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 93.85399999999944
+          }
+        },
+        {
+          "seed": 649,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 123.63333333333334,
+          "clearSeconds": 123.63333333333334,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 146,
+            "whirl": 49,
+            "ward": 16
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 55215,
+            "periodic": 1201,
+            "derived": 5887
+          },
+          "incomingDamage": 4,
+          "remaining": [],
+          "hero": {
+            "hp": 406,
+            "mana": 101.8873333333329
+          }
+        }
+      ]
+    },
+    {
+      "requestedRho": 1,
+      "observedRho": 1.0000090701195166,
+      "hpFactor": 2.7116305678677026,
+      "enemyScale": {
+        "hp": 2.9054202679640193,
+        "attack": 0.8627329502219818,
+        "hpPerStage": 0,
+        "attackPerStage": 0
+      },
+      "targets": [
+        {
+          "id": "ss-dg-mist-1-3:0:0",
+          "x": 28,
+          "y": 24,
+          "name": "渡口雾钟守卫",
+          "art": "ow-boss-mist-1",
+          "kind": "shaman",
+          "hp": 51751,
+          "attack": 6,
+          "elite": true,
+          "boss": true,
+          "monster": {
+            "version": 1,
+            "template": "ow-boss-mist-1",
+            "level": 10,
+            "rank": "boss",
+            "role": "ranged",
+            "baseStats": {
+              "hp": 17811.79811901691,
+              "attack": 6.505621691239358,
+              "armor": 6.6
+            },
+            "difficulty": {
+              "hp": 2.9054202679640193,
+              "attack": 0.8627329502219818,
+              "armor": 1
+            },
+            "armor": 7,
+            "ai": {
+              "speed": 2.8,
+              "range": 9,
+              "cooldown": 65,
+              "skillChance": 0.3,
+              "basicAttackBonus": 0
+            },
+            "skills": [],
+            "bossKey": "forest-boss"
+          }
+        },
+        {
+          "id": "ss-dg-mist-1-3:1:0",
+          "x": 27,
+          "y": 21,
+          "name": "苔铃幼兽",
+          "art": "ow-mon-mist-1",
+          "kind": "guard",
+          "hp": 604,
+          "attack": 37,
+          "elite": false,
+          "boss": false,
+          "monster": {
+            "version": 1,
+            "template": "ow-mon-mist-1",
+            "level": 10,
+            "rank": "normal",
+            "role": "swarm",
+            "baseStats": {
+              "hp": 207.84169529532673,
+              "attack": 42.50000000000001,
+              "armor": 0
+            },
+            "difficulty": {
+              "hp": 2.9054202679640193,
+              "attack": 0.8627329502219818,
+              "armor": 1
+            },
+            "armor": 0,
+            "ai": {
+              "speed": 1.9549999999999998,
+              "range": 2,
+              "cooldown": 90,
+              "skillChance": 0.3,
+              "basicAttackBonus": 3,
+              "aggroRadius": 12
+            },
+            "skills": [
+              "shield_bash"
+            ],
+            "bossKey": null
+          }
+        },
+        {
+          "id": "ss-dg-mist-1-3:1:1",
+          "x": 23.52526255420235,
+          "y": 22.35098092731253,
+          "name": "苔铃幼兽",
+          "art": "ow-mon-mist-1",
+          "kind": "guard",
+          "hp": 604,
+          "attack": 37,
+          "elite": false,
+          "boss": false,
+          "monster": {
+            "version": 1,
+            "template": "ow-mon-mist-1",
+            "level": 10,
+            "rank": "normal",
+            "role": "swarm",
+            "baseStats": {
+              "hp": 207.84169529532673,
+              "attack": 42.50000000000001,
+              "armor": 0
+            },
+            "difficulty": {
+              "hp": 2.9054202679640193,
+              "attack": 0.8627329502219818,
+              "armor": 1
+            },
+            "armor": 0,
+            "ai": {
+              "speed": 1.9549999999999998,
+              "range": 2,
+              "cooldown": 90,
+              "skillChance": 0.3,
+              "basicAttackBonus": 3,
+              "aggroRadius": 12
+            },
+            "skills": [
+              "shield_bash"
+            ],
+            "bossKey": null
+          }
+        }
+      ],
+      "summary": {
+        "samples": 20,
+        "wins": 20,
+        "winRate": 1,
+        "deaths": 0,
+        "timeouts": 0,
+        "invalid": 0,
+        "meanWinSeconds": 107.28333333333335,
+        "medianWinSeconds": 107.4,
+        "maxWinSeconds": 110.16666666666667
+      },
+      "threshold": 0.9,
+      "passes": true,
+      "samples": [
+        {
+          "seed": 41,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 106.76666666666667,
+          "clearSeconds": 106.76666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 126,
+            "whirl": 43,
+            "ward": 14
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 46919,
+            "periodic": 926,
+            "derived": 5114
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 81.35399999999994
+          }
+        },
+        {
+          "seed": 73,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 107.66666666666667,
+          "clearSeconds": 107.66666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 128,
+            "whirl": 43,
+            "ward": 14
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 47373,
+            "periodic": 460,
+            "derived": 5126
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 96.75399999999966
+          }
+        },
+        {
+          "seed": 105,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 106.96666666666667,
+          "clearSeconds": 106.96666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 126,
+            "whirl": 43,
+            "ward": 14
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 47418,
+            "periodic": 583,
+            "derived": 4958
+          },
+          "incomingDamage": 4,
+          "remaining": [],
+          "hero": {
+            "hp": 406,
+            "mana": 93.45399999999972
+          }
+        },
+        {
+          "seed": 137,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 109.76666666666667,
+          "clearSeconds": 109.76666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 126,
+            "whirl": 44,
+            "ward": 14
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 47257,
+            "periodic": 639,
+            "derived": 5063
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 95.62066666666662
+          }
+        },
+        {
+          "seed": 169,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 106.86666666666666,
+          "clearSeconds": 106.86666666666666,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 126,
+            "whirl": 43,
+            "ward": 14
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 47341,
+            "periodic": 467,
+            "derived": 5151
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 93.45399999999972
+          }
+        },
+        {
+          "seed": 201,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 108.2,
+          "clearSeconds": 108.2,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 125,
+            "whirl": 43,
+            "ward": 14
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 46925,
+            "periodic": 939,
+            "derived": 5095
+          },
+          "incomingDamage": 16,
+          "remaining": [],
+          "hero": {
+            "hp": 394,
+            "mana": 102.25399999999956
+          }
+        },
+        {
+          "seed": 233,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 105.96666666666667,
+          "clearSeconds": 105.96666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 123,
+            "whirl": 42,
+            "ward": 14
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 47140,
+            "periodic": 756,
+            "derived": 5063
+          },
+          "incomingDamage": 8,
+          "remaining": [],
+          "hero": {
+            "hp": 402,
+            "mana": 98.18733333333324
+          }
+        },
+        {
+          "seed": 265,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 107.13333333333334,
+          "clearSeconds": 107.13333333333334,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 126,
+            "whirl": 43,
+            "ward": 14
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 47160,
+            "periodic": 727,
+            "derived": 5072
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 92.35399999999974
+          }
+        },
+        {
+          "seed": 297,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 107.8,
+          "clearSeconds": 107.8,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 127,
+            "whirl": 43,
+            "ward": 14
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 47098,
+            "periodic": 710,
+            "derived": 5151
+          },
+          "incomingDamage": 8,
+          "remaining": [],
+          "hero": {
+            "hp": 402,
+            "mana": 94.2206666666661
+          }
+        },
+        {
+          "seed": 329,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 108.03333333333333,
+          "clearSeconds": 108.03333333333333,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 128,
+            "whirl": 43,
+            "ward": 14
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 47414,
+            "periodic": 521,
+            "derived": 5024
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 96.75399999999966
+          }
+        },
+        {
+          "seed": 361,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 110.16666666666667,
+          "clearSeconds": 110.16666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 128,
+            "whirl": 44,
+            "ward": 14
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 47314,
+            "periodic": 445,
+            "derived": 5200
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 105.52066666666644
+          }
+        },
+        {
+          "seed": 393,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 105.96666666666667,
+          "clearSeconds": 105.96666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 126,
+            "whirl": 42,
+            "ward": 13
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 47124,
+            "periodic": 693,
+            "derived": 5142
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 106
+          }
+        },
+        {
+          "seed": 425,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 105.16666666666667,
+          "clearSeconds": 105.16666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 125,
+            "whirl": 42,
+            "ward": 13
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 46947,
+            "periodic": 870,
+            "derived": 5142
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 105.52066666666644
+          }
+        },
+        {
+          "seed": 457,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 107.66666666666667,
+          "clearSeconds": 107.66666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 127,
+            "whirl": 43,
+            "ward": 14
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 46914,
+            "periodic": 879,
+            "derived": 5166
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 91.25399999999976
+          }
+        },
+        {
+          "seed": 489,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 105.23333333333333,
+          "clearSeconds": 105.23333333333333,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 124,
+            "whirl": 42,
+            "ward": 13
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 47251,
+            "periodic": 504,
+            "derived": 5204
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 105.52066666666644
+          }
+        },
+        {
+          "seed": 521,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 108.46666666666667,
+          "clearSeconds": 108.46666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 129,
+            "whirl": 43,
+            "ward": 14
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 47258,
+            "periodic": 541,
+            "derived": 5160
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 100.0539999999996
+          }
+        },
+        {
+          "seed": 553,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 105.76666666666667,
+          "clearSeconds": 105.76666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 126,
+            "whirl": 42,
+            "ward": 13
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 47099,
+            "periodic": 695,
+            "derived": 5165
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 105.52066666666644
+          }
+        },
+        {
+          "seed": 585,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 108.56666666666666,
+          "clearSeconds": 108.56666666666666,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 128,
+            "whirl": 43,
+            "ward": 14
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 47243,
+            "periodic": 412,
+            "derived": 5304
+          },
+          "incomingDamage": 4,
+          "remaining": [],
+          "hero": {
+            "hp": 406,
+            "mana": 106
+          }
+        },
+        {
+          "seed": 617,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 108.16666666666667,
+          "clearSeconds": 108.16666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 125,
+            "whirl": 43,
+            "ward": 14
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 47288,
+            "periodic": 516,
+            "derived": 5155
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 102.25399999999956
+          }
+        },
+        {
+          "seed": 649,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 105.33333333333333,
+          "clearSeconds": 105.33333333333333,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 124,
+            "whirl": 42,
+            "ward": 13
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 46854,
+            "periodic": 1060,
+            "derived": 5045
+          },
+          "incomingDamage": 4,
+          "remaining": [],
+          "hero": {
+            "hp": 406,
+            "mana": 96.7206666666666
+          }
+        }
+      ]
+    },
+    {
+      "requestedRho": 1.2,
+      "observedRho": 1.200006246527735,
+      "hpFactor": 2.259692139889752,
+      "enemyScale": {
+        "hp": 2.4211835566366826,
+        "attack": 0.8627329502219818,
+        "hpPerStage": 0,
+        "attackPerStage": 0
+      },
+      "targets": [
+        {
+          "id": "ss-dg-mist-1-3:0:0",
+          "x": 28,
+          "y": 24,
+          "name": "渡口雾钟守卫",
+          "art": "ow-boss-mist-1",
+          "kind": "shaman",
+          "hp": 43126,
+          "attack": 6,
+          "elite": true,
+          "boss": true,
+          "monster": {
+            "version": 1,
+            "template": "ow-boss-mist-1",
+            "level": 10,
+            "rank": "boss",
+            "role": "ranged",
+            "baseStats": {
+              "hp": 17811.79811901691,
+              "attack": 6.505621691239358,
+              "armor": 6.6
+            },
+            "difficulty": {
+              "hp": 2.4211835566366826,
+              "attack": 0.8627329502219818,
+              "armor": 1
+            },
+            "armor": 7,
+            "ai": {
+              "speed": 2.8,
+              "range": 9,
+              "cooldown": 65,
+              "skillChance": 0.3,
+              "basicAttackBonus": 0
+            },
+            "skills": [],
+            "bossKey": "forest-boss"
+          }
+        },
+        {
+          "id": "ss-dg-mist-1-3:1:0",
+          "x": 27,
+          "y": 21,
+          "name": "苔铃幼兽",
+          "art": "ow-mon-mist-1",
+          "kind": "guard",
+          "hp": 503,
+          "attack": 37,
+          "elite": false,
+          "boss": false,
+          "monster": {
+            "version": 1,
+            "template": "ow-mon-mist-1",
+            "level": 10,
+            "rank": "normal",
+            "role": "swarm",
+            "baseStats": {
+              "hp": 207.84169529532673,
+              "attack": 42.50000000000001,
+              "armor": 0
+            },
+            "difficulty": {
+              "hp": 2.4211835566366826,
+              "attack": 0.8627329502219818,
+              "armor": 1
+            },
+            "armor": 0,
+            "ai": {
+              "speed": 1.9549999999999998,
+              "range": 2,
+              "cooldown": 90,
+              "skillChance": 0.3,
+              "basicAttackBonus": 3,
+              "aggroRadius": 12
+            },
+            "skills": [
+              "shield_bash"
+            ],
+            "bossKey": null
+          }
+        },
+        {
+          "id": "ss-dg-mist-1-3:1:1",
+          "x": 23.52526255420235,
+          "y": 22.35098092731253,
+          "name": "苔铃幼兽",
+          "art": "ow-mon-mist-1",
+          "kind": "guard",
+          "hp": 503,
+          "attack": 37,
+          "elite": false,
+          "boss": false,
+          "monster": {
+            "version": 1,
+            "template": "ow-mon-mist-1",
+            "level": 10,
+            "rank": "normal",
+            "role": "swarm",
+            "baseStats": {
+              "hp": 207.84169529532673,
+              "attack": 42.50000000000001,
+              "armor": 0
+            },
+            "difficulty": {
+              "hp": 2.4211835566366826,
+              "attack": 0.8627329502219818,
+              "armor": 1
+            },
+            "armor": 0,
+            "ai": {
+              "speed": 1.9549999999999998,
+              "range": 2,
+              "cooldown": 90,
+              "skillChance": 0.3,
+              "basicAttackBonus": 3,
+              "aggroRadius": 12
+            },
+            "skills": [
+              "shield_bash"
+            ],
+            "bossKey": null
+          }
+        }
+      ],
+      "summary": {
+        "samples": 20,
+        "wins": 20,
+        "winRate": 1,
+        "deaths": 0,
+        "timeouts": 0,
+        "invalid": 0,
+        "meanWinSeconds": 89.71333333333334,
+        "medianWinSeconds": 89.85,
+        "maxWinSeconds": 92.23333333333333
+      },
+      "threshold": 0.99,
+      "passes": true,
+      "samples": [
+        {
+          "seed": 41,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 90.16666666666667,
+          "clearSeconds": 90.16666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 107,
+            "whirl": 36,
+            "ward": 11
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39070,
+            "periodic": 766,
+            "derived": 4296
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 105.52066666666644
+          }
+        },
+        {
+          "seed": 73,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 90.76666666666667,
+          "clearSeconds": 90.76666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 108,
+            "whirl": 36,
+            "ward": 12
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39524,
+            "periodic": 406,
+            "derived": 4202
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 90.52066666666644
+          }
+        },
+        {
+          "seed": 105,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 92.23333333333333,
+          "clearSeconds": 92.23333333333333,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 107,
+            "whirl": 37,
+            "ward": 12
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39494,
+            "periodic": 335,
+            "derived": 4303
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 93.48733333333278
+          }
+        },
+        {
+          "seed": 137,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 89.26666666666667,
+          "clearSeconds": 89.26666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 104,
+            "whirl": 36,
+            "ward": 11
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39551,
+            "periodic": 268,
+            "derived": 4313
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 95.62066666666662
+          }
+        },
+        {
+          "seed": 169,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 89.36666666666666,
+          "clearSeconds": 89.36666666666666,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 106,
+            "whirl": 36,
+            "ward": 11
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39309,
+            "periodic": 433,
+            "derived": 4390
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 96.7206666666666
+          }
+        },
+        {
+          "seed": 201,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 89.36666666666666,
+          "clearSeconds": 89.36666666666666,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 106,
+            "whirl": 36,
+            "ward": 11
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39469,
+            "periodic": 499,
+            "derived": 4164
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 96.7206666666666
+          }
+        },
+        {
+          "seed": 233,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 88.13333333333334,
+          "clearSeconds": 88.13333333333334,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 103,
+            "whirl": 35,
+            "ward": 11
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39048,
+            "periodic": 831,
+            "derived": 4253
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 105.52066666666644
+          }
+        },
+        {
+          "seed": 265,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 88.46666666666667,
+          "clearSeconds": 88.46666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 105,
+            "whirl": 35,
+            "ward": 11
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39556,
+            "periodic": 411,
+            "derived": 4165
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 106
+          }
+        },
+        {
+          "seed": 297,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 90.16666666666667,
+          "clearSeconds": 90.16666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 105,
+            "whirl": 36,
+            "ward": 12
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39413,
+            "periodic": 419,
+            "derived": 4300
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 90.52066666666644
+          }
+        },
+        {
+          "seed": 329,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 89.26666666666667,
+          "clearSeconds": 89.26666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 105,
+            "whirl": 36,
+            "ward": 11
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39388,
+            "periodic": 605,
+            "derived": 4139
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 95.62066666666662
+          }
+        },
+        {
+          "seed": 361,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 89.9,
+          "clearSeconds": 89.9,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 105,
+            "whirl": 36,
+            "ward": 11
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39403,
+            "periodic": 573,
+            "derived": 4156
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 96.7206666666666
+          }
+        },
+        {
+          "seed": 393,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 90.16666666666667,
+          "clearSeconds": 90.16666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 107,
+            "whirl": 36,
+            "ward": 11
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39154,
+            "periodic": 721,
+            "derived": 4257
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 105.52066666666644
+          }
+        },
+        {
+          "seed": 425,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 89.93333333333334,
+          "clearSeconds": 89.93333333333334,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 106,
+            "whirl": 36,
+            "ward": 11
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39397,
+            "periodic": 476,
+            "derived": 4259
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 96.7206666666666
+          }
+        },
+        {
+          "seed": 457,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 86.86666666666666,
+          "clearSeconds": 86.86666666666666,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 103,
+            "whirl": 35,
+            "ward": 11
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39386,
+            "periodic": 472,
+            "derived": 4274
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 96.7206666666666
+          }
+        },
+        {
+          "seed": 489,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 89.86666666666666,
+          "clearSeconds": 89.86666666666666,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 106,
+            "whirl": 36,
+            "ward": 11
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39436,
+            "periodic": 418,
+            "derived": 4278
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 96.7206666666666
+          }
+        },
+        {
+          "seed": 521,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 91.76666666666667,
+          "clearSeconds": 91.76666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 108,
+            "whirl": 37,
+            "ward": 12
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39693,
+            "periodic": 206,
+            "derived": 4233
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 92.35399999999974
+          }
+        },
+        {
+          "seed": 553,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 91.8,
+          "clearSeconds": 91.8,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 107,
+            "whirl": 37,
+            "ward": 12
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39437,
+            "periodic": 384,
+            "derived": 4311
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 93.12066666666612
+          }
+        },
+        {
+          "seed": 585,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 89.83333333333333,
+          "clearSeconds": 89.83333333333333,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 105,
+            "whirl": 36,
+            "ward": 12
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39533,
+            "periodic": 282,
+            "derived": 4317
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 82.08733333333326
+          }
+        },
+        {
+          "seed": 617,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 89.26666666666667,
+          "clearSeconds": 89.26666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 104,
+            "whirl": 36,
+            "ward": 11
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39146,
+            "periodic": 762,
+            "derived": 4224
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 95.62066666666662
+          }
+        },
+        {
+          "seed": 649,
+          "success": true,
+          "death": false,
+          "timeout": false,
+          "seconds": 87.66666666666667,
+          "clearSeconds": 87.66666666666667,
+          "deathSeconds": null,
+          "validationFailure": null,
+          "casts": {
+            "cut": 104,
+            "whirl": 35,
+            "ward": 11
+          },
+          "castFailures": {},
+          "damage": {
+            "direct": 39288,
+            "periodic": 663,
+            "derived": 4181
+          },
+          "incomingDamage": 0,
+          "remaining": [],
+          "hero": {
+            "hp": 408,
+            "mana": 105.52066666666644
+          }
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Controlled enemy HP difficulty calibrated to rho = 0.75 * measured single-target DPS * armour-based EHP / (boss HP * stationary raw boss DPS). Authored player build is never rescaled.",
+    "Full-health stationary raw boss damage and a zero-armour nonattacking DPS target are separate measurements; later boss phases, mixed damage types and player behaviour can differ from the nominal power ratio.",
+    "Win samples use the actual declared region, landing, obstacles, adds, boss phases, mana, cooldowns, HP, skill and weapon rules. Dead, timed out and invalid samples remain in the denominator.",
+    "Twenty seeds distinguish engine random outcomes, not a measured human skill distribution. Thresholds at 99% cannot establish population confidence with only twenty samples.",
+    "This Node engine probe does not award rewards or assert PostgreSQL settlement, natural acquisition, full dungeon routing or six-island production completion."
+  ],
+  "speedComparison": [
+    {
+      "rho": 1.2,
+      "baselineSeconds": 107.28333333333335,
+      "actualSeconds": 89.71333333333334,
+      "targetSeconds": 89.04516666666667,
+      "relativeGap": 0.007503682588049858,
+      "passes": true,
+      "decision": "actual paired baseline, including user5% tolerance"
+    }
+  ],
+  "acceptanceUpdate": {
+    "source": "2026-10-07 user validation verdict; existing raw World samples unchanged.",
+    "wall": "Declared rho and actual victory, invalid samples retained. No hardcoded70-second assertion.",
+    "speed": "Compare actual paired rho1 and rho1.2 samples; controlled enemy HP comparison, not actual key acquisition evidence."
+  }
+}

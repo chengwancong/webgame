@@ -1,0 +1,7 @@
+import {chromium} from 'playwright';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {join,resolve} from 'node:path';
+const root=resolve(import.meta.dirname,'../../../..'),group=join(root,'assets/starsea/npc'),out=join(group,'source/portraits'),manifest=JSON.parse(await readFile(join(group,'manifest.json'),'utf8'));await mkdir(out,{recursive:true});
+const browser=await chromium.launch({channel:'msedge',headless:true,args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']}),page=await browser.newPage({viewport:{width:1280,height:720}}),records=[];
+try{await page.goto((process.env.STARSEA_NPC_ORIGIN??'http://127.0.0.1:8612')+'/art/starsea/npc/preview/index.html');await page.waitForFunction(()=>window.starseaNpc?.inspect().ready===7);for(const asset of manifest.assets){const data=await page.evaluate(id=>window.starseaNpc.capturePortrait(id),asset.id);await writeFile(join(out,asset.id+'.png'),Buffer.from(data.image.split(',')[1],'base64'));records.push({id:asset.id,...data,image:undefined,file:`assets/starsea/npc/source/portraits/${asset.id}.png`});}}finally{await browser.close();}
+await writeFile(join(group,'evidence/portrait-export.json'),JSON.stringify({mode:'native-runtime-camera-crop',notes:'Full native rig renders profession attachments; does not use MiniNativePreview.drawPortrait, which filters custom skins.',records},null,2)+'\n');console.log('Exported '+records.length+' native portraits including hats and horns.');

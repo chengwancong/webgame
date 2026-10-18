@@ -1,0 +1,27 @@
+/* Approved B: nearby radar. Every selector is local to the map or its expanded panel. */
+#hud #minimapbox{width:var(--size-hud-radar);max-width:none;height:auto;padding:0;border:0;background:none;box-shadow:none}
+#hud #minimapbox .minimap-heading{min-height:var(--space-5);margin-bottom:var(--space-1);padding:var(--space-1) var(--space-4);border-radius:var(--radius-round);background:var(--fill-panel);box-shadow:var(--shadow-control);font-size:var(--font-size-caption);font-weight:var(--font-weight-semibold);white-space:nowrap;line-height:var(--font-line-body)}
+#hud #minimap-name{min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+#hud #minimapbox canvas{display:block;width:var(--size-hud-radar);height:var(--size-hud-radar);margin:0;border:0;background:none;border-radius:var(--radius-round);box-shadow:var(--shadow-control),var(--shadow-panel);cursor:pointer}
+.panel[data-panel=region-map]{width:calc(var(--space-16)*6);max-width:calc(var(--stage-width,100vw) - var(--space-6));max-height:calc(var(--stage-height,100dvh) - var(--space-6));overflow:auto}
+#region-map-canvas{display:block;width:100%;height:auto;border-radius:var(--radius-control)}
+.region-map-legend{display:flex;flex-wrap:wrap;gap:var(--space-2) var(--space-3);margin-top:var(--space-3);font-size:var(--font-size-caption);line-height:var(--font-line-body)}.region-map-legend .hero{color:var(--color-text-primary)}.region-map-legend .npc{color:var(--color-info)}.region-map-legend .main,.region-map-legend .safe,.region-map-legend .forge{color:var(--color-category-main)}.region-map-legend .portal{color:var(--color-category-side)}.region-map-legend .enemy,.region-map-legend .elite{color:var(--color-danger)}.region-map-legend .boss{color:var(--color-category-dungeon)}
+.region-map-actions{display:flex;gap:var(--space-2);justify-content:flex-end;margin-top:var(--space-4)}
+
+
+
+#hud #minimapbox:focus-visible{outline:none}#hud #minimapbox:focus-visible canvas{outline:var(--border-focus-width) solid var(--color-highlight);outline-offset:var(--border-focus-offset)}
+/* Outpost bounty board: one row per slot, fixed min height so states do not shift the layout. */
+.bounty-board{list-style:none;margin:var(--space-2) 0 0;padding:0;display:grid;gap:var(--space-2)}
+.bounty-row{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);min-height:calc(var(--size-slot) + var(--space-2));padding:var(--space-2) var(--space-3);border:var(--border-width) solid var(--color-border);border-radius:var(--radius-control)}
+.bounty-row p{margin:var(--space-1) 0 0}.bounty-row .region-map-actions{margin-top:0;flex:none}
+.bounty-row[data-state=cooling]{opacity:.6}.bounty-row[data-state=ready] b{color:var(--color-highlight)}
+
+/* All unlocked destinations stay available, including long names and late-game lists. */
+.panel[data-panel=region-map] .region-map-actions{flex-wrap:wrap;justify-content:flex-start;max-height:calc(var(--size-touch-target)*3 + var(--space-2)*2 + var(--space-1)*2);overflow-y:auto;overscroll-behavior:contain;padding:var(--space-1)}
+.panel[data-panel=region-map] .region-map-actions>.ui-button{flex:0 0 auto;min-width:calc(var(--space-16)*2 + var(--space-8));max-width:100%;height:auto;min-height:var(--size-touch-target);white-space:normal;word-break:keep-all}
+.panel[data-panel=region-map] .region-map-actions .ui-button__labels{white-space:normal}
+
+/* Keep two readable columns despite fractional text widths at the fixed 720p stage. */
+.panel[data-panel=region-map]{width:calc(var(--space-16)*6 + var(--space-8))}
+.panel[data-panel=region-map] .region-map-actions>.ui-button{flex:1 1 calc(50% - var(--space-2));word-break:normal}

@@ -1,0 +1,6230 @@
+{
+  "versions": {
+    "client": "0.11.2",
+    "protocol": 25,
+    "rules": "ow-43",
+    "assets": "world-art-20261006-v22-skill-variety",
+    "db": 15
+  },
+  "mode": "controlled grant, explicit rank 1, same attack budget for each pair",
+  "seeds": [
+    41,
+    73,
+    107
+  ],
+  "levels": [
+    10,
+    20,
+    50
+  ],
+  "windowTicks": 9000,
+  "warmupTicks": 900,
+  "limitTicks": 7200,
+  "sampleCount": 252,
+  "limitations": [
+    "No gear or build triggers. Weapon filter explicitly bypassed for cross-weapon references.",
+    "High HP/mana and disabled enemy attacks isolate skill output. Not natural progression or complete BD balance.",
+    "Fire arrow vs old poison arrow is deferred to R8 by user decision."
+  ],
+  "comparisons": [
+    {
+      "id": "frost_blade",
+      "reference": "dual_strike",
+      "difference": -0.05410925038158099,
+      "inBand": true,
+      "deferred": false,
+      "new": {
+        "requested": [
+          "frost_blade"
+        ],
+        "executed": [
+          "frost_blade"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 220,
+        "direct": 132000,
+        "periodic": 0,
+        "dps": 440,
+        "skill": {
+          "id": "frost_blade",
+          "damage": 660,
+          "cooldown": 45,
+          "statuses": [
+            {
+              "kind": "slow",
+              "duration": 60,
+              "strength": 0.3,
+              "scope": "hit",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false
+            }
+          ]
+        },
+        "attack": 110
+      },
+      "old": {
+        "requested": [
+          "dual_strike"
+        ],
+        "executed": [
+          "dual_strike"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 283,
+        "direct": 139551,
+        "periodic": 0,
+        "dps": 465.17,
+        "skill": {
+          "id": "dual_strike",
+          "damage": 543,
+          "cooldown": 35,
+          "statuses": []
+        },
+        "attack": 110
+      }
+    },
+    {
+      "id": "thunder_dash",
+      "reference": "rush",
+      "difference": 0.0854197349042709,
+      "inBand": true,
+      "deferred": false,
+      "new": {
+        "requested": [
+          "thunder_dash"
+        ],
+        "executed": [
+          "thunder_dash"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 90,
+        "direct": 59697,
+        "periodic": 0,
+        "dps": 198.99,
+        "skill": {
+          "id": "thunder_dash",
+          "damage": 737,
+          "cooldown": 110,
+          "statuses": [
+            {
+              "kind": "shock",
+              "duration": 90,
+              "strength": 0.12,
+              "scope": "hit",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false
+            }
+          ]
+        },
+        "attack": 110
+      },
+      "old": {
+        "requested": [
+          "rush"
+        ],
+        "executed": [
+          "rush"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 90,
+        "direct": 54999,
+        "periodic": 0,
+        "dps": 183.33,
+        "skill": {
+          "id": "rush",
+          "damage": 679,
+          "cooldown": 110,
+          "statuses": []
+        },
+        "attack": 110
+      }
+    },
+    {
+      "id": "magma_slam",
+      "reference": "ground_slam",
+      "difference": 0.005668711656441561,
+      "inBand": true,
+      "deferred": false,
+      "new": {
+        "requested": [
+          "magma_slam"
+        ],
+        "executed": [
+          "magma_slam"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 90,
+        "direct": 62856,
+        "periodic": 19106,
+        "dps": 273.20666666666665,
+        "skill": {
+          "id": "magma_slam",
+          "damage": 776,
+          "cooldown": 110,
+          "statuses": [
+            {
+              "kind": "burn",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "fire",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 233
+            }
+          ]
+        },
+        "attack": 110
+      },
+      "old": {
+        "requested": [
+          "ground_slam"
+        ],
+        "executed": [
+          "ground_slam"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 110,
+        "direct": 81500,
+        "periodic": 0,
+        "dps": 271.6666666666667,
+        "skill": {
+          "id": "ground_slam",
+          "damage": 815,
+          "cooldown": 90,
+          "statuses": []
+        },
+        "attack": 110
+      }
+    },
+    {
+      "id": "venom_cleave",
+      "reference": "rampage",
+      "difference": -0.09554482018250143,
+      "inBand": true,
+      "deferred": false,
+      "new": {
+        "requested": [
+          "venom_cleave"
+        ],
+        "executed": [
+          "venom_cleave"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 155,
+        "direct": 49350,
+        "periodic": 34900,
+        "dps": 280.8333333333333,
+        "skill": {
+          "id": "venom_cleave",
+          "damage": 699,
+          "cooldown": 64,
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 349
+            }
+          ]
+        },
+        "attack": 110
+      },
+      "old": {
+        "requested": [
+          "rampage"
+        ],
+        "executed": [
+          "rampage"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 165,
+        "direct": 93150,
+        "periodic": 0,
+        "dps": 310.5,
+        "skill": {
+          "id": "rampage",
+          "damage": 621,
+          "cooldown": 60,
+          "statuses": []
+        },
+        "attack": 110
+      }
+    },
+    {
+      "id": "frost_quake",
+      "reference": "cleave",
+      "difference": -0.036363636363636376,
+      "inBand": true,
+      "deferred": false,
+      "new": {
+        "requested": [
+          "frost_quake"
+        ],
+        "executed": [
+          "frost_quake"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 59,
+        "direct": 51410,
+        "periodic": 0,
+        "dps": 171.36666666666667,
+        "skill": {
+          "id": "frost_quake",
+          "damage": 970,
+          "cooldown": 170,
+          "statuses": [
+            {
+              "kind": "slow",
+              "duration": 60,
+              "strength": 0.55,
+              "scope": "hit",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false
+            }
+          ]
+        },
+        "attack": 110
+      },
+      "old": {
+        "requested": [
+          "cleave"
+        ],
+        "executed": [
+          "cleave"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 55,
+        "direct": 53350,
+        "periodic": 0,
+        "dps": 177.83333333333334,
+        "skill": {
+          "id": "cleave",
+          "damage": 1067,
+          "cooldown": 180,
+          "statuses": []
+        },
+        "attack": 110
+      }
+    },
+    {
+      "id": "fire_arrow",
+      "reference": "poison_arrow",
+      "difference": 0.6852125812053773,
+      "inBand": false,
+      "deferred": true,
+      "new": {
+        "requested": [
+          "fire_arrow"
+        ],
+        "executed": [
+          "fire_arrow"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 165,
+        "direct": 87300,
+        "periodic": 17500,
+        "dps": 349.3333333333333,
+        "skill": {
+          "id": "fire_arrow",
+          "damage": 582,
+          "cooldown": 60,
+          "statuses": [
+            {
+              "kind": "burn",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "fire",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 175
+            }
+          ]
+        },
+        "attack": 110
+      },
+      "old": {
+        "requested": [
+          "poison_arrow"
+        ],
+        "executed": [
+          "poison_arrow"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 142,
+        "direct": 35088,
+        "periodic": 27100,
+        "dps": 207.29333333333332,
+        "skill": {
+          "id": "poison_arrow",
+          "damage": 543,
+          "cooldown": 70,
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 271
+            }
+          ]
+        },
+        "attack": 110
+      }
+    },
+    {
+      "id": "thunder_arrow",
+      "reference": "chain",
+      "difference": 0.07524752475247531,
+      "inBand": true,
+      "deferred": false,
+      "new": {
+        "requested": [
+          "thunder_arrow"
+        ],
+        "executed": [
+          "thunder_arrow"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 105,
+        "direct": 51585,
+        "periodic": 0,
+        "dps": 171.95,
+        "skill": {
+          "id": "thunder_arrow",
+          "damage": 543,
+          "cooldown": 95,
+          "statuses": [
+            {
+              "kind": "shock",
+              "duration": 90,
+              "strength": 0.12,
+              "scope": "hit",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false
+            }
+          ]
+        },
+        "attack": 110
+      },
+      "old": {
+        "requested": [
+          "chain"
+        ],
+        "executed": [
+          "chain"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 105,
+        "direct": 47975,
+        "periodic": 0,
+        "dps": 159.91666666666666,
+        "skill": {
+          "id": "chain",
+          "damage": 505,
+          "cooldown": 95,
+          "statuses": [
+            {
+              "kind": "shock",
+              "duration": 90,
+              "strength": 0.12,
+              "scope": "hit",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false
+            }
+          ]
+        },
+        "attack": 110
+      }
+    },
+    {
+      "id": "night_volley",
+      "reference": "volley",
+      "difference": -0.04805412371134021,
+      "inBand": true,
+      "deferred": false,
+      "new": {
+        "requested": [
+          "night_volley"
+        ],
+        "executed": [
+          "night_volley"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 191,
+        "direct": 73871,
+        "periodic": 0,
+        "dps": 246.23666666666668,
+        "skill": {
+          "id": "night_volley",
+          "damage": 427,
+          "cooldown": 52,
+          "statuses": [
+            {
+              "kind": "blind",
+              "duration": 60,
+              "strength": 0.15,
+              "scope": "hit",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false
+            }
+          ]
+        },
+        "attack": 110
+      },
+      "old": {
+        "requested": [
+          "volley"
+        ],
+        "executed": [
+          "volley"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 220,
+        "direct": 77600,
+        "periodic": 0,
+        "dps": 258.6666666666667,
+        "skill": {
+          "id": "volley",
+          "damage": 388,
+          "cooldown": 45,
+          "statuses": []
+        },
+        "attack": 110
+      }
+    },
+    {
+      "id": "toxic_bomb",
+      "reference": "ember",
+      "difference": -0.020552344251766108,
+      "inBand": true,
+      "deferred": false,
+      "new": {
+        "requested": [
+          "toxic_bomb"
+        ],
+        "executed": [
+          "toxic_bomb"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 83,
+        "direct": 0,
+        "periodic": 85400,
+        "dps": 284.6666666666667,
+        "skill": {
+          "id": "toxic_bomb",
+          "damage": 233,
+          "cooldown": 120,
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "zone",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 155
+            }
+          ]
+        },
+        "attack": 110
+      },
+      "old": {
+        "requested": [
+          "ember"
+        ],
+        "executed": [
+          "ember"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 77,
+        "direct": 0,
+        "periodic": 87192,
+        "dps": 290.64,
+        "skill": {
+          "id": "ember",
+          "damage": 252,
+          "cooldown": 130,
+          "statuses": []
+        },
+        "attack": 110
+      }
+    },
+    {
+      "id": "shadow_blade",
+      "reference": "blade_flurry",
+      "difference": 0.03466666666666662,
+      "inBand": true,
+      "deferred": false,
+      "new": {
+        "requested": [
+          "shadow_blade"
+        ],
+        "executed": [
+          "shadow_blade"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 180,
+        "direct": 126488,
+        "periodic": 0,
+        "dps": 421.62666666666667,
+        "skill": {
+          "id": "shadow_blade",
+          "damage": 776,
+          "cooldown": 55,
+          "statuses": []
+        },
+        "attack": 110
+      },
+      "old": {
+        "requested": [
+          "blade_flurry"
+        ],
+        "executed": [
+          "blade_flurry"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 165,
+        "direct": 122250,
+        "periodic": 0,
+        "dps": 407.5,
+        "skill": {
+          "id": "blade_flurry",
+          "damage": 815,
+          "cooldown": 60,
+          "statuses": []
+        },
+        "attack": 110
+      }
+    },
+    {
+      "id": "night_veil",
+      "reference": "death_lotus",
+      "difference": -0.08491722869405272,
+      "inBand": true,
+      "deferred": false,
+      "new": {
+        "requested": [
+          "night_veil"
+        ],
+        "executed": [
+          "night_veil"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 83,
+        "direct": 59700,
+        "periodic": 0,
+        "dps": 199,
+        "skill": {
+          "id": "night_veil",
+          "damage": 796,
+          "cooldown": 120,
+          "statuses": [
+            {
+              "kind": "blind",
+              "duration": 75,
+              "strength": 0.25,
+              "scope": "hit",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false
+            }
+          ]
+        },
+        "attack": 110
+      },
+      "old": {
+        "requested": [
+          "death_lotus"
+        ],
+        "executed": [
+          "death_lotus"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 62,
+        "direct": 52192,
+        "periodic": 13048,
+        "dps": 217.46666666666667,
+        "skill": {
+          "id": "death_lotus",
+          "damage": 932,
+          "cooldown": 160,
+          "statuses": [
+            {
+              "kind": "bleed",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "physical",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 233
+            }
+          ]
+        },
+        "attack": 110
+      }
+    },
+    {
+      "id": "static_field",
+      "reference": "slow_field",
+      "difference": -0.010034364261168438,
+      "inBand": true,
+      "deferred": false,
+      "new": {
+        "requested": [
+          "static_field"
+        ],
+        "executed": [
+          "static_field"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 77,
+        "direct": 0,
+        "periodic": 36010,
+        "dps": 120.03333333333333,
+        "skill": {
+          "id": "static_field",
+          "damage": 116,
+          "cooldown": 130,
+          "statuses": [
+            {
+              "kind": "shock",
+              "duration": 2,
+              "strength": 0.12,
+              "scope": "zone",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false
+            }
+          ]
+        },
+        "attack": 110
+      },
+      "old": {
+        "requested": [
+          "slow_field"
+        ],
+        "executed": [
+          "slow_field"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 83,
+        "direct": 0,
+        "periodic": 36375,
+        "dps": 121.25,
+        "skill": {
+          "id": "slow_field",
+          "damage": 97,
+          "cooldown": 120,
+          "statuses": [
+            {
+              "kind": "slow",
+              "duration": 2,
+              "strength": 0.3,
+              "scope": "zone",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false
+            }
+          ]
+        },
+        "attack": 110
+      }
+    },
+    {
+      "id": "dark_grasp",
+      "reference": "petrify",
+      "difference": 0.04100801832760603,
+      "inBand": true,
+      "deferred": false,
+      "new": {
+        "requested": [
+          "dark_grasp"
+        ],
+        "executed": [
+          "dark_grasp"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 71,
+        "direct": 13632,
+        "periodic": 0,
+        "dps": 45.44,
+        "skill": {
+          "id": "dark_grasp",
+          "damage": 213,
+          "cooldown": 140,
+          "statuses": [
+            {
+              "kind": "fear",
+              "duration": 30,
+              "strength": 1,
+              "scope": "hit",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false
+            }
+          ]
+        },
+        "attack": 110
+      },
+      "old": {
+        "requested": [
+          "petrify"
+        ],
+        "executed": [
+          "petrify"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 50,
+        "direct": 13095,
+        "periodic": 0,
+        "dps": 43.65,
+        "skill": {
+          "id": "petrify",
+          "damage": 291,
+          "cooldown": 200,
+          "statuses": [
+            {
+              "kind": "petrify",
+              "duration": 90,
+              "strength": 1,
+              "scope": "hit",
+              "cleanse": true,
+              "breakOnDamage": true,
+              "removeWithSource": false
+            }
+          ]
+        },
+        "attack": 110
+      }
+    },
+    {
+      "id": "miasma",
+      "reference": "frost",
+      "difference": -0.013010752688171978,
+      "inBand": true,
+      "deferred": false,
+      "new": {
+        "requested": [
+          "miasma"
+        ],
+        "executed": [
+          "miasma"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 71,
+        "direct": 0,
+        "periodic": 36716,
+        "dps": 122.38666666666667,
+        "skill": {
+          "id": "miasma",
+          "damage": 78,
+          "cooldown": 140,
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "zone",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 116
+            }
+          ]
+        },
+        "attack": 110
+      },
+      "old": {
+        "requested": [
+          "frost"
+        ],
+        "executed": [
+          "frost"
+        ],
+        "rank": 1,
+        "seed": 41,
+        "casts": 66,
+        "direct": 0,
+        "periodic": 37200,
+        "dps": 124,
+        "skill": {
+          "id": "frost",
+          "damage": 155,
+          "cooldown": 150,
+          "statuses": [
+            {
+              "kind": "slow",
+              "duration": 2,
+              "strength": 0.55,
+              "scope": "zone",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false
+            }
+          ]
+        },
+        "attack": 110
+      }
+    }
+  ],
+  "samples": [
+    {
+      "id": "frost_blade",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 4.666666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "frost_blade"
+      ],
+      "executed": [
+        "frost_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dual_strike",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 4.966666666666667,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "dual_strike"
+      ],
+      "executed": [
+        "dual_strike"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_dash",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 11.1,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "thunder_dash"
+      ],
+      "executed": [
+        "thunder_dash"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rush",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 11.1,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "rush"
+      ],
+      "executed": [
+        "rush"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "magma_slam",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 7.733333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "magma_slam"
+      ],
+      "executed": [
+        "magma_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ground_slam",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 9.4,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "ground_slam"
+      ],
+      "executed": [
+        "ground_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "venom_cleave",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 8.733333333333333,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "venom_cleave"
+      ],
+      "executed": [
+        "venom_cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rampage",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 6.166666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "rampage"
+      ],
+      "executed": [
+        "rampage"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost_quake",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 11.866666666666667,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "frost_quake"
+      ],
+      "executed": [
+        "frost_quake"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "cleave",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 12.6,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "cleave"
+      ],
+      "executed": [
+        "cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "fire_arrow",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 6.2,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "fire_arrow"
+      ],
+      "executed": [
+        "fire_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "poison_arrow",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 11.866666666666667,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "poison_arrow"
+      ],
+      "executed": [
+        "poison_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_arrow",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 12.9,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "thunder_arrow"
+      ],
+      "executed": [
+        "thunder_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "chain",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 12.866666666666667,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "chain"
+      ],
+      "executed": [
+        "chain"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_volley",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 9.133333333333333,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "night_volley"
+      ],
+      "executed": [
+        "night_volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "volley",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 9.366666666666667,
+      "failed": false,
+      "casts": 7,
+      "requested": [
+        "volley"
+      ],
+      "executed": [
+        "volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "toxic_bomb",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 9.233333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "toxic_bomb"
+      ],
+      "executed": [
+        "toxic_bomb"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ember",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 9.633333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "ember"
+      ],
+      "executed": [
+        "ember"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "shadow_blade",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 5.633333333333334,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "shadow_blade"
+      ],
+      "executed": [
+        "shadow_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "blade_flurry",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 6.1,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "blade_flurry"
+      ],
+      "executed": [
+        "blade_flurry"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_veil",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 12.166666666666666,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "night_veil"
+      ],
+      "executed": [
+        "night_veil"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "death_lotus",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 10.866666666666667,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "death_lotus"
+      ],
+      "executed": [
+        "death_lotus"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "static_field",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 21.566666666666666,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "static_field"
+      ],
+      "executed": [
+        "static_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "slow_field",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 20.266666666666666,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "slow_field"
+      ],
+      "executed": [
+        "slow_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dark_grasp",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 51.666666666666664,
+      "failed": false,
+      "casts": 12,
+      "requested": [
+        "dark_grasp"
+      ],
+      "executed": [
+        "dark_grasp"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "petrify",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 53.833333333333336,
+      "failed": false,
+      "casts": 9,
+      "requested": [
+        "petrify"
+      ],
+      "executed": [
+        "petrify"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "miasma",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 21.266666666666666,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "miasma"
+      ],
+      "executed": [
+        "miasma"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost",
+      "level": 10,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 19.233333333333334,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "frost"
+      ],
+      "executed": [
+        "frost"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost_blade",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 4.666666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "frost_blade"
+      ],
+      "executed": [
+        "frost_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dual_strike",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 4.966666666666667,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "dual_strike"
+      ],
+      "executed": [
+        "dual_strike"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_dash",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 11.1,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "thunder_dash"
+      ],
+      "executed": [
+        "thunder_dash"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rush",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 11.1,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "rush"
+      ],
+      "executed": [
+        "rush"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "magma_slam",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 7.733333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "magma_slam"
+      ],
+      "executed": [
+        "magma_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ground_slam",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 9.4,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "ground_slam"
+      ],
+      "executed": [
+        "ground_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "venom_cleave",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 8.733333333333333,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "venom_cleave"
+      ],
+      "executed": [
+        "venom_cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rampage",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 6.166666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "rampage"
+      ],
+      "executed": [
+        "rampage"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost_quake",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 11.866666666666667,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "frost_quake"
+      ],
+      "executed": [
+        "frost_quake"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "cleave",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 12.6,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "cleave"
+      ],
+      "executed": [
+        "cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "fire_arrow",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 6.2,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "fire_arrow"
+      ],
+      "executed": [
+        "fire_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "poison_arrow",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 11.866666666666667,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "poison_arrow"
+      ],
+      "executed": [
+        "poison_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_arrow",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 12.9,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "thunder_arrow"
+      ],
+      "executed": [
+        "thunder_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "chain",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 12.866666666666667,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "chain"
+      ],
+      "executed": [
+        "chain"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_volley",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 9.133333333333333,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "night_volley"
+      ],
+      "executed": [
+        "night_volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "volley",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 9.366666666666667,
+      "failed": false,
+      "casts": 7,
+      "requested": [
+        "volley"
+      ],
+      "executed": [
+        "volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "toxic_bomb",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 9.233333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "toxic_bomb"
+      ],
+      "executed": [
+        "toxic_bomb"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ember",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 9.633333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "ember"
+      ],
+      "executed": [
+        "ember"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "shadow_blade",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 5.633333333333334,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "shadow_blade"
+      ],
+      "executed": [
+        "shadow_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "blade_flurry",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 6.1,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "blade_flurry"
+      ],
+      "executed": [
+        "blade_flurry"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_veil",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 12.166666666666666,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "night_veil"
+      ],
+      "executed": [
+        "night_veil"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "death_lotus",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 10.866666666666667,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "death_lotus"
+      ],
+      "executed": [
+        "death_lotus"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "static_field",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 21.566666666666666,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "static_field"
+      ],
+      "executed": [
+        "static_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "slow_field",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 20.266666666666666,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "slow_field"
+      ],
+      "executed": [
+        "slow_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dark_grasp",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 51.666666666666664,
+      "failed": false,
+      "casts": 12,
+      "requested": [
+        "dark_grasp"
+      ],
+      "executed": [
+        "dark_grasp"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "petrify",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 53.833333333333336,
+      "failed": false,
+      "casts": 9,
+      "requested": [
+        "petrify"
+      ],
+      "executed": [
+        "petrify"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "miasma",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 21.266666666666666,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "miasma"
+      ],
+      "executed": [
+        "miasma"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost",
+      "level": 10,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 19.233333333333334,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "frost"
+      ],
+      "executed": [
+        "frost"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost_blade",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 4.666666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "frost_blade"
+      ],
+      "executed": [
+        "frost_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dual_strike",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 4.966666666666667,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "dual_strike"
+      ],
+      "executed": [
+        "dual_strike"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_dash",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 11.1,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "thunder_dash"
+      ],
+      "executed": [
+        "thunder_dash"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rush",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 11.1,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "rush"
+      ],
+      "executed": [
+        "rush"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "magma_slam",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 7.733333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "magma_slam"
+      ],
+      "executed": [
+        "magma_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ground_slam",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 9.4,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "ground_slam"
+      ],
+      "executed": [
+        "ground_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "venom_cleave",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 8.733333333333333,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "venom_cleave"
+      ],
+      "executed": [
+        "venom_cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rampage",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 6.166666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "rampage"
+      ],
+      "executed": [
+        "rampage"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost_quake",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 11.866666666666667,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "frost_quake"
+      ],
+      "executed": [
+        "frost_quake"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "cleave",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 12.6,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "cleave"
+      ],
+      "executed": [
+        "cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "fire_arrow",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 6.2,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "fire_arrow"
+      ],
+      "executed": [
+        "fire_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "poison_arrow",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 11.866666666666667,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "poison_arrow"
+      ],
+      "executed": [
+        "poison_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_arrow",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 12.9,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "thunder_arrow"
+      ],
+      "executed": [
+        "thunder_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "chain",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 12.866666666666667,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "chain"
+      ],
+      "executed": [
+        "chain"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_volley",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 9.133333333333333,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "night_volley"
+      ],
+      "executed": [
+        "night_volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "volley",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 9.366666666666667,
+      "failed": false,
+      "casts": 7,
+      "requested": [
+        "volley"
+      ],
+      "executed": [
+        "volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "toxic_bomb",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 9.233333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "toxic_bomb"
+      ],
+      "executed": [
+        "toxic_bomb"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ember",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 9.633333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "ember"
+      ],
+      "executed": [
+        "ember"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "shadow_blade",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 5.633333333333334,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "shadow_blade"
+      ],
+      "executed": [
+        "shadow_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "blade_flurry",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 6.1,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "blade_flurry"
+      ],
+      "executed": [
+        "blade_flurry"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_veil",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 12.166666666666666,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "night_veil"
+      ],
+      "executed": [
+        "night_veil"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "death_lotus",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 10.866666666666667,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "death_lotus"
+      ],
+      "executed": [
+        "death_lotus"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "static_field",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 21.566666666666666,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "static_field"
+      ],
+      "executed": [
+        "static_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "slow_field",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 20.266666666666666,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "slow_field"
+      ],
+      "executed": [
+        "slow_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dark_grasp",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 51.666666666666664,
+      "failed": false,
+      "casts": 12,
+      "requested": [
+        "dark_grasp"
+      ],
+      "executed": [
+        "dark_grasp"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "petrify",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 53.833333333333336,
+      "failed": false,
+      "casts": 9,
+      "requested": [
+        "petrify"
+      ],
+      "executed": [
+        "petrify"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "miasma",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 21.266666666666666,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "miasma"
+      ],
+      "executed": [
+        "miasma"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost",
+      "level": 10,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 19.233333333333334,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "frost"
+      ],
+      "executed": [
+        "frost"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 10,
+        "hp": 345,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost_blade",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 4.666666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "frost_blade"
+      ],
+      "executed": [
+        "frost_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dual_strike",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 4.8,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "dual_strike"
+      ],
+      "executed": [
+        "dual_strike"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_dash",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 7.433333333333334,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "thunder_dash"
+      ],
+      "executed": [
+        "thunder_dash"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rush",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 11.1,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "rush"
+      ],
+      "executed": [
+        "rush"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "magma_slam",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 7.733333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "magma_slam"
+      ],
+      "executed": [
+        "magma_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ground_slam",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 6.4,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "ground_slam"
+      ],
+      "executed": [
+        "ground_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "venom_cleave",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 7.2,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "venom_cleave"
+      ],
+      "executed": [
+        "venom_cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rampage",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 6.166666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "rampage"
+      ],
+      "executed": [
+        "rampage"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost_quake",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 11.866666666666667,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "frost_quake"
+      ],
+      "executed": [
+        "frost_quake"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "cleave",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 12.6,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "cleave"
+      ],
+      "executed": [
+        "cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "fire_arrow",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 6.2,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "fire_arrow"
+      ],
+      "executed": [
+        "fire_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "poison_arrow",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 10.233333333333333,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "poison_arrow"
+      ],
+      "executed": [
+        "poison_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_arrow",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 12.9,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "thunder_arrow"
+      ],
+      "executed": [
+        "thunder_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "chain",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 12.866666666666667,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "chain"
+      ],
+      "executed": [
+        "chain"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_volley",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 8.933333333333334,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "night_volley"
+      ],
+      "executed": [
+        "night_volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "volley",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 7.866666666666666,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "volley"
+      ],
+      "executed": [
+        "volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "toxic_bomb",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 8.233333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "toxic_bomb"
+      ],
+      "executed": [
+        "toxic_bomb"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ember",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 8.633333333333333,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "ember"
+      ],
+      "executed": [
+        "ember"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "shadow_blade",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 3.966666666666667,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "shadow_blade"
+      ],
+      "executed": [
+        "shadow_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "blade_flurry",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 4.366666666666666,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "blade_flurry"
+      ],
+      "executed": [
+        "blade_flurry"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_veil",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 8.166666666666666,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "night_veil"
+      ],
+      "executed": [
+        "night_veil"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "death_lotus",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 7.533333333333333,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "death_lotus"
+      ],
+      "executed": [
+        "death_lotus"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "static_field",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 18.566666666666666,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "static_field"
+      ],
+      "executed": [
+        "static_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "slow_field",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 18.266666666666666,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "slow_field"
+      ],
+      "executed": [
+        "slow_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dark_grasp",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 47,
+      "failed": false,
+      "casts": 11,
+      "requested": [
+        "dark_grasp"
+      ],
+      "executed": [
+        "dark_grasp"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "petrify",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 47.166666666666664,
+      "failed": false,
+      "casts": 8,
+      "requested": [
+        "petrify"
+      ],
+      "executed": [
+        "petrify"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "miasma",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 19.266666666666666,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "miasma"
+      ],
+      "executed": [
+        "miasma"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost",
+      "level": 20,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 18.233333333333334,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "frost"
+      ],
+      "executed": [
+        "frost"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost_blade",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 4.666666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "frost_blade"
+      ],
+      "executed": [
+        "frost_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dual_strike",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 4.8,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "dual_strike"
+      ],
+      "executed": [
+        "dual_strike"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_dash",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 7.433333333333334,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "thunder_dash"
+      ],
+      "executed": [
+        "thunder_dash"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rush",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 11.1,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "rush"
+      ],
+      "executed": [
+        "rush"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "magma_slam",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 7.733333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "magma_slam"
+      ],
+      "executed": [
+        "magma_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ground_slam",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 6.4,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "ground_slam"
+      ],
+      "executed": [
+        "ground_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "venom_cleave",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 7.2,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "venom_cleave"
+      ],
+      "executed": [
+        "venom_cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rampage",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 6.166666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "rampage"
+      ],
+      "executed": [
+        "rampage"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost_quake",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 11.866666666666667,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "frost_quake"
+      ],
+      "executed": [
+        "frost_quake"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "cleave",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 12.6,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "cleave"
+      ],
+      "executed": [
+        "cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "fire_arrow",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 6.2,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "fire_arrow"
+      ],
+      "executed": [
+        "fire_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "poison_arrow",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 10.233333333333333,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "poison_arrow"
+      ],
+      "executed": [
+        "poison_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_arrow",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 12.9,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "thunder_arrow"
+      ],
+      "executed": [
+        "thunder_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "chain",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 12.866666666666667,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "chain"
+      ],
+      "executed": [
+        "chain"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_volley",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 8.933333333333334,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "night_volley"
+      ],
+      "executed": [
+        "night_volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "volley",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 7.866666666666666,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "volley"
+      ],
+      "executed": [
+        "volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "toxic_bomb",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 8.233333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "toxic_bomb"
+      ],
+      "executed": [
+        "toxic_bomb"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ember",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 8.633333333333333,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "ember"
+      ],
+      "executed": [
+        "ember"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "shadow_blade",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 3.966666666666667,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "shadow_blade"
+      ],
+      "executed": [
+        "shadow_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "blade_flurry",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 4.366666666666666,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "blade_flurry"
+      ],
+      "executed": [
+        "blade_flurry"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_veil",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 8.166666666666666,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "night_veil"
+      ],
+      "executed": [
+        "night_veil"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "death_lotus",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 7.533333333333333,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "death_lotus"
+      ],
+      "executed": [
+        "death_lotus"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "static_field",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 18.566666666666666,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "static_field"
+      ],
+      "executed": [
+        "static_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "slow_field",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 18.266666666666666,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "slow_field"
+      ],
+      "executed": [
+        "slow_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dark_grasp",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 47,
+      "failed": false,
+      "casts": 11,
+      "requested": [
+        "dark_grasp"
+      ],
+      "executed": [
+        "dark_grasp"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "petrify",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 47.166666666666664,
+      "failed": false,
+      "casts": 8,
+      "requested": [
+        "petrify"
+      ],
+      "executed": [
+        "petrify"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "miasma",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 19.266666666666666,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "miasma"
+      ],
+      "executed": [
+        "miasma"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost",
+      "level": 20,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 18.233333333333334,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "frost"
+      ],
+      "executed": [
+        "frost"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost_blade",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 4.666666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "frost_blade"
+      ],
+      "executed": [
+        "frost_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dual_strike",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 4.8,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "dual_strike"
+      ],
+      "executed": [
+        "dual_strike"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_dash",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 7.433333333333334,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "thunder_dash"
+      ],
+      "executed": [
+        "thunder_dash"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rush",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 11.1,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "rush"
+      ],
+      "executed": [
+        "rush"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "magma_slam",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 7.733333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "magma_slam"
+      ],
+      "executed": [
+        "magma_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ground_slam",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 6.4,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "ground_slam"
+      ],
+      "executed": [
+        "ground_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "venom_cleave",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 7.2,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "venom_cleave"
+      ],
+      "executed": [
+        "venom_cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rampage",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 6.166666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "rampage"
+      ],
+      "executed": [
+        "rampage"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost_quake",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 11.866666666666667,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "frost_quake"
+      ],
+      "executed": [
+        "frost_quake"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "cleave",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 12.6,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "cleave"
+      ],
+      "executed": [
+        "cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "fire_arrow",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 6.2,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "fire_arrow"
+      ],
+      "executed": [
+        "fire_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "poison_arrow",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 10.233333333333333,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "poison_arrow"
+      ],
+      "executed": [
+        "poison_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_arrow",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 12.9,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "thunder_arrow"
+      ],
+      "executed": [
+        "thunder_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "chain",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 12.866666666666667,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "chain"
+      ],
+      "executed": [
+        "chain"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_volley",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 8.933333333333334,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "night_volley"
+      ],
+      "executed": [
+        "night_volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "volley",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 7.866666666666666,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "volley"
+      ],
+      "executed": [
+        "volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "toxic_bomb",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 8.233333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "toxic_bomb"
+      ],
+      "executed": [
+        "toxic_bomb"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ember",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 8.633333333333333,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "ember"
+      ],
+      "executed": [
+        "ember"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "shadow_blade",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 3.966666666666667,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "shadow_blade"
+      ],
+      "executed": [
+        "shadow_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "blade_flurry",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 4.366666666666666,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "blade_flurry"
+      ],
+      "executed": [
+        "blade_flurry"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_veil",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 8.166666666666666,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "night_veil"
+      ],
+      "executed": [
+        "night_veil"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "death_lotus",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 7.533333333333333,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "death_lotus"
+      ],
+      "executed": [
+        "death_lotus"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "static_field",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 18.566666666666666,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "static_field"
+      ],
+      "executed": [
+        "static_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "slow_field",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 18.266666666666666,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "slow_field"
+      ],
+      "executed": [
+        "slow_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dark_grasp",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 47,
+      "failed": false,
+      "casts": 11,
+      "requested": [
+        "dark_grasp"
+      ],
+      "executed": [
+        "dark_grasp"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "petrify",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 47.166666666666664,
+      "failed": false,
+      "casts": 8,
+      "requested": [
+        "petrify"
+      ],
+      "executed": [
+        "petrify"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "miasma",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 19.266666666666666,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "miasma"
+      ],
+      "executed": [
+        "miasma"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost",
+      "level": 20,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 18.233333333333334,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "frost"
+      ],
+      "executed": [
+        "frost"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 20,
+        "hp": 633,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost_blade",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 3.1666666666666665,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "frost_blade"
+      ],
+      "executed": [
+        "frost_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dual_strike",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 2.6333333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "dual_strike"
+      ],
+      "executed": [
+        "dual_strike"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_dash",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 7.433333333333334,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "thunder_dash"
+      ],
+      "executed": [
+        "thunder_dash"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rush",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 7.433333333333334,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "rush"
+      ],
+      "executed": [
+        "rush"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "magma_slam",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 4.066666666666666,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "magma_slam"
+      ],
+      "executed": [
+        "magma_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ground_slam",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 3.4,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "ground_slam"
+      ],
+      "executed": [
+        "ground_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "venom_cleave",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 5.2,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "venom_cleave"
+      ],
+      "executed": [
+        "venom_cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rampage",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 4.166666666666667,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "rampage"
+      ],
+      "executed": [
+        "rampage"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost_quake",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 6.2,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "frost_quake"
+      ],
+      "executed": [
+        "frost_quake"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "cleave",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 6.6,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "cleave"
+      ],
+      "executed": [
+        "cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "fire_arrow",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 4.2,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "fire_arrow"
+      ],
+      "executed": [
+        "fire_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "poison_arrow",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 7.2,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "poison_arrow"
+      ],
+      "executed": [
+        "poison_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_arrow",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 6.566666666666666,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "thunder_arrow"
+      ],
+      "executed": [
+        "thunder_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "chain",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 9.7,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "chain"
+      ],
+      "executed": [
+        "chain"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_volley",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 5.666666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "night_volley"
+      ],
+      "executed": [
+        "night_volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "volley",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 6.266666666666667,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "volley"
+      ],
+      "executed": [
+        "volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "toxic_bomb",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 6.233333333333333,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "toxic_bomb"
+      ],
+      "executed": [
+        "toxic_bomb"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ember",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 6.633333333333334,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "ember"
+      ],
+      "executed": [
+        "ember"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "shadow_blade",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 3.8,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "shadow_blade"
+      ],
+      "executed": [
+        "shadow_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "blade_flurry",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 2.5,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "blade_flurry"
+      ],
+      "executed": [
+        "blade_flurry"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_veil",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 4.166666666666667,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "night_veil"
+      ],
+      "executed": [
+        "night_veil"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "death_lotus",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 5.866666666666666,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "death_lotus"
+      ],
+      "executed": [
+        "death_lotus"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "static_field",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 14.233333333333333,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "static_field"
+      ],
+      "executed": [
+        "static_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "slow_field",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 13.266666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "slow_field"
+      ],
+      "executed": [
+        "slow_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dark_grasp",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 33,
+      "failed": false,
+      "casts": 8,
+      "requested": [
+        "dark_grasp"
+      ],
+      "executed": [
+        "dark_grasp"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "petrify",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 33.833333333333336,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "petrify"
+      ],
+      "executed": [
+        "petrify"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "miasma",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 14.266666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "miasma"
+      ],
+      "executed": [
+        "miasma"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost",
+      "level": 50,
+      "seed": 41,
+      "rank": 1,
+      "ttk": 13.233333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "frost"
+      ],
+      "executed": [
+        "frost"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost_blade",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 3.1666666666666665,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "frost_blade"
+      ],
+      "executed": [
+        "frost_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dual_strike",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 2.6333333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "dual_strike"
+      ],
+      "executed": [
+        "dual_strike"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_dash",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 7.433333333333334,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "thunder_dash"
+      ],
+      "executed": [
+        "thunder_dash"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rush",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 7.433333333333334,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "rush"
+      ],
+      "executed": [
+        "rush"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "magma_slam",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 4.066666666666666,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "magma_slam"
+      ],
+      "executed": [
+        "magma_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ground_slam",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 3.4,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "ground_slam"
+      ],
+      "executed": [
+        "ground_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "venom_cleave",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 5.2,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "venom_cleave"
+      ],
+      "executed": [
+        "venom_cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rampage",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 4.166666666666667,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "rampage"
+      ],
+      "executed": [
+        "rampage"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost_quake",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 6.2,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "frost_quake"
+      ],
+      "executed": [
+        "frost_quake"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "cleave",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 6.6,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "cleave"
+      ],
+      "executed": [
+        "cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "fire_arrow",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 4.2,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "fire_arrow"
+      ],
+      "executed": [
+        "fire_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "poison_arrow",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 7.2,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "poison_arrow"
+      ],
+      "executed": [
+        "poison_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_arrow",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 6.566666666666666,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "thunder_arrow"
+      ],
+      "executed": [
+        "thunder_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "chain",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 9.7,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "chain"
+      ],
+      "executed": [
+        "chain"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_volley",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 5.666666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "night_volley"
+      ],
+      "executed": [
+        "night_volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "volley",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 6.266666666666667,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "volley"
+      ],
+      "executed": [
+        "volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "toxic_bomb",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 6.233333333333333,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "toxic_bomb"
+      ],
+      "executed": [
+        "toxic_bomb"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ember",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 6.633333333333334,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "ember"
+      ],
+      "executed": [
+        "ember"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "shadow_blade",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 3.8,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "shadow_blade"
+      ],
+      "executed": [
+        "shadow_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "blade_flurry",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 2.5,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "blade_flurry"
+      ],
+      "executed": [
+        "blade_flurry"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_veil",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 4.166666666666667,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "night_veil"
+      ],
+      "executed": [
+        "night_veil"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "death_lotus",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 5.866666666666666,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "death_lotus"
+      ],
+      "executed": [
+        "death_lotus"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "static_field",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 14.233333333333333,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "static_field"
+      ],
+      "executed": [
+        "static_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "slow_field",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 13.266666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "slow_field"
+      ],
+      "executed": [
+        "slow_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dark_grasp",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 33,
+      "failed": false,
+      "casts": 8,
+      "requested": [
+        "dark_grasp"
+      ],
+      "executed": [
+        "dark_grasp"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "petrify",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 33.833333333333336,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "petrify"
+      ],
+      "executed": [
+        "petrify"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "miasma",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 14.266666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "miasma"
+      ],
+      "executed": [
+        "miasma"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost",
+      "level": 50,
+      "seed": 73,
+      "rank": 1,
+      "ttk": 13.233333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "frost"
+      ],
+      "executed": [
+        "frost"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost_blade",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 3.1666666666666665,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "frost_blade"
+      ],
+      "executed": [
+        "frost_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dual_strike",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 2.6333333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "dual_strike"
+      ],
+      "executed": [
+        "dual_strike"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_dash",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 7.433333333333334,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "thunder_dash"
+      ],
+      "executed": [
+        "thunder_dash"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rush",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 7.433333333333334,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "rush"
+      ],
+      "executed": [
+        "rush"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "magma_slam",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 4.066666666666666,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "magma_slam"
+      ],
+      "executed": [
+        "magma_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ground_slam",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 3.4,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "ground_slam"
+      ],
+      "executed": [
+        "ground_slam"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "venom_cleave",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 5.2,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "venom_cleave"
+      ],
+      "executed": [
+        "venom_cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "rampage",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 4.166666666666667,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "rampage"
+      ],
+      "executed": [
+        "rampage"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost_quake",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 6.2,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "frost_quake"
+      ],
+      "executed": [
+        "frost_quake"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "cleave",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 6.6,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "cleave"
+      ],
+      "executed": [
+        "cleave"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "fire_arrow",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 4.2,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "fire_arrow"
+      ],
+      "executed": [
+        "fire_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "poison_arrow",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 7.2,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "poison_arrow"
+      ],
+      "executed": [
+        "poison_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "thunder_arrow",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 6.566666666666666,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "thunder_arrow"
+      ],
+      "executed": [
+        "thunder_arrow"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "chain",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 9.7,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "chain"
+      ],
+      "executed": [
+        "chain"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_volley",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 5.666666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "night_volley"
+      ],
+      "executed": [
+        "night_volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "volley",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 6.266666666666667,
+      "failed": false,
+      "casts": 5,
+      "requested": [
+        "volley"
+      ],
+      "executed": [
+        "volley"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "toxic_bomb",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 6.233333333333333,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "toxic_bomb"
+      ],
+      "executed": [
+        "toxic_bomb"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "ember",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 6.633333333333334,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "ember"
+      ],
+      "executed": [
+        "ember"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "shadow_blade",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 3.8,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "shadow_blade"
+      ],
+      "executed": [
+        "shadow_blade"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "blade_flurry",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 2.5,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "blade_flurry"
+      ],
+      "executed": [
+        "blade_flurry"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "night_veil",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 4.166666666666667,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "night_veil"
+      ],
+      "executed": [
+        "night_veil"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "death_lotus",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 5.866666666666666,
+      "failed": false,
+      "casts": 2,
+      "requested": [
+        "death_lotus"
+      ],
+      "executed": [
+        "death_lotus"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "static_field",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 14.233333333333333,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "static_field"
+      ],
+      "executed": [
+        "static_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "slow_field",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 13.266666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "slow_field"
+      ],
+      "executed": [
+        "slow_field"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "dark_grasp",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 33,
+      "failed": false,
+      "casts": 8,
+      "requested": [
+        "dark_grasp"
+      ],
+      "executed": [
+        "dark_grasp"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "petrify",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 33.833333333333336,
+      "failed": false,
+      "casts": 6,
+      "requested": [
+        "petrify"
+      ],
+      "executed": [
+        "petrify"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "miasma",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 14.266666666666667,
+      "failed": false,
+      "casts": 4,
+      "requested": [
+        "miasma"
+      ],
+      "executed": [
+        "miasma"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    },
+    {
+      "id": "frost",
+      "level": 50,
+      "seed": 107,
+      "rank": 1,
+      "ttk": 13.233333333333333,
+      "failed": false,
+      "casts": 3,
+      "requested": [
+        "frost"
+      ],
+      "executed": [
+        "frost"
+      ],
+      "target": {
+        "template": "raider",
+        "level": 50,
+        "hp": 1583,
+        "armor": 0
+      }
+    }
+  ],
+  "failed": [],
+  "outOfBand": [],
+  "fullLog": {
+    "file": "measurements.json.gz",
+    "sha256": "4eee133c3863a43f3d79637cd15bf49bb51c1d1e70d7f2a7b7944aecf331a21a",
+    "uncompressedBytes": 1036518,
+    "compressedBytes": 50381
+  }
+}

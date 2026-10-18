@@ -1,0 +1,16 @@
+import {chromium} from 'playwright';
+import {mkdir,writeFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import assert from 'node:assert/strict';
+import {startDatabase,freePort,child,stopChild,waitFor,registerApi} from './runtime.mjs';
+const folder=resolve('../docs/reviews/open-world',process.argv[2]??'projectile-emitters-20261004');await mkdir(folder,{recursive:true});
+const report={ok:false,isolatedDatabase:true,errors:[],requests:[]},db=await startDatabase({temporary:true});let api,browser,page;
+try{
+ const port=await freePort(),origin=`http://127.0.0.1:${port}`;api=child(process.execPath,['--import','tsx','apps/api/src/main.ts'],{AW_DATABASE_URL:db.dsn,AW_API_PORT:String(port),AW_ORIGINS:origin});await registerApi(db,api);await waitFor(origin+'/api/health',api);
+ const liveHealth=await(await fetch('http://127.0.0.1:8612/api/health')).json(),liveContent=await(await fetch('http://127.0.0.1:8612/api/content')).json(),builtHealth=await(await fetch(origin+'/api/health')).json();assert.deepEqual(liveHealth.versions,liveContent.versions);assert.deepEqual(liveHealth.versions,builtHealth.versions);report.versions=liveHealth.versions;
+ browser=await chromium.launch({channel:'chrome',headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-webgl']});page=await browser.newPage({viewport:{width:1280,height:720}});page.on('pageerror',e=>report.errors.push(String(e)));page.on('response',r=>{if(r.status()>=400)report.requests.push({url:r.url(),status:r.status()});});
+ await page.goto(origin);await page.waitForFunction(()=>document.querySelector('[data-action=login]')&&!document.querySelector('[data-action=login]').disabled);await page.waitForLoadState('networkidle',{timeout:60000});await page.locator('#username').fill('qa_projectile_emitter');await page.locator('[data-action=login]').click();await page.locator('#hero-name').waitFor();await page.getByRole('button',{name:'进入营地',exact:true}).click();await page.waitForFunction(()=>window.awInspect?.().loggedIn&&window.awInspect().region==='town');
+ const first=await page.evaluate(()=>window.awInspect());await page.screenshot({path:resolve(folder,'built-camp.png')});await page.reload();await page.waitForFunction(()=>window.awInspect?.().loggedIn&&window.awInspect().region==='town');const restored=await page.evaluate(()=>window.awInspect());assert.equal(restored.snapshot.id,first.snapshot.id);assert.equal(restored.snapshot.level,first.snapshot.level);assert.equal(restored.snapshot.gold,first.snapshot.gold);assert.deepEqual(restored.snapshot.gear,first.snapshot.gear);report.login={region:restored.region,restored:true,level:restored.snapshot.level};
+ assert.deepEqual(report.errors,[]);report.expectedInitialProbes=report.requests.filter(r=>[401,404].includes(r.status)&&r.url.endsWith('/api/character'));assert.deepEqual(report.requests.filter(r=>!report.expectedInitialProbes.includes(r)),[]);report.ok=true;
+}catch(e){report.error=String(e.stack);process.exitCode=1;await page?.screenshot({path:resolve(folder,'built-login-failure.png')}).catch(()=>{});}
+finally{await browser?.close();await stopChild(api);report.cleanup=await db.stop();await writeFile(resolve(folder,'built-login.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));}

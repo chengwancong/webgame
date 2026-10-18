@@ -1,0 +1,137 @@
+{
+  "id": "ss-boss-ice-patrol",
+  "native": {
+    "path": "assets/mini-hero/navy/runtime",
+    "version": "4.2.43",
+    "sha256": "92ef889c590476c0eacdbc0f77f1206e35a1c77329867331fbc731a17fa5205a",
+    "skins": [
+      "BODY/knight_rare1",
+      "RIGHTHAND/Staff_Epic2"
+    ],
+    "animations": {
+      "SS_idle": "Wait1",
+      "SS_move": "Run1",
+      "SS_attack": "Attack_OneHand1",
+      "SS_hurt": "Damage1",
+      "SS_death": "Die",
+      "SS_skill1": "Spell1",
+      "SS_skill2": "Cast1",
+      "SS_skill3": "Guard2",
+      "SS_idle_active": "Wait1",
+      "SS_move_active": "Run1",
+      "SS_attack_active": "Attack_OneHand1",
+      "SS_hurt_active": "Damage1",
+      "SS_death_active": "Die",
+      "SS_skill1_active": "Spell1",
+      "SS_skill2_active": "Cast1",
+      "SS_skill3_active": "Guard2",
+      "SS_phaseEnter": "Wait1",
+      "SS_phaseEnd": "Wait1"
+    }
+  },
+  "imagegen": {
+    "source": "assets/starsea/bosses/source/ss-boss-ice-patrol/accessories.png",
+    "sha256": "6fe9d55e561ce1b6ce3d3698958690f7613c4d174af658688971b5bbc7369cf6",
+    "cacheOrigin": "C:/Users/ccc/.codex/generated_images/01a10242-100e-7ba1-959e-b0dce8a0854d/exec-023593bd-ca37-4783-aa16-15b57a57c4fe.png",
+    "prompts": "assets/starsea/bosses/source/generation-prompts.md",
+    "tool": "built-in image_gen",
+    "transparent": true,
+    "parts": [
+      {
+        "name": "head",
+        "sourceRect": {
+          "left": 100,
+          "top": 91,
+          "width": 455,
+          "height": 457,
+          "count": 145536
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-ice-patrol/head.png",
+        "sha256": "d56556aedab60fe34add836ef832b2f26dcf6f075aa28330460795cb4ed73570",
+        "width": 255,
+        "height": 256,
+        "atlas": {
+          "x": 4,
+          "y": 4
+        }
+      },
+      {
+        "name": "core",
+        "sourceRect": {
+          "left": 681,
+          "top": 141,
+          "width": 477,
+          "height": 420,
+          "count": 140977
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-ice-patrol/core.png",
+        "sha256": "f471d2efdb49b5c35f57955d3bfbe192b69a381b35a8e5843cdf648a0706b211",
+        "width": 128,
+        "height": 113,
+        "atlas": {
+          "x": 268,
+          "y": 4
+        }
+      },
+      {
+        "name": "panel-left",
+        "sourceRect": {
+          "left": 110,
+          "top": 642,
+          "width": 440,
+          "height": 521,
+          "count": 143521
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-ice-patrol/panel-left.png",
+        "sha256": "9931916c36e0ffe8dc35ce6530aac82bf31188c20f566f281426be2dc894e088",
+        "width": 81,
+        "height": 96,
+        "atlas": {
+          "x": 4,
+          "y": 268
+        }
+      },
+      {
+        "name": "panel-right",
+        "sourceRect": {
+          "left": 704,
+          "top": 642,
+          "width": 440,
+          "height": 521,
+          "count": 143849
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-ice-patrol/panel-right.png",
+        "sha256": "8f698ad3bf59386fa0cb3d47fdd9317f1c37176e6a2948d25ae590a426bc84cd",
+        "width": 81,
+        "height": 96,
+        "atlas": {
+          "x": 268,
+          "y": 268
+        }
+      }
+    ]
+  },
+  "adjustments": [
+    "选取已验证native骨架和分件；完整原始动作逐帧保留",
+    "原生附件材质tint适配暮界/章节配色",
+    "ImageGen头部与阶段装置绑定原生head/胸部/肩部骨骼",
+    "阶段骨骼动画独立编制；不替代原生身体动作",
+    "共享基础图集通过相对URL引用正式mini-hero目录",
+    "拟人机械适配：蓝银原生分件甲+密闭巡守面罩+枪杖；未采用女王长裙。"
+  ],
+  "weaponScale": 0.85,
+  "weaponCategory": "magic",
+  "renderFamily": "magic",
+  "calibration": {
+    "slot": "RIGHTHAND",
+    "pixel": [
+      27,
+      12
+    ],
+    "imageSize": [
+      54,
+      242
+    ]
+  },
+  "stage": "圆冰晶核心外的两片裂冰甲打开，露出核心后闭合失能。"
+}

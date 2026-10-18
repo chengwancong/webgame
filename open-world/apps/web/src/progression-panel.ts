@@ -1,0 +1,104 @@
+import type {ProgressionView,ProgressionPreview,ProgressionCost} from '../../../packages/contracts/deep-progression.ts';
+import type {ProgressionUI} from './progression-controller.ts';
+import {pipsHtml,meterHtml,iconHtml,statIcon,helpHtml,type SlotMark,sectionTitleHtml,esc,buttonHtml,itemSlot,resourceCostHtml,statRowHtml,statusBadgeHtml,tabsHtml,stateBlockHtml,fieldHtml,confirmationHtml,panelHeaderHtml} from './ui-components.ts';
+import {paragonBoardHtml,glyphCardsHtml,stageTracksHtml,reputationCardsHtml} from './progression-layouts.ts';
+import {hudIcon} from './hud-icons.ts';
+import {renderChallenges,type ChallengeUI} from './progression-challenges.ts';
+import type {Gear} from '../../../packages/contracts/index.ts';
+import {art,skillArt} from './ui-assets.ts';
+import {collectionRecipes} from '../../../packages/content/equipment-runtime.ts';
+import {matchesEquipmentSearch} from '../../../packages/content/equipment-catalog.ts';
+import type {CharacterState} from '../../../packages/contracts/index.ts';
+import {featureOpen,progressionSectionOpen,anyChallengeOpen} from './story-gates.ts';
+const recipeArt=new Map(collectionRecipes.map(recipe=>[recipe.id,'gear-'+recipe.output.slice(5)]));
+
+export const progressionGroups=[{id:'grid',name:'武器盘',sections:['grid','weapons']},{id:'aspects',name:'威能法典',sections:['aspects','inscriptions','collection']},{id:'talents',name:'天赋',sections:['talents-damage','talents-defense','talents-support','talents-special']},{id:'paragon',name:'巅峰雕文',sections:['paragon','glyphs']},{id:'summons',name:'召唤石',sections:['summons']},{id:'character',name:'突破觉醒',sections:['character','skill-awakening']},{id:'reputation',name:'声望专业',sections:['reputation','professions']},{id:'challenges',name:'挑战赛季',sections:[]}];
+
+/** 未解锁的剧情功能不显示入口；分组内模块全部锁定时整组隐藏。 */
+// 分组只剩一个模块时改用模块名，避免页签上出现尚未解锁的功能名。
+const soleSectionNames:Record<string,string>={weapons:'武器成长',reputation:'区域声望',inscriptions:'铭纹拓印'};
+export function visibleProgressionGroups(snapshot?:CharacterState){return progressionGroups.map(g=>{const sections=g.sections.filter(id=>id==='inscriptions'?featureOpen(snapshot,'forge'):progressionSectionOpen(snapshot,id));return {...g,name:sections.length<g.sections.length&&sections.length===1?soleSectionNames[sections[0]]??g.name:g.name,sections};}).filter(g=>g.id==='challenges'?anyChallengeOpen(snapshot):g.sections.length>0);}
+/** Amounts are the server quote. Missing ownership is unknown, never zero. */
+export function progressionCost(cost:ProgressionCost,view:ProgressionView,title='本次消耗'){
+ const amounts=[{id:'gold',amount:cost.gold},{id:'material',amount:cost.material},...Object.entries(cost.items).map(([id,amount])=>({id,amount}))].filter(x=>x.amount>0);
+ return resourceCostHtml(amounts.map(x=>{const currency=view.currencies.find(c=>c.id===x.id),owned=typeof currency?.amount==='number'&&Number.isFinite(currency.amount)?currency.amount:null;return {id:x.id,label:currency?.name??x.id,amount:x.amount,owned,availability:owned===null?'unknown':owned>=x.amount?'enough':'short'};}),title,{compact:true});
+}
+function comparison(quote:Pick<ProgressionPreview,'before'|'after'>,title='投入后',aria='投入后的角色属性'){
+ const rows=(['attack','hp','armor'] as const).flatMap((id,i)=>{const delta=quote.after[id]-quote.before[id];return delta?[statRowHtml({label:['攻击','生命','防御'][i],previousValue:quote.before[id],value:quote.after[id],change:`${delta>0?'+':''}${delta}`,tone:delta>0?'positive':'negative',valueTone:delta>0?'positive':'negative',className:'ui-stat--delta'})]:[];});
+ return rows.length?`<section class="progression-comparison" aria-label="${esc(aria)}">${sectionTitleHtml(title)}${rows.join('')}</section>`:'';
+}
+function sectionResources(section:ProgressionView['sections'][number]|undefined,view:ProgressionView){
+ if(section?.id.startsWith('talents-')){const points=section.points;return points?`<span class="progression-points" aria-label="天赋点，可用 ${points.available}，总数 ${points.total}">${iconHtml('diamond',{size:20})}<span>可用天赋点</span><b class="ui-value">${points.available}</b></span>`:'<span class="ui-warning">天赋点暂未读取</span>';}
+ const ids=new Set(section?.items.flatMap(item=>item.operations.flatMap(o=>[{id:'gold',amount:o.cost.gold},{id:'material',amount:o.cost.material},...Object.entries(o.cost.items).map(([id,amount])=>({id,amount}))].filter(c=>c.amount>0).map(c=>c.id)))??[]);
+ return [...ids].map(id=>{const currency=view.currencies.find(c=>c.id===id);return `<span>${esc(currency?.name??id)} <b class="num ui-value">${currency?.amount??'—'}</b></span>`;}).join('');
+}
+function operationReasons(item:ProgressionView['sections'][number]['items'][number]){
+ const reasons=[...new Set(item.operations.filter(o=>!o.enabled).map(o=>o.reason).filter(Boolean))];
+ return reasons.map((reason,index)=>`<p id="reason-${esc(item.id)}-${index}" class="ui-warning">${esc(reason)}</p>`).join('');
+}
+function operationButtons(item:ProgressionView['sections'][number]['items'][number],busy:boolean,ui:ProgressionUI,showReasons=true){
+ const regular=item.operations.filter(o=>o.action.op!=='talent.reset'),primary=regular.find(o=>o.enabled)??regular[0],reasons=[...new Set(item.operations.filter(o=>!o.enabled).map(o=>o.reason).filter(Boolean))];
+ const render=(o:typeof primary)=>o?`<div class="progression-action">${buttonHtml(o.label,{action:'progression-run',id:o.id,variant:o===primary?'primary':'secondary',size:o===primary?'action':'normal',busy:ui.busy&&ui.operation===o.id,busyLabel:'正在保存…',disabled:busy||!o.enabled||(o.id===ui.operation&&(!ui.preview?.enabled||ui.preview.revision!==ui.view?.revision||JSON.stringify(ui.preview.action)!==JSON.stringify(o.action))),attributes:{...(!o.enabled&&o.reason?{'aria-describedby':`reason-${item.id}-${reasons.indexOf(o.reason)}`}:{})}})}</div>`:'';
+ const bulk=ui.maxPreview?.target===item.id&&ui.maxPreview.revision===ui.view?.revision?ui.maxPreview:undefined;
+ const batchQuote=bulk&&ui.view?`<section class="progression-quote progression-operation-field" aria-label="批量投入报价">${progressionCost(bulk.cost,ui.view,'批量 '+bulk.count+' 点消耗')}${comparison(bulk,'批量 '+bulk.count+' 点后','批量投入后的角色属性')}<p class="ui-caption">${esc(bulk.summary)}</p></section>`:'';
+ return `${batchQuote}<div class="progression-action-list">${regular.map(render).join('')}${regular.some(o=>o.action.op==='talent.learn')?`<div class='progression-action'>${buttonHtml(ui.maxPreview?.target===item.id&&ui.maxPreview.enabled?'批量投入 '+ui.maxPreview.count+' 点':'批量投入',{action:'progression-max',variant:'secondary',disabled:busy||!ui.maxPreview?.enabled||ui.maxPreview.target!==item.id||ui.maxPreview.revision!==ui.view?.revision})}</div>`:''}</div>${showReasons?operationReasons(item):''}${item.operations.some(o=>o.action.op==='talent.reset')?`<div class="progression-secondary-actions">${item.operations.filter(o=>o.action.op==='talent.reset').map(render).join('')}</div>`:''}`;
+}
+function progressionOverlays(ui:ProgressionUI,view:ProgressionView){
+ if(ui.resetConfirm)return confirmationHtml({title:'重置全部天赋？',description:'四棵树已投入的天赋点将全部返还。',confirmLabel:'确认重置',confirmAction:'progression-reset-confirm',confirmId:ui.resetConfirm.id,cancelAction:'progression-reset-cancel',danger:true,busy:ui.busy,disabled:ui.resetConfirm.revision!==view.revision});
+ return ui.summaryOpen?`<div class="ui-confirm-overlay"><section class="confirm-box ui-confirm" role="dialog" tabindex="-1" aria-modal="true" aria-label="总加成">${panelHeaderHtml('总加成',{closeAction:'progression-summary-close'})}<div class="ui-confirm__body">${view.summary.map(s=>statRowHtml({label:s.name,value:s.value})).join('')}</div></section></div>`:'';
+}
+const talentTreeReady=(section:ProgressionView['sections'][number])=>Boolean(section.items.length&&section.items.every(i=>i.tier!==undefined&&i.state!==undefined&&(i.tier===0||i.rank!==undefined&&i.max!==undefined&&i.effects!==undefined)));
+export function progressionEffectText(effect:{value:number;label:string}){return `${effect.value>=0?'+':''}${effect.value}${effect.label.includes('（%）')?'%':''}`;}
+/** 2026-10-07 天赋四树：每层一行，节点下方写名称与每级数值；第 4 层与关键天赋行标出“二选一／三选一”。 */
+export function talentTreeHtml(section:ProgressionView['sections'][number],selected:string){
+ if(!talentTreeReady(section))return undefined;
+ const nodes=section.items.filter(i=>i.tier!>0),tiers=[...new Set(nodes.map(i=>i.tier!))].sort((a,b)=>a-b);
+ const highest=Math.max(0,...tiers.filter(tier=>nodes.filter(i=>i.tier===tier).some(i=>i.tierUnlocked??i.state!=='locked'))),shown=tiers.filter(tier=>tier<=Math.max(1,highest)+1),folded=tiers.filter(tier=>!shown.includes(tier));
+ const choice=(n:number)=>['','','二选一','三选一','四选一'][n]??'多选一';
+ return `<div class="talent-tree" data-state="learned" aria-label="${esc(section.name)}">${shown.map(tier=>{
+  const row=nodes.filter(i=>i.tier===tier),keystone=tier===tiers.at(-1),unlocked=row.some(i=>i.tierUnlocked??i.state!=='locked'),exclusive=row.length>1&&row.every(i=>i.exclusive);
+  return `<section class="talent-tier" aria-label="第 ${tier} 层${exclusive?'，'+choice(row.length):''}" data-unlocked="${unlocked}"><span class="talent-tier-rail" title="第 ${tier} 层">${unlocked?`<span class="talent-tier-mark">${tier}</span>`:''}</span><div class="talent-tier-nodes ${keystone?'is-keystone':''}">${exclusive?`<span class="talent-tier-choice">${choice(row.length)}</span>`:''}${row.map(i=>{
+   const state=i.state==='learned'&&i.rank===i.max?'maxed':i.state!,value=i.effects?.[0]?progressionEffectText(i.effects[0]):'',description=`${i.name}，${i.rank}/${i.max}，${i.state==='learned'?'已投入':i.state==='available'?'可投入':'未解锁'}，${i.description}`;
+   const marks:SlotMark[]=state==='locked'?[{corner:'tr',kind:'lock',label:i.operations.find(o=>!o.enabled)?.reason||'未解锁'}]:state==='maxed'?[{corner:'tr',kind:'check',label:'已投入满'}]:[];
+   if(keystone)marks.push({corner:'tl',kind:'count',iconHtml:iconHtml('star',{size:16}),label:'关键天赋'});
+   return `<span class="talent-node-cell">${itemSlot({action:'progression-item',id:i.id,label:description,pressed:i.id===selected,className:'ui-node ui-node--talent'+(keystone?' ui-node--keystone':''),state,title:description,marks,extra:statIcon(i.effects?.[0]?.stat??'diamond',{size:24})+pipsHtml({value:i.rank!,max:i.max!,label:i.name+'投入',size:'sm'})})}<b class="talent-node-name">${esc(i.name)}</b>${value&&!keystone?`<small class="talent-node-value">${esc(value)}</small>`:''}</span>`;
+  }).join('')}</div></section>`;
+ }).join('')}${folded.length?`<p class="talent-folded">第 ${folded[0]}–${folded.at(-1)} 层：本树投入更多点数后开放</p>`:''}</div>`;
+}
+
+/** 模块里没有任何能做的事（条目全锁、无可执行操作）时只给一张未开放卡，不铺满锁格。 */
+type Section=ProgressionView['sections'][number];
+const sectionLocked=(s:Section)=>s.items.length>0&&s.items.every(i=>(i.state??'locked')==='locked'&&!i.operations.some(o=>o.enabled));
+const lockReasons=(list:Section[])=>[...new Set(list.flatMap(s=>s.items.flatMap(i=>i.operations.filter(o=>!o.enabled).map(o=>o.reason))).filter(Boolean))].slice(0,1);
+const scrollTabs=(html:string,key:string)=>html.replace('<nav ',`<nav data-progress-scroll="${key}" `);
+export function progressionFeedback(ui:Pick<ProgressionUI,'error'|'message'|'status'>,blocked:boolean){
+ const pending=ui.status==='pending',message=ui.error||ui.message||(blocked?'连接已断开，请恢复连接后继续。':'');
+ if(!message&&!pending)return '';
+ return `<div class="progression-feedback" role="${ui.error?'alert':'status'}">${message?(pending||ui.error||blocked?statusBadgeHtml(pending?'结果待确认':ui.error?'读取失败':'连接待恢复',ui.error?'danger':'warning'):iconHtml('check',{size:20,label:ui.status==='success'?'已确认':'提示'})):''}<span>${esc(message)}</span>${blocked||pending?buttonHtml('恢复连接',{action:'recover',size:'compact',variant:'secondary'}):''}</div>`;
+}
+export function renderProgression(ui:ProgressionUI,challenge:ChallengeUI,groupId:string,blocked:boolean,gear:Gear[]=[],snapshot?:CharacterState){
+ const view=ui.view,groups=visibleProgressionGroups(snapshot).sort((a,b)=>{const locked=(g:typeof a)=>g.id!=='challenges'&&Boolean(view?.sections.filter(s=>g.sections.includes(s.id)).length)&&view!.sections.filter(s=>g.sections.includes(s.id)).every(sectionLocked);return Number(locked(a))-Number(locked(b));}),group=groups.find(g=>g.id===groupId)??groups[0];
+ const tabs=scrollTabs(tabsHtml({label:'养成分类',action:'progression-group',selected:group.id,items:groups.map(g=>({id:g.id,label:g.name,markHtml:view&&g.id!=='challenges'&&(()=>{const list=view.sections.filter(x=>g.sections.includes(x.id));return list.length>0&&list.every(sectionLocked);})()?iconHtml('lock',{size:16,label:'尚未开放'}):undefined,attributes:{'data-actionable':Boolean(view?.sections.some(s=>g.sections.includes(s.id)&&s.items.some(i=>i.operations.some(o=>o.enabled))))}})),controls:'progression-content',className:'progression-groups',orientation:'vertical'}),'groups');
+ if(group.id==='challenges')return `<div class="progression-book" data-progress-scroll="book">${tabs}<div class="progression-workspace">${renderChallenges(challenge,blocked,snapshot)}</div></div>`;
+ if(!view)return `<div class="progression-book">${tabs}<div class="progression-workspace">${stateBlockHtml({kind:ui.loading?'loading':ui.error?'error':'empty',title:ui.loading?'正在读取养成信息':ui.error?'养成信息未能载入':'养成信息尚未载入',message:ui.error||'查看已获得的成长、开放条件与所需材料。',...(!ui.loading?{action:{label:'重新读取',action:'progression-refresh'}}:{})})}${progressionFeedback(ui,blocked)}</div></div>`;
+ const sections=view.sections.filter(s=>group.sections.includes(s.id));
+ const section=sections.find(s=>s.id===ui.section)??sections[0];
+ const locked=Boolean(section&&sectionLocked(section));
+ const tree=section?.id.startsWith('talents-')&&talentTreeReady(section);
+ const item=section?.items.find(i=>i.id===ui.item)??section?.items[0];
+ const operation=item?.operations.find(o=>o.id===ui.operation)??item?.operations.find(o=>o.enabled&&o.action.op!=='talent.reset')??item?.operations[0];
+ const quote=ui.preview&&ui.preview.revision===view.revision&&operation&&JSON.stringify(ui.preview.action)===JSON.stringify(operation.action)?ui.preview:undefined;
+ const busy=ui.busy||blocked||ui.loading||ui.status==='pending';
+ const symbol=(id:string)=>{const recipe=section?.id==='professions'?recipeArt.get(id):undefined;if(recipe)return `<img src="${art(recipe)}" alt="" draggable="false" loading="lazy">`;const instance=section?.id==='grid'?view.state.weaponGrid[Number(id.replace('grid-',''))]:section?.id==='weapons'?id:undefined;const weapon=gear.find(g=>g.id===instance);if(weapon)return `<img src="${art('gear-'+weapon.base)}" alt="" draggable="false">`;if(section?.id?.startsWith('talents-'))return statIcon(section.items.find(i=>i.id===id)?.effects?.[0]?.stat??'diamond',{size:32});if(section?.id==='paragon')return iconHtml(section.items.find(i=>i.id===id)?.socket?'diamond':'plus',{size:32});if(section?.id==='glyphs')return iconHtml('skillRadius',{size:32});if(section?.id==='character')return iconHtml('star',{size:32});if(section?.id==='reputation')return iconHtml('chest',{size:32});if(section?.id==='skill-awakening')return `<img src="${skillArt(id)}" alt="" draggable="false">`;return hudIcon('build');};
+ const query=section?.id==='professions'?(ui.query??'').trim().toLowerCase():'';
+ const visibleItems=section?.items.filter(item=>!query||[item.name,item.description,item.status].some(text=>text.toLowerCase().includes(query))||matchesEquipmentSearch(item.id.replace(/^forge-/,''),query))??[];
+ const search=section?.id==='professions'?`<div class="progression-search">${fieldHtml({id:'progression-search',label:'搜索装备与配方',type:'search',value:ui.query??'',placeholder:'例如：长青、法杖、原初'})}<small>${visibleItems.length} / ${section.items.length} 条</small></div>`:'';
+ const library=(section?.id==='reputation'?reputationCardsHtml(section,item?.id??''):undefined)??(section&&['character','skill-awakening'].includes(section.id)?stageTracksHtml(section,item?.id??''):undefined)??(section?.id==='glyphs'?glyphCardsHtml(section,item?.id??''):undefined)??(section?.id==='paragon'?paragonBoardHtml(section,item?.id??''):undefined)??(tree&&section?talentTreeHtml(section,item?.id??''):undefined)??(search+visibleItems.map(i=>itemSlot({action:'progression-item',id:i.id,label:`${i.name}，${i.status}`,pressed:i.id===item?.id,state:i.state==='learned'&&i.rank!==undefined&&i.rank===i.max?'maxed':i.state,title:`${i.name}，${i.status}，${i.description}`,className:`progression-entry ui-card ${i.id===item?.id?'is-selected':''}`,extra:`<span class="progression-symbol">${symbol(i.id)}</span><span class="progression-entry-copy"><b class="ui-card__name">${esc(i.name)}</b>${i.rank!==undefined&&i.max!==undefined?pipsHtml({value:i.rank,max:i.max,label:i.name+'等级'}):i.state?'':`<small>${esc(i.status)}</small>`}</span>`})).join(''));
+ const quoted=!operation?.enabled?'':quote?`${quote.enabled?'':`<p class="ui-warning">${esc(quote.reason||'暂不可操作')}</p>`}${quote.cost.gold>0||quote.cost.material>0||Object.values(quote.cost.items).some(n=>n>0)?progressionCost(quote.cost,view):''}${quote.action.op==='consumable.use'?'<p class="ui-caption">使用将消耗 1 瓶对应合剂。</p>':''}${comparison(quote,quote.action.op==='talent.learn'?'投入 1 点后':'投入后')}`:stateBlockHtml({kind:ui.error?'error':'empty',title:ui.error?'条件读取失败':'读取中…',message:ui.error||'正在获取所需条件与消耗。',compact:true,action:{label:'重新获取',action:'progression-refresh'}});
+ const effects=item?.effects?.length?`<section class="progression-effects" aria-label="效果">${sectionTitleHtml('效果')}${item.effects.map(e=>statRowHtml({iconHtml:statIcon(e.stat,{size:20}),label:e.label.replace('（%）',''),value:progressionEffectText(e),className:'ui-stat--effect'})).join('')}</section>`:item?.description?`<section aria-label="效果">${sectionTitleHtml('效果')}<p class="progression-description">${esc(item.description)}</p></section>`:'';
+ const requirements=item?operationReasons(item):'',conditions=section?.id==='paragon'&&item?.description?`<p class="progression-description">${esc(item.description)}</p>`:'';
+ const quoteBody=!operation?.enabled?'':ui.previewLoading||ui.loading?stateBlockHtml({kind:'loading',title:'读取中',message:'正在获取所需条件与消耗。',compact:true}):ui.status==='pending'?stateBlockHtml({kind:'loading',title:'正在保存',message:'请等待上一次操作完成。',compact:true}):quoted;
+ const details=item?`<div class="progression-detail-heading"><span class="progression-symbol">${symbol(item.id)}</span><div><h3>${esc(item.name)}</h3>${item.rank!==undefined&&item.max!==undefined?pipsHtml({value:item.rank,max:item.max,label:item.name+'等级',size:'md'}):''}</div></div><div class="progression-detail-scroll" data-progress-scroll="detail">${effects}${requirements||conditions||quoteBody?`<section class="progression-quote" aria-label="条件与消耗" aria-busy="${ui.previewLoading||ui.loading||ui.busy}">${sectionTitleHtml('条件 / 消耗')}${conditions}${requirements}${quoteBody}</section>`:''}</div>${ui.error?stateBlockHtml({kind:'error',title:'养成信息读取失败',message:ui.error,compact:true,action:{label:'重新读取',action:'progression-refresh'}}):''}${progressionFeedback(ui,blocked)}${item.operations.length?`<div class="progression-detail-actions">${operationButtons(item,busy||ui.previewLoading,ui,false)}</div>`:''}`:stateBlockHtml({kind:'empty',title:'暂无成长条目',message:'获得对应内容后会在这里显示。'});
+
+ return `<div class="progression-book" data-progress-scroll="book">${tabs}<div class="progression-workspace">${scrollTabs(tabsHtml({label:`${group.name}模块`,action:'progression-section',selected:section?.id??'',items:sections.map(s=>({id:s.id,label:s.id.startsWith('talents-')?s.name.replace(/天赋$/,''):s.name,iconHtml:s.id.startsWith('talents-')?statIcon(s.items[0]?.effects?.[0]?.stat??'diamond',{size:20}):undefined,markHtml:sectionLocked(s)?iconHtml('lock',{size:16,label:'尚未开放'}):undefined})),controls:'progression-content',className:'progression-sections'+(section?.id.startsWith('talents-')?' ui-tabs--marked':'')}),'sections')}<div class="progression-overview">${!locked&&section?.description?helpHtml(section.description):''}<div class="progression-wallet">${sectionResources(section,view)}</div>${!locked?buttonHtml('总加成',{action:'progression-summary',variant:'secondary',size:'compact',attributes:{'aria-haspopup':'dialog'}}):''}</div><div id="progression-content" class="progression-content${locked?' is-locked':''}" role="tabpanel" aria-label="${esc(section?.name??group.name)}"><section class="progression-library ${section?.id==='grid'?'is-grid':''}" data-progress-scroll="library" aria-label="${esc(section?.name??'养成')}条目">${locked?stateBlockHtml({kind:'empty',title:section!.name+'尚未开放',message:(lockReasons([section!]).join('；')||'条件尚未满足')+'。开放后可以：'+section!.description.split(/[。；]/)[0]+'。'}):library||stateBlockHtml({kind:'empty',title:'暂无条目',message:'获得对应内容后会在这里显示。',compact:true})}</section><aside class="progression-detail" aria-label="养成详情"${locked?' hidden':''}>${details}</aside></div></div></div>${progressionOverlays(ui,view)}`;
+}

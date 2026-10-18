@@ -1,0 +1,13 @@
+import type {Snapshot} from '../../../../packages/contracts/index.ts';
+import type {ProgressionView} from '../../../../packages/contracts/deep-progression.ts';
+import type {DungeonView} from '../../../../packages/contracts/dungeons.ts';
+/** 仅比较服务端已经确认的状态；不计算任务进度、奖励或声望阶级。 */
+export class StateAudioSignals{
+ private character='';private revision=-1;private facts=new Map<string,Set<string>>();private steps=new Map<string,number>();private ranks=new Map<string,number>();private viewRevision=-1;private viewRef?:ProgressionView;private dungeon='';private chests=new Map<string,boolean>();
+ consume(snapshot?:Snapshot,view?:ProgressionView,dungeon?:DungeonView|null):string[]{const out:string[]=[];
+ if(snapshot&&snapshot.id!==this.character){this.character=snapshot.id;this.revision=-1;this.facts.clear();this.steps.clear();this.ranks.clear();this.viewRevision=view?.revision??-1;this.viewRef=view;this.dungeon='';this.chests.clear();}
+ if(snapshot&&snapshot.revision!==this.revision){const initial=this.revision<0;this.revision=snapshot.revision;const state=snapshot.starsea;if(state){const signals:readonly [string,readonly string[]|undefined,string][]=[['done',state.done,'stinger/quest-complete'],['gates',state.gates,'world/gate-open'],['rumors',state.rumors,'stinger/clue'],['waypoints',state.waypoints,'world/teleport-activate'],['discovered',state.discovered,'stinger/discovery'],['chests',state.fieldFacts?.open_chest,'cue/chest-open']];for(const [id,values,key]of signals){const next=new Set(values??[]),old=this.facts.get(id);if(!initial&&old&&[...next].some(v=>!old.has(v))){out.push(key);if(id==='waypoints')out.push('stinger/discovery');if(id==='chests')out.push('cue/chest-reward');}this.facts.set(id,next);}const next=new Map(Object.entries(state.quests??{}).map(([id,q])=>[id,q.step]));if(!initial){if([...next.keys()].some(id=>!this.steps.has(id)))out.push('world/quest-accept');if([...next].some(([id,step])=>this.steps.has(id)&&step>this.steps.get(id)!))out.push('world/quest-progress');}this.steps=next;}}
+ if(view&&view!==this.viewRef){this.viewRef=view;this.viewRevision=view.revision;for(const row of view.sections.find(s=>s.id==='reputation')?.items??[]){if(row.rank===undefined)continue;const old=this.ranks.get(row.id);if(old!==undefined&&row.rank>old)out.push('stinger/reputation-up');this.ranks.set(row.id,row.rank);}}
+ if(dungeon){if(dungeon.id!==this.dungeon){this.dungeon=dungeon.id;this.chests=new Map((dungeon.chests??[]).map(c=>[c.id,c.claimed]));if(dungeon.status==='running')out.push('world/dungeon-enter');}else for(const c of dungeon.chests??[]){if(c.claimed&&this.chests.get(c.id)===false)out.push('cue/chest-open','cue/chest-reward');this.chests.set(c.id,c.claimed);}}
+ return [...new Set(out)];}
+}

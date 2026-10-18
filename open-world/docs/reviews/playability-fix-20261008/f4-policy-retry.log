@@ -1,0 +1,73 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+ ✓ tests/stage-keys.database.test.ts (5 tests) 24531ms
+   ✓ settles a real dungeon chest and elite sources with frozen private rules, then crafts one actual item with matching idempotent receipts and no cross-stage material  4638ms
+   ✓ a real layer4 boss victory opens5 and a newly started layer5 freezes the declared relative difficulty  4656ms
+   ✓ changing the private probability for a newly created instance grants an actual key on an actual elite kill  4283ms
+   ✓ returns persisted diagnostics from actual damage and the real timeout; reconnect returns the same result  1898ms
+   ✓ real endgame material sources craft canonical cores or capped glyph overflow, with identical replay and persisted power after reconnect  8629ms
+ ✓ tests/authored-dungeon-entry.database.test.ts (2 tests) 22212ms
+   ✓ a player enters every authored island dungeon through the real catalogue and create/leave commands without copying island access into legacy progression  7445ms
+   ✓ an actual production endgame dungeon runs its declared rooms, opens the next world tier, and resumes identical confirmed results  14317ms
+ ❯ tests/campaign-balance.test.ts (8 tests | 1 failed | 2 skipped) 1361ms
+   × starter can earn its way through all six areas without relying on randomized gear 1349ms
+   ↓ melee can earn its way through all six areas without relying on randomized gear
+   ↓ ranged can earn its way through all six areas without relying on randomized gear
+   ✓ later full waves give nondecreasing currency, XP and upgrade material 1ms
+   ✓ statistical drop expectations distinguish averages from 95% confidence and impossible drops 0ms
+   ✓ a zero-damage ice prison preserves HP rather than becoming a lethal trap 2ms
+   ✓ death mark and the real dragon actor execute finite configured damage 3ms
+   ✓ fractional destinations near walls produce routes a real hero body can traverse 3ms
+stderr | tests/dungeon-instance.database.test.ts > an unrecoverable server checkpoint refunds entry cost once, preserves previous receipts and closes participation
+Dungeon checkpoint cannot be restored 6a099655-b1ee-4a75-a435-11b8d809baf2 Error: Unknown combat checkpoint version
+    at World.restore (G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/packages/simulation/index.ts:1252:36)
+    at DungeonService.hydrate (G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/apps/api/src/dungeon-service.ts:72:75)
+    at DungeonService.start (G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/apps/api/src/dungeon-service.ts:68:23)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+ ✓ tests/dungeon-instance.database.test.ts (20 tests) 42103ms
+   ✓ creates, loads, freezes configuration and awards the real boss once without a client kill report  1978ms
+   ✓ one active instance, server-enforced build lock, retained disconnect and ticking without clients  1007ms
+   ✓ shared realtime roster, leadership transfer, checkpoint-only join and personal departure  1326ms
+   ✓ per-definition fees and short retention are enforced by real transactions and an expired slot cannot rejoin  1746ms
+   ✓ simulation disconnection ends only that member while the remaining actor and simulation clock continue  1027ms
+   ✓ loading failure does not charge a fee or quota and success quota is charged only by the immutable terminal transaction  2479ms
+   ✓ server enforces a short deadline and never simulates or rewards a later kill  669ms
+   ✓ a downed solo character fails and can return without losing committed inventory  663ms
+   ✓ nearby rescue uses configured health, movement interrupts it, and retained allies can be rescued  1847ms
+   ✓ all downed characters fail the whole instance, while a valid final kill takes priority over death in the same tick  1878ms
+   ✓ an unrecoverable server checkpoint refunds entry cost once, preserves previous receipts and closes participation  625ms
+   ✓ twenty independent accounts share one authoritative encounter and retain the configured 2/4/14 roster  10989ms
+   ✓ checkpoint replacement pays once, receives no earlier loot, and stage transition carries health instead of resurrecting an old wave  7245ms
+   ✓ restores pending casts and projectiles with exact cooldowns and frozen stats, without a new entry charge or killed enemy reset  787ms
+   ✓ all disconnected bodies still take damage while projectiles, zone lifetimes, cooldowns and the deadline advance  1481ms
+   ✓ late reconnect or cast cannot be inserted into historical catch-up frames after the deadline  617ms
+   ✓ seven-day cleanup removes raw battle detail but preserves the true result, rewards and command receipts  2459ms
+   ✓ real permit and WebSocket retain resolved monster identities, independent levels and the creation-time catalogue  681ms
+   ✓ real full-health casts restore mana and cleanse a recorded debuff through the server  1274ms
+   ✓ guardian consumes one lethal interception across a real database restart and a second lethal hit ends participation  1093ms
+ ✓ tests/playability-boss-approach.test.ts (17 tests) 88ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/campaign-balance.test.ts > starter can earn its way through all six areas without relying on randomized gear
+AssertionError: seed 11, stopped at tundra: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/campaign-balance.test.ts:13:146
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 49 passed | 2 skipped (52)
+   Start at  05:35:42
+   Duration  96.01s (transform 1.37s, setup 497ms, import 4.62s, tests 90.30s, environment 0ms)
+

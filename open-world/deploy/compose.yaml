@@ -1,0 +1,55 @@
+# 测试服：PostgreSQL + API + Caddy（自动 HTTPS、访问口令）。
+# 在服务器的 deploy/ 目录：cp env.example .env && 编辑 && docker compose up -d --build
+name: abyss-staging
+
+services:
+  db:
+    image: postgres:18
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: abyss
+      POSTGRES_USER: abyss
+      POSTGRES_PASSWORD: ${PG_PASSWORD:?set PG_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U abyss -d abyss"]
+      interval: 5s
+      retries: 20
+
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      AW_DATABASE_URL: postgres://abyss:${PG_PASSWORD}@db:5432/abyss
+      AW_ORIGINS: https://${AW_DOMAIN:?set AW_DOMAIN in .env}
+      # staging = 开测试号登录与 QA 入口（main.ts 规定 production 下不允许），仅靠 Caddy 口令保护；
+      # prod = 正式模式，密码账号。
+      NODE_ENV: ${AW_MODE_NODE_ENV:-development}
+      AW_TEST_LOGIN: ${AW_TEST_LOGIN:-1}
+    volumes:
+      - ${AW_WEB_DIST:-./web-dist}:/srv/web-dist:ro
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on: [api]
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      AW_DOMAIN: ${AW_DOMAIN}
+      AW_GATE_USER: ${AW_GATE_USER:-tester}
+      AW_GATE_HASH: ${AW_GATE_HASH:?set AW_GATE_HASH (caddy hash-password) in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+
+volumes:
+  pgdata:
+  caddy_data:

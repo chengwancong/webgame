@@ -1,0 +1,109 @@
+{
+  "status": "完成：类型、配置、正式构建通过；数值残差保留",
+  "steps": [
+    {
+      "command": [
+        "node",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "-p",
+        "tsconfig.json"
+      ],
+      "exitCode": 0,
+      "name": "主工程类型检查",
+      "log": "S8/final-types.log",
+      "expectedExit": 0,
+      "seconds": 15.7434292
+    },
+    {
+      "name": "主干工具类型检查",
+      "seconds": 6.7023495,
+      "exitCode": 0,
+      "command": [
+        "node",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "-p",
+        "tools/spine/tsconfig.json"
+      ],
+      "expectedExit": 0,
+      "log": "S8/final-tools-types.log"
+    },
+    {
+      "name": "配置导出",
+      "seconds": 1.023867,
+      "exitCode": 0,
+      "command": [
+        "C:/Users/ccc/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe",
+        "-X",
+        "utf8",
+        "tools/config-export.py"
+      ],
+      "expectedExit": 0,
+      "log": "S8/final-config-export.log"
+    },
+    {
+      "name": "七本配置一致性",
+      "seconds": 0.8847888,
+      "exitCode": 0,
+      "command": [
+        "C:/Users/ccc/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe",
+        "-X",
+        "utf8",
+        "tools/config-export.py",
+        "--check"
+      ],
+      "expectedExit": 0,
+      "log": "S8/final-config-check.log"
+    },
+    {
+      "name": "正式隔离构建",
+      "seconds": 133.703934,
+      "exitCode": 0,
+      "command": [
+        "node",
+        "tools/spine/with-python.mjs",
+        "C:/Users/ccc/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe",
+        "docs/reviews/numeric-spine-20261013/S8/final-isolated-build-env",
+        "node",
+        "tools/pacing/build-isolated.mjs",
+        "--out=G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\docs\\reviews\\numeric-spine-20261013/S8/final-isolated-build"
+      ],
+      "expectedExit": 0,
+      "log": "S8/final-isolated-build-driver.log"
+    },
+    {
+      "name": "冻结验证源",
+      "seconds": 1.7336345,
+      "exitCode": 0,
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "tools/spine/cli.ts",
+        "check",
+        "--freeze",
+        "--out=G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\docs\\reviews\\numeric-spine-20261013/S9"
+      ],
+      "expectedExit": 0,
+      "log": "S9/freeze.log"
+    },
+    {
+      "name": "保留数值残差门禁",
+      "seconds": 1.5799501,
+      "exitCode": 1,
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "tools/spine/cli.ts",
+        "check",
+        "--out=G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\docs\\reviews\\numeric-spine-20261013/S9"
+      ],
+      "expectedExit": 1,
+      "log": "S9/check.log"
+    }
+  ],
+  "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\.qa\\numeric-spine-verify-1_kepbei\\source",
+  "updated": "2026-10-15T04:10:04.7414100+08:00"
+}

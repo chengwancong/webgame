@@ -1,0 +1,19 @@
+@font-face{font-family:WorldSans;src:url('/art/NotoSansSC.ttf') format('truetype');font-weight:100 900;font-display:swap}
+*{box-sizing:border-box}
+body{margin:0;background:var(--color-background);color:var(--color-text-primary);font-family:var(--font-family);font-size:var(--font-size-body)}
+#review{max-width:1280px;margin:auto}
+#review header,#review footer{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;padding:var(--space-4)}
+#review h1{font-size:var(--font-size-h2);margin:0}
+#review header p,.scene-review-note{font-size:var(--font-size-caption);color:var(--color-text-secondary)}
+#review nav{display:flex;flex-wrap:wrap;gap:var(--space-2)}
+.scene-review-stage{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden}
+.scene-review-bg{display:block;width:100%;height:100%;object-fit:cover}
+.scene-review-hero{position:absolute;width:20%;height:35.5556%;left:40%;top:25.4167%;pointer-events:none}
+.scene-review-shadow{position:absolute;width:3.125%;height:1.3889%;left:48.4375%;top:51.3889%;background:var(--color-background);opacity:.24;border-radius:50%}
+.scene-review-drops{position:absolute;left:59%;top:58%;display:flex;gap:var(--space-6)}
+.scene-review-drops>div{display:flex;flex-direction:column;align-items:center;gap:var(--space-1)}
+.scene-review-drops img{width:var(--size-icon-slot);height:var(--size-icon-slot);object-fit:contain}
+.scene-review-drops span{font-size:var(--font-size-caption);color:var(--color-text-primary);text-shadow:0 1px var(--color-background)}
+.scene-review-stage[data-scene=before] .scene-review-hero,.scene-review-stage[data-scene=before] .scene-review-shadow,.scene-review-stage[data-scene=before] .scene-review-drops{display:none}
+#review output{font-size:var(--font-size-caption);color:var(--color-text-secondary)}
+.scene-review-note{padding:0 var(--space-4) var(--space-4);margin:0}

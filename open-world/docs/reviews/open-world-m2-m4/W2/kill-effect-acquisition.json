@@ -1,0 +1,127 @@
+{
+  "passed": true,
+  "scope": "Actual runtime sources and acquisition paths; new talent execution is tested through real progression commands and World casts. Existing mana/cooldown attribute executors retain their R4/R8 tests.",
+  "families": [
+    {
+      "kind": "尸爆",
+      "path": "warrior-field-corpse",
+      "rule": {
+        "id": "warrior-field-corpse:kill",
+        "name": "余烬尸爆",
+        "description": "击杀时在死亡位置造成死者最大生命5%的物理范围伤害，半径3格。",
+        "source": "warrior-field-corpse",
+        "tier": 1,
+        "trigger": "kill",
+        "chance": 1,
+        "icd": 0,
+        "filter": {},
+        "when": [],
+        "action": {
+          "type": "nova",
+          "ref": "maxHp",
+          "ratio": 0.05,
+          "radius": 3,
+          "damageType": "physical",
+          "at": "target"
+        },
+        "scale": [],
+        "vfxKey": "player/ground_slam"
+      }
+    },
+    {
+      "kind": "击杀连锁闪电",
+      "path": "mage-field-chain",
+      "rule": {
+        "id": "mage-field-chain:kill",
+        "name": "雷霆追猎",
+        "description": "击杀时释放40%伤害的连锁闪电，最多3个目标、跳跃距离4格，每跳保留70%。",
+        "source": "mage-field-chain",
+        "tier": 1,
+        "trigger": "kill",
+        "chance": 1,
+        "icd": 0,
+        "filter": {},
+        "when": [],
+        "action": {
+          "type": "arc",
+          "ratio": 0.4,
+          "count": 3,
+          "range": 4,
+          "damageType": "lightning",
+          "decay": 0.7
+        },
+        "scale": [],
+        "vfxKey": "player/chain"
+      }
+    },
+    {
+      "kind": "击杀叠层增伤",
+      "path": "ranger-field-momentum",
+      "rule": {
+        "id": "ranger-field-momentum:kill",
+        "name": "连战势头",
+        "description": "击杀时伤害增加5%，持续5秒，最多5层。",
+        "source": "ranger-field-momentum",
+        "tier": 1,
+        "trigger": "kill",
+        "chance": 1,
+        "icd": 0,
+        "filter": {},
+        "when": [],
+        "action": {
+          "type": "buff",
+          "duration": 150,
+          "maxStacks": 5,
+          "mods": {
+            "damageMult": 0.05
+          }
+        },
+        "scale": [],
+        "vfxKey": "player/haste"
+      }
+    },
+    {
+      "kind": "击杀回能",
+      "path": {
+        "id": "manaOnKill",
+        "name": "击杀回复灵力",
+        "unit": "flat",
+        "pool": "resource",
+        "cap": null,
+        "stageScaled": false,
+        "slots": [
+          "ring",
+          "accessory",
+          "helmet"
+        ],
+        "display": "number",
+        "affix": true,
+        "modifier": true,
+        "progression": "add",
+        "default": 0
+      }
+    },
+    {
+      "kind": "击杀减冷却",
+      "path": {
+        "id": "cooldownOnKill",
+        "name": "击杀减少冷却",
+        "unit": "seconds",
+        "pool": "resource",
+        "cap": 1,
+        "stageScaled": false,
+        "slots": [
+          "weapon",
+          "ring"
+        ],
+        "display": "seconds",
+        "affix": true,
+        "modifier": true,
+        "progression": "add",
+        "default": 0
+      }
+    }
+  ],
+  "legacyTalentsPreserved": 90,
+  "newIndependentTalents": 3
+}

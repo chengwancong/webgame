@@ -1,0 +1,745 @@
+{
+  "version": 4,
+  "defaults": {
+    "entryLevel": 1,
+    "maxTier": 1,
+    "minTier": 1,
+    "tierRules": {
+      "hpPerTier": 0,
+      "attackPerTier": 0,
+      "rewardPerTier": 0,
+      "affixCount": 0,
+      "recordNightmareRank": false
+    },
+    "timeLimitSeconds": 1800,
+    "loadingSeconds": 120,
+    "retention": {
+      "enabled": true,
+      "seconds": 1800
+    },
+    "disconnect": "retain",
+    "buildLocked": true,
+    "checkpointJoin": true,
+    "quotaAt": "start",
+    "entryCost": {
+      "gold": 0,
+      "material": 0
+    },
+    "rescue": {
+      "seconds": 5,
+      "range": 2,
+      "hpRatio": 0.3
+    },
+    "allyRange": 6,
+    "overflow": "allow",
+    "returnRegion": "town",
+    "refundSystemAbort": true,
+    "party": {
+      "min": 1,
+      "max": 1,
+      "roles": {},
+      "defaultRole": "damage"
+    },
+    "enemyScale": {
+      "hp": 1,
+      "attack": 1,
+      "hpPerStage": 0.12,
+      "attackPerStage": 0.06
+    },
+    "normalGoals": {
+      "killCount": "bossEntry.requiredKills",
+      "eliteCount": "bossEntry.requiredElites"
+    },
+    "reward": {
+      "gold": 0,
+      "xp": 0,
+      "material": 0
+    },
+    "worldDrops": false,
+    "monsterLevel": null,
+    "augments": {
+      "enabled": true,
+      "choices": 3,
+      "rerolls": 1,
+      "roundCount": 3
+    }
+  },
+  "runtime": {
+    "pumpMs": 50,
+    "stateEveryMs": 100,
+    "heartbeatMs": 5000,
+    "connectionTimeoutMs": 15000,
+    "inputHoldMs": 250,
+    "inputEveryMs": 100,
+    "maxInputBatch": 60,
+    "autoTicksPerSlice": 30,
+    "maxCatchupTicksPerSlice": 120,
+    "detailRetentionDays": 7,
+    "maxPreparingPerLeader": 3,
+    "preparingHours": 24,
+    "maxFaultRetries": 3,
+    "cleanupEveryMs": 3600000
+  },
+  "profiles": {
+    "realtime": {
+      "mode": "realtime",
+      "disconnect": "retain"
+    },
+    "simulation": {
+      "mode": "simulation",
+      "disconnect": "end",
+      "retention": {
+        "enabled": false
+      }
+    },
+    "raid": {
+      "partyRef": "challenge.raidParty",
+      "quota": {
+        "pool": "raid",
+        "period": "week",
+        "limitRef": "challenge.raidWeekly"
+      },
+      "feature": "raid"
+    },
+    "high": {
+      "quota": {
+        "pool": "high",
+        "period": "day",
+        "limitRef": "challenge.highDaily"
+      },
+      "feature": "high"
+    },
+    "nightmare": {
+      "tierRef": "challenge.nightmare",
+      "quota": {
+        "pool": "nightmare",
+        "period": "day",
+        "limitRef": "challenge.nightmareDaily"
+      },
+      "feature": "nightmare"
+    },
+    "trial": {
+      "feature": "trial"
+    },
+    "augments-disabled": {
+      "augments": {
+        "enabled": false
+      }
+    }
+  },
+  "definitions": [
+    {
+      "id": "story-meadow",
+      "name": "失踪的远行队",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "meadow",
+      "stages": [
+        "meadow",
+        "meadow-boss"
+      ],
+      "worldDrops": true,
+      "story": "meadow",
+      "level": 1,
+      "policy": {
+        "monsterLevel": 1,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        }
+      }
+    },
+    {
+      "id": "story-forest",
+      "name": "被修改的路标",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "forest",
+      "stages": [
+        "forest",
+        "forest-boss"
+      ],
+      "worldDrops": true,
+      "story": "forest",
+      "level": 2,
+      "policy": {
+        "monsterLevel": 2,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        }
+      }
+    },
+    {
+      "id": "story-rift",
+      "name": "熄灭的炉火",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "rift",
+      "stages": [
+        "rift",
+        "rift-boss"
+      ],
+      "worldDrops": true,
+      "story": "rift",
+      "level": 4,
+      "policy": {
+        "monsterLevel": 4,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        }
+      }
+    },
+    {
+      "id": "story-tundra",
+      "name": "冰下的求救声",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "tundra",
+      "stages": [
+        "tundra",
+        "tundra-boss"
+      ],
+      "worldDrops": true,
+      "story": "tundra",
+      "level": 5,
+      "policy": {
+        "monsterLevel": 5,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        }
+      }
+    },
+    {
+      "id": "story-abyss",
+      "name": "没有归来的人",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "abyss",
+      "stages": [
+        "abyss",
+        "abyss-boss"
+      ],
+      "worldDrops": true,
+      "story": "abyss",
+      "level": 7,
+      "policy": {
+        "monsterLevel": 7,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        }
+      }
+    },
+    {
+      "id": "story-dragonbone",
+      "name": "最后一条归途",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "dragonbone",
+      "stages": [
+        "dragonbone",
+        "dragonbone-boss"
+      ],
+      "worldDrops": true,
+      "story": "dragonbone",
+      "level": 9,
+      "policy": {
+        "monsterLevel": 9,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        }
+      }
+    },
+    {
+      "id": "normal-meadow",
+      "kind": "normal",
+      "profiles": [
+        "realtime"
+      ],
+      "area": "meadow",
+      "stages": [
+        "meadow",
+        "meadow-boss"
+      ],
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 1,
+        "enemyScale": {
+          "hp": 0.6020764910357346,
+          "attack": 0.31088333453284056
+        }
+      }
+    },
+    {
+      "id": "normal-forest",
+      "kind": "normal",
+      "profiles": [
+        "realtime"
+      ],
+      "area": "forest",
+      "stages": [
+        "forest",
+        "forest-boss"
+      ],
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 2,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        }
+      }
+    },
+    {
+      "id": "normal-rift",
+      "kind": "normal",
+      "profiles": [
+        "realtime"
+      ],
+      "area": "rift",
+      "stages": [
+        "rift",
+        "rift-boss"
+      ],
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 4,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        }
+      }
+    },
+    {
+      "id": "normal-tundra",
+      "kind": "normal",
+      "profiles": [
+        "realtime"
+      ],
+      "area": "tundra",
+      "stages": [
+        "tundra",
+        "tundra-boss"
+      ],
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 5,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        }
+      }
+    },
+    {
+      "id": "normal-abyss",
+      "kind": "normal",
+      "profiles": [
+        "realtime"
+      ],
+      "area": "abyss",
+      "stages": [
+        "abyss",
+        "abyss-boss"
+      ],
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 7,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        }
+      }
+    },
+    {
+      "id": "normal-dragonbone",
+      "kind": "normal",
+      "profiles": [
+        "realtime"
+      ],
+      "area": "dragonbone",
+      "stages": [
+        "dragonbone",
+        "dragonbone-boss"
+      ],
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 9,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        }
+      }
+    },
+    {
+      "id": "trial-meadow",
+      "kind": "trial",
+      "profiles": [
+        "realtime",
+        "trial"
+      ],
+      "area": "meadow",
+      "stages": [
+        "meadow-boss"
+      ],
+      "bossAccess": "meadow-boss",
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 1,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        }
+      }
+    },
+    {
+      "id": "trial-forest",
+      "kind": "trial",
+      "profiles": [
+        "realtime",
+        "trial"
+      ],
+      "area": "forest",
+      "stages": [
+        "forest-boss"
+      ],
+      "bossAccess": "forest-boss",
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 2,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        }
+      }
+    },
+    {
+      "id": "trial-rift",
+      "kind": "trial",
+      "profiles": [
+        "realtime",
+        "trial"
+      ],
+      "area": "rift",
+      "stages": [
+        "rift-boss"
+      ],
+      "bossAccess": "rift-boss",
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 4,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        }
+      }
+    },
+    {
+      "id": "trial-tundra",
+      "kind": "trial",
+      "profiles": [
+        "realtime",
+        "trial"
+      ],
+      "area": "tundra",
+      "stages": [
+        "tundra-boss"
+      ],
+      "bossAccess": "tundra-boss",
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 5,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        }
+      }
+    },
+    {
+      "id": "trial-abyss",
+      "kind": "trial",
+      "profiles": [
+        "realtime",
+        "trial"
+      ],
+      "area": "abyss",
+      "stages": [
+        "abyss-boss"
+      ],
+      "bossAccess": "abyss-boss",
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 7,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        }
+      }
+    },
+    {
+      "id": "trial-dragonbone",
+      "kind": "trial",
+      "profiles": [
+        "realtime",
+        "trial"
+      ],
+      "area": "dragonbone",
+      "stages": [
+        "dragonbone-boss"
+      ],
+      "bossAccess": "dragonbone-boss",
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 9,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        }
+      }
+    },
+    {
+      "id": "high-meadow",
+      "kind": "high",
+      "profiles": [
+        "simulation",
+        "high"
+      ],
+      "challenge": "high-meadow",
+      "policy": {
+        "monsterLevel": 20,
+        "enemyScale": {
+          "hp": 0.9000000000000001,
+          "attack": 0.405
+        }
+      }
+    },
+    {
+      "id": "high-forest",
+      "kind": "high",
+      "profiles": [
+        "simulation",
+        "high"
+      ],
+      "challenge": "high-forest",
+      "policy": {
+        "monsterLevel": 30,
+        "enemyScale": {
+          "hp": 0.9777777777777779,
+          "attack": 0.3333333333333333
+        }
+      }
+    },
+    {
+      "id": "high-rift",
+      "kind": "high",
+      "profiles": [
+        "simulation",
+        "high"
+      ],
+      "challenge": "high-rift",
+      "policy": {
+        "monsterLevel": 40,
+        "enemyScale": {
+          "hp": 0.8166666666666667,
+          "attack": 0.33000000000000007
+        }
+      }
+    },
+    {
+      "id": "high-tundra",
+      "kind": "high",
+      "profiles": [
+        "simulation",
+        "high"
+      ],
+      "challenge": "high-tundra",
+      "policy": {
+        "monsterLevel": 50,
+        "enemyScale": {
+          "hp": 0.72,
+          "attack": 0.38399999999999995
+        }
+      }
+    },
+    {
+      "id": "high-abyss",
+      "kind": "high",
+      "profiles": [
+        "simulation",
+        "high"
+      ],
+      "challenge": "high-abyss",
+      "policy": {
+        "monsterLevel": 50,
+        "enemyScale": {
+          "hp": 0.7666666666666667,
+          "attack": 0.52
+        }
+      }
+    },
+    {
+      "id": "high-dragonbone",
+      "kind": "high",
+      "profiles": [
+        "simulation",
+        "high"
+      ],
+      "challenge": "high-dragonbone",
+      "policy": {
+        "monsterLevel": 50,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 0.6719999999999999
+        }
+      }
+    },
+    {
+      "id": "nightmare",
+      "kind": "nightmare",
+      "profiles": [
+        "simulation",
+        "nightmare"
+      ],
+      "challenge": "nightmare",
+      "policy": {
+        "monsterLevel": 40,
+        "enemyScale": {
+          "hp": 0.3666666666666667,
+          "attack": 0.175
+        }
+      }
+    },
+    {
+      "id": "raid-abyss-live",
+      "kind": "raid",
+      "profiles": [
+        "realtime",
+        "raid"
+      ],
+      "challenge": "raid-abyss",
+      "policy": {
+        "monsterLevel": 50,
+        "enemyScale": {
+          "hp": 1.2266666666666668,
+          "attack": 0.16
+        }
+      }
+    },
+    {
+      "id": "raid-abyss-auto",
+      "kind": "raid",
+      "profiles": [
+        "simulation",
+        "raid"
+      ],
+      "challenge": "raid-abyss",
+      "policy": {
+        "monsterLevel": 50,
+        "enemyScale": {
+          "hp": 1.2266666666666668,
+          "attack": 0.16
+        }
+      }
+    },
+    {
+      "id": "raid-dragon-live",
+      "kind": "raid",
+      "profiles": [
+        "realtime",
+        "raid"
+      ],
+      "challenge": "raid-dragon",
+      "policy": {
+        "monsterLevel": 50,
+        "enemyScale": {
+          "hp": 1.2,
+          "attack": 0.216
+        }
+      }
+    },
+    {
+      "id": "raid-dragon-auto",
+      "kind": "raid",
+      "profiles": [
+        "simulation",
+        "raid"
+      ],
+      "challenge": "raid-dragon",
+      "policy": {
+        "monsterLevel": 50,
+        "enemyScale": {
+          "hp": 1.2,
+          "attack": 0.216
+        }
+      }
+    }
+  ],
+  "augments": {
+    "enabled": true,
+    "choices": 3,
+    "rerolls": 1,
+    "rounds": [
+      [
+        {
+          "tier": "silver",
+          "weight": 70
+        },
+        {
+          "tier": "gold",
+          "weight": 30
+        }
+      ],
+      [
+        {
+          "tier": "gold",
+          "weight": 100
+        }
+      ],
+      [
+        {
+          "tier": "gold",
+          "weight": 70
+        },
+        {
+          "tier": "prismatic",
+          "weight": 30
+        }
+      ]
+    ]
+  },
+  "augmentExtra": {
+    "minimumWorldTier": 4,
+    "bossHpRatio": 0.5,
+    "weights": [
+      {
+        "tier": "gold",
+        "weight": 70
+      },
+      {
+        "tier": "prismatic",
+        "weight": 30
+      }
+    ]
+  }
+}

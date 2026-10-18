@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>技能配置工具 - 74个工程化技能</title>
+<style>
+:root {
+  --bg-0: #05070C;
+  --bg-1: #0A0D12;
+  --bg-2: #0F131C;
+  --bg-3: #161D2B;
+  --bg-4: #1E2636;
+  --accent: #38BDF8;
+  --text: #E8EDF2;
+  --text-dim: #9BA5B0;
+  --border: #2A3441;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg-0);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  line-height: 1.6;
+  overflow: hidden;
+}
+
+.app-layout {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+}
+
+.app-header {
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem 2rem;
+}
+
+.app-header h1 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.stats-bar {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.stat-item strong {
+  color: var(--accent);
+}
+
+.main-container {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  overflow: hidden;
+}
+
+.sidebar {
+  background: var(--bg-1);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 1.5rem 0;
+}
+
+.filter-section {
+  padding: 0 1.5rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+
+.filter-section h3 {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.filter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag-filter {
+  padding: 0.4rem 0.8rem;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tag-filter:hover {
+  background: var(--bg-4);
+}
+
+.tag-filter.active {
+  background: var(--accent);
+  color: var(--bg-0);
+  border-color: var(--accent);
+}
+
+.content-area {
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+.toolbar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+button {
+  background: var(--bg-3);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+button:hover:not(:disabled) {
+  background: var(--bg-4);
+  border-color: var(--accent);
+}
+
+button.primary {
+  background: var(--accent);
+  color: var(--bg-0);
+  border-color: var(--accent);
+}
+
+.search-box {
+  flex: 1;
+  min-width: 200px;
+  max-width: 400px;
+  padding: 0.75rem 1rem;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.search-box:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+
+.skill-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.skill-card:hover {
+  background: var(--bg-3);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.skill-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 1rem;
+}
+
+.skill-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.skill-id {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  font-family: 'Consolas', monospace;
+}
+
+.skill-level {
+  background: var(--bg-4);
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.skill-desc {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.skill-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.stat {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.stat strong {
+  color: var(--text);
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-tag {
+  padding: 0.25rem 0.6rem;
+  background: var(--bg-4);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.skill-tag.melee { border-left: 3px solid #EF4444; }
+.skill-tag.ranged { border-left: 3px solid #10B981; }
+.skill-tag.control { border-left: 3px solid #60A5FA; }
+.skill-tag.support { border-left: 3px solid #F59E0B; }
+.skill-tag.summon { border-left: 3px solid #A78BFA; }
+.skill-tag.aura { border-left: 3px solid #EC4899; }
+.skill-tag.utility { border-left: 3px solid #6366F1; }
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-dim);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(5, 7, 12, 0.95);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 2rem;
+}
+
+.modal-overlay.visible {
+  display: flex;
+}
+
+.modal {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.modal h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.modal-section {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-section:last-child {
+  border-bottom: none;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+</style>
+</head>
+<body>
+
+<div class="app-layout">
+  <header class="app-header">
+    <h1>技能配置工具 - 工程化技能系统</h1>
+    <div class="stats-bar">
+      <div class="stat-item">总技能: <strong id="total-skills">74</strong></div>
+      <div class="stat-item">近战: <strong id="melee-count">15</strong></div>
+      <div class="stat-item">远程: <strong id="ranged-count">18</strong></div>
+      <div class="stat-item">控制: <strong id="control-count">12</strong></div>
+      <div class="stat-item">辅助: <strong id="support-count">10</strong></div>
+      <div class="stat-item">召唤: <strong id="summon-count">10</strong></div>
+      <div class="stat-item">光环: <strong id="aura-count">9</strong></div>
+      <div class="stat-item">工具: <strong id="utility-count">5</strong></div>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <aside class="sidebar">
+      <div class="filter-section">
+        <h3>分类筛选</h3>
+        <div class="filter-tags">
+          <button class="tag-filter active" data-category="all">全部</button>
+          <button class="tag-filter" data-category="melee">近战</button>
+          <button class="tag-filter" data-category="ranged">远程</button>
+          <button class="tag-filter" data-category="control">控制</button>
+          <button class="tag-filter" data-category="support">辅助</button>
+          <button class="tag-filter" data-category="summon">召唤</button>
+          <button class="tag-filter" data-category="aura">光环</button>
+          <button class="tag-filter" data-category="utility">工具</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="content-area">
+      <div class="toolbar">
+        <input type="text" class="search-box" id="search" placeholder="搜索技能 ID 或名称...">
+        <button onclick="exportSkills()">导出配置</button>
+      </div>
+
+      <div class="skills-grid" id="skills-container">
+        <div class="empty-state">
+          <div style="font-size: 4rem; opacity: 0.3;">⚔️</div>
+          <p>加载技能数据中...</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="modal-overlay" id="skill-modal">
+  <div class="modal">
+    <h2 id="modal-skill-name">技能详情</h2>
+    <div id="modal-content"></div>
+    <div class="modal-actions">
+      <button onclick="closeModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// 由于技能数据文件较大，这里使用一个简化的示例数据结构
+// 实际使用时，可以通过 fetch 加载 JSON 文件
+
+const sampleSkills = [
+  {
+    id: 'basic_slash',
+    name: '基础斩击',
+    description: '快速的近战攻击',
+    category: 'melee',
+    unlock: { level: 1 },
+    targeting: { type: 'nearest', range: 2.5 },
+    delivery: { method: 'instant' },
+    cost: { mana: 0 },
+    cooldown: { base: 15 },
+    cast: { windup: 3 },
+    effects: [
+      { type: 'damage', damage: { base: 18, scaling: 0.8, type: 'physical', canCrit: true } }
+    ],
+    scaling: { perLevel: { damage: 0.12 }, maxLevel: 5 },
+    tags: ['basic', 'single-target']
+  },
+  {
+    id: 'magic_arrow',
+    name: '魔法箭',
+    description: '基础远程攻击',
+    category: 'ranged',
+    unlock: { level: 1 },
+    targeting: { type: 'nearest', range: 12 },
+    delivery: { method: 'projectile', speed: 15 },
+    cost: { mana: 4 },
+    cooldown: { base: 25 },
+    cast: { windup: 4 },
+    effects: [
+      { type: 'damage', damage: { base: 22, scaling: 0.9, type: 'physical', canCrit: true } }
+    ],
+    scaling: { perLevel: { damage: 0.1 }, maxLevel: 5 },
+    tags: ['basic', 'projectile']
+  },
+  {
+    id: 'frost_nova',
+    name: '冰霜新星',
+    description: '冰冻周围所有敌人',
+    category: 'control',
+    unlock: { level: 3 },
+    targeting: { type: 'self', range: 0 },
+    delivery: { method: 'instant' },
+    cost: { mana: 18 },
+    cooldown: { base: 150 },
+    cast: { windup: 8 },
+    effects: [
+      { type: 'damage', damage: { base: 32, scaling: 0.8, type: 'cold', areaRadius: 5 } },
+      { type: 'debuff', debuff: { stats: {}, duration: 90, type: 'freeze' } }
+    ],
+    scaling: { perLevel: { damage: 0.12, duration: 15 }, maxLevel: 5 },
+    tags: ['aoe', 'cc', 'cold']
+  }
+];
+
+let allSkills = sampleSkills;
+let currentFilter = 'all';
+let searchTerm = '';
+
+// 尝试加载完整的技能数据
+fetch('./skills-complete-data.json')
+  .then(res => res.json())
+  .then(data => {
+    allSkills = data;
+    renderSkills();
+    updateStats();
+  })
+  .catch(() => {
+    console.warn('使用示例数据');
+    renderSkills();
+  });
+
+function updateStats() {
+  const counts = allSkills.reduce((acc, skill) => {
+    acc[skill.category] = (acc[skill.category] || 0) + 1;
+    return acc;
+  }, {});
+  
+  document.getElementById('total-skills').textContent = allSkills.length;
+  Object.entries(counts).forEach(([category, count]) => {
+    const elem = document.getElementById(category + '-count');
+    if (elem) elem.textContent = count;
+  });
+}
+
+function renderSkills() {
+  const container = document.getElementById('skills-container');
+  
+  let skills = allSkills;
+  
+  if (currentFilter !== 'all') {
+    skills = skills.filter(s => s.category === currentFilter);
+  }
+  
+  if (searchTerm) {
+    const term = searchTerm.toLowerCase();
+    skills = skills.filter(s => 
+      s.id.toLowerCase().includes(term) || 
+      s.name.toLowerCase().includes(term) ||
+      s.description.toLowerCase().includes(term)
+    );
+  }
+  
+  if (skills.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div style="font-size: 4rem; opacity: 0.3;">🔍</div><p>没有找到匹配的技能</p></div>';
+    return;
+  }
+  
+  container.innerHTML = skills.map(skill => {
+    const damageEffect = skill.effects.find(e => e.type === 'damage');
+    const damageType = damageEffect?.damage?.type || 'physical';
+    
+    return `
+      <div class="skill-card" onclick="showSkillDetail('${skill.id}')">
+        <div class="skill-header">
+          <div>
+            <div class="skill-name">${skill.name}</div>
+            <div class="skill-id">${skill.id}</div>
+          </div>
+          <div class="skill-level">Lv.${skill.unlock.level}</div>
+        </div>
+        
+        <div class="skill-desc">${skill.description}</div>
+        
+        <div class="skill-stats">
+          <div class="stat">冷却: <strong>${(skill.cooldown.base / 30).toFixed(1)}s</strong></div>
+          <div class="stat">消耗: <strong>${skill.cost.mana} 能量</strong></div>
+          ${damageEffect ? `<div class="stat">伤害: <strong>${damageEffect.damage.base}</strong></div>` : ''}
+          ${skill.targeting.range > 0 ? `<div class="stat">距离: <strong>${skill.targeting.range}</strong></div>` : ''}
+        </div>
+        
+        <div class="skill-tags">
+          <span class="skill-tag ${skill.category}">${skill.category}</span>
+          ${(skill.tags || []).slice(0, 3).map(tag => `<span class="skill-tag">${tag}</span>`).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function showSkillDetail(skillId) {
+  const skill = allSkills.find(s => s.id === skillId);
+  if (!skill) return;
+  
+  document.getElementById('modal-skill-name').textContent = skill.name;
+  
+  const content = `
+    <div class="modal-section">
+      <h3>基础信息</h3>
+      <div class="skill-stats">
+        <div class="stat">ID: <strong>${skill.id}</strong></div>
+        <div class="stat">分类: <strong>${skill.category}</strong></div>
+        <div class="stat">解锁等级: <strong>${skill.unlock.level}</strong></div>
+        <div class="stat">冷却: <strong>${(skill.cooldown.base / 30).toFixed(1)}秒</strong></div>
+        <div class="stat">能量消耗: <strong>${skill.cost.mana}</strong></div>
+        <div class="stat">前摇: <strong>${(skill.cast.windup / 30).toFixed(2)}秒</strong></div>
+      </div>
+      <p style="margin-top: 1rem; color: var(--text-dim);">${skill.description}</p>
+    </div>
+    
+    <div class="modal-section">
+      <h3>效果</h3>
+      ${skill.effects.map(effect => {
+        let html = `<div style="margin-bottom: 1rem; padding: 1rem; background: var(--bg-3); border-radius: 8px;">`;
+        html += `<div style="font-weight: 600; margin-bottom: 0.5rem;">${effect.type}</div>`;
+        
+        if (effect.damage) {
+          html += `<div>伤害: ${effect.damage.base} + ${(effect.damage.scaling * 100).toFixed(0)}% 攻击力</div>`;
+          html += `<div>类型: ${effect.damage.type}</div>`;
+          if (effect.damage.areaRadius) html += `<div>范围: ${effect.damage.areaRadius}</div>`;
+        }
+        
+        if (effect.debuff) {
+          html += `<div>减益: ${effect.debuff.type}，持续 ${(effect.debuff.duration / 30).toFixed(1)}秒</div>`;
+        }
+        
+        html += `</div>`;
+        return html;
+      }).join('')}
+    </div>
+  `;
+  
+  document.getElementById('modal-content').innerHTML = content;
+  document.getElementById('skill-modal').classList.add('visible');
+}
+
+function closeModal() {
+  document.getElementById('skill-modal').classList.remove('visible');
+}
+
+function exportSkills() {
+  const data = JSON.stringify(allSkills, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'skills-export.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// 事件监听
+document.querySelectorAll('[data-category]').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    document.querySelectorAll('[data-category]').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    currentFilter = e.target.dataset.category;
+    renderSkills();
+  });
+});
+
+document.getElementById('search').addEventListener('input', (e) => {
+  searchTerm = e.target.value;
+  renderSkills();
+});
+
+renderSkills();
+updateStats();
+</script>
+
+</body>
+</html>

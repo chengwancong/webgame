@@ -1,0 +1,40 @@
+{
+  "batch": "R1",
+  "versions": {
+    "client": "0.11.4",
+    "protocol": 26,
+    "rules": "ow-45",
+    "db": 15
+  },
+  "seed": 41,
+  "samples": {
+    "legacyBuilds": 4,
+    "framesEach": 300
+  },
+  "checks": {
+    "directed": {
+      "passed": 39,
+      "files": 2
+    },
+    "full": {
+      "passed": 836,
+      "skipped": 2,
+      "files": 116,
+      "log": "regression.log"
+    },
+    "typesAfterRepair": {
+      "exitCode": 0,
+      "repair": "Narrow set-stat values to numbers before registry dispatch"
+    },
+    "content": {
+      "exitCode": 0,
+      "skills": 77,
+      "stats": 34
+    }
+  },
+  "limits": [
+    "Controlled identical-build compatibility fixture, not natural-growth balance",
+    "M1 working-tree changes are retained and excluded from staged batch changes",
+    "Original regression.json retains the initial type-check failure; the corrected follow-up is recorded here"
+  ]
+}

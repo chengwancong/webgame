@@ -1,0 +1,66 @@
+--- 
++++ 
+@@ -66,3 +66,3 @@
+  effectCastHits:Record<string,{tick:number;targets:string[]}>={};effectPassive:Record<string,boolean>={};selfBuffs:SelfBuff[]=[];effectKillTicks:number[]=[];effectMoved=0;effectLastPosition:Vec={x:0,y:0};effectsStarted=false;effectObservedShield=0;effectShieldPeak=0;
+- upperBound=false;effectStats:Record<string,{count:number;damage:number}>={};conditionClock={still:0,moving:0,manaSpent:0,kills:0,start:0};
++ upperBound=false;effectStats:Record<string,{count:number;damage:number;activations?:number;activeFrames?:number;uses?:number}>={};conditionClock={still:0,moving:0,manaSpent:0,kills:0,start:0};
+  comboReady:Record<string,number>={};comboCounts:Record<string,number>={};echoes:ComboEcho[]=[];
+@@ -309,3 +309,3 @@
+   this.hero.mana=Math.min(this.stats.mana,this.hero.mana+this.stats.regen/30);
+- if(this.hero.shieldUntil<=this.tick)this.hero.shield=0;
++ if(this.hero.shieldUntil<=this.tick){if(this.hero.shield>0)this.recordShield('shield_expire');this.hero.shield=0;}
+  if(this.region.id==='town'||this.region.rest)this.hero.hp=Math.min(this.stats.hp,this.hero.hp+2);
+@@ -587,3 +587,3 @@
+    if(!this.comboReadyFor(r))continue;
+-   if(r.action.type==='refund'){if(skill&&this.skills.some(s=>s.id===skill)&&(this.cooldowns[skill]??0)>this.tick)this.adjustCooldown(skill,r.action.ticks);continue;}
++   if(r.action.type==='refund'&&r.action.mode!=='longest'){if(skill&&this.skills.some(s=>s.id===skill)&&(this.cooldowns[skill]??0)>this.tick)this.adjustCooldown(skill,r.action.ticks??0);continue;}
+    this.comboAct(r,e,reference,depth+1,carried,context?.skill??this.skills.find(s=>s.id===skill));
+@@ -603,3 +603,3 @@
+    else if(a.type==='cooldown')this.effectCooldown(a,skill);
+-   else if(a.type==='refund'&&skill)this.effectCooldown({type:'cooldown',mode:'current',ticks:a.ticks},skill);
++   else if(a.type==='refund'){if(a.mode==='longest'){const longest=[...this.skills].sort((x,y)=>this.remainingCooldown(y)-this.remainingCooldown(x)||x.id.localeCompare(y.id))[0];if(longest)this.adjustCooldown(longest.id,Math.round(this.remainingCooldown(longest)*(a.fraction??0)));}else if(skill)this.effectCooldown({type:'cooldown',mode:'current',ticks:a.ticks},skill);}
+    else if(a.type==='field')this.effectField(r,a,e,reference,skill);
+@@ -615,3 +615,3 @@
+   this.emit({...this.vfxContext,type:'effect_activated',id:this.playerId,position:center,radius,duration:12,skill:this.vfxContext?.vfxKey,tick:this.tick});
+-  let count=0;for(const n of this.nearbyEnemies(center,radius+this.rules.bodyCollision.bossRadius))if(n.alive&&distance(n.position,center)<=radius+this.bodyRadius(n)&&lineOfSight(this.region,center,n.position)&&count++<(a.maxTargets??Infinity)){const landed=this.damage(n,amount,true,this.vfxContext?.vfxKey,{category:'derived',damageType:a.damageType,penetration:this.stats.penetration??0,scaled:true,comboDepth:depth,...(a.crit?{effectCrit:true}:{})});if(landed&&n.alive&&a.status)this.applyStatus(n.id,a.status,this.playerId,this.vfxContext?.ruleId??'effect',skill);}
++  let count=0;const candidates=a.at==='target'&&a.radius===0&&a.maxTargets===1?[e]:this.nearbyEnemies(center,radius+this.rules.bodyCollision.bossRadius);for(const n of candidates)if(n.alive&&distance(n.position,center)<=radius+this.bodyRadius(n)&&lineOfSight(this.region,center,n.position)&&count++<(a.maxTargets??Infinity)){const landed=this.damage(n,amount,true,this.vfxContext?.vfxKey,{category:'derived',damageType:a.damageType,penetration:this.stats.penetration??0,scaled:true,comboDepth:depth,...(a.crit?{effectCrit:true}:{})});if(landed&&n.alive&&a.status)this.applyStatus(n.id,a.status,this.playerId,this.vfxContext?.ruleId??'effect',skill);}
+  }
+@@ -662,4 +662,3 @@
+    // 每帧只记一次，不增加随机抽取。
+-   const observed=r.id+'#passiveObserved';
+-   if((target||skill)&&this.comboCounts[observed]!==this.tick){this.comboCounts[observed]=this.tick;this.effectTriggered(r);}
++   this.observeBuff(r);
+    list.push({id:r.id,source:r.source,starts:0,ends:Number.MAX_SAFE_INTEGER,baseEnds:Number.MAX_SAFE_INTEGER,stacks:1,action:r.action,...(r.action.targetScoped?{targetId:target?.id}:{})});
+@@ -669,3 +668,3 @@
+  private buffFlag(flag:string,skill?:Skill,target?:Entity,context?:DamageContext){return this.effectBuffs(skill,target,context).some(b=>(b.action.flags as Record<string,boolean>|undefined)?.[flag]);}
+- private consumeBuffs(kind:'nextCast'|'nextMelee'|'nextHit',buffs:SelfBuff[],target?:Entity){const ids=new Set(buffs.filter(b=>b.action.consume===kind).map(b=>b.id));this.selfBuffs=this.selfBuffs.filter(b=>!ids.has(b.id));if(kind==='nextHit'&&target)for(const b of buffs)if(b.action.firstPerTarget){this.comboCounts[b.id+'#first:'+target.id]=(this.comboCounts[b.id+'#first:'+target.id]??0)+1;const rule=combatRules(this.stats).find(r=>r.id===b.id);if(rule)this.effectTriggered(rule);}}
++ private consumeBuffs(kind:'nextCast'|'nextMelee'|'nextHit',buffs:SelfBuff[],target?:Entity){const ids=new Set(buffs.filter(b=>b.action.consume===kind).map(b=>b.id));for(const id of ids){const stats=this.effectStats[id]??={count:0,damage:0};stats.uses=(stats.uses??0)+1;}this.selfBuffs=this.selfBuffs.filter(b=>!ids.has(b.id));if(kind==='nextHit'&&target)for(const b of buffs)if(b.action.firstPerTarget){this.comboCounts[b.id+'#first:'+target.id]=(this.comboCounts[b.id+'#first:'+target.id]??0)+1;const rule=combatRules(this.stats).find(r=>r.id===b.id);if(rule)this.effectTriggered(rule);}}
+  private effectProxy(point=this.hero.position):Entity{return {id:'effect-point',name:'',kind:'melee',x:point.x,y:point.y,position:{...point},hp:0,maxHp:0,alive:false,attack:0,elite:false,boss:false,art:'',cooldown:0,slow:0,burn:0,facing:1,action:'idle',actionUntil:0,reward:false};}
+@@ -688,6 +687,6 @@
+   for(const r of combatRules(this.stats)){
+-   if(r.trigger==='passive'&&r.action.type==='buff'&&!r.action.firstPerTarget){const active=this.comboMatches(r,undefined,'physical');if(active&&!this.effectPassive[r.id])this.effectTriggered(r);this.effectPassive[r.id]=active;}
++   if(r.trigger==='passive'&&r.action.type==='buff'&&!r.action.firstPerTarget){const active=this.comboMatches(r,undefined,'physical');if(active)this.observeBuff(r);this.effectPassive[r.id]=active;}
+    if(r.trigger==='low_hp'&&!r.when.every(c=>matches(c,this.conditionContext())))this.comboCounts[r.id+'#low']=0;
+    if(!this.effectsStarted)continue;
+-   if(r.trigger==='interval'&&(this.tick-this.conditionClock.start)>0&&(this.tick-this.conditionClock.start)%r.every! ===0){if(this.comboMatches(r,undefined,'physical',this.closest())&&this.comboReadyFor(r))this.comboAct(r,this.closest()??this.effectProxy(),this.stats.attack,1,[]);}
++   if(r.trigger==='interval'&&((this.tick===this.conditionClock.start&&r.rule.startReady)||(this.tick-this.conditionClock.start)>0&&(this.tick-this.conditionClock.start)%r.every! ===0)){if(this.comboMatches(r,undefined,'physical',this.closest())&&this.comboReadyFor(r))this.comboAct(r,this.closest()??this.effectProxy(),this.stats.attack,1,[]);}
+    if(r.trigger==='moved'||r.trigger==='mana_spent'){const n=Math.floor((r.trigger==='moved'?this.effectMoved:this.conditionClock.manaSpent)/r.every!),key=r.id+'#threshold',last=this.comboCounts[key]??0;this.comboCounts[key]=n;for(let i=last;i<n;i++)if(this.comboMatches(r,undefined,'physical',this.closest())&&this.comboReadyFor(r))this.comboAct(r,this.closest()??this.effectProxy(),this.stats.attack,1,[]);}
+@@ -704,7 +703,11 @@
+   }
++  for(const b of this.selfBuffs)if(b.ends>this.tick){const r=combatRules(this.stats).find(r=>r.id===b.id);if(r&&(!b.when||b.when.every(c=>matches(c,this.conditionContext()))))this.observeBuff(r,false);}
+   this.fireEffects('low_hp',this.closest());this.observeShield();
+  }
+- private observeShield(){const now=this.hero.shield;if(now>this.effectObservedShield){this.effectShieldPeak=Math.max(this.effectShieldPeak,now);this.effectObservedShield=now;this.fireEffects('shield_gain',this.closest(),now,undefined,[],now);}else{this.effectObservedShield=now;if(now<=0)this.effectShieldPeak=0;}}
++ private remainingCooldown(s:Skill){return (s.charges??1)>1?this.chargeInfo(s).next:Math.max(0,(this.cooldowns[s.id]??0)-this.tick);}
++ private recordShield(key:'shield_gain'|'shield_break'|'shield_expire'){const stats=this.effectStats[key]??={count:0,damage:0};stats.count++;}
++ private observeBuff(r:ExecutableRule,passive=true){const key=r.id+'#activeFrame',last=this.comboCounts[key],stats=this.effectStats[r.id]??={count:0,damage:0};if(last===this.tick)return;if(last===undefined||last<this.tick-1){stats.activations=(stats.activations??0)+1;if(passive)this.effectTriggered(r);}stats.activeFrames=(stats.activeFrames??0)+1;this.comboCounts[key]=this.tick;}
++ private observeShield(){const now=this.hero.shield;if(now>this.effectObservedShield){this.recordShield('shield_gain');this.effectShieldPeak=Math.max(this.effectShieldPeak,now);this.effectObservedShield=now;this.fireEffects('shield_gain',this.closest(),now,undefined,[],now);}else{this.effectObservedShield=now;if(now<=0)this.effectShieldPeak=0;}}
+  private effectBuff(r:ExecutableRule,a:Extract<EffectAction,{type:'buff'}>,target:Entity){
+-  const phase=((this.effectStats[r.id]?.count??1)-1);if(a.alternate?.length)a={...a,mods:a.alternate[phase%a.alternate.length]};const variant=a.variants?.[phase%(a.variants?.length??1)];if(variant)a={...a,mods:variant.mods};this.selfBuffs=putBuff(this.selfBuffs,r,a,this.tick,target.id);if(variant)this.selfBuffs.find(b=>b.id===r.id)!.when=variant.when;
++  const phase=((this.effectStats[r.id]?.count??1)-1);if(a.alternate?.length)a={...a,mods:a.alternate[phase%a.alternate.length]};const variant=a.variants?.[phase%(a.variants?.length??1)];if(variant)a={...a,mods:variant.mods};this.selfBuffs=putBuff(this.selfBuffs,r,a,this.tick,target.id);this.observeBuff(r,false);if(variant)this.selfBuffs.find(b=>b.id===r.id)!.when=variant.when;
+   if(a.flags?.immortal){if(a.flags.surviveAtOne)this.hero.hp=1;this.guardianUsed.delete(this.playerId);this.applyStatus(this.playerId,statusEffectSchema.parse({kind:'guardian',duration:a.duration,strength:0,scope:'self',cleanse:false,reviveRatio:a.mods.reviveRatio??1/this.stats.hp}),this.playerId,r.id);this.applyStatus(this.playerId,statusEffectSchema.parse({kind:'immunity',duration:a.duration,strength:0,scope:'self',cleanse:false,immunityTypes:['physical','fire','cold','lightning','arcane','shadow','poison','pure']}),this.playerId,r.id);}
+@@ -732,3 +735,3 @@
+   if(blocked>0){this.emit({...this.vfxContext,type:'shielded',id:this.playerId,position:{...this.hero.position},amount:blocked,skill,tick:this.tick,shieldPhase:'absorbed',shieldRemaining:this.hero.shield});if(counter&&permissions.counter&&source){const attacker=this.enemies.find(e=>e.id===source&&e.alive),radius=counter.effect.radius??this.skills.find(s=>s.id===counter.skill)?.radius??0;if(attacker&&distance(attacker.position,this.hero.position)<=radius&&lineOfSight(this.region,this.hero.position,attacker.position)){const vfx={sourceId:counter.sourceId,targetId:attacker.id,castId:counter.castId,vfxKey:'player/'+counter.skill};this.withVfx(vfx,()=>this.damage(attacker,Math.round(blocked*counter.effect.strength),true,counter.skill,{category:'derived',damageType:'physical',scaled:true}));}}}
+-  if(shieldBefore>0&&this.hero.shield<=0){this.selfBuffs=this.selfBuffs.filter(b=>!b.requiresShield);this.fireEffects('shield_break',attacker,shieldBefore,undefined,[],this.effectShieldPeak||shieldBefore);this.effectObservedShield=this.hero.shield;}if(loss>=this.hero.hp)this.fireEffects('lethal',attacker,loss);loss=Math.min(this.hero.hp,damage-blocked);
++  if(shieldBefore>0&&this.hero.shield<=0){this.recordShield('shield_break');this.selfBuffs=this.selfBuffs.filter(b=>!b.requiresShield);this.fireEffects('shield_break',attacker,shieldBefore,undefined,[],this.effectShieldPeak||shieldBefore);this.effectObservedShield=this.hero.shield;}if(loss>=this.hero.hp)this.fireEffects('lethal',attacker,loss);loss=Math.min(this.hero.hp,damage-blocked);
+   const guardian=this.activeStatuses(this.playerId).find(s=>s.effect.kind==='guardian');

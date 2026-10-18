@@ -1,0 +1,12 @@
+import {z} from 'zod';
+import source from './campaign-balance.json';
+import type {Region} from './index.ts';
+const stats=z.object({hp:z.number().int().positive(),attack:z.number().int().nonnegative()}).strict();
+export const campaignBalance=z.array(z.object({area:z.string(),normal:stats,elite:stats,boss:stats,entryLevel:z.number().int().positive()}).strict()).parse(source);
+// The chapter table owns effective combat values. Tiled owns positions, IDs,
+// art, behavior and obstacles; rebuilding map geometry cannot undo balance.
+export function resolveCampaignRegion(region:Region):Region{
+ const row=campaignBalance.find(c=>c.area===region.id.replace(/-boss$/,''));
+ if(!row)return region;
+ return {...region,spawns:region.spawns.map(spawn=>({...spawn,...(spawn.boss?row.boss:spawn.elite?row.elite:row.normal)}))};
+}

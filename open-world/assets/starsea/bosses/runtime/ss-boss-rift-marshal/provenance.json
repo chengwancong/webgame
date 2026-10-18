@@ -1,0 +1,137 @@
+{
+  "id": "ss-boss-rift-marshal",
+  "native": {
+    "path": "assets/mini-hero/navy/runtime",
+    "version": "4.2.43",
+    "sha256": "92ef889c590476c0eacdbc0f77f1206e35a1c77329867331fbc731a17fa5205a",
+    "skins": [
+      "BODY/knight_epic1",
+      "RIGHTHAND/Staff_Legendary2"
+    ],
+    "animations": {
+      "SS_idle": "Wait1",
+      "SS_move": "Run1",
+      "SS_attack": "Spell2",
+      "SS_hurt": "Damage2",
+      "SS_death": "Die",
+      "SS_skill1": "Spell1",
+      "SS_skill2": "Spell2",
+      "SS_skill3": "Cast2",
+      "SS_idle_active": "Wait1",
+      "SS_move_active": "Run1",
+      "SS_attack_active": "Spell2",
+      "SS_hurt_active": "Damage2",
+      "SS_death_active": "Die",
+      "SS_skill1_active": "Spell1",
+      "SS_skill2_active": "Spell2",
+      "SS_skill3_active": "Cast2",
+      "SS_phaseEnter": "Wait1",
+      "SS_phaseEnd": "Wait1"
+    }
+  },
+  "imagegen": {
+    "source": "assets/starsea/bosses/source/ss-boss-rift-marshal/accessories.png",
+    "sha256": "20ce044a51281a85c6a29754f56eba3d913e3eb7b1ba6ecc7c97fc4198983210",
+    "cacheOrigin": "C:/Users/ccc/.codex/generated_images/01a10242-100e-7ba1-959e-b0dce8a0854d/exec-bee7d8ad-db41-45bb-a640-22a1e40c9c4b.png",
+    "prompts": "assets/starsea/bosses/source/generation-prompts.md",
+    "tool": "built-in image_gen",
+    "transparent": true,
+    "parts": [
+      {
+        "name": "head",
+        "sourceRect": {
+          "left": 108,
+          "top": 78,
+          "width": 503,
+          "height": 577,
+          "count": 226551
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-rift-marshal/head.png",
+        "sha256": "d6a2081429d72628d4fcff50144f889f78b74a801fc3a4d42a5d3c919acccf55",
+        "width": 223,
+        "height": 256,
+        "atlas": {
+          "x": 4,
+          "y": 4
+        }
+      },
+      {
+        "name": "core",
+        "sourceRect": {
+          "left": 716,
+          "top": 176,
+          "width": 447,
+          "height": 435,
+          "count": 129875
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-rift-marshal/core.png",
+        "sha256": "7b2c8687d9b355a8be61ed6568cf9ffbe759ab2f826d12802aed6b074c6d7051",
+        "width": 128,
+        "height": 125,
+        "atlas": {
+          "x": 268,
+          "y": 4
+        }
+      },
+      {
+        "name": "panel-left",
+        "sourceRect": {
+          "left": 124,
+          "top": 731,
+          "width": 418,
+          "height": 417,
+          "count": 117084
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-rift-marshal/panel-left.png",
+        "sha256": "206104113b662298a6938e2352c5cfbea45339ac2838305e24432c203911edf2",
+        "width": 96,
+        "height": 96,
+        "atlas": {
+          "x": 4,
+          "y": 268
+        }
+      },
+      {
+        "name": "panel-right",
+        "sourceRect": {
+          "left": 713,
+          "top": 731,
+          "width": 418,
+          "height": 416,
+          "count": 116919
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-rift-marshal/panel-right.png",
+        "sha256": "75ca97248e3b1c0382485d818709fc1ac7ca7d5c2c0fb07b4311cdc45cd212d3",
+        "width": 96,
+        "height": 96,
+        "atlas": {
+          "x": 268,
+          "y": 268
+        }
+      }
+    ]
+  },
+  "adjustments": [
+    "选取已验证native骨架和分件；完整原始动作逐帧保留",
+    "原生附件材质tint适配暮界/章节配色",
+    "ImageGen头部与阶段装置绑定原生head/胸部/肩部骨骼",
+    "阶段骨骼动画独立编制；不替代原生身体动作",
+    "共享基础图集通过相对URL引用正式mini-hero目录",
+    "人形首领衣装适配"
+  ],
+  "weaponScale": 0.85,
+  "weaponCategory": "magic",
+  "renderFamily": "magic",
+  "calibration": {
+    "slot": "RIGHTHAND",
+    "pixel": [
+      35.5,
+      50.38
+    ],
+    "imageSize": [
+      71,
+      229
+    ]
+  },
+  "stage": "背部裂潮装置两片开合与核心旋动，独立法术层由vfx制作。"
+}

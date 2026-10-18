@@ -1,0 +1,4 @@
+import {startDatabase,child,stopChild,root} from './runtime.mjs';
+import {mkdir,writeFile} from 'node:fs/promises';import {resolve} from 'node:path';
+const out=resolve(root,'../docs/reviews/open-world/dungeon-lifecycle');await mkdir(out,{recursive:true});let db,test;const report={ok:false,realPostgreSQL:true,started:new Date().toISOString()};
+try{db=await startDatabase({temporary:true});test=child(process.execPath,['node_modules/vitest/vitest.mjs','run','--no-file-parallelism','--testTimeout','60000','--reporter=default','--reporter=json','--outputFile='+resolve(out,'full-tests.json')],{AW_DATABASE_URL:db.dsn});report.exit=await new Promise(r=>test.once('exit',r));report.ok=report.exit===0;if(!report.ok)process.exitCode=1;}finally{await stopChild(test);if(db)report.cleanup=await db.stop();await writeFile(resolve(out,'full-suite.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));}

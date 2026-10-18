@@ -1,0 +1,34 @@
+; Engine configuration file.
+; New project for the rewrite. Versions are locked in README.md.
+; The project name is part of the engine's per-project user directory, so it is
+; deliberately different from any earlier client: this build never shares logs
+; or save files with it.
+
+config_version=5
+
+[application]
+
+config/name="AbyssWalkerRewrite"
+config/version="0.1.0"
+run/main_scene="res://presentation/main_menu.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+run/max_fps=60
+
+[autoload]
+
+Api="*res://net/api_client.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/size/min_width=960
+window/size/min_height=540
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"

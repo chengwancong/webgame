@@ -1,0 +1,31 @@
+import type {World} from '../../../packages/simulation/index.ts';
+import type {WorldScene} from './scene.ts';
+export const physicalSkillIds='cut dual_strike blade_fury whirl rush execute leap_strike vortex_blade counter_strike frost_blade thunder_dash cleave ground_slam stun_strike rampage berserker war_cry blood_rage magma_slam venom_cleave frost_quake staff_strike staff_flurry staff_sweep pole_vault seismic_staff staff_cyclone throwing_knife fan_of_knives venom_needle shadow_step blade_flurry explosive_kunai assassinate death_lotus shadow_blade bolt multi_shot volley pierce_arrow snipe rain_of_arrows explosive_shot'.split(' ');
+type Deps={scene:WorldScene;world:()=>World;scenario:(id:string)=>void;cast:()=>void;step:()=>void;release:()=>number;appearance:(family:string)=>void;stress:()=>void};
+export function installPhysicalQA(d:Deps){
+ const root=document.createElement('section');root.id='physical-qa';root.innerHTML='<hr><strong>物理整改留证（不调用游戏接口）</strong><select id="physical-phase" aria-label="物理整改阶段"><option>before</option><option>after-samples</option><option>after</option><option>showcase</option></select><button id="physical-capture">截图全部物理技能</button><button id="physical-load">负载采样 60敌人/100弹体</button><output id="physical-status" aria-live="polite">就绪</output>';document.querySelector('#qa')!.append(root);
+ const status=root.querySelector('output')!;let busy=false,override:string[]|undefined;
+ const actionsButton=document.createElement('button');actionsButton.textContent='动作样板（杖/投掷/射箭）';root.append(actionsButton);actionsButton.onclick=()=>{if(busy)return;override=['staff_strike','staff_flurry','staff_sweep','pole_vault','seismic_staff','staff_cyclone','throwing_knife','bolt','snipe'];(root.querySelector('select') as HTMLSelectElement).value='after-samples';(root.querySelector('#physical-capture') as HTMLButtonElement).click();};
+ // Live loop of the four rework samples at real speed, for side-by-side review in the gallery.
+ const loopButton=document.createElement('button');loopButton.textContent='4样板循环播放';root.append(loopButton);let looping=false;
+ loopButton.onclick=async()=>{if(looping){looping=false;return;}if(busy)return;looping=true;loopButton.textContent='停止样板循环';const family:Record<string,string>={cut:'sword',cleave:'axe',ground_slam:'axe',bolt:'bow'};
+  try{while(looping)for(const id of ['cut','cleave','ground_slam','bolt']){if(!looping)break;d.scenario(id);d.appearance(family[id]);for(let i=0;i<120;i++){await rendered();const a=d.scene.attachmentDiagnostics().wardrobe;if(a?.ready&&!a.pending)break;}d.world().paused=false;for(let n=0;n<2&&looping;n++){d.cast();const start=d.world().tick;while(looping&&d.world().tick<start+75)await rendered();}}}finally{looping=false;loopButton.textContent='4样板循环播放';}};
+ const rendered=()=>new Promise<void>(resolve=>d.scene.game.events.once('postrender',()=>resolve()));
+ const frame=async()=>{const tick=d.world().tick;d.step();for(let i=0;i<6&&d.world().tick===tick;i++)await rendered();await rendered();};
+ const save=async(path:string,body:Blob|string)=>{const r=await fetch('/__physical_capture/'+path,{method:'POST',body});if(!r.ok)throw Error(await r.text());};
+ const png=()=>new Promise<Blob>((resolve,reject)=>d.scene.game.canvas.toBlob(b=>b?resolve(b):reject(Error('Empty capture')),'image/png'));
+ root.querySelector('#physical-capture')!.addEventListener('click',async()=>{if(busy)return;busy=true;const phase=(root.querySelector('select') as HTMLSelectElement).value,custom=override,ids=custom??(phase==='after-samples'?['cut','whirl','ground_slam','cleave']:phase==='showcase'?['cut','cleave','ground_slam','bolt']:physicalSkillIds),results=[];override=undefined;
+  try{for(const [index,id]of ids.entries()){
+   d.scenario(id);d.world().paused=true;const family=physicalSkillIds.indexOf(id)<11?'sword':physicalSkillIds.indexOf(id)<21?'axe':physicalSkillIds.indexOf(id)<27?'magic':physicalSkillIds.indexOf(id)<36?'fist':'bow';d.appearance(family);
+   for(let i=0;i<120;i++){await rendered();const a=d.scene.attachmentDiagnostics().wardrobe;if(a?.ready&&!a.pending)break;}
+   // Only the existing gallery's real cast/step path supplies combat events.
+   d.world().paused=false;d.cast();d.world().paused=true;let steps=0;while(!d.release()&&steps++<180)await frame();
+   if(!d.release())throw Error(id+' has no cast_released event');
+   const firstRelease=d.release(),frames=[];
+   for(const offset of [0,3,8]){while(d.world().tick<firstRelease+offset)await frame();await save(phase+'/'+id+'-f'+offset+'.png',await png());frames.push({offset,tick:d.world().tick,events:structuredClone(d.world().events),diagnostics:d.scene.attachmentDiagnostics()});}
+   results.push({id,release:firstRelease,tick:d.world().tick,frames,impacts:d.scene.attachmentDiagnostics().damageNumbers,diagnostics:d.scene.attachmentDiagnostics(),errors:d.scene.attachmentDiagnostics().effects?.errors});status.textContent=`${phase} ${index+1}/${ids.length} ${id}`;
+  }await save('metrics/'+phase+(custom?'-actions':'')+'-captures.json',JSON.stringify(results,null,2));status.textContent=`完成 ${phase}：${ids.length*3} 张截图`;
+  }catch(e){status.textContent='失败 '+String(e);await save('metrics/'+phase+'-capture-error.json',JSON.stringify({error:String(e),completed:results.map(r=>r.id)}));}finally{busy=false;}
+ });
+ root.querySelector('#physical-load')!.addEventListener('click',async()=>{if(busy)return;busy=true;try{d.stress();status.textContent='负载预热';for(let i=0;i<120;i++)await rendered();const samples:number[]=[];let at=performance.now();for(let i=0;i<600;i++){await rendered();const now=performance.now();samples.push(now-at);at=now;}samples.sort((a,b)=>a-b);const phase=(root.querySelector('select') as HTMLSelectElement).value,data={samples:samples.length,meanMs:samples.reduce((a,b)=>a+b,0)/samples.length,fps:1000/(samples.reduce((a,b)=>a+b,0)/samples.length),p95Ms:samples[Math.floor(samples.length*.95)],metrics:d.scene.metrics(),enemies:d.world().enemies.length,projectiles:d.world().projectiles.length};await save('metrics/'+phase+'-load.json',JSON.stringify(data,null,2));status.textContent=`完成负载 ${data.fps.toFixed(2)} FPS`;d.world().paused=true;}catch(e){status.textContent='负载失败 '+String(e);}finally{busy=false;}});
+}

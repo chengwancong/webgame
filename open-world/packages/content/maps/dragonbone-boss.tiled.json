@@ -1,0 +1,198 @@
+{
+  "type": "map",
+  "version": "1.10",
+  "tiledversion": "1.12.2",
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "width": 64,
+  "height": 64,
+  "tilewidth": 32,
+  "tileheight": 32,
+  "infinite": false,
+  "nextobjectid": 9,
+  "nextlayerid": 5,
+  "properties": [
+    {
+      "name": "id",
+      "type": "string",
+      "value": "dragonbone-boss"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "value": "龙王陵墓"
+    },
+    {
+      "name": "subtitle",
+      "type": "string",
+      "value": "毁灭吐息倒计时期间离开红色光束路径，或躲在岩石后。"
+    },
+    {
+      "name": "theme",
+      "type": "string",
+      "value": "dragonbone"
+    },
+    {
+      "name": "boss",
+      "type": "bool",
+      "value": true
+    },
+    {
+      "name": "auto",
+      "type": "bool",
+      "value": true
+    }
+  ],
+  "layers": [
+    {
+      "id": 1,
+      "name": "navigation",
+      "type": "objectgroup",
+      "visible": true,
+      "opacity": 1,
+      "objects": [
+        {
+          "id": 1,
+          "name": "collision-0",
+          "x": 768,
+          "y": 736,
+          "width": 96,
+          "height": 96,
+          "rotation": 0,
+          "visible": true,
+          "properties": []
+        },
+        {
+          "id": 2,
+          "name": "collision-1",
+          "x": 1152,
+          "y": 736,
+          "width": 96,
+          "height": 96,
+          "rotation": 0,
+          "visible": true,
+          "properties": []
+        },
+        {
+          "id": 3,
+          "name": "collision-2",
+          "x": 768,
+          "y": 1184,
+          "width": 96,
+          "height": 96,
+          "rotation": 0,
+          "visible": true,
+          "properties": []
+        },
+        {
+          "id": 4,
+          "name": "collision-3",
+          "x": 1152,
+          "y": 1184,
+          "width": 96,
+          "height": 96,
+          "rotation": 0,
+          "visible": true,
+          "properties": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "spawns",
+      "type": "objectgroup",
+      "visible": true,
+      "opacity": 1,
+      "objects": [
+        {
+          "id": 5,
+          "name": "dragon_king",
+          "x": 1152,
+          "y": 1024,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "properties": [
+            {
+              "name": "monster",
+              "type": "string",
+              "value": "dragon_king"
+            },
+            {
+              "name": "level",
+              "type": "int",
+              "value": 9
+            },
+            {
+              "name": "rank",
+              "type": "string",
+              "value": "boss"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "landmarks",
+      "type": "objectgroup",
+      "visible": true,
+      "opacity": 1,
+      "objects": [
+        {
+          "id": 6,
+          "name": "龙王陵墓",
+          "x": 1280,
+          "y": 768,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "properties": [
+            {
+              "name": "kind",
+              "type": "string",
+              "value": "throne"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "connections",
+      "type": "objectgroup",
+      "visible": true,
+      "opacity": 1,
+      "objects": [
+        {
+          "id": 7,
+          "name": "safe",
+          "x": 704,
+          "y": 1024,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "properties": []
+        },
+        {
+          "id": 8,
+          "name": "portal",
+          "x": 160,
+          "y": 1024,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true,
+          "properties": []
+        }
+      ]
+    }
+  ]
+}

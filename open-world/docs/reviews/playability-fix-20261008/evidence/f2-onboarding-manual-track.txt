@@ -1,0 +1,110 @@
+- generic "游戏世界"
+- region "角色状态":
+  - button "打开人物":
+    - img "角色外观"
+    - generic "自然日程驾驶器"
+    - generic: Lv. 50
+  - meter "生命":
+    - generic: 4039 / 4039
+  - meter "灵力":
+    - generic: 100 / 100
+- button "展开区域地图":
+  - generic "拾星港"
+- heading "拾星港" [level=1]
+- text: 群岛的主港，每次远航都从这里出发
+- status
+- generic "金币":
+  - generic: "33990"
+- toolbar "系统入口":
+  - button "背包，装备 45/60，待领取 2 件":
+    - generic: 行囊
+    - generic "待领取装备 2 件": "2"
+  - button "技能":
+    - generic: 技能
+  - button "养成":
+    - generic: 养成
+  - button "外观":
+    - generic: 外观
+  - button "任务" [expanded]:
+    - generic: 任务
+  - button "设置":
+    - generic: 设置
+- dialog "任务":
+  - banner:
+    - heading "任务" [level=2]
+    - tablist "当前任务与任务档案":
+      - tab "当前任务 27" [selected]:
+        - generic: 当前任务
+        - generic: "27"
+      - tab "任务档案 1":
+        - generic: 任务档案
+        - generic: "1"
+    - button "关闭任务":
+      - generic: 关闭任务
+  - button "全部类型":
+    - generic: 全部类型
+  - generic: 搜索当前任务
+  - searchbox "搜索当前任务": 落点求生
+  - tablist "按任务状态筛选":
+    - tab "全部" [selected]:
+      - generic: 全部
+    - tab "进行中":
+      - generic: 进行中
+    - tab "待领取":
+      - generic: 待领取
+    - tab "待确认":
+      - generic: 待确认
+  - text: 列表显示
+  - generic: "1"
+  - text: 项
+  - listbox "当前任务列表":
+    - option "落点求生 引导 进行中 在落点拾起航钥，并击退2只风原巡猎兽。" [selected]:
+      - generic "落点求生"
+      - generic: 引导
+      - img "进行中"
+      - generic: 在落点拾起航钥，并击退2只风原巡猎兽。
+  - region "选中任务详情":
+    - text: 引导
+    - heading "落点求生" [level=2]
+    - img "进行中"
+    - heading "任务说明" [level=3]:
+      - generic: 任务说明
+    - paragraph: 在落点拾起航钥，并击退2只风原巡猎兽。
+    - heading "任务目标" [level=3]:
+      - generic: 任务目标
+    - generic: 在落点拾起航钥，并击退2只风原巡猎兽。
+    - strong: 0 / 1
+    - heading "任务关联" [level=3]:
+      - generic: 任务关联
+    - button "跟上米洛 尚无记录" [disabled]:
+      - generic: 跟上米洛
+      - generic: 尚无记录
+    - paragraph: 完成目标后由服务端确认奖励。
+    - button "取消追踪":
+      - generic: 取消追踪
+    - button "查看任务地点":
+      - generic: 查看任务地点
+    - complementary:
+      - generic: 任务地点
+      - generic: 在落点拾起航钥，并击退2只风原巡猎兽。
+      - generic: 风栖岛
+      - heading "任务奖励" [level=3]:
+        - generic: 任务奖励
+      - generic "金币 40":
+        - generic: "40"
+        - generic: 金币
+      - generic "强化石 0":
+        - generic: "0"
+        - generic: 强化石
+      - generic: 完成目标后可领取
+      - heading "任务记录" [level=3]:
+        - generic: 任务记录
+      - paragraph: 完成目标后由服务端确认奖励。
+  - contentinfo:
+    - status
+- status: 拾星港
+- complementary "星潮海任务":
+  - generic: 任务
+  - generic: 去风栖岛，打倒 2 个敌人
+  - button "→":
+    - generic: →

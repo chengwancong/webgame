@@ -1,0 +1,10 @@
+/** 音频交付的串行全量单测：只使用独立临时PostgreSQL，绝不读正式连接串。 */
+import {spawn,execFileSync} from 'node:child_process';
+import {mkdir,open,writeFile,mkdtemp,copyFile,rm} from 'node:fs/promises';
+import {resolve,join,dirname,delimiter,relative} from 'node:path';
+import {startDatabase,root} from '../runtime.mjs';
+const output=resolve(root,'.qa/audio-production/full-tests');await mkdir(output,{recursive:true});
+const python=process.env.AW_PYTHON??execFileSync('python',['-c','import sys;print(sys.executable)'],{encoding:'utf8',windowsHide:true}).trim(),shim=await mkdtemp(join(root,'.qa/audio-python-'));await copyFile(python,join(shim,'python3.exe'));const pythonHome=execFileSync(python,['-c','import sys;print(sys.base_prefix)'],{encoding:'utf8',windowsHide:true}).trim();const testEnv={...process.env,AW_PYTHON:python,PYTHONHOME:pythonHome,PYTHONDONTWRITEBYTECODE:'1',PATH:[shim,dirname(python),process.env.PATH??''].join(delimiter)};
+const db=await startDatabase({temporary:true,reap:false});
+if([8612,8790].includes(db.port))throw Error('拒绝使用受保护端口');
+try{await writeFile(resolve(output,'environment.json'),JSON.stringify({temporary:true,port:db.port,work:db.work,maxWorkers:1},null,2));const log=await open(resolve(output,'tests.log'),'w');const child=spawn(process.execPath,[resolve(root,'node_modules/vitest/vitest.mjs'),'run','--maxWorkers=1','--no-file-parallelism'],{cwd:root,env:{...testEnv,AW_DATABASE_URL:db.dsn,AW_REVIEW_ROOT:resolve(output,'reviews'),AW_CALENDAR_OUT:resolve(output,'calendar'),AW_CALENDAR_STRATEGY:'no-quests'},stdio:['ignore',log.fd,log.fd],windowsHide:true});await log.close();const code=await new Promise((resolve,reject)=>{child.once('error',reject);child.once('exit',resolve);});await writeFile(resolve(output,'result.json'),JSON.stringify({exitCode:code,passed:code===0},null,2));process.exitCode=Number(code??1);}finally{await writeFile(resolve(output,'cleanup.json'),JSON.stringify(await db.stop(),null,2));if(relative(resolve(root,'.qa'),shim).startsWith('..'))throw Error('拒绝越界清理解释器临时目录');await rm(shim,{recursive:true});}

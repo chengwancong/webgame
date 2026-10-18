@@ -1,0 +1,70 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+ ❯ tests/build-variety-r6-review.test.ts (6 tests | 3 failed) 106ms
+   × a real blink carries the orbit through a target outside the destination circle and registers swept contact 26ms
+   × orbit sweep stops at wall x=15 y=12.2 and resolves only earlier contacts 9ms
+   ✓ orbit sweep stops at wall x=11 y=12.2 and resolves only earlier contacts 9ms
+   × orbit sweep stops at wall x=15 y=11 and resolves only earlier contacts 8ms
+   ✓ ember heart grants half-rate criticals and its independent multiplier only to burning, not poison, bleed or a fire zone tick 44ms
+   ✓ thornmail modifies the real thorns attribute retaliation as well as an inscription atom 8ms
+ ❯ tests/build-variety-orbit-auto.test.ts (1 test | 1 failed) 61ms
+   × an orbit-primary auto build closes to its real radius and hits a distant stationary ranged enemy 60ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/build-variety-orbit-auto.test.ts > an orbit-primary auto build closes to its real radius and hits a distant stationary ranged enemy
+AssertionError: expected 3.000000000000007 to be less than 3
+ ❯ tests/build-variety-orbit-auto.test.ts:7:90
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/build-variety-r6-review.test.ts > a real blink carries the orbit through a target outside the destination circle and registers swept contact
+AssertionError: expected 999622 to be 1000000 // Object.is equality
+
+- Expected
++ Received
+
+- 1000000
++ 999622
+
+ ❯ tests/build-variety-r6-review.test.ts:8:335
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/build-variety-r6-review.test.ts > orbit sweep stops at wall x=15 y=12.2 and resolves only earlier contacts
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/build-variety-r6-review.test.ts:12:633
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/build-variety-r6-review.test.ts > orbit sweep stops at wall x=15 y=11 and resolves only earlier contacts
+AssertionError: expected 78 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 78
+
+ ❯ tests/build-variety-r6-review.test.ts:12:537
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  4 failed | 3 passed (7)
+   Start at  03:59:56
+   Duration  1.95s (transform 657ms, setup 0ms, import 1.56s, tests 167ms, environment 0ms)
+

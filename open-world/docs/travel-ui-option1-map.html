@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>方案1：暗黑风格世界地图</title>
+<style>
+body { margin: 0; padding: 20px; background: #0a0e14; font-family: sans-serif; }
+.container { max-width: 900px; margin: 0 auto; }
+h1 { color: #ffe8b8; text-align: center; font-size: 24px; margin-bottom: 10px; }
+.desc { color: #b8d4e8; text-align: center; margin-bottom: 30px; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>方案1：暗黑破坏神风格 - 世界地图导航</h1>
+<p class="desc">参考：Diablo III, Path of Exile | 特点：地图布局 + 路径连接 + 侧边信息栏</p>
+
+<svg width="900" height="600" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#1a2a35;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d1a24;stop-opacity:1" />
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <rect width="900" height="600" fill="url(#bgGrad)"/>
+  
+  <!-- 标题 -->
+  <text x="450" y="40" fill="#ffe8b8" font-size="28" font-weight="bold" text-anchor="middle">苍风大陆</text>
+  <line x1="300" y1="50" x2="600" y2="50" stroke="#7eb3d8" stroke-width="2" opacity="0.5"/>
+  
+  <!-- 地图区域 - 左侧 -->
+  <g id="map-area">
+    <!-- 营地（起点） -->
+    <circle cx="200" cy="150" r="25" fill="#2e7d32" stroke="#4caf50" stroke-width="3" filter="url(#glow)"/>
+    <text x="200" y="155" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">营地</text>
+    <text x="200" y="195" fill="#b8d4e8" font-size="11" text-anchor="middle">安全区域</text>
+    
+    <!-- 路径1：已激活 -->
+    <line x1="200" y1="175" x2="200" y2="230" stroke="#5da3d5" stroke-width="4" stroke-dasharray="5,3" filter="url(#glow)"/>
+    <circle cx="200" cy="210" r="3" fill="#85c7ff" filter="url(#glow)"/>
+    
+    <!-- 草木荒原（已解锁） -->
+    <g transform="translate(200, 260)">
+      <rect x="-60" y="-40" width="120" height="80" rx="8" fill="#1a4a68" stroke="#5da3d5" stroke-width="3" filter="url(#glow)"/>
+      <text x="0" y="-10" fill="#ffe8b8" font-size="16" font-weight="bold" text-anchor="middle">草木荒原</text>
+      <text x="0" y="10" fill="#b8d4e8" font-size="11" text-anchor="middle">广袤的荒野</text>
+      <text x="0" y="28" fill="#4caf50" font-size="12" font-weight="bold" text-anchor="middle">✓ 已激活</text>
+    </g>
+    
+    <!-- 路径2：未激活 -->
+    <line x1="200" y1="300" x2="200" y2="360" stroke="#37474f" stroke-width="3" stroke-dasharray="5,5" opacity="0.5"/>
+    
+    <!-- 迷雾林地（锁定） -->
+    <g transform="translate(200, 390)">
+      <rect x="-60" y="-40" width="120" height="80" rx="8" fill="#1a2a35" stroke="#2a3f4f" stroke-width="2" opacity="0.7"/>
+      <text x="0" y="-10" fill="#7a9aaf" font-size="16" font-weight="bold" text-anchor="middle">迷雾林地</text>
+      <text x="0" y="10" fill="#5a7582" font-size="11" text-anchor="middle">浓雾笼罩</text>
+      <text x="0" y="28" fill="#90a4ae" font-size="20" text-anchor="middle">🔒</text>
+    </g>
+    
+    <!-- 路径3：未激活 -->
+    <line x1="200" y1="430" x2="200" y2="490" stroke="#37474f" stroke-width="3" stroke-dasharray="5,5" opacity="0.5"/>
+    
+    <!-- 赤岩裂谷（锁定） -->
+    <g transform="translate(200, 520)">
+      <rect x="-60" y="-30" width="120" height="60" rx="8" fill="#1a2a35" stroke="#2a3f4f" stroke-width="2" opacity="0.7"/>
+      <text x="0" y="5" fill="#7a9aaf" font-size="14" text-anchor="middle">赤岩裂谷</text>
+      <text x="0" y="22" fill="#90a4ae" font-size="18" text-anchor="middle">🔒</text>
+    </g>
+  </g>
+  
+  <!-- 右侧信息面板 -->
+  <g id="info-panel" transform="translate(380, 100)">
+    <rect width="480" height="450" rx="12" fill="#0f2d45" stroke="#4a7b9c" stroke-width="2" opacity="0.95"/>
+    
+    <!-- 当前选中区域 -->
+    <text x="240" y="35" fill="#ffe8b8" font-size="22" font-weight="bold" text-anchor="middle">草木荒原</text>
+    <line x1="40" y1="45" x2="440" y2="45" stroke="#5da3d5" stroke-width="2"/>
+    
+    <!-- 预览图占位 -->
+    <rect x="40" y="60" width="400" height="200" rx="8" fill="#1a4a68" stroke="#5da3d5" stroke-width="2"/>
+    <text x="240" y="155" fill="#7eb3d8" font-size="14" text-anchor="middle">[区域预览图]</text>
+    <text x="240" y="175" fill="#5da3d5" font-size="12" text-anchor="middle">草原、怪物、天空</text>
+    
+    <!-- 详细信息 -->
+    <g transform="translate(40, 280)">
+      <text x="0" y="0" fill="#b8d4e8" font-size="14" font-weight="bold">区域信息</text>
+      <text x="0" y="25" fill="#d4e6f5" font-size="13">📍 位置：苍风大陆东部</text>
+      <text x="0" y="50" fill="#d4e6f5" font-size="13">⭐ 推荐等级：1-3</text>
+      <text x="0" y="75" fill="#d4e6f5" font-size="13">👹 敌人类型：柴狼、骷髅</text>
+      <text x="0" y="100" fill="#d4e6f5" font-size="13">🎯 首领：荒原守门人</text>
+      
+      <text x="0" y="130" fill="#b8d4e8" font-size="12" opacity="0.8">广袤的荒野，风吹草低见怪群。</text>
+      <text x="0" y="150" fill="#b8d4e8" font-size="12" opacity="0.8">适合初次远行的冒险者。</text>
+    </g>
+    
+    <!-- 进入按钮 -->
+    <rect x="140" y="390" width="200" height="45" rx="8" fill="#4caf50" stroke="#2e7d32" stroke-width="2" filter="url(#glow)"/>
+    <text x="240" y="420" fill="#fff" font-size="18" font-weight="bold" text-anchor="middle">进入区域 →</text>
+  </g>
+</svg>
+
+</div>
+</body>
+</html>

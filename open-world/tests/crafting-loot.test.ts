@@ -1,0 +1,9 @@
+import {it,expect} from 'vitest';
+import type {CharacterState} from '../packages/contracts/index.ts';
+import {ensureProgression} from '../packages/rules/deep-progression.ts';
+import {awardCraftingLoot,freezeCraftingLoot} from '../apps/api/src/crafting-loot.ts';
+const state=():CharacterState=>({id:crypto.randomUUID(),name:'材料来源验收',revision:0,build:1,level:60,xp:0,gold:0,material:0,gear:[],equipment:{},skills:[],skillRanks:{},progress:{kills:0,regions:['ss-map-wind'],bosses:[],safe:'town',tasks:[]}});
+const rng={float:()=>0,int:(min:number)=>min};
+it('裂星潮与世界层级各自有真实T3奖励路径，普通阶段不混入T3',()=>{const frozen=freezeCraftingLoot(),plain=state(),tide=state(),tier=state();const basic=awardCraftingLoot(plain,{region:'ss-map-wind',kind:'normal'},frozen,rng);expect(Object.keys(basic.materials)).toEqual(['wind_part']);const a=awardCraftingLoot(tide,{region:'ss-map-wind',kind:'normal',tide:true},frozen,rng),b=awardCraftingLoot(tier,{region:'ss-map-wind',kind:'normal',worldTier:2},frozen,rng);expect(a.materials.omega_fragment).toBeGreaterThan(0);expect(b.materials.omega_fragment).toBeGreaterThan(0);for(const delta of [a,b])expect(Object.keys(delta.materials).some(id=>id.startsWith('stage-key'))).toBe(false);});
+it('普通首领不给地城领主材料，地城首领与稀有怪只给本岛领主材料',()=>{const frozen=freezeCraftingLoot();expect(awardCraftingLoot(state(),{region:'ss-map-wind',kind:'boss'},frozen,rng).materials.wind_boss).toBeUndefined();expect(awardCraftingLoot(state(),{region:'ss-map-wind',kind:'boss',dungeon:true},frozen,rng).materials.wind_boss).toBeGreaterThan(0);expect(Object.keys(awardCraftingLoot(state(),{region:'ss-map-wind',kind:'rare',first:true},frozen,rng).materials).every(id=>id.startsWith('wind_'))).toBe(true);});
+it('材料达到上限不溢出，也不削减已迁移的历史超额余额',()=>{const s=state(),p=ensureProgression(s);p.materials.wind_part=10005;expect(awardCraftingLoot(s,{region:'ss-map-wind',kind:'elite'},freezeCraftingLoot(),rng).materials).toEqual({});expect(s.progression!.materials.wind_part).toBe(10005);});

@@ -1,0 +1,5 @@
+/* Fixed 16:9 stage (see stage.ts). Unlayered so it wins over the layered UI entry. */
+html[data-stage]{height:100%;overflow:hidden;background:var(--color-text-primary)}
+html[data-stage]::before{content:'';position:fixed;inset:0;z-index:-1;background:var(--stage-backdrop,none) center/cover no-repeat}
+html[data-stage] body{--stage-width:1280px;--stage-height:720px;position:fixed;left:0;top:0;width:var(--stage-width);height:var(--stage-height);margin:0;overflow:hidden;transform-origin:0 0;transform:translate(var(--stage-x,0),var(--stage-y,0)) scale(var(--stage-scale,1));box-shadow:0 0 var(--space-8) var(--color-overlay)}
+html[data-stage] #game canvas{display:block;width:var(--stage-width);height:var(--stage-height)}

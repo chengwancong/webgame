@@ -1,0 +1,11 @@
+export type SoundLayer={kind:'tone'|'noise';type?:OscillatorType;from:number;to?:number;duration:number;weight:number;filter?:BiquadFilterType;lfo?:{hz:number;depth:number};delay?:number};
+import {wiredSamples} from './sample-bank.ts';
+export type SoundRecipe={id:string;layers:SoundLayer[];cooldown:number;gain?:number;sample?:string;samples?:string[];echo?:{delay:number;weight:number};bus?:'combat'|'ui'|'foley'|'ambience'|'music'};
+const tone=(type:OscillatorType,from:number,to:number,duration:number,weight:number):SoundLayer=>({kind:'tone',type,from,to,duration,weight});
+const noise=(duration:number,filter:BiquadFilterType,from:number,weight:number):SoundLayer=>({kind:'noise',duration,filter,from,weight});
+const impact=[noise(.04,'lowpass',1800,.5),tone('sine',90,70,.06,.35)];
+export const cueRecipes:Record<string,SoundRecipe>=Object.fromEntries(Object.entries({hit:impact,crit:[...impact,tone('triangle',1200,1450,.08,.15)],hurt:[noise(.07,'lowpass',1300,.5),tone('square',70,60,.07,.2)],kill:[...impact,tone('sine',360,360,.1,.15)],'shield-up':[tone('sine',520,780,.16,.7)],'shield-hit':[tone('triangle',1600,1500,.05,.55)],'shield-break':[noise(.18,'highpass',1200,.35),...Array.from({length:3},(_,i)=>tone('triangle',1000-i*210,440-i*90,.12+i*.03,.12))],miss:[noise(.03,'highpass',2200,.16)],danger:[tone('triangle',130,130,.1,.8)],cast:[tone('sine',220,220,.1,.8)],loot:[tone('sine',760,760,.1,.8)]}).map(([id,layers])=>[id,{id:'cue/'+id,layers,samples:wiredSamples('cue/'+id,'one'),cooldown:({hit:3,crit:4,hurt:4,'shield-hit':4,miss:6} as Record<string,number>)[id]??0,bus:id==='loot'?'ui':'combat'}]));
+export const recipeSignature=(r:SoundRecipe)=>JSON.stringify({layers:r.layers,echo:r.echo,sample:r.sample,samples:r.samples});
+
+// 新反馈的显式合成兜底；缺文件仍可播放。
+for(const id of ['block','multi-kill','kill-light','bag-full','loot-legendary',...['common','magic','rare','epic','legendary'].map(q=>'drop-'+q),...['equipment','material','gold','key'].map(q=>'pickup-'+q),'chest-open','chest-reward','gold-spend','gold-gain','loot-glow'])cueRecipes[id]={id:'cue/'+id,layers:[tone('triangle',id==='bag-full'?780:640,480,.16,.55),noise(.04,'bandpass',1900,.2)],samples:wiredSamples('cue/'+id,id==='loot-glow'?'loop':'one'),cooldown:id==='bag-full'?90:1,bus:id.startsWith('pickup')?'foley':'combat'};

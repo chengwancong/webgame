@@ -1,0 +1,49 @@
+import {beforeAll,afterAll,it,expect,vi} from 'vitest';
+import {randomUUID} from 'node:crypto';
+import {Pool} from 'pg';
+import WebSocket from 'ws';
+import {createApp} from '../apps/api/src/app.ts';
+import {migrate} from '../apps/api/src/database.ts';
+import {dungeonContent} from '../packages/content/dungeons.ts';
+import {worldTables} from '../packages/content/world-tables.ts';
+import {validateResponse,type CharacterState} from '../packages/contracts/index.ts';
+import {worldProgressSchema} from '../packages/contracts/open-world.ts';
+import {starseaBossMaps} from '../packages/content/starsea/index.ts';
+import {registeredEndgameEntrant} from './fixtures/registered-endgame-build.ts';
+const dsn=process.env.AW_DATABASE_URL;if(!dsn)throw Error('Real PostgreSQL required');const owner=new Pool({connectionString:dsn}),schema='qa_field_entry_'+randomUUID().replaceAll('-',''),pool=new Pool({connectionString:dsn,options:'-c search_path='+schema,max:4}),app=createApp(pool,{testLogin:true});
+beforeAll(async()=>{await owner.query('CREATE SCHEMA '+schema);await migrate(pool);await app.listen({host:'127.0.0.1',port:0});});afterAll(async()=>{await app.close();await pool.end();await owner.query('DROP SCHEMA '+schema+' CASCADE');await owner.end();});
+it('a player enters every authored island dungeon through the real catalogue and create/leave commands without copying island access into legacy progression',async()=>{
+ const login=await app.inject({method:'POST',url:'/api/session/login',payload:{username:'field_entry_'+randomUUID().replaceAll('-','').slice(0,15)}}),cookie=String(login.headers['set-cookie']).split(';')[0];
+ const request=async(path:string,body?:unknown)=>{const response=await app.inject({method:body===undefined?'GET':'POST',url:'/api/'+path,headers:{cookie},payload:body as any});expect(response.statusCode,response.body).toBe(200);const value=response.json();if(path==='dungeons/catalog'||path==='dungeons/command')validateResponse(path,value);return value;};
+ const character=await request('character',{name:'正式地城准入流程'}),lease=(await request('control',{client_id:randomUUID()})).lease_id;
+ const initial=(await pool.query('SELECT state FROM ow_characters WHERE id=$1',[character.id])).rows[0].state as CharacterState,legacy=initial.progress.regions.slice();initial.level=50;await pool.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[initial,initial.id]);
+ const snapshot=await request('character'),catalogue=await request('dungeons/catalog');expect(snapshot.progress.regions).toEqual(legacy);
+ const regions=new Set(worldTables.islands.map(i=>i.region)),definitions=dungeonContent.definitions.filter(d=>regions.has(d.area)&&d.feature==='field-dungeon');expect(definitions.length).toBeGreaterThan(0);
+ for(const definition of definitions){expect(snapshot.starsea.islands).toContain(definition.area);const entry=catalogue.entries.find((e:any)=>e.definition.id===definition.id);expect(entry,definition.id).toBeTruthy();expect(entry.eligible,JSON.stringify(entry)).toBe(true);
+  const command={command_id:randomUUID(),lease_id:lease,op:'create',dungeon_id:definition.id},created=await request('dungeons/command',command);expect(created.instance.definition.id).toBe(definition.id);expect(await request('dungeons/command',command)).toEqual(created);await request('dungeons/command',{command_id:randomUUID(),lease_id:lease,op:'leave',instance_id:created.instance.id});
+ }
+ const after=await request('character');expect(after.progress.regions).toEqual(legacy);expect(after.starsea.done).toEqual(snapshot.starsea.done);expect(after.gold).toBe(snapshot.gold);expect(after.material).toBe(snapshot.material);expect(after.gear).toEqual(snapshot.gear);
+ // Controlled endgame admission fixture; combat itself runs the actual server
+ // World, and no client payload chooses spawn levels or key scope.
+ const stored=(await pool.query('SELECT state FROM ow_characters WHERE id=$1',[character.id])).rows[0].state;stored.starsea.hardmode=true;stored.world=worldProgressSchema.parse({worldTier:4,hardmodeBosses:starseaBossMaps});await pool.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[stored,character.id]);
+ const hardCatalogue=await request('dungeons/catalog');
+ for(const definition of definitions.filter(d=>d.hardmode)){
+  const entry=hardCatalogue.entries.find((e:any)=>e.definition.id===definition.id);expect(entry.definition.numericStage).toBe(definition.hardmode!.numericStage);expect(entry.definition.worldTierScaling).toBe(true);
+  const created=await request('dungeons/command',{command_id:randomUUID(),lease_id:lease,op:'create',dungeon_id:definition.id});
+  const socket=new WebSocket('ws://127.0.0.1:'+((app.server.address() as any).port)+'/api/dungeons/'+created.instance.id+'/live',{headers:{cookie}});await new Promise<void>((resolve,reject)=>{socket.once('open',resolve);socket.once('error',reject);});const synced=new Promise<void>(resolve=>socket.once('message',()=>resolve()));socket.send(JSON.stringify({type:'hello',lease_id:lease}));await synced;
+  await request('dungeons/command',{command_id:randomUUID(),lease_id:lease,op:'ready',instance_id:created.instance.id});const started=await request('dungeons/command',{command_id:randomUUID(),lease_id:lease,op:'start',instance_id:created.instance.id});
+  expect(started.instance.battle.data.enemies.every((e:any)=>e.monster.level===definition.hardmode!.monsterLevel)).toBe(true);const saved=(await pool.query('SELECT data FROM ow_dungeons WHERE id=$1',[created.instance.id])).rows[0].data;expect(saved.privateRules.stageKeys.pool.stage).toBe(definition.hardmode!.numericStage);expect(saved.definition.policy.enemyScale).toEqual(started.instance.definition.policy.enemyScale);
+  expect(saved.privateRules.stageKeys.pool.choices).toEqual(saved.privateRules.stageKeys.pool.endgameChoices??saved.privateRules.stageKeys.pool.choices);expect((await request('character')).world.activeKeyTier).toBe(stored.world.worldTier);
+  await request('dungeons/command',{command_id:randomUUID(),lease_id:lease,op:'leave',instance_id:created.instance.id});socket.close();
+ }
+},45000);
+
+it('an actual production endgame dungeon runs its declared rooms, opens the next world tier, and resumes identical confirmed results',async()=>{
+ const realNow=Date.now.bind(Date);let clock=realNow();vi.useFakeTimers({toFake:['Date']});vi.setSystemTime(clock);let socket:WebSocket|undefined;
+ try{const login=await app.inject({method:'POST',url:'/api/session/login',payload:{username:'production_endgame_'+randomUUID().replaceAll('-','').slice(0,10)}}),cookie=String(login.headers['set-cookie']).split(';')[0],request=(path:string,body?:object)=>app.inject({method:body?'POST':'GET',url:'/api/'+path,headers:{cookie},payload:body as any}),created=(await request('character',{name:'合法终局构筑流程'})).json(),state=registeredEndgameEntrant(created.id);await pool.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[state,created.id]);
+  let lease='',frame:any,seq=0;const control=async()=>{const c=(await request('control',{client_id:created.id})).json();lease=c.lease_id;await pool.query('UPDATE ow_controls SET expires=$1 WHERE character=$2',[c.expires_at,created.id]);};await control();const command=async(op:string,extra:object={})=>{const payload={command_id:randomUUID(),lease_id:lease,op,...extra};let response=await request('dungeons/command',payload);if(response.statusCode===409&&response.json().code==='CONTROL'){await control();socket?.send(JSON.stringify({type:'hello',lease_id:lease}));payload.lease_id=lease;response=await request('dungeons/command',payload);}return response;},definition=dungeonContent.definitions.find(d=>d.hardmode?.numericStage===Math.max(...dungeonContent.definitions.flatMap(d=>d.hardmode?[d.hardmode.numericStage]:[])))!;
+  const enter=await command('create',{dungeon_id:definition.id});expect(enter.statusCode,enter.body).toBe(200);const id=enter.json().instance.id;socket=new WebSocket('ws://127.0.0.1:'+((app.server.address() as any).port)+'/api/dungeons/'+id+'/live',{headers:{cookie}});socket.on('message',raw=>{const data=JSON.parse(String(raw));if(data.type==='state')frame=data.instance;});await new Promise<void>((resolve,reject)=>{socket!.once('open',resolve);socket!.once('error',reject);});socket.send(JSON.stringify({type:'hello',lease_id:lease}));for(let wait=0;wait<100&&!frame;wait++)await new Promise(r=>setTimeout(r,20));expect(frame).toBeTruthy();expect((await command('ready',{instance_id:id})).statusCode).toBe(200);const started=await command('start',{instance_id:id});expect(started.statusCode,started.body).toBe(200);expect(started.json().instance.definition.worldTierScaling).toBe(true);
+  const advanced=new Set<number>();for(let tick=0;tick<2400&&!['success','failed'].includes(frame?.status);tick++){clock+=1000;vi.setSystemTime(clock);await control();socket.send(JSON.stringify({type:'input',input:{seq:++seq,kind:'mode',mode:'auto'}}));await new Promise(r=>setTimeout(r,35));if(frame?.checkpoint&&!advanced.has(frame.stage)){const stage=frame.stage,ready=await command('ready',{instance_id:id});expect(ready.statusCode,ready.body).toBe(200);const next=await command('next',{instance_id:id});expect(next.statusCode,next.body).toBe(200);advanced.add(stage);}}
+  expect(frame?.status,JSON.stringify({status:frame?.status,reason:frame?.reason,tick:frame?.tick,self:frame?.self})).toBe('success');const final=(await request('dungeons/'+id+'/result')).json(),after=(await request('character')).json();expect(after.world.unlockedWorldTier).toBeGreaterThan(state.world!.worldTier);expect((await request('dungeons/'+id+'/result')).json()).toEqual(final);const saved=(await pool.query('SELECT data FROM ow_dungeons WHERE id=$1',[id])).rows[0].data;expect(saved.status).toBe(final.instance.status);expect(saved.worldTier).toBe(state.world!.worldTier);
+ }finally{socket?.close();vi.useRealTimers();}
+},180000);

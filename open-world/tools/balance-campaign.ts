@@ -1,0 +1,11 @@
+import {mkdir,writeFile} from 'node:fs/promises';
+import {dirname} from 'node:path';
+import {versions} from '../packages/contracts/index.ts';
+import {regions} from '../packages/content/index.ts';
+import {simulateCampaign} from './campaign-model.ts';
+import {sourceVersion} from './source-version.mjs';
+const seeds=[11,23,47,71,101],styles=['starter','melee','ranged'] as const;
+const runs=seeds.flatMap(seed=>styles.flatMap(style=>[false,true].map(budget=>simulateCampaign(seed,style,budget))));
+const rows=runs.flatMap(run=>run.rows),summary=regions.filter(r=>r.id!=='town').map(r=>{const sample=rows.filter(s=>s.region===r.id);return {region:r.id,samples:sample.length,wins:sample.filter(s=>s.win).length,minEntryLevel:sample.length?Math.min(...sample.map(s=>s.entryLevel)):null,maxEntryLevel:sample.length?Math.max(...sample.map(s=>s.entryLevel)):null,minHp:sample.length?Math.min(...sample.map(s=>s.hp)):null,maxSeconds:sample.length?Math.max(...sample.map(s=>s.seconds)):null};});
+const report={versions,source:await sourceVersion(),seeds,policy:'Continuous six-area route, real XP and wallet rewards, starter gear with no random affixes/drops; no upgrades versus affordable rank-1..3 gear/skill upgrades; activate selected free level skills when eligible (whirl, pierce_arrow, mend). Auto radius 20 (UI maximum), walk to another group when idle and resume auto; enter each boss from its actual safe point. Field-to-independent-trial route: HP/mana reset on entry; this does not model a frozen multi-stage normal dungeon.',limits:'Five seeds, three simple loadouts, no human pacing, no random loot, no talents/grids/awakenings. Only reachable stages are counted; failed routes stop. The original baseline used only starter/ward/mend loadouts; compare failure locations, not an isolated numerical effect.',runs,summary};
+const out=process.argv.find(a=>a.startsWith('--out='))?.slice(6)??'../docs/reviews/open-world/balance-audit-20261003/campaign-after.json';await mkdir(dirname(out),{recursive:true});await writeFile(out,JSON.stringify(report,null,2));console.log(JSON.stringify({versions,complete:runs.filter(r=>r.complete).length,runs:runs.length,summary},null,2));

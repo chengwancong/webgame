@@ -1,0 +1,3 @@
+import {wiredSamples} from './sample-bank.ts';
+import type {SoundRecipe} from './sound-recipes.ts';
+export const productionRecipe=(key:string,stage='one'):SoundRecipe=>({id:key+'/'+stage,samples:wiredSamples(key,stage),layers:[{kind:'tone',type:'triangle',from:640,to:470,duration:.14,weight:.4},{kind:'noise',filter:'bandpass',from:1700,duration:.05,weight:.2}],cooldown:key.startsWith('ui/')?3:stage==='idle'?300:stage==='hurt'?6:2,bus:key.startsWith('ui/')?'ui':key.startsWith('amb')?'ambience':key.startsWith('stinger/')?'music':key.startsWith('foley/')||key.startsWith('world/')?'foley':'combat'});

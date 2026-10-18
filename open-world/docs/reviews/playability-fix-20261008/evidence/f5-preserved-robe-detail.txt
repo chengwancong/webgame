@@ -1,0 +1,237 @@
+- generic "游戏世界"
+- region "角色状态":
+  - button "打开人物":
+    - img "角色外观"
+    - generic "自然日程驾驶器"
+    - generic: Lv. 31
+  - meter "生命":
+    - generic: 963 / 963
+  - meter "灵力":
+    - generic: 100 / 100
+- button "展开区域地图":
+  - generic "拾星港"
+- heading "拾星港" [level=1]
+- text: 群岛的主港，每次远航都从这里出发
+- status:
+  - strong: 背包已满 73/60
+  - button "整理":
+    - generic: 整理
+  - generic: 整理装备后再出发
+- generic "金币":
+  - generic: "8778"
+- toolbar "系统入口":
+  - button "背包，装备 73/60，待领取 0 件" [expanded]:
+    - generic: 行囊
+  - button "技能":
+    - generic: 技能
+  - button "养成":
+    - generic: 养成
+  - button "外观":
+    - generic: 外观
+  - button "任务":
+    - generic: 任务
+  - button "设置":
+    - generic: 设置
+- generic: 获得 20 金币 · 40 经验
+- generic: 获得 480 金币 · 800 经验
+- generic: 获得 24 金币 · 80 经验
+- dialog "背包":
+  - banner:
+    - heading "背包" [level=2]
+    - generic "金币 8,778":
+      - generic: 8,778
+      - generic: 金币
+    - generic "强化石 1,421":
+      - generic: 1,421
+      - generic: 强化石
+    - button "人物":
+      - generic: 人物
+    - button "关闭":
+      - generic: 关闭
+  - complementary:
+    - tablist "背包分类":
+      - tab "全部 81" [selected]:
+        - generic: 全部
+        - generic: "81"
+      - tab "装备 73":
+        - generic: 装备
+        - generic: "73"
+      - tab "消耗品 0":
+        - generic: 消耗品
+        - generic: "0"
+      - tab "材料 8":
+        - generic: 材料
+        - generic: "8"
+      - tab "任务 0":
+        - generic: 任务
+        - generic: "0"
+    - generic: 装备容量
+    - meter "装备容量 60/60":
+      - generic: 60/60
+    - paragraph: 背包已满，请回城整理
+    - button "仓库":
+      - generic: 仓库
+    - button "待领取 0":
+      - generic: 待领取 0
+    - button "批量分解":
+      - generic: 批量分解
+  - generic: 搜索背包物品
+  - searchbox "搜索背包物品"
+  - generic: 81 种物品
+  - tabpanel "全部 81":
+    - button "青锋长剑，稀有品质，持有1，强化 3":
+      - generic: 青锋长剑
+      - generic: "+3"
+    - button "守望轻甲，普通品质，持有1，强化 4":
+      - generic: 守望轻甲
+      - generic: "+4"
+    - button "羽叶吊坠，魔法品质，持有1，强化 1":
+      - generic: 羽叶吊坠
+      - generic: "+1"
+    - button "回响之核，普通品质，持有1，已装备，已装备，强化 5":
+      - generic: 回响之核
+      - generic: "+5"
+    - button "影纹兜帽，魔法品质，持有1，已装备，已装备，强化 8":
+      - generic: 影纹兜帽
+      - generic: "+8"
+    - button "石甲战靴，魔法品质，持有1，强化 3":
+      - generic: 石甲战靴
+      - generic: "+3"
+    - button "学徒法衣，传说品质，持有1":
+      - generic: 学徒法衣
+    - button "木芽之戒，稀有品质，持有1，已装备，已装备，强化 7":
+      - generic: 木芽之戒
+      - generic: "+7"
+    - button "风纹吊坠，稀有品质，持有1，已装备，已装备，强化 4":
+      - generic: 风纹吊坠
+      - generic: "+4"
+    - button "古誓之刃，魔法品质，持有1，强化 1":
+      - generic: 古誓之刃
+      - generic: "+1"
+    - button "铁卫重甲，稀有品质，持有1，已装备，已装备，强化 2":
+      - generic: 铁卫重甲
+      - generic: "+2"
+    - button "镇关战甲，传说品质，持有1":
+      - generic: 镇关战甲
+    - button "夜行软靴，稀有品质，持有1，已装备，已装备":
+      - generic: 夜行软靴
+    - button "天垒重剑，普通品质，持有1，已装备，已装备":
+      - generic: 天垒重剑
+    - button "星火吊坠，传说品质，持有1":
+      - generic: 星火吊坠
+    - button "龙牙之戒，普通品质，持有1":
+      - generic: 龙牙之戒
+    - button "月铃法袍，传说品质，持有1" [active] [pressed]:
+      - generic: 月铃法袍
+    - button "月牙法帽，普通品质，持有1":
+      - generic: 月牙法帽
+    - button "穹辉之杖，普通品质，持有1":
+      - generic: 穹辉之杖
+    - button "寂影软靴，稀有品质，持有1":
+      - generic: 寂影软靴
+    - button "穹光长靴，稀有品质，持有1":
+      - generic: 穹光长靴
+    - button "穹光长靴，稀有品质，持有1":
+      - generic: 穹光长靴
+    - button "星火法衣，普通品质，持有1":
+      - generic: 星火法衣
+    - button "观星尖帽，传说品质，持有1":
+      - generic: 观星尖帽
+  - navigation "背包分页":
+    - button "上一页" [disabled]:
+      - generic: 上一页
+    - generic: 1 / 4
+    - button "下一页":
+      - generic: 下一页
+  - complementary:
+    - generic "月铃法袍，未装备":
+      - text: 衣服 · 传说
+      - heading "月铃法袍" [level=3]
+    - text: 主属性 · 护甲
+    - generic: 基础 6 + 强化 0
+    - strong: "6"
+    - region "装备词缀":
+      - heading "词缀 4" [level=3]:
+        - generic: 词缀
+        - generic: "4"
+      - text: 铭纹
+      - generic: 小型铭纹
+      - strong: 荆棘
+      - generic: 暴击率 +7%
+      - strong: T2
+      - generic: 火焰抗性 +20%
+      - strong: T3
+      - generic: 法术伤害 [+]20%
+      - strong: T3
+      - generic: 攻击 +18
+      - strong: T3
+    - paragraph: 受击：反弹护甲 × 100% 伤害
+    - region "副属性重铸":
+      - heading "副属性重铸" [level=3]:
+        - generic: 副属性重铸
+      - paragraph: 首次选定后，本件只可反复重铸这一条；其余属性保留。
+      - text: 选择重铸副属性
+      - combobox "选择重铸副属性":
+        - option "请选择一条" [selected]
+        - option "暴击率 +7%"
+        - option "火焰抗性 +20%"
+        - option "法术伤害 [+]20%"
+        - option "攻击 +18"
+      - region "重铸消耗":
+        - heading "重铸消耗" [level=3]:
+          - generic: 重铸消耗
+        - term:
+          - text: 金币
+        - definition:
+          - generic: "100"
+          - generic: 持有 8,778
+          - generic: 数量足够
+        - term:
+          - text: 强化石
+        - definition:
+          - generic: "10"
+          - generic: 持有 1,421
+          - generic: 数量足够
+      - button "重铸该条" [disabled]:
+        - generic: 重铸该条
+    - region "套装加成":
+      - heading "月铃歌者 · 雷鸣 0" [level=3]:
+        - generic: 月铃歌者 · 雷鸣
+        - meter "月铃歌者 · 雷鸣套装件数 0/6"
+      - generic: 2 件
+      - paragraph: 对受控伤害 +15%
+      - meter "2件加成，未激活 0/2"
+      - generic: 4 件
+      - paragraph: 闪电命中：感电 3 秒（受到伤害 +12%）；暴击，冷却 1 秒：召落雷（60%）；对感电目标伤害 ×1.2
+      - meter "4件加成，未激活 0/4"
+    - paragraph: 常规 · 魔杖 · 造型阶段 T3
+    - region "强化消耗":
+      - heading "强化消耗" [level=3]:
+        - generic: 强化消耗
+      - term:
+        - text: 金币
+      - definition:
+        - generic: "35"
+        - generic: 持有 8,778
+        - generic: 数量足够
+      - term:
+        - text: 强化石
+      - definition:
+        - generic: "2"
+        - generic: 持有 1,421
+        - generic: 数量足够
+    - button "前往人物换装":
+      - generic: 前往人物换装
+    - button "强化":
+      - generic: 强化
+    - button "锁定":
+      - generic: 锁定
+    - button "分解，可得 3 强化石":
+      - text: 分解
+      - text: "3"
+- status: 拾星港
+- complementary "星潮海任务":
+  - generic: 阶段
+  - generic: 前往龙眠岛，挑战暮界提督·维洛
+  - button "→":
+    - generic: →

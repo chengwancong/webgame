@@ -1,0 +1,40 @@
+// Write the delivery provenance only after real-service and real-window acceptance.
+import {readFile,writeFile,mkdir,copyFile} from 'node:fs/promises';
+import {resolve,join} from 'node:path';
+import {createHash} from 'node:crypto';
+import assert from 'node:assert/strict';
+import {versions} from '../../packages/contracts/index.ts';
+const root=resolve(import.meta.dirname,'../..'),art=join(root,'assets/equipment-remake-20261003');
+const reviewRoot=resolve(root,'../docs/reviews/open-world/equipment-icons-chibi-20261004');
+const delivery=resolve(root,'../docs/05-art/equipment-icons-chibi-20261004');
+const packagePath=join(art,'package-final/manifest.json'),bytes=await readFile(packagePath),pack=JSON.parse(bytes);
+const approval=JSON.parse(await readFile(join(reviewRoot,'final/visual-review.json'),'utf8'));
+const accepted=JSON.parse(await readFile(join(reviewRoot,'published/result.json'),'utf8'));
+const windows=JSON.parse(await readFile(join(reviewRoot,'published/ui-result.json'),'utf8'));
+const sha=bytes=>createHash('sha256').update(bytes).digest('hex'),packageSha256=sha(bytes);
+assert.equal(approval.packageSha256,packageSha256);assert.equal(approval.status,'approved');
+assert(accepted.ok&&windows.ok&&accepted.sessionRestore&&accepted.gearPreserved);
+assert.deepEqual(accepted.versions,versions);assert.equal(accepted.servedHashes.length,324);assert.equal(accepted.decoded.length,324);
+const library=JSON.parse(await readFile(join(root,'assets/ui-source/v2/equipment-handdrawn/catalog.json'),'utf8'));
+const served=new Map(accepted.servedHashes.map(item=>[item.id,item.sha256]));
+const records=[];
+for(const item of pack.items){
+ assert.equal(library.items.find(record=>record.id===item.id)?.sha256,item.production.sha256);
+ assert.equal(served.get(item.id),item.production.sha256);
+ const path=join(art,'records',item.id+'.json'),record=JSON.parse(await readFile(path,'utf8'));
+ if(record.status!=='approved-published')record.candidateSha256=record.sha256;
+ record.sha256=item.production.sha256;record.productionBounds=item.production.bounds;
+ record.status='approved-published';record.normalization=pack.normalization;
+ record.publishedPath=library.items.find(asset=>asset.id===item.id).path;
+ record.packageSha256=packageSha256;record.publishedAt=new Date().toISOString();
+ await copyFile(join(art,'package-final',item.file),join(art,'icons',item.id+'.png'));
+ await writeFile(path,JSON.stringify(record,null,2)+'\n');records.push(record);
+}
+await mkdir(delivery,{recursive:true});
+await writeFile(join(delivery,'production-provenance.json'),JSON.stringify({createdAt:new Date().toISOString(),generator:'built-in imagegen',icons:324,sets:54,packageSha256,versions,items:records},null,2)+'\n');
+await writeFile(join(delivery,'catalog.json'),JSON.stringify(library,null,2)+'\n');
+const planPath=join(art,'production.json'),plan=JSON.parse(await readFile(planPath,'utf8'));
+plan.status='published';plan.package='package-final/manifest.json';plan.packageSha256=packageSha256;plan.versions=versions;
+await writeFile(planPath,JSON.stringify(plan,null,2)+'\n');
+await writeFile(join(art,'progress.json'),JSON.stringify({expected:324,generatedUniqueIds:324,candidateIcons:324,rejected:[],completeCandidateSets:54,sets:[...new Set(pack.items.map(item=>item.setId))],published:true,packageSha256,versions},null,2)+'\n');
+console.log(JSON.stringify({delivered:324,sets:54,published:true,delivery,packageSha256,versions}));

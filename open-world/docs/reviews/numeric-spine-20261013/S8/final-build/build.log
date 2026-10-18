@@ -1,0 +1,98 @@
+$ node tools/world-graybox.mjs && node tools/build-ui-tokens.mjs && python3 -X utf8 tools/build_ui_v2.py && node tools/build-travel-assets.mjs && node tools/wardrobe-build.mjs && node tools/build-mini-hero.mjs && node tools/build-world-art.mjs && node tools/build-story-npcs.mjs && node tools/build-skill-fx.mjs && node tools/build-vfx-v2.mjs && node tools/build-apk-accepted-ui.mjs && node tools/build-telegraph-reuse.mjs && node tools/build-starsea-assets.mjs --props && node tools/build-open-world-art.mjs && tsx tools/build-production-islands.ts && node tools/build-combat-layer-fx.mjs && node tools/build-combat-fx-metrics.mjs && vite build --config apps/web/vite.config.ts
+{"output":"G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\.qa\\pacing-build-KOeydZ\\source\\.design\\open-world-m0\\graybox.json","seed":37,"zones":6,"camps":150,"waypoints":8,"spawns":600,"obstacles":2524}
+{"ok":true,"tokens":343,"mode":"generate"}
+published 479 assets -> G:\webgame\abyss-walker-migration\abyss-walker-rewrite\open-world\.qa\pacing-build-KOeydZ\source\apps\web\public\art\ui-v2
+Travel illustrations: [
+  { id: 'meadow', size: [ 1672, 941 ] },
+  { id: 'forest', size: [ 1672, 941 ] },
+  { id: 'rift', size: [ 1672, 941 ] },
+  { id: 'tundra', size: [ 1672, 941 ] },
+  { id: 'abyss', size: [ 1672, 941 ] },
+  { id: 'dragonbone', size: [ 1672, 941 ] },
+  { id: 'tundra-boss', size: [ 1672, 941 ] },
+  { id: 'abyss-boss', size: [ 1672, 941 ] },
+  { id: 'dragonbone-boss', size: [ 1672, 941 ] }
+]
+Packaged 16 modular hero bundles and 7 real motion families from canonical project assets.
+Published MiniFantasy navy skin: 4 exact source files, 3 existing weapon set mappings, original 4.2.43 geometry and PMA.
+{"version":"environment-handdrawn-20261003-v2","independentSprites":9,"groundTextures":5,"atlasBytes":5837625,"edges":[{"id":"grass","horizontal":4.495768229166667,"vertical":4.435872395833333,"interior":1.8014322916666667},{"id":"road","horizontal":2.5377604166666665,"vertical":4.770833333333333,"interior":0.9381510416666666},{"id":"tundra","horizontal":2.0657552083333335,"vertical":3.7239583333333335,"interior":1.0107421875},{"id":"abyss","horizontal":2.9840494791666665,"vertical":2.8395182291666665,"interior":1.2854817708333333},{"id":"dragonbone","horizontal":2.6881510416666665,"vertical":3.92578125,"interior":1.3196614583333333}]}
+Published 7 native NPC profiles with measured fixed ground, validated skins/actions and shared original atlas.
+{"clips":["slash","impact","arrow","flaming-arrow","arcane-projectile","ice-crystal","lightning","nature-aura-05","shield","orange-fire","ice-air","lightning-arrow-flight","lightning-charge","lightning-arrow-hit"],"frames":137,"atlas":[2048,2048],"sourceOnly":true}
+{
+  'fireball-flight': { frames: 8, distinct: 8 },
+  'ice-bolt-flight': { frames: 8, distinct: 8 },
+  'frost-queen-cast': { frames: 24, distinct: 24 },
+  'abyss-lord-cast': { frames: 24, distinct: 24 },
+  'dragon-king-cast': { frames: 24, distinct: 24 },
+  'ground-flame': { frames: 8, distinct: 8 }
+}
+{
+  sourceApk: 'ea17b42477a2ee097837753cb96c2b71f6926c2fbc673bbff547a52707fcc0b9',
+  sourceFile: 'spine/original/Assets/AppearanceAssets/UI/ui_goldCoin/goldCoin.skel.bytes',
+  sourceFileSha256: '38f80846b87aedef44e2e97d9fd53fd8c394a702e20e81f679cc249d87bf3590',
+  animation: 'loop_goldCoin',
+  skin: 'default',
+  renderer: 'Spine 4.2.120',
+  frames: 40,
+  fps: 30,
+  durationMs: 1333.3333333333333,
+  cell: 96,
+  image: '/art/effects/apk-native/gold-coin.png',
+  crop: { left: 284, top: 34, right: 676, bottom: 506 },
+  registration: 'One shared source-space crop; no frame-by-frame centering or animation redesign',
+  use: 'HUD gold balance feedback after an authoritative snapshot increase',
+  acceptance: 'native-spine-playback.json: original timelines, alpha frame renders; game verification is recorded separately'
+}
+Verified and copied existing telegraph fragment: telegraph-tip-glow
+{"props":24,"states":50,"sprites":30,"version":"starsea-20261003-props-v1"}
+{"package":"starsea-20261003-package-v1","assets":129,"ok":true,"designVersion":"starsea-20261003-d1","required":129,"registered":129,"groups":{"npc":7,"monsters":21,"bosses":6,"vfx":30,"scenes":41,"props":24},"sourceAndPackageFiles":701,"runtimeURLs":274,"missingGroups":[],"errors":[]}
+{"version":"open-world-art-20261006-v1","status":"production-gameplay-integrated","imported":92,"pending":0,"independentNewImages":33,"nativeActors":17,"codeMasks":9,"mapSymbols":10,"travelEffects":3,"actorVariants":8,"regionalNpcs":6,"gameplayIntegrated":true,"accepted":false}
+{"version":"open-world-five-islands-20261006-v1","imported":494,"pending":0,"independentNewImages":99,"materialVariants":321,"regionalNpcs":40,"actorVariants":40,"rigPoses":4,"islands":[{"name":"雾铃岛","counts":{"ground":8,"nature":20,"camp":6,"landmark":15,"building":2,"entrance":3,"boundary":4,"outpost":4,"travel":1,"boss-gate":1,"monster":2,"elite":1,"dungeon-boss":3,"rare":2,"regional-npc":8}},{"name":"赤炉岛","counts":{"ground":8,"nature":20,"camp":6,"landmark":15,"building":2,"entrance":3,"boundary":4,"outpost":4,"travel":1,"boss-gate":1,"monster":2,"elite":1,"dungeon-boss":3,"rare":2,"regional-npc":8}},{"name":"霜镜岛","counts":{"ground":8,"nature":20,"camp":6,"landmark":15,"building":2,"entrance":3,"boundary":4,"outpost":4,"travel":1,"boss-gate":1,"monster":2,"elite":1,"dungeon-boss":3,"rare":2,"regional-npc":8}},{"name":"沉星岛","counts":{"ground":8,"nature":20,"camp":6,"landmark":15,"building":2,"entrance":3,"boundary":4,"outpost":4,"travel":1,"boss-gate":1,"monster":2,"elite":1,"dungeon-boss":3,"rare":2,"regional-npc":8}},{"name":"龙眠岛","counts":{"ground":8,"nature":20,"camp":6,"landmark":15,"building":2,"entrance":3,"boundary":4,"outpost":4,"travel":1,"boss-gate":1,"monster":2,"elite":1,"dungeon-boss":3,"rare":2,"regional-npc":8}}]}
+{"productionIslands":[{"island":"ss-map-wind","region":"ss-map-wind","name":"风栖岛","width":512,"height":512,"walkableRatio":0.6009063720703125,"reachablePoints":312,"zones":6,"camps":200,"monsterPositions":800,"waypoints":9,"dungeonEntrances":3,"events":6,"chests":25,"rares":2,"patrols":3,"landmarks":43,"eliteCamps":[{"zone":"ow-wind-z1","count":5},{"zone":"ow-wind-z2","count":5},{"zone":"ow-wind-z3","count":5},{"zone":"ow-wind-z4","count":5},{"zone":"ow-wind-z5","count":5},{"zone":"ow-wind-z6","count":5}]},{"island":"ss-map-mist","region":"ss-map-mist","name":"雾铃岛","width":512,"height":512,"walkableRatio":0.6009063720703125,"reachablePoints":326,"zones":6,"camps":210,"monsterPositions":840,"waypoints":8,"dungeonEntrances":3,"events":6,"chests":25,"rares":2,"patrols":3,"landmarks":48,"eliteCamps":[{"zone":"ow-mist-z1","count":5},{"zone":"ow-mist-z2","count":5},{"zone":"ow-mist-z3","count":5},{"zone":"ow-mist-z4","count":5},{"zone":"ow-mist-z5","count":5},{"zone":"ow-mist-z6","count":5}]},{"island":"ss-map-forge","region":"ss-map-forge","name":"赤炉岛","width":512,"height":512,"walkableRatio":0.6009063720703125,"reachablePoints":323,"zones":6,"camps":210,"monsterPositions":840,"waypoints":8,"dungeonEntrances":3,"events":6,"chests":25,"rares":2,"patrols":3,"landmarks":45,"eliteCamps":[{"zone":"ow-forge-z1","count":5},{"zone":"ow-forge-z2","count":5},{"zone":"ow-forge-z3","count":5},{"zone":"ow-forge-z4","count":5},{"zone":"ow-forge-z5","count":5},{"zone":"ow-forge-z6","count":5}]},{"island":"ss-map-frost","region":"ss-map-frost","name":"霜镜岛","width":512,"height":512,"walkableRatio":0.6009063720703125,"reachablePoints":326,"zones":6,"camps":210,"monsterPositions":840,"waypoints":8,"dungeonEntrances":3,"events":6,"chests":25,"rares":2,"patrols":3,"landmarks":48,"eliteCamps":[{"zone":"ow-frost-z1","count":5},{"zone":"ow-frost-z2","count":5},{"zone":"ow-frost-z3","count":5},{"zone":"ow-frost-z4","count":5},{"zone":"ow-frost-z5","count":5},{"zone":"ow-frost-z6","count":5}]},{"island":"ss-map-rift","region":"ss-map-rift","name":"沉星岛","width":512,"height":512,"walkableRatio":0.6009063720703125,"reachablePoints":328,"zones":6,"camps":210,"monsterPositions":840,"waypoints":8,"dungeonEntrances":3,"events":6,"chests":25,"rares":2,"patrols":3,"landmarks":49,"eliteCamps":[{"zone":"ow-rift-z1","count":5},{"zone":"ow-rift-z2","count":5},{"zone":"ow-rift-z3","count":5},{"zone":"ow-rift-z4","count":5},{"zone":"ow-rift-z5","count":5},{"zone":"ow-rift-z6","count":5}]},{"island":"ss-map-dragon","region":"ss-map-dragon","name":"龙眠岛","width":512,"height":512,"walkableRatio":0.6009063720703125,"reachablePoints":314,"zones":6,"camps":200,"monsterPositions":800,"waypoints":8,"dungeonEntrances":3,"events":6,"chests":25,"rares":2,"patrols":3,"landmarks":46,"eliteCamps":[{"zone":"ow-dragon-z1","count":5},{"zone":"ow-dragon-z2","count":5},{"zone":"ow-dragon-z3","count":5},{"zone":"ow-dragon-z4","count":5},{"zone":"ow-dragon-z5","count":5},{"zone":"ow-dragon-z6","count":5}]}],"fieldDungeonStages":[{"id":"ss-dg-wind-1-1","width":48,"height":48,"level":4,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-wind-1-2","width":48,"height":48,"level":4,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-wind-1-3","width":48,"height":48,"level":4,"enemies":3,"bosses":1,"reachable":true},{"id":"ss-dg-wind-2-1","width":48,"height":48,"level":6,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-wind-2-2","width":48,"height":48,"level":6,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-wind-2-3","width":48,"height":48,"level":6,"enemies":3,"bosses":1,"reachable":true},{"id":"ss-dg-wind-3-1","width":48,"height":48,"level":8,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-wind-3-2","width":48,"height":48,"level":8,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-wind-3-3","width":48,"height":48,"level":8,"enemies":3,"bosses":1,"reachable":true},{"id":"ss-dg-mist-1-1","width":48,"height":48,"level":10,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-mist-1-2","width":48,"height":48,"level":10,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-mist-1-3","width":48,"height":48,"level":10,"enemies":3,"bosses":1,"reachable":true},{"id":"ss-dg-mist-2-1","width":48,"height":48,"level":12,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-mist-2-2","width":48,"height":48,"level":12,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-mist-2-3","width":48,"height":48,"level":12,"enemies":3,"bosses":1,"reachable":true},{"id":"ss-dg-mist-3-1","width":48,"height":48,"level":15,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-mist-3-2","width":48,"height":48,"level":15,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-mist-3-3","width":48,"height":48,"level":15,"enemies":3,"bosses":1,"reachable":true},{"id":"ss-dg-forge-1-1","width":48,"height":48,"level":16,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-forge-1-2","width":48,"height":48,"level":16,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-forge-1-3","width":48,"height":48,"level":16,"enemies":3,"bosses":1,"reachable":true},{"id":"ss-dg-forge-2-1","width":48,"height":48,"level":18,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-forge-2-2","width":48,"height":48,"level":18,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-forge-2-3","width":48,"height":48,"level":18,"enemies":3,"bosses":1,"reachable":true},{"id":"ss-dg-forge-3-1","width":48,"height":48,"level":21,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-forge-3-2","width":48,"height":48,"level":21,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-forge-3-3","width":48,"height":48,"level":21,"enemies":3,"bosses":1,"reachable":true},{"id":"ss-dg-frost-1-1","width":48,"height":48,"level":23,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-frost-1-2","width":48,"height":48,"level":23,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-frost-1-3","width":48,"height":48,"level":23,"enemies":3,"bosses":1,"reachable":true},{"id":"ss-dg-frost-2-1","width":48,"height":48,"level":25,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-frost-2-2","width":48,"height":48,"level":25,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-frost-2-3","width":48,"height":48,"level":25,"enemies":3,"bosses":1,"reachable":true},{"id":"ss-dg-frost-3-1","width":48,"height":48,"level":27,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-frost-3-2","width":48,"height":48,"level":27,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-frost-3-3","width":48,"height":48,"level":27,"enemies":3,"bosses":1,"reachable":true},{"id":"ss-dg-rift-1-1","width":48,"height":48,"level":29,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-rift-1-2","width":48,"height":48,"level":29,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-rift-1-3","width":48,"height":48,"level":29,"enemies":3,"bosses":1,"reachable":true},{"id":"ss-dg-rift-2-1","width":48,"height":48,"level":31,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-rift-2-2","width":48,"height":48,"level":31,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-rift-2-3","width":48,"height":48,"level":31,"enemies":3,"bosses":1,"reachable":true},{"id":"ss-dg-rift-3-1","width":48,"height":48,"level":32,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-rift-3-2","width":48,"height":48,"level":32,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-rift-3-3","width":48,"height":48,"level":32,"enemies":3,"bosses":1,"reachable":true},{"id":"ss-dg-dragon-1-1","width":48,"height":48,"level":34,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-dragon-1-2","width":48,"height":48,"level":34,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-dragon-1-3","width":48,"height":48,"level":34,"enemies":3,"bosses":1,"reachable":true},{"id":"ss-dg-dragon-2-1","width":48,"height":48,"level":36,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-dragon-2-2","width":48,"height":48,"level":36,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-dragon-2-3","width":48,"height":48,"level":36,"enemies":3,"bosses":1,"reachable":true},{"id":"ss-dg-dragon-3-1","width":48,"height":48,"level":37,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-dragon-3-2","width":48,"height":48,"level":37,"enemies":14,"bosses":0,"reachable":true},{"id":"ss-dg-dragon-3-3","width":48,"height":48,"level":37,"enemies":3,"bosses":1,"reachable":true}]}
+{"clips":["library-warm-burst","library-slash","library-void-charge","library-void-flight","library-void-impact","library-summon","library-flame-burst","library-ice-wave","library-ice-burst","library-blade-charge","library-void-burst","library-void-cloud","library-fire-rain","library-blade-flight"],"frames":436}
+{"slash":{"visibleSize":[159,67],"duration":1.8333333730697632},"impact":{"visibleSize":[191,99],"duration":0.8333333134651184},"arrow":{"visibleSize":[155,24],"duration":0},"flaming-arrow":{"visibleSize":[115,27],"duration":0},"arcane-projectile":{"visibleSize":[590,118],"duration":0.800000011920929},"ice-crystal":{"visibleSize":[139,93],"duration":1},"lightning":{"visibleSize":[60,54],"duration":0.5333333611488342},"nature-aura-05":{"visibleSize":[94,153],"duration":0.8333333333333334},"shield":{"visibleSize":[212,308],"duration":1.3333333730697632},"orange-fire":{"visibleSize":[102,67],"duration":0.9333332777023315},"ice-air":{"visibleSize":[130,73],"duration":0.16666666666666666},"lightning-arrow-flight":{"visibleSize":[163,268],"duration":0.20833333333333334},"lightning-charge":{"visibleSize":[146,146],"duration":0},"lightning-arrow-hit":{"visibleSize":[273,263],"duration":0.20833333333333334},"fireball-flight":{"visibleSize":[148,102],"duration":0.4444444444444444,"sustainFrames":["0","1","2","3","4","5","6","7"]},"ice-bolt-flight":{"visibleSize":[159,65],"duration":0.4444444444444444,"sustainFrames":["0","1","2","3","4","5","6","7"]},"frost-queen-cast":{"visibleSize":[148,244],"duration":1.3333333333333333},"abyss-lord-cast":{"visibleSize":[235,250],"duration":1.3333333333333333},"dragon-king-cast":{"visibleSize":[244,214],"duration":1.3333333333333333},"ground-flame":{"visibleSize":[129,150],"duration":0.4444444444444444},"library-void-flight":{"visibleSize":[256,256],"duration":0.833299994468689,"sustainFrames":["0","1","2","3","4","5","6","7","8","9","10"]},"library-blade-flight":{"visibleSize":[225,256],"duration":0.7666000127792358,"sustainFrames":["0","1","2","3","4","19","20","21"]}}
+vite v7.3.1 building client environment for production...
+transforming...
+✓ 490 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/ui-v2-showcase.html                              0.72 kB │ gzip:   0.39 kB
+dist/story-npc-qa.html                                0.73 kB │ gzip:   0.40 kB
+dist/open-world-five-art-qa.html                      0.81 kB │ gzip:   0.46 kB
+dist/open-world-art-qa.html                           0.82 kB │ gzip:   0.46 kB
+dist/ui-system.html                                   0.90 kB │ gzip:   0.43 kB
+dist/starsea-art-qa.html                              0.97 kB │ gzip:   0.50 kB
+dist/world-art-qa.html                                1.31 kB │ gzip:   0.56 kB
+dist/index.html                                       1.47 kB │ gzip:   0.58 kB
+dist/assets/game-BdmSi4eN.css                         0.78 kB │ gzip:   0.39 kB
+dist/assets/worldart-vdkGqll2.css                     0.94 kB │ gzip:   0.36 kB
+dist/assets/starsea-CX7gIlR7.css                      3.85 kB │ gzip:   0.93 kB
+dist/assets/system-BugZrBjA.css                       5.33 kB │ gzip:   1.30 kB
+dist/assets/open-world-art-qa-CDCSPEEg.css           13.77 kB │ gzip:   4.04 kB
+dist/assets/showcase-iL9Dwel8.css                    25.47 kB │ gzip:   6.58 kB
+dist/assets/ui-entry-74iaMJrb.css                   244.39 kB │ gzip:  36.10 kB
+dist/assets/iso-iMaWzGTq.js                           0.11 kB │ gzip:   0.10 kB
+dist/assets/modulepreload-polyfill-B5Qt9EMX.js        0.71 kB │ gzip:   0.40 kB
+dist/assets/open-world-five-art-data-BmmFL4xS.js      1.91 kB │ gzip:   0.94 kB
+dist/assets/ui-components-CkhUW0lI.js                 1.99 kB │ gzip:   1.00 kB
+dist/assets/worldart-DYhmC_dm.js                      2.76 kB │ gzip:   1.68 kB
+dist/assets/storynpcs-ChMMNqlf.js                     3.13 kB │ gzip:   1.70 kB
+dist/assets/interaction-BEDkMRZv.js                   3.90 kB │ gzip:   1.58 kB
+dist/assets/starsea-actor-preview-C5q_SeO_.js         4.09 kB │ gzip:   1.78 kB
+dist/assets/showcase-D8tRwp5p.js                      4.55 kB │ gzip:   2.37 kB
+dist/assets/system-DHEnSGd5.js                       10.03 kB │ gzip:   4.30 kB
+dist/assets/openworldart-DQfDf7-L.js                 10.06 kB │ gzip:   4.86 kB
+dist/assets/fiveart-DCNSqmjo.js                      11.79 kB │ gzip:   5.68 kB
+dist/assets/starsea-B-LNWHTZ.js                      18.88 kB │ gzip:   8.13 kB
+dist/assets/tokens-BPBD4we_.js                       36.37 kB │ gzip:   6.05 kB
+dist/assets/ui-entry-D8gTwrt_.js                    182.58 kB │ gzip:  49.62 kB
+dist/assets/mini-native-renderer-D8oLC1B9.js        203.13 kB │ gzip:  59.06 kB
+dist/assets/story-appearance-AkaU1i5C.js            574.70 kB │ gzip:  90.19 kB
+dist/assets/game-Ddt2DkOo.js                      2,412.52 kB │ gzip: 312.78 kB
+dist/assets/scene-Cf_EkMlV.js                     6,138.93 kB │ gzip: 922.40 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 13.89s

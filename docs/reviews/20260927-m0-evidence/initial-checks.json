@@ -1,0 +1,27 @@
+[
+  {
+    "check": "make-db",
+    "exit_code": 2,
+    "output": "make: *** No rule to make target `db'.  Stop.\n"
+  },
+  {
+    "check": "make-migrate",
+    "exit_code": 2,
+    "output": ".venv/bin/python tools/migrate.py\nTraceback (most recent call last):\n  File \"/Users/chengmocong/Documents/ChatGPT/abyss-walker-rewrite/tools/migrate.py\", line 6, in <module>\n    from server.infrastructure import db\nModuleNotFoundError: No module named 'server'\nmake: *** [migrate] Error 1\n"
+  },
+  {
+    "check": "server-import",
+    "exit_code": 1,
+    "output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/Users/chengmocong/Documents/ChatGPT/abyss-walker-rewrite/server/main.py\", line 1, in <module>\n    from server.api.http import app  # noqa: F401\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/chengmocong/Documents/ChatGPT/abyss-walker-rewrite/server/api/http.py\", line 12, in <module>\n    from server.infrastructure import db\n  File \"/Users/chengmocong/Documents/ChatGPT/abyss-walker-rewrite/server/infrastructure/db.py\", line 10, in <module>\n    from psycopg_pool import ConnectionPool\nModuleNotFoundError: No module named 'psycopg_pool'\n"
+  },
+  {
+    "check": "server-tests-no-dsn",
+    "exit_code": 2,
+    "output": "\n==================================== ERRORS ====================================\n______________ ERROR collecting tests/server/test_first_write.py _______________\nImportError while importing test module '/Users/chengmocong/Documents/ChatGPT/abyss-walker-rewrite/tests/server/test_first_write.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n../../../.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/server/test_first_write.py:12: in <module>\n    from server.api.http import create_app  # noqa: E402\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nserver/api/http.py:12: in <module>\n    from server.infrastructure import db\nserver/infrastructure/db.py:10: in <module>\n    from psycopg_pool import ConnectionPool\nE   ModuleNotFoundError: No module named 'psycopg_pool'\n=============================== warnings summary ===============================\n.venv/lib/python3.12/site-packages/fastapi/testclient.py:1\n  /Users/chengmocong/Documents/ChatGPT/abyss-walker-rewrite/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n    from starlette.testclient import TestClient as TestClient  # noqa\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR tests/server/test_first_write.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 warning, 1 error in 0.18s\n"
+  },
+  {
+    "check": "core-parse",
+    "exit_code": 0,
+    "output": "Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org\n\nSCRIPT ERROR: Parse Error: Function \"rounded()\" not found in base self.\n          at: GDScript::reload (res://combat/battle_core.gd:73)\nERROR: Failed to load script \"res://combat/battle_core.gd\" with error \"Parse error\".\n   at: load (modules/gdscript/gdscript_resource_format.cpp:46)\n"
+  }
+]

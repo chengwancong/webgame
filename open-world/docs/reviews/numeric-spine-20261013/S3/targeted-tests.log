@@ -1,0 +1,79 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+ ✓ tests/skill-mechanisms.test.ts (120 tests) 1004ms
+ ❯ tests/build-variety-frozen-attributes.test.ts (9 tests | 2 failed) 113ms
+   ✓ a status-chance augment creates all five executable hit rules and actually applies them 35ms
+   ✓ rebuilds from the frozen base once without duplicating chances, rules or changing the source 11ms
+   ✓ uses creation-time stat caps and defaults even if current global content has changed 7ms
+   ✓ the same frozen attribute executor owns kill recovery units and conditional damage 1ms
+   ✓ rebuild and runtime filters use frozen skill classifications instead of current catalogue categories 8ms
+   × single-skill gambling multiplies both direct and attached periodic budgets once 12ms
+   ✓ offer context keeps resolved melee and main-stat tags and raises only active two-piece sets for full resonance 26ms
+   × gold atom cards describe their executed tier while special resonance keeps its own explicit description 7ms
+   ✓ a source multiplier on an omitted base stat keeps the frozen default after global defaults change 6ms
+ ✓ tests/build-variety-skill-patches.test.ts (18 tests) 15ms
+ ❯ tests/build-variety-effect-descriptions.test.ts (5 tests | 1 failed) 8ms
+   ✓ half-tier shield uses its actual armor coefficient while retaining its unscaled damage bonus 2ms
+   ✓ a single bone, bleed or suppression inscription does not claim a full set of passive bonuses 1ms
+   ✓ half-tier healing, movement charges and crit display executed values without scaling unrelated numbers 1ms
+   × set bonuses keep their separate two-piece stats and four-piece atoms accurately described 4ms
+   ✓ replaces original complete numeric tokens once rather than cascading or rewriting a suffix 0ms
+ ✓ tests/build-variety-builds.test.ts (19 tests) 261ms
+ ✓ tests/field-kill-talents.test.ts (4 tests) 74ms
+ ✓ tests/skill-progression.test.ts (9 tests) 55ms
+ ✓ tests/item-affix-power.test.ts (3 tests) 32ms
+ ✓ tests/aspect-description-consistency.test.ts (9 tests) 9ms
+ ✓ tests/build-variety-atom-parts.test.ts (6 tests) 9ms
+ ✓ tests/build-variety-inscriptions.test.ts (7 tests) 5ms
+ ✓ tests/build-variety-stat-conversions.test.ts (4 tests) 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/build-variety-effect-descriptions.test.ts > set bonuses keep their separate two-piece stats and four-piece atoms accurately described
+AssertionError: expected '攻击加成 +5%' to contain '10%'
+
+Expected: "10%"
+Received: "攻击加成 +5%"
+
+ ❯ tests/build-variety-effect-descriptions.test.ts:25:20
+     23|  const sword=describeUnifiedBonuses('set-sword-standard',1),bone=descr…
+     24|  expect(sword['2']).toContain('8%');expect(sword['4']).toContain('40%'…
+     25|  expect(bone['2']).toContain('10%');expect(bone['4']).toContain('+4%')…
+       |                    ^
+     26| });
+     27| it('replaces original complete numeric tokens once rather than cascadi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/build-variety-frozen-attributes.test.ts > single-skill gambling multiplies both direct and attached periodic budgets once
+AssertionError: expected 3646 to be 3708 // Object.is equality
+
+- Expected
++ Received
+
+- 3708
++ 3646
+
+ ❯ tests/build-variety-frozen-attributes.test.ts:43:72
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/build-variety-frozen-attributes.test.ts > gold atom cards describe their executed tier while special resonance keeps its own explicit description
+AssertionError: expected '流血最多3层，重复施加刷新时长。' to be '强化割裂4件效果' // Object.is equality
+
+Expected: "强化割裂4件效果"
+Received: "流血最多3层，重复施加刷新时长。"
+
+ ❯ tests/build-variety-frozen-attributes.test.ts:53:247
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed | 10 passed (12)
+      Tests  3 failed | 210 passed (213)
+   Start at  09:42:35
+   Duration  7.27s (transform 917ms, setup 0ms, import 4.42s, tests 1.59s, environment 1ms)
+

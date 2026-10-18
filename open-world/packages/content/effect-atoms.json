@@ -1,0 +1,1348 @@
+[
+  {
+    "id": "atom-ignite",
+    "name": "引燃",
+    "description": "火焰技能命中：燃烧 3 秒（30% 伤害）",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "hit",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {
+      "damageTypes": [
+        "fire"
+      ]
+    },
+    "action": {
+      "type": "status",
+      "status": "burn",
+      "duration": 90,
+      "strength": 0,
+      "ratio": 0.3
+    },
+    "vfxKey": "player/ember",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-flame-stack",
+    "name": "叠焰",
+    "description": "被动：燃烧最多叠 3 层",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "passive",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "buff",
+      "duration": 90,
+      "maxStacks": 1,
+      "mods": {},
+      "statusOverrides": {
+        "burn": {
+          "maxStacks": 3,
+          "stackMode": "refresh"
+        }
+      }
+    },
+    "vfxKey": "player/ember",
+    "scale": []
+  },
+  {
+    "id": "atom-detonate",
+    "name": "引爆",
+    "description": "火焰命中燃烧满层目标：引爆剩余燃烧，范围 2.5",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "hit",
+    "chance": 1,
+    "icd": 0,
+    "when": [
+      {
+        "kind": "target_status",
+        "statuses": [
+          "burn"
+        ],
+        "minStacks": 3
+      }
+    ],
+    "filter": {
+      "damageTypes": [
+        "fire"
+      ]
+    },
+    "action": {
+      "type": "detonate",
+      "statuses": [
+        "burn"
+      ],
+      "ratio": 1,
+      "remove": true,
+      "radius": 2.5
+    },
+    "vfxKey": "player/fireball",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-wildfire",
+    "name": "野火",
+    "description": "击杀燃烧目标：燃烧蔓延至附近 3 个",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "kill",
+    "chance": 1,
+    "icd": 0,
+    "when": [
+      {
+        "kind": "target_status",
+        "statuses": [
+          "burn"
+        ]
+      }
+    ],
+    "filter": {},
+    "action": {
+      "type": "spread",
+      "statuses": [
+        "burn"
+      ],
+      "radius": 3,
+      "count": 3
+    },
+    "vfxKey": "player/ember",
+    "scale": []
+  },
+  {
+    "id": "atom-fire-path",
+    "name": "火径",
+    "description": "位移后：路径留下火海 3 秒",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "dash",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "field",
+      "ratio": 0.3,
+      "damageType": "fire",
+      "radius": 0.8,
+      "duration": 90,
+      "interval": 30,
+      "at": "path"
+    },
+    "vfxKey": "player/ember",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-chill",
+    "name": "寒蚀",
+    "description": "冰霜命中：变慢 2 秒；第 3 次冰冻 1.5 秒",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "hit",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {
+      "damageTypes": [
+        "cold"
+      ]
+    },
+    "action": {
+      "type": "status",
+      "status": "slow",
+      "duration": 60,
+      "strength": 0.3,
+      "ratio": 0,
+      "maxStacks": 3,
+      "onStacks": {
+        "at": 3,
+        "convert": "freeze",
+        "duration": 45,
+        "consume": 3
+      }
+    },
+    "vfxKey": "player/frost",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-shatter",
+    "name": "碎冰",
+    "description": "冰冻的敌人死亡时碎裂，造成最大生命 10% 的范围伤害",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "kill",
+    "chance": 1,
+    "icd": 0,
+    "when": [
+      {
+        "kind": "target_status",
+        "statuses": [
+          "freeze"
+        ]
+      }
+    ],
+    "filter": {},
+    "action": {
+      "type": "nova",
+      "ratio": 0.1,
+      "radius": 2.5,
+      "damageType": "cold",
+      "at": "target",
+      "ref": "maxHp"
+    },
+    "vfxKey": "player/nova",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-ice-armor",
+    "name": "冰甲",
+    "description": "受击后获得相当于护甲 200% 的护盾，冷却 6 秒；护盾在时近身敌人变慢",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "hurt",
+    "chance": 1,
+    "icd": 180,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "shield",
+      "ratio": 2,
+      "ref": "armor",
+      "duration": 180,
+      "aura": {
+        "status": "slow",
+        "radius": 3,
+        "strength": 0.3
+      }
+    },
+    "vfxKey": "player/barrier",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-shock",
+    "name": "感电",
+    "description": "闪电命中：感电 3 秒（受到伤害 +12%）",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "hit",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {
+      "damageTypes": [
+        "lightning"
+      ]
+    },
+    "action": {
+      "type": "status",
+      "status": "shock",
+      "duration": 90,
+      "strength": 0.12,
+      "ratio": 0
+    },
+    "vfxKey": "player/chain",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-thunder",
+    "name": "落雷",
+    "description": "暴击，冷却 1 秒：召落雷（60%）",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "crit",
+    "chance": 1,
+    "icd": 30,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "nova",
+      "ratio": 0.6,
+      "radius": 2,
+      "damageType": "lightning",
+      "at": "target",
+      "ref": "hit"
+    },
+    "vfxKey": "player/chain",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-conduction",
+    "name": "不衰",
+    "description": "被动：传导每跳伤害不衰减",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "passive",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "buff",
+      "duration": 90,
+      "maxStacks": 1,
+      "mods": {},
+      "flags": {
+        "noChainDecay": true
+      }
+    },
+    "vfxKey": "player/chain",
+    "scale": []
+  },
+  {
+    "id": "atom-overload",
+    "name": "过载",
+    "description": "击杀感电目标：放电（50%，半径 3）",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "kill",
+    "chance": 1,
+    "icd": 0,
+    "when": [
+      {
+        "kind": "target_status",
+        "statuses": [
+          "shock"
+        ]
+      }
+    ],
+    "filter": {},
+    "action": {
+      "type": "nova",
+      "ratio": 0.5,
+      "radius": 3,
+      "damageType": "lightning",
+      "at": "target",
+      "ref": "hit"
+    },
+    "vfxKey": "player/chain",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-poison",
+    "name": "淬毒",
+    "description": "命中：中毒 3 秒（25%）",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "hit",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "status",
+      "status": "poison",
+      "duration": 90,
+      "strength": 0,
+      "ratio": 0.25
+    },
+    "vfxKey": "player/miasma",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-erosion",
+    "name": "蚀骨",
+    "description": "被动：中毒最多叠 5 层，独立计时",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "passive",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "buff",
+      "duration": 90,
+      "maxStacks": 1,
+      "mods": {},
+      "statusOverrides": {
+        "poison": {
+          "maxStacks": 5,
+          "stackMode": "independent"
+        }
+      }
+    },
+    "vfxKey": "player/miasma",
+    "scale": []
+  },
+  {
+    "id": "atom-poison-burst",
+    "name": "毒爆",
+    "description": "击杀中毒目标：爆炸，造成剩余毒伤 100%",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "kill",
+    "chance": 1,
+    "icd": 0,
+    "when": [
+      {
+        "kind": "target_status",
+        "statuses": [
+          "poison"
+        ]
+      }
+    ],
+    "filter": {},
+    "action": {
+      "type": "detonate",
+      "statuses": [
+        "poison"
+      ],
+      "ratio": 1,
+      "remove": false,
+      "radius": 2.5
+    },
+    "vfxKey": "player/toxic_bomb",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-poison-cloud",
+    "name": "毒云",
+    "description": "每 4 秒，周围 ≥ 3 敌：脚下毒云 3 秒",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "interval",
+    "chance": 1,
+    "icd": 0,
+    "when": [
+      {
+        "kind": "crowd",
+        "op": "gte",
+        "value": 3,
+        "radius": 4
+      }
+    ],
+    "filter": {},
+    "action": {
+      "type": "field",
+      "ratio": 0.3,
+      "damageType": "poison",
+      "radius": 3,
+      "duration": 90,
+      "interval": 30,
+      "at": "self"
+    },
+    "vfxKey": "player/miasma",
+    "scale": [
+      "action.ratio"
+    ],
+    "every": 120
+  },
+  {
+    "id": "atom-shadow-bite",
+    "name": "噬影",
+    "description": "暗影命中：致盲 2 秒（命中率 −15%）",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "hit",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {
+      "damageTypes": [
+        "shadow"
+      ]
+    },
+    "action": {
+      "type": "status",
+      "status": "blind",
+      "duration": 60,
+      "strength": 0.15,
+      "ratio": 0
+    },
+    "vfxKey": "player/night_veil",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-night-feast",
+    "name": "夜噬",
+    "description": "被动 · 目标致盲或恐惧时，暗影伤害提高 25%，并无视 15% 护甲",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "passive",
+    "chance": 1,
+    "icd": 0,
+    "when": [
+      {
+        "kind": "target_status",
+        "statuses": [
+          "blind",
+          "fear"
+        ]
+      }
+    ],
+    "filter": {
+      "damageTypes": [
+        "shadow"
+      ]
+    },
+    "action": {
+      "type": "amplify",
+      "ratio": 0.25,
+      "penetration": 0.15
+    },
+    "vfxKey": "player/shadow_blade",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-bleed",
+    "name": "割裂",
+    "description": "暴击：施加4秒流血（本次命中伤害的40%）",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "crit",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "status",
+      "status": "bleed",
+      "duration": 120,
+      "strength": 0,
+      "ratio": 0.4
+    },
+    "vfxKey": "player/execute",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-bloodthirst",
+    "name": "嗜血",
+    "description": "被动 · 目标流血时，伤害提高 25%",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "passive",
+    "chance": 1,
+    "icd": 0,
+    "when": [
+      {
+        "kind": "target_status",
+        "statuses": [
+          "bleed"
+        ]
+      }
+    ],
+    "filter": {},
+    "action": {
+      "type": "amplify",
+      "ratio": 0.25
+    },
+    "vfxKey": "player/execute",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-bloodletting",
+    "name": "放血",
+    "description": "击杀流血目标：回复 2% 生命",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "kill",
+    "chance": 1,
+    "icd": 0,
+    "when": [
+      {
+        "kind": "target_status",
+        "statuses": [
+          "bleed"
+        ]
+      }
+    ],
+    "filter": {},
+    "action": {
+      "type": "heal",
+      "ratio": 0.02,
+      "ref": "maxHp"
+    },
+    "vfxKey": "player/mend",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-opening",
+    "name": "先手",
+    "description": "首次命中新目标：必定暴击",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "passive",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "buff",
+      "duration": 90,
+      "maxStacks": 1,
+      "mods": {},
+      "flags": {
+        "forceCrit": true
+      },
+      "consume": "nextHit",
+      "firstPerTarget": 1
+    },
+    "vfxKey": "player/assassinate",
+    "scale": []
+  },
+  {
+    "id": "atom-edge",
+    "name": "余锋",
+    "description": "暴击，冷却 0.5 秒：追加一次 50% 伤害",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "crit",
+    "chance": 1,
+    "icd": 15,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "nova",
+      "ratio": 0.5,
+      "radius": 0.1,
+      "damageType": "physical",
+      "at": "target",
+      "ref": "hit",
+      "maxTargets": 1
+    },
+    "vfxKey": "player/cut",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-blade-dance",
+    "name": "刃舞",
+    "description": "暴击：迸出 2 枚飞刃（各 40%）",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "crit",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "shards",
+      "count": 2,
+      "ratio": 0.4,
+      "range": 6,
+      "damageType": "physical"
+    },
+    "vfxKey": "player/throwing_knife",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-focus",
+    "name": "专注",
+    "description": "静止 1 秒以上：暴击率 +15%",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "passive",
+    "chance": 1,
+    "icd": 0,
+    "when": [
+      {
+        "kind": "self_state",
+        "state": "still",
+        "value": 1
+      }
+    ],
+    "filter": {},
+    "action": {
+      "type": "buff",
+      "duration": 90,
+      "maxStacks": 1,
+      "mods": {
+        "critChance": 0.15
+      }
+    },
+    "vfxKey": "player/ward",
+    "scale": [
+      "action.mods.critChance"
+    ]
+  },
+  {
+    "id": "atom-split",
+    "name": "分光",
+    "description": "投射物命中，25%：分裂 2 支（各 35%）",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "hit",
+    "chance": 0.25,
+    "icd": 0,
+    "when": [],
+    "filter": {
+      "tags": [
+        "projectile"
+      ]
+    },
+    "action": {
+      "type": "shards",
+      "count": 2,
+      "ratio": 0.35,
+      "range": 6,
+      "damageType": "physical"
+    },
+    "vfxKey": "player/bolt",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-cascade",
+    "name": "连珠",
+    "description": "投射物技能施放，30%：0.4 秒后再射一轮（60%）",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "cast",
+    "chance": 0.3,
+    "icd": 0,
+    "when": [],
+    "filter": {
+      "tags": [
+        "projectile"
+      ]
+    },
+    "action": {
+      "type": "echo",
+      "ratio": 0.6,
+      "delay": 12,
+      "skill": "same"
+    },
+    "vfxKey": "player/bolt",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-return",
+    "name": "回旋",
+    "description": "被动：投射物命中后返回，可再次命中",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "passive",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "buff",
+      "duration": 90,
+      "maxStacks": 1,
+      "mods": {},
+      "patches": [
+        {
+          "tags": [
+            "projectile"
+          ],
+          "ops": [
+            {
+              "path": "mechanics.projectile.returns",
+              "op": "set",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "vfxKey": "player/bolt",
+    "scale": []
+  },
+  {
+    "id": "atom-arrow-stack",
+    "name": "叠矢",
+    "description": "投射物命中同一目标：+6% 伤害，最多 5 层",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "hit",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {
+      "tags": [
+        "projectile"
+      ]
+    },
+    "action": {
+      "type": "buff",
+      "duration": 90,
+      "maxStacks": 5,
+      "mods": {
+        "damageAdd": 0.06
+      },
+      "targetScoped": true,
+      "resetOnTarget": true
+    },
+    "vfxKey": "player/bolt",
+    "scale": [
+      "action.mods.damageAdd"
+    ]
+  },
+  {
+    "id": "atom-quake",
+    "name": "震波",
+    "description": "范围技能命中 ≥ 4 敌，冷却 1 秒：震波（50%，半径 2.5）",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "hit",
+    "chance": 1,
+    "icd": 30,
+    "when": [
+      {
+        "kind": "cast_hits",
+        "op": "gte",
+        "value": 4
+      }
+    ],
+    "filter": {
+      "tags": [
+        "area"
+      ]
+    },
+    "action": {
+      "type": "nova",
+      "ratio": 0.5,
+      "radius": 2.5,
+      "damageType": "physical",
+      "at": "target",
+      "ref": "hit"
+    },
+    "vfxKey": "player/ground_slam",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-gravity",
+    "name": "引力",
+    "description": "范围技能施放：把 4 格内敌人拉向中心",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "cast",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {
+      "tags": [
+        "area"
+      ]
+    },
+    "action": {
+      "type": "field",
+      "ratio": 0,
+      "damageType": "arcane",
+      "radius": 4,
+      "duration": 1,
+      "interval": 1,
+      "at": "target",
+      "pull": 4
+    },
+    "vfxKey": "player/gravity_well",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-aftershock",
+    "name": "余震",
+    "description": "击杀：余震（35%，半径 2.5）",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "kill",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "nova",
+      "ratio": 0.35,
+      "radius": 2.5,
+      "damageType": "physical",
+      "at": "target",
+      "ref": "hit"
+    },
+    "vfxKey": "player/ground_slam",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-afterimage",
+    "name": "残影",
+    "description": "单体 / 范围技能施放，25%：0.5 秒后残影重放（60%）",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "cast",
+    "chance": 0.25,
+    "icd": 0,
+    "when": [],
+    "filter": {
+      "tags": [
+        "single",
+        "area"
+      ]
+    },
+    "action": {
+      "type": "echo",
+      "ratio": 0.6,
+      "delay": 15,
+      "skill": "same"
+    },
+    "vfxKey": "player/phase_shift",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-time-return",
+    "name": "时回",
+    "description": "任意技能施放，20%：0.5 秒后重演（60%）",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "cast",
+    "chance": 0.2,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "echo",
+      "ratio": 0.6,
+      "delay": 15,
+      "skill": "same"
+    },
+    "vfxKey": "player/time_stop",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-battle-will",
+    "name": "战意",
+    "description": "击杀：该技能剩余冷却 −1 秒",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "kill",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "cooldown",
+      "mode": "current",
+      "ticks": 30
+    },
+    "vfxKey": "player/haste",
+    "scale": []
+  },
+  {
+    "id": "atom-time-sand",
+    "name": "时砂",
+    "description": "施放当前冷却最长的技能：重置其他技能冷却，效果冷却20秒",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "cast",
+    "chance": 1,
+    "icd": 600,
+    "when": [
+      {
+        "kind": "skill",
+        "longest": true
+      }
+    ],
+    "filter": {},
+    "action": {
+      "type": "cooldown",
+      "mode": "others",
+      "reset": true
+    },
+    "vfxKey": "player/time_stop",
+    "scale": []
+  },
+  {
+    "id": "atom-cycle",
+    "name": "连环",
+    "description": "每第 4 次施放：不消耗冷却",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "nth",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "cooldown",
+      "mode": "current",
+      "reset": true
+    },
+    "vfxKey": "player/haste",
+    "scale": [],
+    "count": "cast",
+    "every": 4
+  },
+  {
+    "id": "atom-energy",
+    "name": "汲能",
+    "description": "击杀：回复 3% 能量",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "kill",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "mana",
+      "ratio": 0.03,
+      "ref": "maxMana"
+    },
+    "vfxKey": "player/mend",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-overflow",
+    "name": "满溢",
+    "description": "被动 · 能量不低于一半时，伤害提高 20%",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "passive",
+    "chance": 1,
+    "icd": 0,
+    "when": [
+      {
+        "kind": "self_state",
+        "state": "mana",
+        "value": 0.5
+      }
+    ],
+    "filter": {},
+    "action": {
+      "type": "amplify",
+      "ratio": 0.2
+    },
+    "vfxKey": "player/arcane_missile",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-refund",
+    "name": "返流",
+    "description": "施放：消耗的 20% 返还",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "cast",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "mana",
+      "ratio": 0.2,
+      "ref": "cost"
+    },
+    "vfxKey": "player/mend",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-bulwark",
+    "name": "坚壁",
+    "description": "受击：获得相当于护甲 200% 的护盾，持续 3 秒；护盾在时伤害提高 20%，冷却 3 秒",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "hurt",
+    "chance": 1,
+    "icd": 90,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "shield",
+      "ratio": 2,
+      "ref": "armor",
+      "duration": 90,
+      "mods": {
+        "damageMult": 0.2
+      }
+    },
+    "vfxKey": "player/ward",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-thorns",
+    "name": "荆棘",
+    "description": "受击：按护甲反弹一次伤害",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "hurt",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "nova",
+      "ratio": 1,
+      "radius": 0,
+      "damageType": "physical",
+      "at": "target",
+      "ref": "armor",
+      "maxTargets": 1
+    },
+    "vfxKey": "player/counter_strike",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-bone",
+    "name": "狂骨",
+    "description": "每损失10%生命，伤害乘区额外 +4%，最多9层",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "passive",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "amplify",
+      "ratio": 0.04,
+      "selfHpSteps": 0.1,
+      "maxSteps": 9
+    },
+    "vfxKey": "player/blood_rage",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-desperate",
+    "name": "绝境",
+    "description": "生命低于 30%，冷却 60 秒：护盾 30% 生命，3 秒内吸血翻倍",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "low_hp",
+    "chance": 1,
+    "icd": 1800,
+    "when": [
+      {
+        "kind": "self_hp",
+        "op": "lt",
+        "value": 0.3
+      }
+    ],
+    "filter": {},
+    "action": {
+      "type": "shield",
+      "ratio": 0.3,
+      "ref": "maxHp",
+      "duration": 90,
+      "mods": {
+        "lifestealMultiplier": 2
+      }
+    },
+    "vfxKey": "player/guardian_angel",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-drinking",
+    "name": "饮血",
+    "description": "击杀：回复3%最大生命，溢出治疗的20%转为护盾",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "kill",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "heal",
+      "ratio": 0.03,
+      "ref": "maxHp",
+      "overflowShield": 0.2
+    },
+    "vfxKey": "player/mend",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-evasion",
+    "name": "疾影",
+    "description": "闪避或位移后：下一次技能必定暴击，持续3秒，效果冷却4秒",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "dash",
+    "chance": 1,
+    "icd": 120,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "buff",
+      "duration": 90,
+      "maxStacks": 1,
+      "mods": {},
+      "flags": {
+        "forceCrit": true
+      },
+      "consume": "nextCast"
+    },
+    "vfxKey": "player/shadow_step",
+    "scale": [],
+    "also": [
+      "dodge"
+    ]
+  },
+  {
+    "id": "atom-whirl-edge",
+    "name": "旋锋",
+    "description": "移动时每秒叠1层，下次近战命中每层伤害 +15%，最多5层，命中后消耗",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "interval",
+    "chance": 1,
+    "icd": 0,
+    "when": [
+      {
+        "kind": "self_state",
+        "state": "moving",
+        "value": 0
+      }
+    ],
+    "filter": {},
+    "action": {
+      "type": "buff",
+      "duration": 3600,
+      "maxStacks": 5,
+      "mods": {
+        "damageMult": 0.15
+      },
+      "consume": "nextMelee"
+    },
+    "vfxKey": "player/whirl",
+    "scale": [
+      "action.mods.damageMult"
+    ],
+    "every": 30
+  },
+  {
+    "id": "atom-tailwind",
+    "name": "追风",
+    "description": "击杀：移速 +20%，2 秒",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "kill",
+    "chance": 1,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "buff",
+      "duration": 60,
+      "maxStacks": 1,
+      "mods": {
+        "speedPercent": 0.2
+      }
+    },
+    "vfxKey": "player/haste",
+    "scale": [
+      "action.mods.speedPercent"
+    ]
+  },
+  {
+    "id": "atom-suppress",
+    "name": "镇压",
+    "description": "对被控住的敌人伤害提高 25%",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "passive",
+    "chance": 1,
+    "icd": 0,
+    "when": [
+      {
+        "kind": "target_status",
+        "statuses": [
+          "stun",
+          "root",
+          "petrify",
+          "slow",
+          "fear",
+          "time_stop",
+          "freeze"
+        ]
+      }
+    ],
+    "filter": {},
+    "action": {
+      "type": "amplify",
+      "ratio": 0.25
+    },
+    "vfxKey": "player/stun_strike",
+    "scale": [
+      "action.ratio"
+    ]
+  },
+  {
+    "id": "atom-terror",
+    "name": "震慑",
+    "description": "眩晕敌人时，30%：再眩晕附近 1 个",
+    "source": "原子",
+    "tier": 1,
+    "trigger": "status_apply",
+    "chance": 0.3,
+    "icd": 0,
+    "when": [],
+    "filter": {},
+    "action": {
+      "type": "spread",
+      "statuses": [
+        "stun"
+      ],
+      "radius": 3,
+      "count": 1
+    },
+    "vfxKey": "player/stun_strike",
+    "scale": [],
+    "status": "stun"
+  }
+]

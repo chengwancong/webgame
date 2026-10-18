@@ -1,0 +1,11 @@
+import type {Stats,Skill} from '../../../../packages/contracts/index.ts';
+import {damageBreakdown,type RuleTelemetry,type BreakdownRow} from '../damage-breakdown-model.ts';
+import {sectionTitleHtml,statRowHtml,esc,stateBlockHtml} from '../ui-components.ts';
+import {formatBig} from '../../../../packages/content/big-number.ts';
+const num=(n:number)=>String(Math.round(n*10000)/10000),percent=(n:number)=>String(Math.round(n*10000)/100)+'%';
+export function DamageBreakdown(stats:Stats,skills:Skill[],telemetry:RuleTelemetry|null=null,sourceNames:Record<string,string>={}){
+ const data=damageBreakdown(stats,skills,telemetry,sourceNames),rows=(values:BreakdownRow[])=>values.map(row=>statRowHtml({label:row.label,value:row.unit==='percent'?'+'+percent(row.value):row.unit==='multiple'?num(row.value)+' 倍':formatBig(row.value),className:'character-extended-stat',...(row.detail?{secondary:row.detail}:{})})).join('');
+ const section=(name:string,values:BreakdownRow[],empty:string)=>sectionTitleHtml(name)+(values.length?rows(values):`<p class="character-detail-empty">${esc(empty)}</p>`);
+ const ruleRows=data.rules?.filter(r=>r.count>0||r.damage>0).map(r=>`<li data-breakdown-rule="${esc(r.id)}">${esc(r.name)} · <b>${num(r.count)} 次</b>${r.damage>0?' · 伤害 <b>'+formatBig(r.damage)+'</b>':''}${r.source?' <small>'+esc(r.source)+'</small>':''}</li>`).join('');
+ return `<section class="character-effects character-zones character-damage-breakdown" aria-label="伤害构成">${section('类型增伤',data.types,'暂无类型增伤')}${section('条件增伤',data.conditional,'暂无条件增伤')}<p>条件满足时生效，多项加成会一起生效。</p>${sectionTitleHtml('易伤与暴击')}${statRowHtml({label:'易伤效果增幅',value:'+'+percent(data.vulnerableBonus),className:'character-extended-stat'})}<p>目标已有易伤或感电时生效。</p>${statRowHtml({label:'暴击率',value:percent(data.critical.chance),className:'character-extended-stat'})}${statRowHtml({label:'暴击伤害',value:num(data.critical.multiplier)+' 倍',className:'character-extended-stat'})}${section('额外伤害加成',data.independent,'暂无额外伤害加成')}${section('技能伤害',data.skills,'暂无造成伤害的技能')}<p>各次命中的伤害会分别显示，敌人的护甲和抗性会影响实际结果。</p>${sectionTitleHtml('本场效果触发')}${data.rules===null?stateBlockHtml({kind:'empty',title:'尚未收到本场统计',message:'进入战斗后显示真实触发次数与效果伤害。',compact:true}):ruleRows?'<ul>'+ruleRows+'</ul>':'<p class="character-detail-empty">本场尚未触发效果</p>'}</section>`;
+}

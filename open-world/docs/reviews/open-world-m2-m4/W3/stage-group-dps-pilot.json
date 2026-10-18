@@ -1,0 +1,3685 @@
+{
+  "versions": {
+    "client": "0.11.14",
+    "protocol": 30,
+    "rules": "ow-55",
+    "assets": "world-art-20261007-v24-world-runtime",
+    "db": 16
+  },
+  "generated": "2026-10-07T08:30:43.415Z",
+  "modelSha256": "25ab67c0428780f3d3eb73860ee23cbc66afe1ece2578af62bd3995da1d0bdf8",
+  "template": "ss-mon-dusk-blade",
+  "samples": 16,
+  "rows": [
+    {
+      "stage": 1,
+      "phases": [
+        {
+          "phase": "clear",
+          "minutes": 6.033709273838165,
+          "level": 2,
+          "requestedSkills": [
+            "cut",
+            "whirl",
+            "ward"
+          ],
+          "skillRanks": {
+            "cut": 1,
+            "whirl": 1,
+            "ward": 1
+          },
+          "build": {
+            "stats": {
+              "weapon": "sword",
+              "hp": 227,
+              "attack": 30,
+              "armor": 6,
+              "speed": 6,
+              "mana": 107,
+              "regen": 11,
+              "effects": [],
+              "allResist": 0.02771999999999997,
+              "igniteChance": 0.025679999999999988,
+              "manaOnKill": 1.974,
+              "poisonChance": 0.02912999999999994,
+              "bleedChance": 0.028319999999999977,
+              "lifeOnKill": 0.004931999999999992,
+              "shockChance": 0.028409999999999956,
+              "chillChance": 0.02753999999999996,
+              "rules": [
+                {
+                  "id": "innate-sword-qi",
+                  "name": "剑气",
+                  "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                  "source": "剑势流 · 固有",
+                  "tier": 1,
+                  "trigger": "nth",
+                  "chance": 1,
+                  "icd": 0,
+                  "every": 3,
+                  "count": "hit",
+                  "filter": {
+                    "weapons": [
+                      "sword"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "nova",
+                    "ratio": 0.35,
+                    "radius": 2.2,
+                    "damageType": "physical",
+                    "ref": "hit",
+                    "at": "target",
+                    "vfx": "combo/sword-qi"
+                  },
+                  "scale": [
+                    "action.ratio"
+                  ],
+                  "vfxKey": "combo/sword-qi"
+                },
+                {
+                  "id": "stat-igniteChance",
+                  "name": "点燃几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.025679999999999988,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "burn",
+                    "duration": 90,
+                    "strength": 0,
+                    "ratio": 0.3
+                  },
+                  "scale": [],
+                  "vfxKey": "player/ember"
+                },
+                {
+                  "id": "stat-chillChance",
+                  "name": "冰缓几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.02753999999999996,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "slow",
+                    "duration": 60,
+                    "strength": 0.3,
+                    "ratio": 0
+                  },
+                  "scale": [],
+                  "vfxKey": "player/frost"
+                },
+                {
+                  "id": "stat-shockChance",
+                  "name": "感电几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.028409999999999956,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "shock",
+                    "duration": 90,
+                    "strength": 0.12,
+                    "ratio": 0
+                  },
+                  "scale": [],
+                  "vfxKey": "player/chain"
+                },
+                {
+                  "id": "stat-poisonChance",
+                  "name": "中毒几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.02912999999999994,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "poison",
+                    "duration": 90,
+                    "strength": 0,
+                    "ratio": 0.3
+                  },
+                  "scale": [],
+                  "vfxKey": "player/poison_arrow"
+                },
+                {
+                  "id": "stat-bleedChance",
+                  "name": "流血几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.028319999999999977,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "bleed",
+                    "duration": 90,
+                    "strength": 0,
+                    "ratio": 0.3
+                  },
+                  "scale": [],
+                  "vfxKey": "player/execute"
+                },
+                {
+                  "id": "stat-manaOnKill",
+                  "name": "击杀回复灵力",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "kill",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "mana",
+                    "ratio": 0,
+                    "ref": "maxMana",
+                    "flat": 1.974
+                  },
+                  "scale": [],
+                  "vfxKey": "player/mend"
+                },
+                {
+                  "id": "stat-lifeOnKill",
+                  "name": "击杀回复生命",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "kill",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "heal",
+                    "ratio": 0.004931999999999992,
+                    "ref": "maxHp"
+                  },
+                  "scale": [],
+                  "vfxKey": "player/mend"
+                }
+              ],
+              "zones": [
+                {
+                  "id": "mastery",
+                  "label": "等级精通",
+                  "kind": "add",
+                  "value": 0.03
+                }
+              ],
+              "damageAdd": 0.03,
+              "damageMult": 1,
+              "combos": [
+                {
+                  "id": "innate-sword-qi",
+                  "name": "剑气",
+                  "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                  "source": "剑势流 · 固有",
+                  "weapons": [
+                    "sword"
+                  ],
+                  "trigger": "nth",
+                  "chance": 1,
+                  "cooldown": 0,
+                  "every": 3,
+                  "action": {
+                    "type": "nova",
+                    "radius": 2.2,
+                    "ratio": 0.35,
+                    "damageType": "physical",
+                    "vfx": "combo/sword-qi"
+                  }
+                }
+              ]
+            },
+            "skills": [
+              {
+                "id": "cut",
+                "category": "melee",
+                "unlockLevel": 1,
+                "name": "斩击",
+                "kind": "single",
+                "damage": 64,
+                "range": 3,
+                "radius": 0,
+                "cooldown": 24,
+                "cost": 0,
+                "windup": 3,
+                "duration": 0,
+                "description": "近距离斩击",
+                "weapons": [
+                  "sword"
+                ],
+                "mechanics": {
+                  "damageType": "physical",
+                  "targeting": "enemy",
+                  "statuses": []
+                },
+                "tags": [
+                  "melee",
+                  "physical",
+                  "single"
+                ],
+                "resolution": {
+                  "attackShare": 1,
+                  "baseCooldown": 24,
+                  "skillCooldownReduction": 0,
+                  "statsCooldownReduction": 0,
+                  "effectiveCooldownReduction": 0,
+                  "cooldownCap": 0.75,
+                  "finalCooldown": 24
+                }
+              },
+              {
+                "id": "whirl",
+                "category": "melee",
+                "unlockLevel": 2,
+                "name": "旋风斩",
+                "kind": "area",
+                "damage": 55,
+                "range": 0,
+                "radius": 4.5,
+                "cooldown": 75,
+                "cost": 15,
+                "windup": 7,
+                "duration": 0,
+                "description": "清剿身边敌群",
+                "weapons": [
+                  "sword"
+                ],
+                "mechanics": {
+                  "damageType": "physical",
+                  "targeting": "enemy",
+                  "statuses": []
+                },
+                "tags": [
+                  "melee",
+                  "physical",
+                  "area"
+                ],
+                "resolution": {
+                  "attackShare": 1,
+                  "baseCooldown": 75,
+                  "skillCooldownReduction": 0,
+                  "statsCooldownReduction": 0,
+                  "effectiveCooldownReduction": 0,
+                  "cooldownCap": 0.75,
+                  "finalCooldown": 75
+                }
+              },
+              {
+                "id": "ward",
+                "category": "support",
+                "unlockLevel": 1,
+                "name": "护身印",
+                "kind": "shield",
+                "damage": 45,
+                "range": 0,
+                "radius": 0,
+                "cooldown": 240,
+                "cost": 15,
+                "windup": 1,
+                "duration": 168,
+                "description": "吸收伤害",
+                "weapons": [],
+                "mechanics": {
+                  "damageType": "physical",
+                  "targeting": "self",
+                  "statuses": []
+                },
+                "resolution": {
+                  "attackShare": 0,
+                  "baseCooldown": 240,
+                  "skillCooldownReduction": 0,
+                  "statsCooldownReduction": 0,
+                  "effectiveCooldownReduction": 0,
+                  "cooldownCap": 0.75,
+                  "finalCooldown": 240
+                }
+              }
+            ]
+          },
+          "groups": [
+            {
+              "count": 1,
+              "valid": true,
+              "meanDps": 113.86666666666666,
+              "samples": [
+                {
+                  "seed": 41,
+                  "dps": 113.86666666666666,
+                  "failed": null,
+                  "seconds": 30,
+                  "incomingDamage": 0,
+                  "casts": {
+                    "cut": 36,
+                    "whirl": 12,
+                    "ward": 4
+                  },
+                  "castFailures": {},
+                  "damage": {
+                    "direct": 2995,
+                    "periodic": 78,
+                    "derived": 343
+                  },
+                  "damageBySkill": {
+                    "whirl": {
+                      "direct": 667,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 12
+                    },
+                    "cut": {
+                      "direct": 2328,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 36
+                    },
+                    "combo/sword-qi": {
+                      "direct": 0,
+                      "periodic": 0,
+                      "derived": 343,
+                      "hits": 16
+                    },
+                    "stat-bleedChance": {
+                      "direct": 0,
+                      "periodic": 37,
+                      "derived": 0,
+                      "hits": 6
+                    },
+                    "stat-igniteChance": {
+                      "direct": 0,
+                      "periodic": 19,
+                      "derived": 0,
+                      "hits": 3
+                    },
+                    "stat-poisonChance": {
+                      "direct": 0,
+                      "periodic": 22,
+                      "derived": 0,
+                      "hits": 3
+                    }
+                  },
+                  "hero": {
+                    "hp": 227,
+                    "mana": 107
+                  },
+                  "requested": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ],
+                  "executed": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ]
+                }
+              ],
+              "ratioToSingle": 1
+            },
+            {
+              "count": 5,
+              "valid": true,
+              "meanDps": 242.96666666666667,
+              "samples": [
+                {
+                  "seed": 41,
+                  "dps": 242.96666666666667,
+                  "failed": null,
+                  "seconds": 30,
+                  "incomingDamage": 0,
+                  "casts": {
+                    "cut": 36,
+                    "whirl": 12,
+                    "ward": 4
+                  },
+                  "castFailures": {},
+                  "damage": {
+                    "direct": 5453,
+                    "periodic": 147,
+                    "derived": 1689
+                  },
+                  "damageBySkill": {
+                    "whirl": {
+                      "direct": 3149,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 57
+                    },
+                    "cut": {
+                      "direct": 2304,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 36
+                    },
+                    "combo/sword-qi": {
+                      "direct": 0,
+                      "periodic": 0,
+                      "derived": 1689,
+                      "hits": 79
+                    },
+                    "stat-bleedChance": {
+                      "direct": 0,
+                      "periodic": 46,
+                      "derived": 0,
+                      "hits": 8
+                    },
+                    "stat-igniteChance": {
+                      "direct": 0,
+                      "periodic": 67,
+                      "derived": 0,
+                      "hits": 11
+                    },
+                    "stat-poisonChance": {
+                      "direct": 0,
+                      "periodic": 34,
+                      "derived": 0,
+                      "hits": 6
+                    }
+                  },
+                  "hero": {
+                    "hp": 227,
+                    "mana": 107
+                  },
+                  "requested": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ],
+                  "executed": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ]
+                }
+              ],
+              "ratioToSingle": 2.133782201405152
+            },
+            {
+              "count": 10,
+              "valid": true,
+              "meanDps": 394.6333333333333,
+              "samples": [
+                {
+                  "seed": 41,
+                  "dps": 394.6333333333333,
+                  "failed": null,
+                  "seconds": 30,
+                  "incomingDamage": 0,
+                  "casts": {
+                    "cut": 36,
+                    "whirl": 12,
+                    "ward": 4
+                  },
+                  "castFailures": {},
+                  "damage": {
+                    "direct": 8657,
+                    "periodic": 169,
+                    "derived": 3013
+                  },
+                  "damageBySkill": {
+                    "whirl": {
+                      "direct": 6353,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 115
+                    },
+                    "cut": {
+                      "direct": 2304,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 36
+                    },
+                    "combo/sword-qi": {
+                      "direct": 0,
+                      "periodic": 0,
+                      "derived": 3013,
+                      "hits": 141
+                    },
+                    "stat-bleedChance": {
+                      "direct": 0,
+                      "periodic": 65,
+                      "derived": 0,
+                      "hits": 11
+                    },
+                    "stat-igniteChance": {
+                      "direct": 0,
+                      "periodic": 70,
+                      "derived": 0,
+                      "hits": 12
+                    },
+                    "stat-poisonChance": {
+                      "direct": 0,
+                      "periodic": 34,
+                      "derived": 0,
+                      "hits": 6
+                    }
+                  },
+                  "hero": {
+                    "hp": 227,
+                    "mana": 107
+                  },
+                  "requested": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ],
+                  "executed": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ]
+                }
+              ],
+              "ratioToSingle": 3.4657494145199066
+            },
+            {
+              "count": 20,
+              "valid": true,
+              "meanDps": 553.2666666666667,
+              "samples": [
+                {
+                  "seed": 41,
+                  "dps": 553.2666666666667,
+                  "failed": null,
+                  "seconds": 30,
+                  "incomingDamage": 0,
+                  "casts": {
+                    "cut": 36,
+                    "whirl": 12,
+                    "ward": 4
+                  },
+                  "castFailures": {},
+                  "damage": {
+                    "direct": 12428,
+                    "periodic": 336,
+                    "derived": 3834
+                  },
+                  "damageBySkill": {
+                    "whirl": {
+                      "direct": 10100,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 183
+                    },
+                    "cut": {
+                      "direct": 2328,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 36
+                    },
+                    "combo/sword-qi": {
+                      "direct": 0,
+                      "periodic": 0,
+                      "derived": 3834,
+                      "hits": 178
+                    },
+                    "stat-bleedChance": {
+                      "direct": 0,
+                      "periodic": 147,
+                      "derived": 0,
+                      "hits": 25
+                    },
+                    "stat-igniteChance": {
+                      "direct": 0,
+                      "periodic": 136,
+                      "derived": 0,
+                      "hits": 24
+                    },
+                    "stat-poisonChance": {
+                      "direct": 0,
+                      "periodic": 53,
+                      "derived": 0,
+                      "hits": 9
+                    }
+                  },
+                  "hero": {
+                    "hp": 227,
+                    "mana": 107
+                  },
+                  "requested": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ],
+                  "executed": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ]
+                }
+              ],
+              "ratioToSingle": 4.858899297423887
+            }
+          ]
+        },
+        {
+          "phase": "end",
+          "minutes": 17.957468076899296,
+          "level": 4,
+          "requestedSkills": [
+            "cut",
+            "whirl",
+            "ward"
+          ],
+          "skillRanks": {
+            "cut": 1,
+            "whirl": 1,
+            "ward": 1
+          },
+          "build": {
+            "stats": {
+              "weapon": "sword",
+              "hp": 269,
+              "attack": 34,
+              "armor": 6,
+              "speed": 6,
+              "mana": 107,
+              "regen": 11,
+              "effects": [],
+              "allResist": 0.02771999999999997,
+              "igniteChance": 0.025679999999999988,
+              "manaOnKill": 1.974,
+              "poisonChance": 0.02912999999999994,
+              "bleedChance": 0.028319999999999977,
+              "lifeOnKill": 0.004931999999999992,
+              "shockChance": 0.028409999999999956,
+              "chillChance": 0.02753999999999996,
+              "rules": [
+                {
+                  "id": "innate-sword-qi",
+                  "name": "剑气",
+                  "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                  "source": "剑势流 · 固有",
+                  "tier": 1,
+                  "trigger": "nth",
+                  "chance": 1,
+                  "icd": 0,
+                  "every": 3,
+                  "count": "hit",
+                  "filter": {
+                    "weapons": [
+                      "sword"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "nova",
+                    "ratio": 0.35,
+                    "radius": 2.2,
+                    "damageType": "physical",
+                    "ref": "hit",
+                    "at": "target",
+                    "vfx": "combo/sword-qi"
+                  },
+                  "scale": [
+                    "action.ratio"
+                  ],
+                  "vfxKey": "combo/sword-qi"
+                },
+                {
+                  "id": "stat-igniteChance",
+                  "name": "点燃几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.025679999999999988,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "burn",
+                    "duration": 90,
+                    "strength": 0,
+                    "ratio": 0.3
+                  },
+                  "scale": [],
+                  "vfxKey": "player/ember"
+                },
+                {
+                  "id": "stat-chillChance",
+                  "name": "冰缓几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.02753999999999996,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "slow",
+                    "duration": 60,
+                    "strength": 0.3,
+                    "ratio": 0
+                  },
+                  "scale": [],
+                  "vfxKey": "player/frost"
+                },
+                {
+                  "id": "stat-shockChance",
+                  "name": "感电几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.028409999999999956,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "shock",
+                    "duration": 90,
+                    "strength": 0.12,
+                    "ratio": 0
+                  },
+                  "scale": [],
+                  "vfxKey": "player/chain"
+                },
+                {
+                  "id": "stat-poisonChance",
+                  "name": "中毒几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.02912999999999994,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "poison",
+                    "duration": 90,
+                    "strength": 0,
+                    "ratio": 0.3
+                  },
+                  "scale": [],
+                  "vfxKey": "player/poison_arrow"
+                },
+                {
+                  "id": "stat-bleedChance",
+                  "name": "流血几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.028319999999999977,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "bleed",
+                    "duration": 90,
+                    "strength": 0,
+                    "ratio": 0.3
+                  },
+                  "scale": [],
+                  "vfxKey": "player/execute"
+                },
+                {
+                  "id": "stat-manaOnKill",
+                  "name": "击杀回复灵力",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "kill",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "mana",
+                    "ratio": 0,
+                    "ref": "maxMana",
+                    "flat": 1.974
+                  },
+                  "scale": [],
+                  "vfxKey": "player/mend"
+                },
+                {
+                  "id": "stat-lifeOnKill",
+                  "name": "击杀回复生命",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "kill",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "heal",
+                    "ratio": 0.004931999999999992,
+                    "ref": "maxHp"
+                  },
+                  "scale": [],
+                  "vfxKey": "player/mend"
+                }
+              ],
+              "zones": [
+                {
+                  "id": "mastery",
+                  "label": "等级精通",
+                  "kind": "add",
+                  "value": 0.09
+                }
+              ],
+              "damageAdd": 0.09,
+              "damageMult": 1,
+              "combos": [
+                {
+                  "id": "innate-sword-qi",
+                  "name": "剑气",
+                  "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                  "source": "剑势流 · 固有",
+                  "weapons": [
+                    "sword"
+                  ],
+                  "trigger": "nth",
+                  "chance": 1,
+                  "cooldown": 0,
+                  "every": 3,
+                  "action": {
+                    "type": "nova",
+                    "radius": 2.2,
+                    "ratio": 0.35,
+                    "damageType": "physical",
+                    "vfx": "combo/sword-qi"
+                  }
+                }
+              ]
+            },
+            "skills": [
+              {
+                "id": "cut",
+                "category": "melee",
+                "unlockLevel": 1,
+                "name": "斩击",
+                "kind": "single",
+                "damage": 77,
+                "range": 3,
+                "radius": 0,
+                "cooldown": 24,
+                "cost": 0,
+                "windup": 3,
+                "duration": 0,
+                "description": "近距离斩击",
+                "weapons": [
+                  "sword"
+                ],
+                "mechanics": {
+                  "damageType": "physical",
+                  "targeting": "enemy",
+                  "statuses": []
+                },
+                "tags": [
+                  "melee",
+                  "physical",
+                  "single"
+                ],
+                "resolution": {
+                  "attackShare": 1,
+                  "baseCooldown": 24,
+                  "skillCooldownReduction": 0,
+                  "statsCooldownReduction": 0,
+                  "effectiveCooldownReduction": 0,
+                  "cooldownCap": 0.75,
+                  "finalCooldown": 24
+                }
+              },
+              {
+                "id": "whirl",
+                "category": "melee",
+                "unlockLevel": 2,
+                "name": "旋风斩",
+                "kind": "area",
+                "damage": 66,
+                "range": 0,
+                "radius": 4.5,
+                "cooldown": 75,
+                "cost": 15,
+                "windup": 7,
+                "duration": 0,
+                "description": "清剿身边敌群",
+                "weapons": [
+                  "sword"
+                ],
+                "mechanics": {
+                  "damageType": "physical",
+                  "targeting": "enemy",
+                  "statuses": []
+                },
+                "tags": [
+                  "melee",
+                  "physical",
+                  "area"
+                ],
+                "resolution": {
+                  "attackShare": 1,
+                  "baseCooldown": 75,
+                  "skillCooldownReduction": 0,
+                  "statsCooldownReduction": 0,
+                  "effectiveCooldownReduction": 0,
+                  "cooldownCap": 0.75,
+                  "finalCooldown": 75
+                }
+              },
+              {
+                "id": "ward",
+                "category": "support",
+                "unlockLevel": 1,
+                "name": "护身印",
+                "kind": "shield",
+                "damage": 54,
+                "range": 0,
+                "radius": 0,
+                "cooldown": 240,
+                "cost": 15,
+                "windup": 1,
+                "duration": 168,
+                "description": "吸收伤害",
+                "weapons": [],
+                "mechanics": {
+                  "damageType": "physical",
+                  "targeting": "self",
+                  "statuses": []
+                },
+                "resolution": {
+                  "attackShare": 0,
+                  "baseCooldown": 240,
+                  "skillCooldownReduction": 0,
+                  "statsCooldownReduction": 0,
+                  "effectiveCooldownReduction": 0,
+                  "cooldownCap": 0.75,
+                  "finalCooldown": 240
+                }
+              }
+            ]
+          },
+          "groups": [
+            {
+              "count": 1,
+              "valid": true,
+              "meanDps": 137.03333333333333,
+              "samples": [
+                {
+                  "seed": 41,
+                  "dps": 137.03333333333333,
+                  "failed": null,
+                  "seconds": 30,
+                  "incomingDamage": 0,
+                  "casts": {
+                    "cut": 36,
+                    "whirl": 12,
+                    "ward": 4
+                  },
+                  "castFailures": {},
+                  "damage": {
+                    "direct": 3599,
+                    "periodic": 93,
+                    "derived": 419
+                  },
+                  "damageBySkill": {
+                    "whirl": {
+                      "direct": 800,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 12
+                    },
+                    "cut": {
+                      "direct": 2799,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 36
+                    },
+                    "combo/sword-qi": {
+                      "direct": 0,
+                      "periodic": 0,
+                      "derived": 419,
+                      "hits": 16
+                    },
+                    "stat-bleedChance": {
+                      "direct": 0,
+                      "periodic": 44,
+                      "derived": 0,
+                      "hits": 6
+                    },
+                    "stat-igniteChance": {
+                      "direct": 0,
+                      "periodic": 23,
+                      "derived": 0,
+                      "hits": 3
+                    },
+                    "stat-poisonChance": {
+                      "direct": 0,
+                      "periodic": 26,
+                      "derived": 0,
+                      "hits": 3
+                    }
+                  },
+                  "hero": {
+                    "hp": 269,
+                    "mana": 107
+                  },
+                  "requested": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ],
+                  "executed": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ]
+                }
+              ],
+              "ratioToSingle": 1
+            },
+            {
+              "count": 5,
+              "valid": true,
+              "meanDps": 293,
+              "samples": [
+                {
+                  "seed": 41,
+                  "dps": 293,
+                  "failed": null,
+                  "seconds": 30,
+                  "incomingDamage": 0,
+                  "casts": {
+                    "cut": 36,
+                    "whirl": 12,
+                    "ward": 4
+                  },
+                  "castFailures": {},
+                  "damage": {
+                    "direct": 6550,
+                    "periodic": 175,
+                    "derived": 2065
+                  },
+                  "damageBySkill": {
+                    "whirl": {
+                      "direct": 3778,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 57
+                    },
+                    "cut": {
+                      "direct": 2772,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 36
+                    },
+                    "combo/sword-qi": {
+                      "direct": 0,
+                      "periodic": 0,
+                      "derived": 2065,
+                      "hits": 79
+                    },
+                    "stat-bleedChance": {
+                      "direct": 0,
+                      "periodic": 55,
+                      "derived": 0,
+                      "hits": 8
+                    },
+                    "stat-igniteChance": {
+                      "direct": 0,
+                      "periodic": 80,
+                      "derived": 0,
+                      "hits": 11
+                    },
+                    "stat-poisonChance": {
+                      "direct": 0,
+                      "periodic": 40,
+                      "derived": 0,
+                      "hits": 6
+                    }
+                  },
+                  "hero": {
+                    "hp": 269,
+                    "mana": 107
+                  },
+                  "requested": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ],
+                  "executed": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ]
+                }
+              ],
+              "ratioToSingle": 2.1381658963755776
+            },
+            {
+              "count": 10,
+              "valid": true,
+              "meanDps": 475.96666666666664,
+              "samples": [
+                {
+                  "seed": 41,
+                  "dps": 475.96666666666664,
+                  "failed": null,
+                  "seconds": 30,
+                  "incomingDamage": 0,
+                  "casts": {
+                    "cut": 36,
+                    "whirl": 12,
+                    "ward": 4
+                  },
+                  "castFailures": {},
+                  "damage": {
+                    "direct": 10394,
+                    "periodic": 201,
+                    "derived": 3684
+                  },
+                  "damageBySkill": {
+                    "whirl": {
+                      "direct": 7622,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 115
+                    },
+                    "cut": {
+                      "direct": 2772,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 36
+                    },
+                    "combo/sword-qi": {
+                      "direct": 0,
+                      "periodic": 0,
+                      "derived": 3684,
+                      "hits": 141
+                    },
+                    "stat-bleedChance": {
+                      "direct": 0,
+                      "periodic": 78,
+                      "derived": 0,
+                      "hits": 11
+                    },
+                    "stat-igniteChance": {
+                      "direct": 0,
+                      "periodic": 83,
+                      "derived": 0,
+                      "hits": 12
+                    },
+                    "stat-poisonChance": {
+                      "direct": 0,
+                      "periodic": 40,
+                      "derived": 0,
+                      "hits": 6
+                    }
+                  },
+                  "hero": {
+                    "hp": 269,
+                    "mana": 107
+                  },
+                  "requested": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ],
+                  "executed": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ]
+                }
+              ],
+              "ratioToSingle": 3.473364144976891
+            },
+            {
+              "count": 20,
+              "valid": true,
+              "meanDps": 666.7333333333333,
+              "samples": [
+                {
+                  "seed": 41,
+                  "dps": 666.7333333333333,
+                  "failed": null,
+                  "seconds": 30,
+                  "incomingDamage": 0,
+                  "casts": {
+                    "cut": 36,
+                    "whirl": 12,
+                    "ward": 4
+                  },
+                  "castFailures": {},
+                  "damage": {
+                    "direct": 14917,
+                    "periodic": 396,
+                    "derived": 4689
+                  },
+                  "damageBySkill": {
+                    "whirl": {
+                      "direct": 12118,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 183
+                    },
+                    "cut": {
+                      "direct": 2799,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 36
+                    },
+                    "combo/sword-qi": {
+                      "direct": 0,
+                      "periodic": 0,
+                      "derived": 4689,
+                      "hits": 178
+                    },
+                    "stat-bleedChance": {
+                      "direct": 0,
+                      "periodic": 174,
+                      "derived": 0,
+                      "hits": 25
+                    },
+                    "stat-igniteChance": {
+                      "direct": 0,
+                      "periodic": 160,
+                      "derived": 0,
+                      "hits": 24
+                    },
+                    "stat-poisonChance": {
+                      "direct": 0,
+                      "periodic": 62,
+                      "derived": 0,
+                      "hits": 9
+                    }
+                  },
+                  "hero": {
+                    "hp": 269,
+                    "mana": 107
+                  },
+                  "requested": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ],
+                  "executed": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ]
+                }
+              ],
+              "ratioToSingle": 4.865482850887862
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "stage": 18,
+      "phases": [
+        {
+          "phase": "clear",
+          "minutes": 1034.8847443438954,
+          "level": 36,
+          "requestedSkills": [
+            "cut",
+            "whirl",
+            "ward"
+          ],
+          "skillRanks": {
+            "cut": 5,
+            "whirl": 5,
+            "ward": 5
+          },
+          "build": {
+            "stats": {
+              "weapon": "sword",
+              "hp": 2378,
+              "attack": 787,
+              "armor": 287,
+              "speed": 7,
+              "mana": 132,
+              "regen": 12,
+              "effects": [],
+              "poisonChance": 0.06007499999999999,
+              "igniteChance": 0.066675,
+              "lifeOnKill": 0.00990299999999999,
+              "vsBoss": 0.06987000000000002,
+              "zones": [
+                {
+                  "id": "mastery",
+                  "label": "等级精通",
+                  "kind": "add",
+                  "value": 1.05
+                },
+                {
+                  "id": "affix-ranged",
+                  "label": "远程伤害",
+                  "kind": "add",
+                  "value": 0.084,
+                  "tags": [
+                    "ranged"
+                  ]
+                },
+                {
+                  "id": "affix-spell",
+                  "label": "法术伤害",
+                  "kind": "add",
+                  "value": 0.084,
+                  "tags": [
+                    "spell"
+                  ]
+                },
+                {
+                  "id": "affix-arcane",
+                  "label": "奥术伤害",
+                  "kind": "add",
+                  "value": 0.09,
+                  "tags": [
+                    "arcane"
+                  ]
+                },
+                {
+                  "id": "affix-projectile",
+                  "label": "投射物伤害",
+                  "kind": "add",
+                  "value": 0.087,
+                  "tags": [
+                    "projectile"
+                  ]
+                },
+                {
+                  "id": "affix-melee",
+                  "label": "近战伤害",
+                  "kind": "add",
+                  "value": 0.083,
+                  "tags": [
+                    "melee"
+                  ]
+                },
+                {
+                  "id": "affix-poison",
+                  "label": "毒素伤害",
+                  "kind": "add",
+                  "value": 0.084,
+                  "tags": [
+                    "poison"
+                  ]
+                },
+                {
+                  "id": "affix-fire",
+                  "label": "火焰伤害",
+                  "kind": "add",
+                  "value": 0.087,
+                  "tags": [
+                    "fire"
+                  ]
+                },
+                {
+                  "id": "affix-physical",
+                  "label": "物理伤害",
+                  "kind": "add",
+                  "value": 0.092,
+                  "tags": [
+                    "physical"
+                  ]
+                },
+                {
+                  "id": "affix-shadow",
+                  "label": "暗影伤害",
+                  "kind": "add",
+                  "value": 0.075,
+                  "tags": [
+                    "shadow"
+                  ]
+                },
+                {
+                  "id": "affix-cold",
+                  "label": "冰霜伤害",
+                  "kind": "add",
+                  "value": 0.088,
+                  "tags": [
+                    "cold"
+                  ]
+                },
+                {
+                  "id": "affix-lightning",
+                  "label": "闪电伤害",
+                  "kind": "add",
+                  "value": 0.099,
+                  "tags": [
+                    "lightning"
+                  ]
+                },
+                {
+                  "id": "affix-dot",
+                  "label": "持续伤害",
+                  "kind": "add",
+                  "value": 0.082,
+                  "tags": [
+                    "dot"
+                  ]
+                },
+                {
+                  "id": "affix-area",
+                  "label": "范围伤害",
+                  "kind": "add",
+                  "value": 0.085,
+                  "tags": [
+                    "area"
+                  ]
+                },
+                {
+                  "id": "island-1",
+                  "label": "风栖之力",
+                  "kind": "mult",
+                  "value": 1.3
+                },
+                {
+                  "id": "island-2",
+                  "label": "雾铃之力",
+                  "kind": "mult",
+                  "value": 1.35
+                },
+                {
+                  "id": "island-3",
+                  "label": "赤炉之力",
+                  "kind": "mult",
+                  "value": 1.4
+                },
+                {
+                  "id": "island-4",
+                  "label": "霜镜之力",
+                  "kind": "mult",
+                  "value": 1.45
+                },
+                {
+                  "id": "island-5",
+                  "label": "沉星之力",
+                  "kind": "mult",
+                  "value": 1.5
+                }
+              ],
+              "healingReceived": 0.08279999999999998,
+              "castSpeed": 0.05071499999999998,
+              "critMultiplier": 1.591605,
+              "cooldownOnKill": 0.05908500000000001,
+              "bleedChance": 0.05779499999999998,
+              "lifesteal": 0.12266999999999997,
+              "vsFar": 0.08851500000000002,
+              "vsControlled": 0.08574000000000002,
+              "vsHealthy": 0.09818999999999996,
+              "areaSize": 0.06272999999999998,
+              "cdr": 0.03830999999999998,
+              "vsLow": 0.10369500000000004,
+              "manaOnKill": 4.4655000000000005,
+              "shockChance": 0.05812499999999999,
+              "vulnerableBonus": 0.03744,
+              "damageReduction": 0.03131999999999997,
+              "blockChance": 0.048959999999999976,
+              "dodge": 0.02341499999999999,
+              "thorns": 0.5938499999999999,
+              "critChance": 0.17828,
+              "penetration": 0.02994,
+              "chillChance": 0.062865,
+              "vsNear": 0.09861000000000006,
+              "statusDuration": 0.093735,
+              "allResist": 0.057494999999999984,
+              "vsElite": 0.08282999999999999,
+              "executeBonus": 1,
+              "executeThreshold": 0.2,
+              "conditional": [
+                {
+                  "id": "stat-vsElite",
+                  "pool": "cond",
+                  "value": 0.08282999999999999,
+                  "when": {
+                    "kind": "target_rank",
+                    "ranks": [
+                      "elite",
+                      "boss"
+                    ]
+                  }
+                },
+                {
+                  "id": "stat-vsBoss",
+                  "pool": "cond",
+                  "value": 0.06987000000000002,
+                  "when": {
+                    "kind": "target_rank",
+                    "ranks": [
+                      "boss"
+                    ]
+                  }
+                },
+                {
+                  "id": "stat-vsControlled",
+                  "pool": "cond",
+                  "value": 0.08574000000000002,
+                  "when": {
+                    "kind": "target_status",
+                    "statuses": [
+                      "stun",
+                      "root",
+                      "petrify",
+                      "slow",
+                      "fear",
+                      "time_stop",
+                      "freeze"
+                    ]
+                  }
+                },
+                {
+                  "id": "stat-vsNear",
+                  "pool": "cond",
+                  "value": 0.09861000000000006,
+                  "when": {
+                    "kind": "distance",
+                    "op": "lte",
+                    "value": 3
+                  }
+                },
+                {
+                  "id": "stat-vsFar",
+                  "pool": "cond",
+                  "value": 0.08851500000000002,
+                  "when": {
+                    "kind": "distance",
+                    "op": "gte",
+                    "value": 6
+                  }
+                },
+                {
+                  "id": "stat-vsHealthy",
+                  "pool": "cond",
+                  "value": 0.09818999999999996,
+                  "when": {
+                    "kind": "target_hp",
+                    "op": "gt",
+                    "value": 0.8
+                  }
+                },
+                {
+                  "id": "stat-vsLow",
+                  "pool": "cond",
+                  "value": 0.10369500000000004,
+                  "when": {
+                    "kind": "target_hp",
+                    "op": "lt",
+                    "value": 0.35
+                  }
+                }
+              ],
+              "rules": [
+                {
+                  "id": "innate-sword-qi",
+                  "name": "剑气",
+                  "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                  "source": "剑势流 · 固有",
+                  "tier": 1,
+                  "trigger": "nth",
+                  "chance": 1,
+                  "icd": 0,
+                  "every": 3,
+                  "count": "hit",
+                  "filter": {
+                    "weapons": [
+                      "sword"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "nova",
+                    "ratio": 0.35,
+                    "radius": 2.2,
+                    "damageType": "physical",
+                    "ref": "hit",
+                    "at": "target",
+                    "vfx": "combo/sword-qi"
+                  },
+                  "scale": [
+                    "action.ratio"
+                  ],
+                  "vfxKey": "combo/sword-qi"
+                },
+                {
+                  "id": "atom-bleed",
+                  "name": "割裂",
+                  "description": "暴击：施加4秒流血（本次命中伤害的40%）",
+                  "source": "set-sword-standard",
+                  "tier": 1.5,
+                  "trigger": "crit",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "hit",
+                    "status": "bleed",
+                    "duration": 120,
+                    "strength": 0,
+                    "ratio": 0.6000000000000001
+                  },
+                  "scale": [
+                    "action.ratio"
+                  ],
+                  "vfxKey": "player/execute"
+                },
+                {
+                  "id": "atom-bloodthirst",
+                  "name": "嗜血",
+                  "description": "被动 · 目标流血：伤害 ×1.25",
+                  "source": "set-sword-standard",
+                  "tier": 1.5,
+                  "trigger": "passive",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [
+                    {
+                      "kind": "target_status",
+                      "statuses": [
+                        "bleed"
+                      ]
+                    }
+                  ],
+                  "action": {
+                    "type": "amplify",
+                    "ratio": 0.375,
+                    "against": []
+                  },
+                  "scale": [
+                    "action.ratio"
+                  ],
+                  "vfxKey": "player/execute"
+                },
+                {
+                  "id": "aspect-tr-riposte:27",
+                  "name": "反击之魂",
+                  "description": "受击时 20% 几率以第 1 技能槽反击一次（60%），冷却 2 秒",
+                  "source": "aspect-tr-riposte",
+                  "tier": 1.1,
+                  "trigger": "hurt",
+                  "chance": 0.2,
+                  "icd": 60,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "echo",
+                    "ratio": 0.66,
+                    "delay": 1,
+                    "skill": "slot1"
+                  },
+                  "scale": [
+                    "action.ratio"
+                  ],
+                  "vfxKey": "player/whirl"
+                },
+                {
+                  "id": "aspect-tr-opening:29",
+                  "name": "开场",
+                  "description": "进入战斗后 3 秒内伤害 ×1.4",
+                  "source": "aspect-tr-opening",
+                  "tier": 1.1,
+                  "trigger": "combat_start",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "buff",
+                    "duration": 90,
+                    "maxStacks": 1,
+                    "mods": {
+                      "damageMult": 0.4
+                    }
+                  },
+                  "scale": [],
+                  "vfxKey": "player/whirl"
+                },
+                {
+                  "id": "warrior-field-corpse:kill",
+                  "name": "余烬尸爆",
+                  "description": "击杀时在死亡位置造成死者最大生命5%的物理范围伤害，半径3格。",
+                  "source": "warrior-field-corpse",
+                  "tier": 1,
+                  "trigger": "kill",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "nova",
+                    "ratio": 0.05,
+                    "radius": 3,
+                    "damageType": "physical",
+                    "ref": "maxHp",
+                    "at": "target"
+                  },
+                  "scale": [],
+                  "vfxKey": "player/ground_slam"
+                },
+                {
+                  "id": "stat-igniteChance",
+                  "name": "点燃几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.066675,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "burn",
+                    "duration": 90,
+                    "strength": 0,
+                    "ratio": 0.3
+                  },
+                  "scale": [],
+                  "vfxKey": "player/ember"
+                },
+                {
+                  "id": "stat-chillChance",
+                  "name": "冰缓几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.062865,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "slow",
+                    "duration": 60,
+                    "strength": 0.3,
+                    "ratio": 0
+                  },
+                  "scale": [],
+                  "vfxKey": "player/frost"
+                },
+                {
+                  "id": "stat-shockChance",
+                  "name": "感电几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.05812499999999999,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "shock",
+                    "duration": 90,
+                    "strength": 0.12,
+                    "ratio": 0
+                  },
+                  "scale": [],
+                  "vfxKey": "player/chain"
+                },
+                {
+                  "id": "stat-poisonChance",
+                  "name": "中毒几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.06007499999999999,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "poison",
+                    "duration": 90,
+                    "strength": 0,
+                    "ratio": 0.3
+                  },
+                  "scale": [],
+                  "vfxKey": "player/poison_arrow"
+                },
+                {
+                  "id": "stat-bleedChance",
+                  "name": "流血几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.05779499999999998,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "bleed",
+                    "duration": 90,
+                    "strength": 0,
+                    "ratio": 0.3
+                  },
+                  "scale": [],
+                  "vfxKey": "player/execute"
+                },
+                {
+                  "id": "stat-manaOnKill",
+                  "name": "击杀回复灵力",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "kill",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "mana",
+                    "ratio": 0,
+                    "ref": "maxMana",
+                    "flat": 4.4655000000000005
+                  },
+                  "scale": [],
+                  "vfxKey": "player/mend"
+                },
+                {
+                  "id": "stat-lifeOnKill",
+                  "name": "击杀回复生命",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "kill",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "heal",
+                    "ratio": 0.00990299999999999,
+                    "ref": "maxHp"
+                  },
+                  "scale": [],
+                  "vfxKey": "player/mend"
+                },
+                {
+                  "id": "stat-cooldownOnKill",
+                  "name": "击杀减少冷却",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "kill",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "cooldown",
+                    "mode": "all",
+                    "ticks": 2
+                  },
+                  "scale": [],
+                  "vfxKey": "player/mend"
+                },
+                {
+                  "id": "stat-thorns",
+                  "name": "荆棘",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hurt",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "nova",
+                    "ratio": 0.5938499999999999,
+                    "radius": 0,
+                    "damageType": "physical",
+                    "ref": "armor",
+                    "at": "target",
+                    "maxTargets": 1
+                  },
+                  "scale": [],
+                  "vfxKey": "player/counter_strike"
+                }
+              ],
+              "damageAdd": 1.05,
+              "damageMult": 5.344,
+              "combos": [
+                {
+                  "id": "innate-sword-qi",
+                  "name": "剑气",
+                  "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                  "source": "剑势流 · 固有",
+                  "weapons": [
+                    "sword"
+                  ],
+                  "trigger": "nth",
+                  "chance": 1,
+                  "cooldown": 0,
+                  "every": 3,
+                  "action": {
+                    "type": "nova",
+                    "radius": 2.2,
+                    "ratio": 0.35,
+                    "damageType": "physical",
+                    "vfx": "combo/sword-qi"
+                  }
+                }
+              ]
+            },
+            "skills": [
+              {
+                "weapons": [
+                  "sword"
+                ],
+                "id": "cut",
+                "name": "斩击",
+                "kind": "single",
+                "damage": 38851,
+                "range": 3.06,
+                "radius": 0,
+                "cooldown": 21,
+                "cost": 0,
+                "windup": 3,
+                "duration": 0,
+                "description": "近距离斩击",
+                "mechanics": {
+                  "damageType": "physical",
+                  "targeting": "enemy",
+                  "statuses": []
+                },
+                "resolution": {
+                  "attackShare": 1,
+                  "baseCooldown": 24,
+                  "skillCooldownReduction": 0.1,
+                  "statsCooldownReduction": 0.03830999999999998,
+                  "effectiveCooldownReduction": 0.1344789999999999,
+                  "cooldownCap": 0.75,
+                  "finalCooldown": 21
+                },
+                "tags": [
+                  "melee",
+                  "physical",
+                  "single"
+                ]
+              },
+              {
+                "weapons": [
+                  "sword",
+                  "hammer",
+                  "axe"
+                ],
+                "id": "whirl",
+                "name": "旋风斩",
+                "kind": "area",
+                "damage": 57722,
+                "range": 0,
+                "radius": 4.9735764,
+                "cooldown": 65,
+                "cost": 14,
+                "windup": 7,
+                "duration": 0,
+                "description": "清剿身边敌群",
+                "mechanics": {
+                  "damageType": "physical",
+                  "targeting": "enemy",
+                  "schedule": {
+                    "hits": 4,
+                    "interval": 15,
+                    "followCaster": true,
+                    "interruptOnMove": false
+                  },
+                  "statuses": []
+                },
+                "resolution": {
+                  "attackShare": 1,
+                  "baseCooldown": 75,
+                  "skillCooldownReduction": 0.1,
+                  "statsCooldownReduction": 0.03830999999999998,
+                  "effectiveCooldownReduction": 0.1344789999999999,
+                  "cooldownCap": 0.75,
+                  "finalCooldown": 65
+                },
+                "tags": [
+                  "melee",
+                  "physical",
+                  "area"
+                ]
+              },
+              {
+                "weapons": [],
+                "id": "ward",
+                "name": "护身印",
+                "kind": "shield",
+                "damage": 953,
+                "range": 0,
+                "radius": 0,
+                "cooldown": 208,
+                "cost": 14,
+                "windup": 1,
+                "duration": 168,
+                "description": "吸收伤害",
+                "mechanics": {
+                  "damageType": "physical",
+                  "targeting": "self",
+                  "statuses": []
+                },
+                "resolution": {
+                  "attackShare": 0,
+                  "baseCooldown": 240,
+                  "skillCooldownReduction": 0.1,
+                  "statsCooldownReduction": 0.03830999999999998,
+                  "effectiveCooldownReduction": 0.1344789999999999,
+                  "cooldownCap": 0.75,
+                  "finalCooldown": 208
+                },
+                "tags": []
+              }
+            ]
+          },
+          "groups": [
+            {
+              "count": 1,
+              "valid": true,
+              "meanDps": 103815.06666666667,
+              "samples": [
+                {
+                  "seed": 41,
+                  "dps": 103815.06666666667,
+                  "failed": null,
+                  "seconds": 30,
+                  "incomingDamage": 0,
+                  "casts": {
+                    "cut": 14,
+                    "whirl": 14,
+                    "ward": 4
+                  },
+                  "castFailures": {},
+                  "damage": {
+                    "direct": 2490334,
+                    "periodic": 413002,
+                    "derived": 211116
+                  },
+                  "damageBySkill": {
+                    "whirl": {
+                      "direct": 1489952,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 56
+                    },
+                    "atom-bleed": {
+                      "direct": 0,
+                      "periodic": 242634,
+                      "derived": 0,
+                      "hits": 25
+                    },
+                    "cut": {
+                      "direct": 1000382,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 13
+                    },
+                    "combo/sword-qi": {
+                      "direct": 0,
+                      "periodic": 0,
+                      "derived": 211116,
+                      "hits": 9
+                    },
+                    "stat-igniteChance": {
+                      "direct": 0,
+                      "periodic": 39774,
+                      "derived": 0,
+                      "hits": 8
+                    },
+                    "stat-poisonChance": {
+                      "direct": 0,
+                      "periodic": 74711,
+                      "derived": 0,
+                      "hits": 9
+                    },
+                    "stat-bleedChance": {
+                      "direct": 0,
+                      "periodic": 55883,
+                      "derived": 0,
+                      "hits": 7
+                    }
+                  },
+                  "hero": {
+                    "hp": 2378,
+                    "mana": 128.80000000000035
+                  },
+                  "requested": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ],
+                  "executed": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ]
+                }
+              ],
+              "ratioToSingle": 1
+            },
+            {
+              "count": 5,
+              "valid": true,
+              "meanDps": 353204.0333333333,
+              "samples": [
+                {
+                  "seed": 41,
+                  "dps": 353204.0333333333,
+                  "failed": null,
+                  "seconds": 30,
+                  "incomingDamage": 0,
+                  "casts": {
+                    "cut": 14,
+                    "whirl": 14,
+                    "ward": 4
+                  },
+                  "castFailures": {},
+                  "damage": {
+                    "direct": 8269812,
+                    "periodic": 1419141,
+                    "derived": 907168
+                  },
+                  "damageBySkill": {
+                    "whirl": {
+                      "direct": 7341224,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 277
+                    },
+                    "atom-bleed": {
+                      "direct": 0,
+                      "periodic": 810718,
+                      "derived": 0,
+                      "hits": 105
+                    },
+                    "stat-igniteChance": {
+                      "direct": 0,
+                      "periodic": 234649,
+                      "derived": 0,
+                      "hits": 49
+                    },
+                    "cut": {
+                      "direct": 928588,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 13
+                    },
+                    "combo/sword-qi": {
+                      "direct": 0,
+                      "periodic": 0,
+                      "derived": 907168,
+                      "hits": 45
+                    },
+                    "stat-poisonChance": {
+                      "direct": 0,
+                      "periodic": 162579,
+                      "derived": 0,
+                      "hits": 36
+                    },
+                    "stat-bleedChance": {
+                      "direct": 0,
+                      "periodic": 211195,
+                      "derived": 0,
+                      "hits": 37
+                    }
+                  },
+                  "hero": {
+                    "hp": 2378,
+                    "mana": 128.80000000000035
+                  },
+                  "requested": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ],
+                  "executed": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ]
+                }
+              ],
+              "ratioToSingle": 3.402242513289657
+            },
+            {
+              "count": 10,
+              "valid": true,
+              "meanDps": 643731.1,
+              "samples": [
+                {
+                  "seed": 41,
+                  "dps": 643731.1,
+                  "failed": null,
+                  "seconds": 30,
+                  "incomingDamage": 0,
+                  "casts": {
+                    "cut": 14,
+                    "whirl": 14,
+                    "ward": 4
+                  },
+                  "castFailures": {},
+                  "damage": {
+                    "direct": 15260136,
+                    "periodic": 2655735,
+                    "derived": 1396062
+                  },
+                  "damageBySkill": {
+                    "whirl": {
+                      "direct": 14344575,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 554
+                    },
+                    "atom-bleed": {
+                      "direct": 0,
+                      "periodic": 1631083,
+                      "derived": 0,
+                      "hits": 206
+                    },
+                    "stat-igniteChance": {
+                      "direct": 0,
+                      "periodic": 345668,
+                      "derived": 0,
+                      "hits": 89
+                    },
+                    "stat-poisonChance": {
+                      "direct": 0,
+                      "periodic": 377771,
+                      "derived": 0,
+                      "hits": 84
+                    },
+                    "cut": {
+                      "direct": 915561,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 13
+                    },
+                    "stat-bleedChance": {
+                      "direct": 0,
+                      "periodic": 301213,
+                      "derived": 0,
+                      "hits": 68
+                    },
+                    "combo/sword-qi": {
+                      "direct": 0,
+                      "periodic": 0,
+                      "derived": 1396062,
+                      "hits": 71
+                    }
+                  },
+                  "hero": {
+                    "hp": 2378,
+                    "mana": 128.80000000000035
+                  },
+                  "requested": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ],
+                  "executed": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ]
+                }
+              ],
+              "ratioToSingle": 6.200748317842112
+            },
+            {
+              "count": 20,
+              "valid": true,
+              "meanDps": 1187719.0333333334,
+              "samples": [
+                {
+                  "seed": 41,
+                  "dps": 1187719.0333333334,
+                  "failed": null,
+                  "seconds": 30,
+                  "incomingDamage": 0,
+                  "casts": {
+                    "cut": 14,
+                    "whirl": 14,
+                    "ward": 4
+                  },
+                  "castFailures": {},
+                  "damage": {
+                    "direct": 28368485,
+                    "periodic": 5224011,
+                    "derived": 2039075
+                  },
+                  "damageBySkill": {
+                    "whirl": {
+                      "direct": 27245723,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 1048
+                    },
+                    "atom-bleed": {
+                      "direct": 0,
+                      "periodic": 3046476,
+                      "derived": 0,
+                      "hits": 390
+                    },
+                    "stat-igniteChance": {
+                      "direct": 0,
+                      "periodic": 702522,
+                      "derived": 0,
+                      "hits": 162
+                    },
+                    "stat-poisonChance": {
+                      "direct": 0,
+                      "periodic": 738148,
+                      "derived": 0,
+                      "hits": 154
+                    },
+                    "stat-bleedChance": {
+                      "direct": 0,
+                      "periodic": 736865,
+                      "derived": 0,
+                      "hits": 135
+                    },
+                    "cut": {
+                      "direct": 1122762,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 13
+                    },
+                    "combo/sword-qi": {
+                      "direct": 0,
+                      "periodic": 0,
+                      "derived": 2039075,
+                      "hits": 88
+                    }
+                  },
+                  "hero": {
+                    "hp": 2378,
+                    "mana": 128.80000000000035
+                  },
+                  "requested": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ],
+                  "executed": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ]
+                }
+              ],
+              "ratioToSingle": 11.440719266182303
+            }
+          ]
+        },
+        {
+          "phase": "end",
+          "minutes": 1091.7458487246358,
+          "level": 38,
+          "requestedSkills": [
+            "cut",
+            "whirl",
+            "ward"
+          ],
+          "skillRanks": {
+            "cut": 5,
+            "whirl": 5,
+            "ward": 5
+          },
+          "build": {
+            "stats": {
+              "weapon": "sword",
+              "hp": 2730,
+              "attack": 939,
+              "armor": 300,
+              "speed": 7,
+              "mana": 137,
+              "regen": 12,
+              "effects": [],
+              "poisonChance": 0.06007499999999999,
+              "igniteChance": 0.066675,
+              "lifeOnKill": 0.00990299999999999,
+              "vsBoss": 0.06987000000000002,
+              "zones": [
+                {
+                  "id": "mastery",
+                  "label": "等级精通",
+                  "kind": "add",
+                  "value": 1.11
+                },
+                {
+                  "id": "affix-ranged",
+                  "label": "远程伤害",
+                  "kind": "add",
+                  "value": 0.084,
+                  "tags": [
+                    "ranged"
+                  ]
+                },
+                {
+                  "id": "affix-spell",
+                  "label": "法术伤害",
+                  "kind": "add",
+                  "value": 0.084,
+                  "tags": [
+                    "spell"
+                  ]
+                },
+                {
+                  "id": "affix-arcane",
+                  "label": "奥术伤害",
+                  "kind": "add",
+                  "value": 0.09,
+                  "tags": [
+                    "arcane"
+                  ]
+                },
+                {
+                  "id": "affix-projectile",
+                  "label": "投射物伤害",
+                  "kind": "add",
+                  "value": 0.087,
+                  "tags": [
+                    "projectile"
+                  ]
+                },
+                {
+                  "id": "affix-melee",
+                  "label": "近战伤害",
+                  "kind": "add",
+                  "value": 0.083,
+                  "tags": [
+                    "melee"
+                  ]
+                },
+                {
+                  "id": "affix-poison",
+                  "label": "毒素伤害",
+                  "kind": "add",
+                  "value": 0.084,
+                  "tags": [
+                    "poison"
+                  ]
+                },
+                {
+                  "id": "affix-fire",
+                  "label": "火焰伤害",
+                  "kind": "add",
+                  "value": 0.087,
+                  "tags": [
+                    "fire"
+                  ]
+                },
+                {
+                  "id": "affix-physical",
+                  "label": "物理伤害",
+                  "kind": "add",
+                  "value": 0.092,
+                  "tags": [
+                    "physical"
+                  ]
+                },
+                {
+                  "id": "affix-shadow",
+                  "label": "暗影伤害",
+                  "kind": "add",
+                  "value": 0.075,
+                  "tags": [
+                    "shadow"
+                  ]
+                },
+                {
+                  "id": "affix-cold",
+                  "label": "冰霜伤害",
+                  "kind": "add",
+                  "value": 0.088,
+                  "tags": [
+                    "cold"
+                  ]
+                },
+                {
+                  "id": "affix-lightning",
+                  "label": "闪电伤害",
+                  "kind": "add",
+                  "value": 0.099,
+                  "tags": [
+                    "lightning"
+                  ]
+                },
+                {
+                  "id": "affix-dot",
+                  "label": "持续伤害",
+                  "kind": "add",
+                  "value": 0.082,
+                  "tags": [
+                    "dot"
+                  ]
+                },
+                {
+                  "id": "affix-area",
+                  "label": "范围伤害",
+                  "kind": "add",
+                  "value": 0.085,
+                  "tags": [
+                    "area"
+                  ]
+                },
+                {
+                  "id": "island-1",
+                  "label": "风栖之力",
+                  "kind": "mult",
+                  "value": 1.3
+                },
+                {
+                  "id": "island-2",
+                  "label": "雾铃之力",
+                  "kind": "mult",
+                  "value": 1.35
+                },
+                {
+                  "id": "island-3",
+                  "label": "赤炉之力",
+                  "kind": "mult",
+                  "value": 1.4
+                },
+                {
+                  "id": "island-4",
+                  "label": "霜镜之力",
+                  "kind": "mult",
+                  "value": 1.45
+                },
+                {
+                  "id": "island-5",
+                  "label": "沉星之力",
+                  "kind": "mult",
+                  "value": 1.5
+                },
+                {
+                  "id": "island-6",
+                  "label": "龙眠之力",
+                  "kind": "mult",
+                  "value": 1.6
+                },
+                {
+                  "id": "hardmode",
+                  "label": "裂星潮",
+                  "kind": "mult",
+                  "value": 2
+                },
+                {
+                  "id": "star-cores",
+                  "label": "星核 ×1",
+                  "kind": "mult",
+                  "value": 1.1
+                }
+              ],
+              "healingReceived": 0.08279999999999998,
+              "castSpeed": 0.05071499999999998,
+              "critMultiplier": 1.591605,
+              "cooldownOnKill": 0.05908500000000001,
+              "bleedChance": 0.05779499999999998,
+              "lifesteal": 0.12266999999999997,
+              "vsFar": 0.08851500000000002,
+              "vsControlled": 0.08574000000000002,
+              "vsHealthy": 0.09818999999999996,
+              "areaSize": 0.06272999999999998,
+              "cdr": 0.03830999999999998,
+              "vsLow": 0.10369500000000004,
+              "manaOnKill": 4.4655000000000005,
+              "shockChance": 0.05812499999999999,
+              "vulnerableBonus": 0.03744,
+              "damageReduction": 0.03131999999999997,
+              "blockChance": 0.048959999999999976,
+              "dodge": 0.02341499999999999,
+              "thorns": 0.5938499999999999,
+              "critChance": 0.17906,
+              "penetration": 0.02994,
+              "chillChance": 0.062865,
+              "vsNear": 0.09861000000000006,
+              "statusDuration": 0.093735,
+              "allResist": 0.057494999999999984,
+              "vsElite": 0.08282999999999999,
+              "executeBonus": 1,
+              "executeThreshold": 0.2,
+              "conditional": [
+                {
+                  "id": "stat-vsElite",
+                  "pool": "cond",
+                  "value": 0.08282999999999999,
+                  "when": {
+                    "kind": "target_rank",
+                    "ranks": [
+                      "elite",
+                      "boss"
+                    ]
+                  }
+                },
+                {
+                  "id": "stat-vsBoss",
+                  "pool": "cond",
+                  "value": 0.06987000000000002,
+                  "when": {
+                    "kind": "target_rank",
+                    "ranks": [
+                      "boss"
+                    ]
+                  }
+                },
+                {
+                  "id": "stat-vsControlled",
+                  "pool": "cond",
+                  "value": 0.08574000000000002,
+                  "when": {
+                    "kind": "target_status",
+                    "statuses": [
+                      "stun",
+                      "root",
+                      "petrify",
+                      "slow",
+                      "fear",
+                      "time_stop",
+                      "freeze"
+                    ]
+                  }
+                },
+                {
+                  "id": "stat-vsNear",
+                  "pool": "cond",
+                  "value": 0.09861000000000006,
+                  "when": {
+                    "kind": "distance",
+                    "op": "lte",
+                    "value": 3
+                  }
+                },
+                {
+                  "id": "stat-vsFar",
+                  "pool": "cond",
+                  "value": 0.08851500000000002,
+                  "when": {
+                    "kind": "distance",
+                    "op": "gte",
+                    "value": 6
+                  }
+                },
+                {
+                  "id": "stat-vsHealthy",
+                  "pool": "cond",
+                  "value": 0.09818999999999996,
+                  "when": {
+                    "kind": "target_hp",
+                    "op": "gt",
+                    "value": 0.8
+                  }
+                },
+                {
+                  "id": "stat-vsLow",
+                  "pool": "cond",
+                  "value": 0.10369500000000004,
+                  "when": {
+                    "kind": "target_hp",
+                    "op": "lt",
+                    "value": 0.35
+                  }
+                }
+              ],
+              "rules": [
+                {
+                  "id": "innate-sword-qi",
+                  "name": "剑气",
+                  "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                  "source": "剑势流 · 固有",
+                  "tier": 1,
+                  "trigger": "nth",
+                  "chance": 1,
+                  "icd": 0,
+                  "every": 3,
+                  "count": "hit",
+                  "filter": {
+                    "weapons": [
+                      "sword"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "nova",
+                    "ratio": 0.35,
+                    "radius": 2.2,
+                    "damageType": "physical",
+                    "ref": "hit",
+                    "at": "target",
+                    "vfx": "combo/sword-qi"
+                  },
+                  "scale": [
+                    "action.ratio"
+                  ],
+                  "vfxKey": "combo/sword-qi"
+                },
+                {
+                  "id": "atom-bleed",
+                  "name": "割裂",
+                  "description": "暴击：施加4秒流血（本次命中伤害的40%）",
+                  "source": "set-sword-standard",
+                  "tier": 1.5,
+                  "trigger": "crit",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "hit",
+                    "status": "bleed",
+                    "duration": 120,
+                    "strength": 0,
+                    "ratio": 0.6000000000000001
+                  },
+                  "scale": [
+                    "action.ratio"
+                  ],
+                  "vfxKey": "player/execute"
+                },
+                {
+                  "id": "atom-bloodthirst",
+                  "name": "嗜血",
+                  "description": "被动 · 目标流血：伤害 ×1.25",
+                  "source": "set-sword-standard",
+                  "tier": 1.5,
+                  "trigger": "passive",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [
+                    {
+                      "kind": "target_status",
+                      "statuses": [
+                        "bleed"
+                      ]
+                    }
+                  ],
+                  "action": {
+                    "type": "amplify",
+                    "ratio": 0.375,
+                    "against": []
+                  },
+                  "scale": [
+                    "action.ratio"
+                  ],
+                  "vfxKey": "player/execute"
+                },
+                {
+                  "id": "aspect-tr-riposte:27",
+                  "name": "反击之魂",
+                  "description": "受击时 20% 几率以第 1 技能槽反击一次（60%），冷却 2 秒",
+                  "source": "aspect-tr-riposte",
+                  "tier": 1.1,
+                  "trigger": "hurt",
+                  "chance": 0.2,
+                  "icd": 60,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "echo",
+                    "ratio": 0.66,
+                    "delay": 1,
+                    "skill": "slot1"
+                  },
+                  "scale": [
+                    "action.ratio"
+                  ],
+                  "vfxKey": "player/whirl"
+                },
+                {
+                  "id": "aspect-tr-opening:29",
+                  "name": "开场",
+                  "description": "进入战斗后 3 秒内伤害 ×1.4",
+                  "source": "aspect-tr-opening",
+                  "tier": 1.1,
+                  "trigger": "combat_start",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "buff",
+                    "duration": 90,
+                    "maxStacks": 1,
+                    "mods": {
+                      "damageMult": 0.4
+                    }
+                  },
+                  "scale": [],
+                  "vfxKey": "player/whirl"
+                },
+                {
+                  "id": "warrior-field-corpse:kill",
+                  "name": "余烬尸爆",
+                  "description": "击杀时在死亡位置造成死者最大生命5%的物理范围伤害，半径3格。",
+                  "source": "warrior-field-corpse",
+                  "tier": 1,
+                  "trigger": "kill",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "nova",
+                    "ratio": 0.05,
+                    "radius": 3,
+                    "damageType": "physical",
+                    "ref": "maxHp",
+                    "at": "target"
+                  },
+                  "scale": [],
+                  "vfxKey": "player/ground_slam"
+                },
+                {
+                  "id": "stat-igniteChance",
+                  "name": "点燃几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.066675,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "burn",
+                    "duration": 90,
+                    "strength": 0,
+                    "ratio": 0.3
+                  },
+                  "scale": [],
+                  "vfxKey": "player/ember"
+                },
+                {
+                  "id": "stat-chillChance",
+                  "name": "冰缓几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.062865,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "slow",
+                    "duration": 60,
+                    "strength": 0.3,
+                    "ratio": 0
+                  },
+                  "scale": [],
+                  "vfxKey": "player/frost"
+                },
+                {
+                  "id": "stat-shockChance",
+                  "name": "感电几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.05812499999999999,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "shock",
+                    "duration": 90,
+                    "strength": 0.12,
+                    "ratio": 0
+                  },
+                  "scale": [],
+                  "vfxKey": "player/chain"
+                },
+                {
+                  "id": "stat-poisonChance",
+                  "name": "中毒几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.06007499999999999,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "poison",
+                    "duration": 90,
+                    "strength": 0,
+                    "ratio": 0.3
+                  },
+                  "scale": [],
+                  "vfxKey": "player/poison_arrow"
+                },
+                {
+                  "id": "stat-bleedChance",
+                  "name": "流血几率",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hit",
+                  "chance": 0.05779499999999998,
+                  "icd": 0,
+                  "filter": {
+                    "categories": [
+                      "direct"
+                    ]
+                  },
+                  "when": [],
+                  "action": {
+                    "type": "status",
+                    "ref": "dealt",
+                    "status": "bleed",
+                    "duration": 90,
+                    "strength": 0,
+                    "ratio": 0.3
+                  },
+                  "scale": [],
+                  "vfxKey": "player/execute"
+                },
+                {
+                  "id": "stat-manaOnKill",
+                  "name": "击杀回复灵力",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "kill",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "mana",
+                    "ratio": 0,
+                    "ref": "maxMana",
+                    "flat": 4.4655000000000005
+                  },
+                  "scale": [],
+                  "vfxKey": "player/mend"
+                },
+                {
+                  "id": "stat-lifeOnKill",
+                  "name": "击杀回复生命",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "kill",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "heal",
+                    "ratio": 0.00990299999999999,
+                    "ref": "maxHp"
+                  },
+                  "scale": [],
+                  "vfxKey": "player/mend"
+                },
+                {
+                  "id": "stat-cooldownOnKill",
+                  "name": "击杀减少冷却",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "kill",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "cooldown",
+                    "mode": "all",
+                    "ticks": 2
+                  },
+                  "scale": [],
+                  "vfxKey": "player/mend"
+                },
+                {
+                  "id": "stat-thorns",
+                  "name": "荆棘",
+                  "description": "装备属性触发",
+                  "source": "装备与养成属性",
+                  "tier": 1,
+                  "trigger": "hurt",
+                  "chance": 1,
+                  "icd": 0,
+                  "filter": {},
+                  "when": [],
+                  "action": {
+                    "type": "nova",
+                    "ratio": 0.5938499999999999,
+                    "radius": 0,
+                    "damageType": "physical",
+                    "ref": "armor",
+                    "at": "target",
+                    "maxTargets": 1
+                  },
+                  "scale": [],
+                  "vfxKey": "player/counter_strike"
+                }
+              ],
+              "damageAdd": 1.11,
+              "damageMult": 18.811,
+              "combos": [
+                {
+                  "id": "innate-sword-qi",
+                  "name": "剑气",
+                  "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                  "source": "剑势流 · 固有",
+                  "weapons": [
+                    "sword"
+                  ],
+                  "trigger": "nth",
+                  "chance": 1,
+                  "cooldown": 0,
+                  "every": 3,
+                  "action": {
+                    "type": "nova",
+                    "radius": 2.2,
+                    "ratio": 0.35,
+                    "damageType": "physical",
+                    "vfx": "combo/sword-qi"
+                  }
+                }
+              ]
+            },
+            "skills": [
+              {
+                "weapons": [
+                  "sword"
+                ],
+                "id": "cut",
+                "name": "斩击",
+                "kind": "single",
+                "damage": 211686,
+                "range": 3.09,
+                "radius": 0,
+                "cooldown": 21,
+                "cost": 0,
+                "windup": 3,
+                "duration": 0,
+                "description": "近距离斩击",
+                "mechanics": {
+                  "damageType": "physical",
+                  "targeting": "enemy",
+                  "statuses": []
+                },
+                "resolution": {
+                  "attackShare": 1,
+                  "baseCooldown": 24,
+                  "skillCooldownReduction": 0.1,
+                  "statsCooldownReduction": 0.03830999999999998,
+                  "effectiveCooldownReduction": 0.1344789999999999,
+                  "cooldownCap": 0.75,
+                  "finalCooldown": 21
+                },
+                "tags": [
+                  "melee",
+                  "physical",
+                  "single"
+                ]
+              },
+              {
+                "weapons": [
+                  "sword",
+                  "hammer",
+                  "axe"
+                ],
+                "id": "whirl",
+                "name": "旋风斩",
+                "kind": "area",
+                "damage": 314200,
+                "range": 0,
+                "radius": 5.0692221,
+                "cooldown": 65,
+                "cost": 14,
+                "windup": 7,
+                "duration": 0,
+                "description": "清剿身边敌群",
+                "mechanics": {
+                  "damageType": "physical",
+                  "targeting": "enemy",
+                  "schedule": {
+                    "hits": 4,
+                    "interval": 15,
+                    "followCaster": true,
+                    "interruptOnMove": false
+                  },
+                  "statuses": []
+                },
+                "resolution": {
+                  "attackShare": 1,
+                  "baseCooldown": 75,
+                  "skillCooldownReduction": 0.1,
+                  "statsCooldownReduction": 0.03830999999999998,
+                  "effectiveCooldownReduction": 0.1344789999999999,
+                  "cooldownCap": 0.75,
+                  "finalCooldown": 65
+                },
+                "tags": [
+                  "melee",
+                  "physical",
+                  "area"
+                ]
+              },
+              {
+                "weapons": [],
+                "id": "ward",
+                "name": "护身印",
+                "kind": "shield",
+                "damage": 1382,
+                "range": 0,
+                "radius": 0,
+                "cooldown": 208,
+                "cost": 14,
+                "windup": 1,
+                "duration": 168,
+                "description": "吸收伤害",
+                "mechanics": {
+                  "damageType": "physical",
+                  "targeting": "self",
+                  "statuses": []
+                },
+                "resolution": {
+                  "attackShare": 0,
+                  "baseCooldown": 240,
+                  "skillCooldownReduction": 0.1,
+                  "statsCooldownReduction": 0.03830999999999998,
+                  "effectiveCooldownReduction": 0.1344789999999999,
+                  "cooldownCap": 0.75,
+                  "finalCooldown": 208
+                },
+                "tags": []
+              }
+            ]
+          },
+          "groups": [
+            {
+              "count": 1,
+              "valid": true,
+              "meanDps": 565335.4666666667,
+              "samples": [
+                {
+                  "seed": 41,
+                  "dps": 565335.4666666667,
+                  "failed": null,
+                  "seconds": 30,
+                  "incomingDamage": 0,
+                  "casts": {
+                    "cut": 14,
+                    "whirl": 14,
+                    "ward": 4
+                  },
+                  "castFailures": {},
+                  "damage": {
+                    "direct": 13561055,
+                    "periodic": 2249020,
+                    "derived": 1149989
+                  },
+                  "damageBySkill": {
+                    "whirl": {
+                      "direct": 8110319,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 56
+                    },
+                    "atom-bleed": {
+                      "direct": 0,
+                      "periodic": 1321174,
+                      "derived": 0,
+                      "hits": 25
+                    },
+                    "cut": {
+                      "direct": 5450736,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 13
+                    },
+                    "combo/sword-qi": {
+                      "direct": 0,
+                      "periodic": 0,
+                      "derived": 1149989,
+                      "hits": 9
+                    },
+                    "stat-igniteChance": {
+                      "direct": 0,
+                      "periodic": 216495,
+                      "derived": 0,
+                      "hits": 8
+                    },
+                    "stat-poisonChance": {
+                      "direct": 0,
+                      "periodic": 406950,
+                      "derived": 0,
+                      "hits": 9
+                    },
+                    "stat-bleedChance": {
+                      "direct": 0,
+                      "periodic": 304401,
+                      "derived": 0,
+                      "hits": 7
+                    }
+                  },
+                  "hero": {
+                    "hp": 2730,
+                    "mana": 133.80000000000035
+                  },
+                  "requested": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ],
+                  "executed": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ]
+                }
+              ],
+              "ratioToSingle": 1
+            },
+            {
+              "count": 5,
+              "valid": true,
+              "meanDps": 1922917.4,
+              "samples": [
+                {
+                  "seed": 41,
+                  "dps": 1922917.4,
+                  "failed": null,
+                  "seconds": 30,
+                  "incomingDamage": 0,
+                  "casts": {
+                    "cut": 14,
+                    "whirl": 14,
+                    "ward": 4
+                  },
+                  "castFailures": {},
+                  "damage": {
+                    "direct": 45020343,
+                    "periodic": 7725921,
+                    "derived": 4941258
+                  },
+                  "damageBySkill": {
+                    "whirl": {
+                      "direct": 39960784,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 277
+                    },
+                    "atom-bleed": {
+                      "direct": 0,
+                      "periodic": 4413426,
+                      "derived": 0,
+                      "hits": 105
+                    },
+                    "stat-igniteChance": {
+                      "direct": 0,
+                      "periodic": 1277439,
+                      "derived": 0,
+                      "hits": 49
+                    },
+                    "cut": {
+                      "direct": 5059559,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 13
+                    },
+                    "combo/sword-qi": {
+                      "direct": 0,
+                      "periodic": 0,
+                      "derived": 4941258,
+                      "hits": 45
+                    },
+                    "stat-poisonChance": {
+                      "direct": 0,
+                      "periodic": 885023,
+                      "derived": 0,
+                      "hits": 36
+                    },
+                    "stat-bleedChance": {
+                      "direct": 0,
+                      "periodic": 1150033,
+                      "derived": 0,
+                      "hits": 37
+                    }
+                  },
+                  "hero": {
+                    "hp": 2730,
+                    "mana": 133.80000000000035
+                  },
+                  "requested": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ],
+                  "executed": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ]
+                }
+              ],
+              "ratioToSingle": 3.40137407500349
+            },
+            {
+              "count": 10,
+              "valid": true,
+              "meanDps": 3563057.566666667,
+              "samples": [
+                {
+                  "seed": 41,
+                  "dps": 3563057.566666667,
+                  "failed": null,
+                  "seconds": 30,
+                  "incomingDamage": 0,
+                  "casts": {
+                    "cut": 14,
+                    "whirl": 14,
+                    "ward": 4
+                  },
+                  "castFailures": {},
+                  "damage": {
+                    "direct": 83406874,
+                    "periodic": 14239685,
+                    "derived": 9245168
+                  },
+                  "damageBySkill": {
+                    "whirl": {
+                      "direct": 77521628,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 555
+                    },
+                    "atom-bleed": {
+                      "direct": 0,
+                      "periodic": 8488023,
+                      "derived": 0,
+                      "hits": 195
+                    },
+                    "stat-igniteChance": {
+                      "direct": 0,
+                      "periodic": 2021676,
+                      "derived": 0,
+                      "hits": 92
+                    },
+                    "stat-poisonChance": {
+                      "direct": 0,
+                      "periodic": 2064838,
+                      "derived": 0,
+                      "hits": 86
+                    },
+                    "cut": {
+                      "direct": 5885246,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 13
+                    },
+                    "stat-bleedChance": {
+                      "direct": 0,
+                      "periodic": 1665148,
+                      "derived": 0,
+                      "hits": 68
+                    },
+                    "combo/sword-qi": {
+                      "direct": 0,
+                      "periodic": 0,
+                      "derived": 9245168,
+                      "hits": 71
+                    }
+                  },
+                  "hero": {
+                    "hp": 2730,
+                    "mana": 133.80000000000035
+                  },
+                  "requested": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ],
+                  "executed": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ]
+                }
+              ],
+              "ratioToSingle": 6.302554459700152
+            },
+            {
+              "count": 20,
+              "valid": true,
+              "meanDps": 6651041.966666667,
+              "samples": [
+                {
+                  "seed": 41,
+                  "dps": 6651041.966666667,
+                  "failed": null,
+                  "seconds": 30,
+                  "incomingDamage": 0,
+                  "casts": {
+                    "cut": 14,
+                    "whirl": 14,
+                    "ward": 4
+                  },
+                  "castFailures": {},
+                  "damage": {
+                    "direct": 160510238,
+                    "periodic": 28951800,
+                    "derived": 10069221
+                  },
+                  "damageBySkill": {
+                    "whirl": {
+                      "direct": 155874131,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 1102
+                    },
+                    "atom-bleed": {
+                      "direct": 0,
+                      "periodic": 16844911,
+                      "derived": 0,
+                      "hits": 426
+                    },
+                    "stat-igniteChance": {
+                      "direct": 0,
+                      "periodic": 4038707,
+                      "derived": 0,
+                      "hits": 175
+                    },
+                    "stat-poisonChance": {
+                      "direct": 0,
+                      "periodic": 4497213,
+                      "derived": 0,
+                      "hits": 182
+                    },
+                    "stat-bleedChance": {
+                      "direct": 0,
+                      "periodic": 3570969,
+                      "derived": 0,
+                      "hits": 140
+                    },
+                    "cut": {
+                      "direct": 4636107,
+                      "periodic": 0,
+                      "derived": 0,
+                      "hits": 13
+                    },
+                    "combo/sword-qi": {
+                      "direct": 0,
+                      "periodic": 0,
+                      "derived": 10069221,
+                      "hits": 88
+                    }
+                  },
+                  "hero": {
+                    "hp": 2730,
+                    "mana": 133.80000000000035
+                  },
+                  "requested": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ],
+                  "executed": [
+                    "cut",
+                    "whirl",
+                    "ward"
+                  ]
+                }
+              ],
+              "ratioToSingle": 11.764770404168287
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Actual expected build and World at exact clear/end clocks;1/5/10/20 targets measure group capacity for the authored budget calculation.",
+    "Targets have explicit high HP, zero attack/armour and no hostile skills. Player HP, mana, cooldowns and skill execution receive no overrides. Nonzero incoming damage or invalid build output is reported as invalid, never discarded.",
+    "Immortal targets do not trigger kill effects. This reference is separate from finite actual swarm/normal camp kills and natural route rates.",
+    "The5/10-target diagnostics cannot replace the fixed12/20-target1.5-times acceptance measurement. No threshold or target count is reduced."
+  ]
+}

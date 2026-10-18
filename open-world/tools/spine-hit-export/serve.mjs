@@ -1,0 +1,10 @@
+// GUI-only export helper (never headless): serves the migration folder and saves exported sheets.
+// Run: node tools/spine-hit-export/serve.mjs, then open the printed URL in the visible in-app browser.
+import http from 'node:http';import {readFile,writeFile,readdir,mkdir} from 'node:fs/promises';import {resolve,extname} from 'node:path';
+const root=resolve(import.meta.dirname,'../../../..'),library='Q版日式手游SPINE特效300套',out=resolve(import.meta.dirname,process.env.PHYSICAL_FX_EXPORT?'../../assets/skill-fx/combat-library-source/_physical-incoming':'../../assets/skill-fx/hit-library-source/_incoming'),types={'.html':'text/html; charset=utf-8','.js':'text/javascript','.json':'application/json','.png':'image/png','.atlas':'text/plain'};
+await mkdir(out,{recursive:true});
+http.createServer(async(req,res)=>{const url=new URL(req.url,'http://x');
+ if(req.method==='POST'&&url.pathname==='/save'){const name=url.searchParams.get('name').replace(/[^\w.-]/g,'');const chunks=[];for await(const c of req)chunks.push(c);let body=Buffer.concat(chunks);if(name.endsWith('.png'))body=Buffer.from(body.toString().split(',')[1],'base64');await writeFile(resolve(out,name),body);res.end('ok');return;}
+ if(url.pathname==='/library-index.json'){const list=[];for(const dir of (await readdir(resolve(root,library))).sort()){const files=await readdir(resolve(root,library,dir)).catch(()=>[]),json=files.find(f=>/\.json$/i.test(f)),atlas=files.find(f=>/\.atlas$/i.test(f));if(json&&atlas)list.push({dir,json,atlas});}res.writeHead(200,{'content-type':types['.json']});res.end(JSON.stringify(list));return;}
+ try{const file=resolve(root,'.'+decodeURIComponent(url.pathname));if(!file.startsWith(root))throw 0;const data=await readFile(file);res.writeHead(200,{'content-type':types[extname(file).toLowerCase()]??'application/octet-stream'});res.end(data);}catch{res.writeHead(404);res.end();}
+}).listen(8766,'127.0.0.1',()=>console.log('http://127.0.0.1:8766/abyss-walker-rewrite/open-world/tools/spine-hit-export/export.html?jobs=083:hit-slash,078:hit-fire:0.28'));

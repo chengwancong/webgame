@@ -1,0 +1,709 @@
+// 怪物模板配置系统
+// 定义所有怪物的属性、技能和行为模式
+
+import type { Behavior, Spawn } from '../contracts/index.ts';
+
+// 怪物技能定义
+export type MonsterSkill = {
+  id: string;
+  name: string;
+  damage: number;
+  range: number;
+  radius: number;
+  cooldown: number; // 30Hz ticks
+  windup: number;   // 30Hz ticks
+  duration: number; // 30Hz ticks
+  effect?: 'slow' | 'stun' | 'dot' | 'knockback' | 'summon' | 'buff';
+  description: string;
+};
+
+// 怪物模板定义
+export type MonsterTemplate = {
+  id: string;
+  name: string;
+  art: string;
+  behavior: Behavior;
+  baseHp: number;
+  baseAttack: number;
+  hpPerLevel: number;
+  attackPerLevel: number;
+  isElite?: boolean;
+  isBoss?: boolean;
+  skills?: MonsterSkill[];
+  description: string;
+};
+
+// ==================== 第1-3章怪物（已有） ====================
+
+export const chapter1to3Monsters: MonsterTemplate[] = [
+  // 第1章：草木荒原
+  {
+    id: 'xiaolang',
+    name: '小狼',
+    art: 'xiaolang',
+    behavior: 'melee',
+    baseHp: 25,
+    baseAttack: 3,
+    hpPerLevel: 8,
+    attackPerLevel: 1.2,
+    description: '草原上常见的狼群，速度快但血量较低'
+  },
+  {
+    id: 'chailangren',
+    name: '柴狼人',
+    art: 'chailangren',
+    behavior: 'melee',
+    baseHp: 35,
+    baseAttack: 4,
+    hpPerLevel: 10,
+    attackPerLevel: 1.5,
+    description: '半人半狼的生物，比普通狼更强壮'
+  },
+  
+  // 第2章：迷雾林地
+  {
+    id: 'dijinglieshou',
+    name: '地精猎手',
+    art: 'dijinglieshou',
+    behavior: 'ranged',
+    baseHp: 28,
+    baseAttack: 5,
+    hpPerLevel: 9,
+    attackPerLevel: 1.8,
+    description: '使用弓箭的地精，远程攻击'
+  },
+  {
+    id: 'dijingyaoshi',
+    name: '地精药师',
+    art: 'dijingyaoshi',
+    behavior: 'shaman',
+    baseHp: 30,
+    baseAttack: 4,
+    hpPerLevel: 9,
+    attackPerLevel: 1.5,
+    description: '能够治疗同伴的地精萨满'
+  },
+  
+  // 第3章：赤岩裂谷
+  {
+    id: 'kulouweishi',
+    name: '骷髅卫士',
+    art: 'kulouweishi',
+    behavior: 'guard',
+    baseHp: 45,
+    baseAttack: 6,
+    hpPerLevel: 12,
+    attackPerLevel: 2,
+    isElite: true,
+    description: '重甲骷髅战士，防御力强'
+  },
+  {
+    id: 'kuloufashi',
+    name: '骷髅法师',
+    art: 'kuloufashi',
+    behavior: 'shaman',
+    baseHp: 32,
+    baseAttack: 7,
+    hpPerLevel: 10,
+    attackPerLevel: 2.5,
+    description: '使用黑暗魔法的骷髅'
+  }
+];
+
+// ==================== 第4章：冰封雪域 ====================
+
+export const chapter4Monsters: MonsterTemplate[] = [
+  {
+    id: 'frost_wolf',
+    name: '冰霜狼',
+    art: 'frost_wolf',
+    behavior: 'melee',
+    baseHp: 180,
+    baseAttack: 22,
+    hpPerLevel: 25,
+    attackPerLevel: 3.5,
+    skills: [
+      {
+        id: 'frost_bite',
+        name: '冰冻撕咬',
+        damage: 35,
+        range: 2,
+        radius: 0,
+        cooldown: 120, // 4秒
+        windup: 15,
+        duration: 60, // 减速2秒
+        effect: 'slow',
+        description: '撕咬目标并减速50%，持续2秒'
+      }
+    ],
+    description: 'Lv16-17 普通怪，冰原上的凶猛野兽，速度快且带减速效果'
+  },
+  {
+    id: 'snow_ranger',
+    name: '雪地游侠',
+    art: 'snow_ranger',
+    behavior: 'ranged',
+    baseHp: 160,
+    baseAttack: 26,
+    hpPerLevel: 22,
+    attackPerLevel: 4,
+    skills: [
+      {
+        id: 'ice_arrow',
+        name: '寒冰箭',
+        damage: 40,
+        range: 10,
+        radius: 0,
+        cooldown: 150,
+        windup: 20,
+        duration: 0,
+        effect: 'slow',
+        description: '射出寒冰箭，命中减速30%，持续1.5秒'
+      }
+    ],
+    description: 'Lv17-18 普通怪，使用弓箭的冰原猎手'
+  },
+  {
+    id: 'ice_elemental',
+    name: '冰元素',
+    art: 'ice_elemental',
+    behavior: 'shaman',
+    baseHp: 150,
+    baseAttack: 30,
+    hpPerLevel: 20,
+    attackPerLevel: 4.5,
+    skills: [
+      {
+        id: 'ice_shard',
+        name: '冰锥术',
+        damage: 45,
+        range: 8,
+        radius: 1.5,
+        cooldown: 180,
+        windup: 30,
+        duration: 0,
+        description: '召唤冰锥攻击1.5格范围的敌人'
+      }
+    ],
+    description: 'Lv18-19 普通怪，漂浮的冰元素，范围魔法攻击'
+  },
+  {
+    id: 'frost_giant',
+    name: '霜巨人',
+    art: 'frost_giant',
+    behavior: 'guard',
+    baseHp: 320,
+    baseAttack: 35,
+    hpPerLevel: 45,
+    attackPerLevel: 5,
+    isElite: true,
+    skills: [
+      {
+        id: 'ice_stomp',
+        name: '冰霜践踏',
+        damage: 80,
+        range: 0,
+        radius: 4,
+        cooldown: 300, // 10秒
+        windup: 60,    // 2秒蓄力
+        duration: 60,  // 眩晕2秒
+        effect: 'stun',
+        description: '【预警技能】蓄力2秒后重击地面，4格范围AOE造成80伤害+2秒眩晕。地面出现红色危险圈预警'
+      }
+    ],
+    description: 'Lv19-20 精英怪，巨型冰霜巨人，血厚攻高，拥有AOE眩晕技能'
+  },
+  {
+    id: 'frost_queen',
+    name: '冰霜女王·艾莎',
+    art: 'frost_queen',
+    behavior: 'artillery',
+    baseHp: 8000,
+    baseAttack: 45,
+    hpPerLevel: 0,
+    attackPerLevel: 0,
+    isBoss: true,
+    skills: [
+      {
+        id: 'ice_lance',
+        name: '冰枪突刺',
+        damage: 120,
+        range: 12,
+        radius: 0,
+        cooldown: 120,
+        windup: 30,
+        duration: 0,
+        description: '【形态1】发射快速冰枪，穿透路径上所有敌人'
+      },
+      {
+        id: 'blizzard',
+        name: '暴风雪',
+        damage: 60,
+        range: 12,
+        radius: 6,
+        cooldown: 240,
+        windup: 90, // 3秒预警
+        duration: 150, // 持续5秒
+        effect: 'dot',
+        description: '【形态1-核心技能】召唤持续5秒的暴风雪，6格范围内每秒60伤害+减速70%。地面红圈预警3秒'
+      },
+      {
+        id: 'ice_prison',
+        name: '寒冰牢笼',
+        damage: 0,
+        range: 15,
+        radius: 1.5,
+        cooldown: 180,
+        windup: 30,
+        duration: 90, // 禁锢3秒
+        effect: 'stun',
+        description: '【形态2】锁定玩家，1秒后升起冰墙禁锢3秒，被困期间无法移动和攻击'
+      },
+      {
+        id: 'ice_spike_burst',
+        name: '冰刺爆发',
+        damage: 150,
+        range: 0,
+        radius: 8,
+        cooldown: 300,
+        windup: 60,
+        duration: 0,
+        description: '【形态3】全屏AOE，2秒蓄力后以女王为中心8格爆发冰刺，一击必杀级伤害'
+      }
+    ],
+    description: 'Lv20 BOSS，冰封雪域的统治者，拥有三个战斗形态，核心机制是躲避暴风雪AOE和破解冰牢'
+  }
+];
+
+// ==================== 第5章：暗影深渊 ====================
+
+export const chapter5Monsters: MonsterTemplate[] = [
+  {
+    id: 'shadow_stalker',
+    name: '暗影潜行者',
+    art: 'shadow_stalker',
+    behavior: 'assassin',
+    baseHp: 220,
+    baseAttack: 32,
+    hpPerLevel: 28,
+    attackPerLevel: 4.5,
+    skills: [
+      {
+        id: 'backstab',
+        name: '背刺',
+        damage: 80,
+        range: 3,
+        radius: 0,
+        cooldown: 180,
+        windup: 15,
+        duration: 0,
+        description: '瞬移到玩家背后造成双倍伤害'
+      }
+    ],
+    description: 'Lv21-22 普通怪，诡异的刺客，会隐身和背刺'
+  },
+  {
+    id: 'bone_mage',
+    name: '骸骨法师',
+    art: 'bone_mage',
+    behavior: 'shaman',
+    baseHp: 200,
+    baseAttack: 38,
+    hpPerLevel: 25,
+    attackPerLevel: 5,
+    skills: [
+      {
+        id: 'bone_spear',
+        name: '白骨之矛',
+        damage: 50,
+        range: 9,
+        radius: 0,
+        cooldown: 150,
+        windup: 25,
+        duration: 0,
+        description: '发射骨矛，造成穿刺伤害'
+      }
+    ],
+    description: 'Lv22-23 普通怪，操控死亡魔法的骷髅法师'
+  },
+  {
+    id: 'abomination',
+    name: '憎恶缝合怪',
+    art: 'abomination',
+    behavior: 'guard',
+    baseHp: 450,
+    baseAttack: 40,
+    hpPerLevel: 55,
+    attackPerLevel: 5.5,
+    skills: [
+      {
+        id: 'death_explosion',
+        name: '死亡爆炸',
+        damage: 150,
+        range: 0,
+        radius: 3,
+        cooldown: 0,
+        windup: 0,
+        duration: 0,
+        description: '【被动】死亡时爆炸，3格范围150伤害+中毒'
+      }
+    ],
+    description: 'Lv23-24 普通怪，臃肿的缝合怪，死亡时会爆炸'
+  },
+  {
+    id: 'shadow_lord',
+    name: '暗影领主',
+    art: 'shadow_lord',
+    behavior: 'summoner',
+    baseHp: 420,
+    baseAttack: 45,
+    hpPerLevel: 52,
+    attackPerLevel: 6,
+    isElite: true,
+    skills: [
+      {
+        id: 'shadow_bolt',
+        name: '暗影箭',
+        damage: 55,
+        range: 10,
+        radius: 0,
+        cooldown: 120,
+        windup: 20,
+        duration: 0,
+        description: '发射暗影魔法'
+      },
+      {
+        id: 'summon_minions',
+        name: '召唤亡灵',
+        damage: 0,
+        range: 0,
+        radius: 5,
+        cooldown: 240,
+        windup: 60,
+        duration: 0,
+        effect: 'summon',
+        description: '召唤3个骷髅仆从协助战斗'
+      }
+    ],
+    description: 'Lv24-25 精英怪，强大的死灵术士，会召唤仆从'
+  },
+  {
+    id: 'abyss_lord',
+    name: '深渊之主·莫格斯',
+    art: 'abyss_lord',
+    behavior: 'artillery',
+    baseHp: 15000,
+    baseAttack: 55,
+    hpPerLevel: 0,
+    attackPerLevel: 0,
+    isBoss: true,
+    skills: [
+      {
+        id: 'void_bolt',
+        name: '虚空弹',
+        damage: 80,
+        range: 12,
+        radius: 0,
+        cooldown: 90,
+        windup: 20,
+        duration: 0,
+        description: '【形态1】快速射出虚空能量弹'
+      },
+      {
+        id: 'dark_ritual',
+        name: '黑暗仪式',
+        damage: 0,
+        range: 0,
+        radius: 0,
+        cooldown: 300,
+        windup: 150, // 5秒可打断
+        duration: 0,
+        effect: 'summon',
+        description: '【形态1-核心机制】施法5秒召唤6个强力亡灵，蓄力期间可打断！屏幕显示蓄力条'
+      },
+      {
+        id: 'void_zone',
+        name: '虚空领域',
+        damage: 40,
+        range: 0,
+        radius: 4,
+        cooldown: 180,
+        windup: 30,
+        duration: 180, // 持续6秒
+        effect: 'dot',
+        description: '【形态2】在地面生成虚空区域，4格范围每秒40伤害，持续6秒'
+      },
+      {
+        id: 'death_mark',
+        name: '死亡印记',
+        damage: 9999,
+        range: 20,
+        radius: 3,
+        cooldown: 240,
+        windup: 30,
+        duration: 150, // 5秒倒计时
+        description: '【形态3-一击必杀】标记玩家，5秒后爆炸秒杀3格范围。头顶显示倒计时5→1，必须远离队友！'
+      }
+    ],
+    description: 'Lv25 BOSS，深渊的统治者，拥有三个形态，核心机制：打断黑暗仪式、躲避虚空区域、分散死亡印记'
+  }
+];
+
+// ==================== 第6章：龙骨荒漠 ====================
+
+export const chapter6Monsters: MonsterTemplate[] = [
+  {
+    id: 'dragon_whelp',
+    name: '幼龙',
+    art: 'dragon_whelp',
+    behavior: 'charger',
+    baseHp: 280,
+    baseAttack: 42,
+    hpPerLevel: 35,
+    attackPerLevel: 5.5,
+    skills: [
+      {
+        id: 'fire_breath_small',
+        name: '火焰吐息',
+        damage: 60,
+        range: 5,
+        radius: 1.5,
+        cooldown: 180,
+        windup: 30,
+        duration: 0,
+        effect: 'dot',
+        description: '喷射火焰，锥形范围攻击+燃烧'
+      }
+    ],
+    description: 'Lv26-27 普通怪，年轻的龙族，具有火焰攻击能力'
+  },
+  {
+    id: 'dragon_guard',
+    name: '龙人守卫',
+    art: 'dragon_guard',
+    behavior: 'guard',
+    baseHp: 350,
+    baseAttack: 48,
+    hpPerLevel: 42,
+    attackPerLevel: 6,
+    skills: [
+      {
+        id: 'shield_bash',
+        name: '盾击',
+        damage: 70,
+        range: 2.5,
+        radius: 0,
+        cooldown: 150,
+        windup: 20,
+        duration: 60,
+        effect: 'knockback',
+        description: '用盾牌猛击，造成伤害并击退'
+      }
+    ],
+    description: 'Lv27-28 普通怪，强壮的龙人战士，防御力高'
+  },
+  {
+    id: 'dragon_priest',
+    name: '龙祭司',
+    art: 'dragon_priest',
+    behavior: 'shaman',
+    baseHp: 320,
+    baseAttack: 55,
+    hpPerLevel: 38,
+    attackPerLevel: 7,
+    isElite: true,
+    skills: [
+      {
+        id: 'dragon_bolt',
+        name: '龙魂箭',
+        damage: 65,
+        range: 10,
+        radius: 0,
+        cooldown: 120,
+        windup: 25,
+        duration: 0,
+        description: '发射龙魂能量'
+      },
+      {
+        id: 'dragon_blessing',
+        name: '龙之祝福',
+        damage: 0,
+        range: 0,
+        radius: 6,
+        cooldown: 240,
+        windup: 45,
+        duration: 180,
+        effect: 'buff',
+        description: '为6格范围内所有友方单位增加30%攻击力，持续6秒'
+      }
+    ],
+    description: 'Lv28-29 精英怪，龙族的祭司，能为同伴提供强大增益'
+  },
+  {
+    id: 'ancient_dragon_king',
+    name: '远古龙王·巴哈姆特',
+    art: 'ancient_dragon_king',
+    behavior: 'artillery',
+    baseHp: 30000,
+    baseAttack: 70,
+    hpPerLevel: 0,
+    attackPerLevel: 0,
+    isBoss: true,
+    skills: [
+      {
+        id: 'claw_swipe',
+        name: '龙爪横扫',
+        damage: 100,
+        range: 4,
+        radius: 3,
+        cooldown: 90,
+        windup: 30,
+        duration: 0,
+        description: '【形态1-地面】前方扇形横扫'
+      },
+      {
+        id: 'fire_breath',
+        name: '烈焰吐息',
+        damage: 120,
+        range: 8,
+        radius: 2,
+        cooldown: 150,
+        windup: 45,
+        duration: 60,
+        effect: 'dot',
+        description: '【形态1-地面】喷射龙炎，锥形8格，燃烧2秒'
+      },
+      {
+        id: 'tail_stomp',
+        name: '尾击重踏',
+        damage: 150,
+        range: 0,
+        radius: 5,
+        cooldown: 180,
+        windup: 60,
+        duration: 90,
+        effect: 'stun',
+        description: '【形态1-地面】后方5格AOE+3秒眩晕，地面红圈预警'
+      },
+      {
+        id: 'dive_bomb',
+        name: '俯冲轰炸',
+        damage: 200,
+        range: 20,
+        radius: 6,
+        cooldown: 240,
+        windup: 60,
+        duration: 0,
+        description: '【形态2-飞行】龙王飞向空中，俯冲轰炸目标区域，地面显示阴影预警2秒'
+      },
+      {
+        id: 'fire_rain',
+        name: '火焰雨',
+        damage: 80,
+        range: 0,
+        radius: 12,
+        cooldown: 300,
+        windup: 90,
+        duration: 150,
+        description: '【形态2-飞行】召唤火焰雨，12格超大范围，持续5秒。地面30+个红圈预警'
+      },
+      {
+        id: 'summon_whelps',
+        name: '召唤幼龙',
+        damage: 0,
+        range: 0,
+        radius: 0,
+        cooldown: 360,
+        windup: 60,
+        duration: 0,
+        effect: 'summon',
+        description: '【形态3-狂怒】召唤4只幼龙助战'
+      },
+      {
+        id: 'dragon_roar',
+        name: '龙王咆哮',
+        damage: 300,
+        range: 0,
+        radius: 999,
+        cooldown: 300,
+        windup: 60,
+        duration: 0,
+        description: '【形态3-狂怒】全屏AOE，2秒蓄力后造成300伤害，必须躲在掩体后！屏幕剧烈震动'
+      },
+      {
+        id: 'ultimate_destruction',
+        name: '毁灭吐息',
+        damage: 9999,
+        range: 0,
+        radius: 999,
+        cooldown: 600,
+        windup: 150, // 5秒蓄力
+        duration: 90,  // 光束持续3秒
+        description: '【形态4-灭世·终极技】蓄力5秒，屏幕中央倒计时5→1。释放横扫龙息光束3秒，命中必死！必须躲在掩体后方'
+      }
+    ],
+    description: 'Lv30 最终BOSS，远古龙王，拥有四个战斗形态。核心机制：躲避火焰雨、掩体躲龙吼、掩体躲毁灭吐息'
+  }
+];
+
+// ==================== 怪物模板汇总 ====================
+
+export const allMonsterTemplates: MonsterTemplate[] = [
+  ...chapter1to3Monsters,
+  ...chapter4Monsters,
+  ...chapter5Monsters,
+  ...chapter6Monsters
+];
+
+// 根据ID获取怪物模板
+export function getMonsterTemplate(id: string): MonsterTemplate | undefined {
+  return allMonsterTemplates.find(m => m.id === id);
+}
+
+// 根据等级计算怪物属性
+export function calculateMonsterStats(template: MonsterTemplate, level: number): { hp: number; attack: number } {
+  const hp = Math.floor(template.baseHp + template.hpPerLevel * (level - 1));
+  const attack = Math.floor(template.baseAttack + template.attackPerLevel * (level - 1));
+  return { hp, attack };
+}
+
+// 生成怪物spawn数据
+export function createMonsterSpawn(
+  template: MonsterTemplate,
+  level: number,
+  position: { x: number; y: number }
+): Spawn {
+  const stats = calculateMonsterStats(template, level);
+  return {
+    id: `${template.id}_${position.x}_${position.y}`,
+    kind: template.behavior,
+    name: template.name,
+    x: position.x,
+    y: position.y,
+    hp: stats.hp,
+    attack: stats.attack,
+    elite: template.isElite || false,
+    boss: template.isBoss || false,
+    art: template.art
+  };
+}
+
+// ==================== 预设怪物组 ====================
+
+// 用于快速生成地图的怪物组合
+export const monsterGroups = {
+  // 第4章
+  tundra_basic: ['frost_wolf', 'snow_ranger', 'ice_elemental'],
+  tundra_elite: ['frost_giant'],
+  tundra_boss: ['frost_queen'],
+  
+  // 第5章
+  abyss_basic: ['shadow_stalker', 'bone_mage', 'abomination'],
+  abyss_elite: ['shadow_lord'],
+  abyss_boss: ['abyss_lord'],
+  
+  // 第6章
+  dragonbone_basic: ['dragon_whelp', 'dragon_guard'],
+  dragonbone_elite: ['dragon_priest'],
+  dragonbone_boss: ['ancient_dragon_king']
+};

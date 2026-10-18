@@ -1,0 +1,134 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+ ✓ tests/build-variety-r7.test.ts (95 tests) 1602ms
+ ✓ tests/build-variety-r6.test.ts (74 tests) 646ms
+ ❯ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r6.test.ts (0 test)
+ ❯ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r5.test.ts (0 test)
+ ❯ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-damage-breakdown.test.ts (0 test)
+ ✓ tests/build-variety-r6-review.test.ts (6 tests) 238ms
+ ❯ tests/build-variety-r5.test.ts (27 tests | 1 failed) 242ms
+   ✓ has precisely 18 current identities with 2+4 and retains six original sets and 54 historical art definitions 3ms
+   ✓ 'set-sword-standard' resolves six actual catalog pieces across art stages without mutating any item 25ms
+   ✓ 'set-sword-omega' resolves six actual catalog pieces across art stages without mutating any item 11ms
+   ✓ 'set-sword-primal' resolves six actual catalog pieces across art stages without mutating any item 9ms
+   ✓ 'set-hammer-standard' resolves six actual catalog pieces across art stages without mutating any item 6ms
+   ✓ 'set-hammer-omega' resolves six actual catalog pieces across art stages without mutating any item 6ms
+   ✓ 'set-hammer-primal' resolves six actual catalog pieces across art stages without mutating any item 9ms
+   ✓ 'set-axe-standard' resolves six actual catalog pieces across art stages without mutating any item 6ms
+   ✓ 'set-axe-omega' resolves six actual catalog pieces across art stages without mutating any item 9ms
+   ✓ 'set-axe-primal' resolves six actual catalog pieces across art stages without mutating any item 5ms
+   ✓ 'set-staff-standard' resolves six actual catalog pieces across art stages without mutating any item 8ms
+   ✓ 'set-staff-omega' resolves six actual catalog pieces across art stages without mutating any item 7ms
+   ✓ 'set-staff-primal' resolves six actual catalog pieces across art stages without mutating any item 7ms
+   ✓ 'set-hidden-standard' resolves six actual catalog pieces across art stages without mutating any item 8ms
+   ✓ 'set-hidden-omega' resolves six actual catalog pieces across art stages without mutating any item 8ms
+   ✓ 'set-hidden-primal' resolves six actual catalog pieces across art stages without mutating any item 7ms
+   ✓ 'set-wand-standard' resolves six actual catalog pieces across art stages without mutating any item 5ms
+   ✓ 'set-wand-omega' resolves six actual catalog pieces across art stages without mutating any item 15ms
+   ✓ 'set-wand-primal' resolves six actual catalog pieces across art stages without mutating any item 5ms
+   ✓ uses the minimum art stage once and adds percent mains and sets in the same group 20ms
+   ✓ new bows acquire each borrowed identity via issuance while historical bows remain exact 2ms
+   ✓ an obtainable bow 4+2 casts exactly 1,1,2 projectiles with shared total budgets 18ms
+   ✓ a sword 4+2 applies frost on the third source hit, and its physical qi then breaks it 15ms
+   ✓ same atoms pick the highest art tier and scale only once 1ms
+   ✓ the third volley executes six declared projectiles and preserves the total damage budget 9ms
+   × set independent multipliers do not merge into the attribute conditional sum 14ms
+   ✓ tips carry server-scaled bonus text while historical art names stay on the instance 1ms
+ ✓ tests/build-variety-stage-continuity.test.ts (2 tests) 53ms
+ ✓ tests/build-variety-damage-breakdown.test.ts (10 tests) 17ms
+ ❯ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r6-review.test.ts (0 test)
+ ❯ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r7.test.ts (0 test)
+ ❯ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-stage-continuity.test.ts (0 test)
+ ✓ tests/copy-voice.test.ts (4 tests) 5ms
+ ✓ tests/numeric-spine-codex-domain.test.ts (3 tests) 417ms
+   ✓ 真实高阶暗器标准配置可完整解析，所有已装配伤害保持非负  415ms
+ ✓ tests/numeric-spine-affix-domain.test.ts (2 tests) 4ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-damage-breakdown.test.ts [ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-damage-breakdown.test.ts ]
+Error: Cannot find module '../apps/web/src/damage-breakdown-model.ts' imported from 'G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-damage-breakdown.test.ts'
+ ❯ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-damage-breakdown.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {damageBreakdown,conditionDescription} from '../apps/web/src/da…
+       | ^
+      3| import {DamageBreakdown} from '../apps/web/src/components/DamageBreakd…
+      4| import {effectAtoms} from '../packages/content/effect-atoms.ts';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r5.test.ts [ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r5.test.ts ]
+Error: Cannot find module './combat-review.ts' imported from 'G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/docs/reviews/numeric-spine-20261013/S0/resume-own-base/packages/contracts/index.ts'
+ ❯ docs/reviews/numeric-spine-20261013/S0/resume-own-base/packages/contracts/index.ts:1:1
+      1| import {combatReviewSchema} from './combat-review.ts';
+       | ^
+      2| import {fieldReplayResponseSchema} from './replay-pilots.ts';
+      3| import {talentBatchPreviewSchema} from './deep-progression.ts';
+ ❯ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r5.test.ts:3:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r6-review.test.ts [ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r6-review.test.ts ]
+Error: Cannot find module '../packages/simulation/index.ts' imported from 'G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r6-review.test.ts'
+ ❯ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r6-review.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {World} from '../packages/simulation/index.ts';
+       | ^
+      3| import {makeGearByBase,resolveBuild} from '../packages/rules/index.ts';
+      4| import {regionById} from '../packages/content/index.ts';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r6.test.ts [ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r6.test.ts ]
+Error: Cannot find module './combat-review.ts' imported from 'G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/docs/reviews/numeric-spine-20261013/S0/resume-own-base/packages/contracts/index.ts'
+ ❯ docs/reviews/numeric-spine-20261013/S0/resume-own-base/packages/contracts/index.ts:1:1
+      1| import {combatReviewSchema} from './combat-review.ts';
+       | ^
+      2| import {fieldReplayResponseSchema} from './replay-pilots.ts';
+      3| import {talentBatchPreviewSchema} from './deep-progression.ts';
+ ❯ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r6.test.ts:4:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r7.test.ts [ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r7.test.ts ]
+Error: Cannot find module '../packages/rules/index.ts' imported from 'G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r7.test.ts'
+ ❯ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-r7.test.ts:2:140
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-stage-continuity.test.ts [ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-stage-continuity.test.ts ]
+Error: Cannot find module '../packages/simulation/index.ts' imported from 'G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-stage-continuity.test.ts'
+ ❯ docs/reviews/numeric-spine-20261013/S0/resume-own-base/tests/build-variety-stage-continuity.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {World} from '../packages/simulation/index.ts';
+       | ^
+      3| import {regionById,skillCatalog} from '../packages/content/index.ts';
+      4| import {augmentById} from '../packages/content/augments.ts';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/build-variety-r5.test.ts > set independent multipliers do not merge into the attribute conditional sum
+AssertionError: expected 154 to be 161 // Object.is equality
+
+- Expected
++ Received
+
+- 161
++ 154
+
+ ❯ tests/build-variety-r5.test.ts:28:814
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  7 failed | 8 passed (15)
+      Tests  1 failed | 222 passed (223)
+   Start at  22:55:23
+   Duration  17.02s (transform 2.20s, setup 0ms, import 10.69s, tests 3.22s, environment 3ms)
+

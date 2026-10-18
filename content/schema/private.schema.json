@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "abyss-walker private content",
+  "type": "object",
+  "required": ["grants"],
+  "additionalProperties": false,
+  "properties": {
+    "_notes": {"type": "string"},
+    "grants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "encounter_id", "source_key", "gold", "experience", "item_pool"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+          "encounter_id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+          "source_key": {"type": "string", "minLength": 1},
+          "gold": {
+            "type": "object",
+            "required": ["min", "max"],
+            "additionalProperties": false,
+            "properties": {
+              "min": {"type": "integer", "minimum": 0},
+              "max": {"type": "integer", "minimum": 0}
+            }
+          },
+          "experience": {"type": "integer", "minimum": 0},
+          "item_pool": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["base_id", "weight"],
+              "additionalProperties": false,
+              "properties": {
+                "base_id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+                "weight": {"type": "integer", "minimum": 0}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

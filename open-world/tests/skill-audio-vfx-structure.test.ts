@@ -1,0 +1,10 @@
+import {test,expect} from 'vitest';
+import {skillCatalog} from '../packages/content/index.ts';
+import {vfxProfiles,vfxPalettes} from '../apps/web/src/vfx-profiles.ts';
+import {drawMotif,visualSignature} from '../apps/web/src/vfx-motifs.ts';
+import {soundProfiles} from '../apps/web/src/audio/sound-profiles.ts';
+import {recipeSignature} from '../apps/web/src/audio/sound-recipes.ts';
+import inventory from '../docs/skill-audio-vfx-inventory.json';
+test('every player and combo key has sound stages and an actual static motif drawing',()=>{for(const p of Object.values(vfxProfiles).filter(p=>/^(player|combo)\//.test(p.key))){expect(soundProfiles[p.key]?.cast,p.key).toBeDefined();expect(soundProfiles[p.key]?.impact,p.key).toBeDefined();let drew=false;const graphics:any=new Proxy({}, {get:(_t,key)=>()=>{if(['strokeEllipse','strokePath','fillCircle'].includes(String(key)))drew=true;return graphics;}});expect(drawMotif(graphics,{x:0,y:0},p,48,0,1,vfxPalettes[p.element],true),p.key).toBe(true);expect(drew,p.key).toBe(true);}});
+test('actual A0 event and declared skill differences are empty',()=>{expect(inventory.events.missingVfx).toEqual([]);expect(inventory.events.missingDeclared).toEqual([]);expect(inventory.audio.missing).toEqual([]);});
+test('all 83 player cast-plus-impact sound and rendered visual signatures are distinct',()=>{const profiles=skillCatalog.map(s=>vfxProfiles['player/'+s.id]);expect(profiles).toHaveLength(83);expect(new Set(profiles.map(visualSignature)).size).toBe(profiles.length);expect(new Set(profiles.map(p=>{const sound=soundProfiles[p.key];return recipeSignature(sound.cast)+recipeSignature(sound.impact);})).size).toBe(profiles.length);});

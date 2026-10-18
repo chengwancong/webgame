@@ -1,0 +1,95 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+ ❯ tests/island-story-player-flows.database.test.ts (11 tests | 1 failed) 650079ms
+   ✓ 雾铃岛 follows all real clue orders and confirms convergence and rewards without duplicate history  36437ms
+   ✓ 雾铃岛 opens its gate and boss without optional quests, preserves individual phase and reconnect, and takes regional quests in parallel  3726ms
+   ✓ 赤炉岛 follows all real clue orders and confirms convergence and rewards without duplicate history  41691ms
+   ✓ 赤炉岛 opens its gate and boss without optional quests, preserves individual phase and reconnect, and takes regional quests in parallel  5300ms
+   ✓ 霜镜岛 follows all real clue orders and confirms convergence and rewards without duplicate history  56305ms
+   ✓ 霜镜岛 opens its gate and boss without optional quests, preserves individual phase and reconnect, and takes regional quests in parallel  8055ms
+   ✓ 沉星岛 follows all real clue orders and confirms convergence and rewards without duplicate history  123974ms
+   ✓ 沉星岛 opens its gate and boss without optional quests, preserves individual phase and reconnect, and takes regional quests in parallel  16609ms
+   ✓ real victories across the six islands unlock every configured final-phase waypoint, retire only authored invasion camps and allow later camp-fact quests without invented kills  29479ms
+   × 龙眠岛 follows all real clue orders and confirms convergence and rewards without duplicate history 240012ms
+   ✓ 龙眠岛 opens its gate and boss without optional quests, preserves individual phase and reconnect, and takes regional quests in parallel  88186ms
+stdout | tests/earned-all-quests.database.test.ts > a genuinely earned character walks every authored story and side quest through World/PG, keeping late world facts and replay consistent
+{"pass":0,"completed":164,"remaining":["ss-c01-t06","ss-c02-t06","ss-c03-t04","ss-c03-t05","ss-c03-t06","ss-c04-t03","ss-c04-t04","ss-c05-t06","ss-c06-t06","ow-rift-dungeon-guide1","ow-rift-dungeon-guide2"]}
+
+stdout | tests/earned-all-quests.database.test.ts > a genuinely earned character walks every authored story and side quest through World/PG, keeping late world facts and replay consistent
+{"pass":1,"completed":173,"remaining":["ow-rift-dungeon-guide1","ow-rift-dungeon-guide2"]}
+
+ ❯ tests/earned-all-quests.database.test.ts (1 test | 1 failed) 345203ms
+   × a genuinely earned character walks every authored story and side quest through World/PG, keeping late world facts and replay consistent 345203ms
+ ✓ tests/equipment-runtime.database.test.ts (7 tests) 62721ms
+   ✓ the current island campaign crafts all six slots and reinforces them beyond the legacy cap  2008ms
+   ✓ all 324 items can be earned by real crafting commands, equipped, quoted, reinforced once and restored  59433ms
+   ✓ real six-piece loadouts coexist with a retained old core and activate current 2/4 bonuses  378ms
+ ✓ tests/weapon-story.database.test.ts (3 tests) 752ms
+   ✓ engine defense runs on the client: clears faster than the build allows are refused, failed engine retries  304ms
+ ✓ tests/build-variety-r1.test.ts (61 tests) 159ms
+ ✓ tests/build-variety-r5.test.ts (27 tests) 191ms
+ ✓ tests/build-variety-rs.test.ts (30 tests) 250ms
+ ✓ tests/world-pack-growth.test.ts (3 tests) 241ms
+ ✓ tests/combat-event-feedback.test.ts (4 tests) 177ms
+ ❯ tests/weapon-story-flow.test.ts (9 tests | 1 failed) 281ms
+   ✓ restores each weapon bar without changing activation, ranks, books, gear or wallet 2ms
+   ✓ db12 repair only clears incompatible slots and preserves an empty bar 1ms
+   ✓ checks unlocked map and restores map landing rather than saved exact coordinates 1ms
+   ✓ holds only in range, receives enemy attacks, fails on engine destruction, preserves battle checkpoint 31ms
+   ✓ keeps the battle running after the engine breaks: raiders leave and the hero can still walk to repair it 12ms
+   ✓ falling during the defense fails it but stands the hero back up beside the engine instead of freezing 8ms
+   ✓ engine defense: a fall mid-step fails it without ending the field battle 12ms
+   ✓ phases nearby wild monsters out of a story fight and puts them back untouched afterwards 14ms
+   × clear floor follows the real build: stronger characters may clear faster, and only too-fast clears are refused 200ms
+ ✓ tests/world-field-foundations.test.ts (10 tests) 72ms
+ ✓ tests/monster-model.test.ts (6 tests) 48ms
+ ✓ tests/swarm-health-line.test.ts (5 tests) 34ms
+ ✓ tests/camp-health-budget-proposal.test.ts (2 tests) 6ms
+ ✓ tests/build-variety-r7.test.ts (95 tests) 1187ms
+ ✓ tests/build-variety-r6.test.ts (74 tests) 578ms
+ ✓ tests/build-variety-r6-review.test.ts (6 tests) 200ms
+ ✓ tests/build-variety-stage-continuity.test.ts (2 tests) 51ms
+ ✓ tests/build-variety-damage-breakdown.test.ts (10 tests) 17ms
+ ✓ tests/copy-voice.test.ts (4 tests) 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/earned-all-quests.database.test.ts > a genuinely earned character walks every authored story and side quest through World/PG, keeping late world facts and replay consistent
+AssertionError: [{"task":"ss-c01-t06","op":"accept","code":"QUEST_LOCKED","message":"这条线索暂时不可接取。"},{"task":"ss-c02-t06","op":"accept","code":"QUEST_LOCKED","message":"这条线索暂时不可接取。"},{"task":"ss-c03-t06","op":"accept","code":"QUEST_LOCKED","message":"这条线索暂时不可接取。"},{"task":"ss-c05-t06","op":"accept","code":"QUEST_LOCKED","message":"这条线索暂时不可接取。"},{"task":"ss-c06-t06","op":"accept","code":"QUEST_LOCKED","message":"这条线索暂时不可接取。"},{"id":"field-rift-1","status":"failed","reason":"角色已倒下"},{"task":"ow-rift-dungeon-guide1","op":"clear_dungeon"},{"id":"field-rift-2","status":"failed","reason":"角色已倒下"},{"task":"ow-rift-dungeon-guide2","op":"clear_dungeon"},{"task":"ow-rift-dungeon-guide1","op":"clear_dungeon"},{"task":"ow-rift-dungeon-guide2","op":"clear_dungeon"},{"task":"ow-rift-dungeon-guide1","op":"clear_dungeon"},{"task":"ow-rift-dungeon-guide2","op":"clear_dungeon"},{"id":"field-rift-1","status":"failed","reason":"角色已倒下"},{"id":"field-rift-2","status":"failed","reason":"角色已倒下"}]: expected [ 'ow-rift-dungeon-guide1', …(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "ow-rift-dungeon-guide1",
++   "ow-rift-dungeon-guide2",
++ ]
+
+ ❯ tests/earned-all-quests.database.test.ts:55:983
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/island-story-player-flows.database.test.ts > 龙眠岛 follows all real clue orders and confirms convergence and rewards without duplicate history
+Error: Test timed out in 240000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/island-story-player-flows.database.test.ts:76:2
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/weapon-story-flow.test.ts > clear floor follows the real build: stronger characters may clear faster, and only too-fast clears are refused
+AssertionError: expected 0 to be greater than 32320
+ ❯ tests/weapon-story-flow.test.ts:57:55
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  3 failed | 17 passed (20)
+      Tests  3 failed | 367 passed (370)
+   Start at  23:00:47
+   Duration  1085.04s (transform 2.62s, setup 0ms, import 19.35s, tests 1062.25s, environment 2ms)
+

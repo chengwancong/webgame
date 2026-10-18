@@ -1,0 +1,1849 @@
+{
+  "schema": 3,
+  "mode": "一次实测边际推导",
+  "changes": [
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        24,
+        "parts",
+        "statMultipliers",
+        "attack"
+      ],
+      "before": 0.8,
+      "after": 0.85,
+      "reason": "燃烧引爆 identity：C3实测弹性={\"single\":1.1985270144647113,\"clear\":0,\"survival\":0,\"elite\":1.9838584653154827,\"safety\":0}，锚点比值={\"single\":0.9433801617709663,\"clear\":1.0886075949367089,\"survival\":1.3879310344827585,\"elite\":0.8157894736842104,\"safety\":0.9231231231231231}，目标={\"single\":0.9,\"clear\":1.1904761904761905,\"survival\":1.05,\"elite\":0.95,\"safety\":0.9}，measured:C3 seeds=41,42,43 Δ=0.15 log；网格0.05，边界0.5–1.5",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        24,
+        "parts",
+        "rules",
+        1,
+        "action",
+        "ratio"
+      ],
+      "before": 0.5,
+      "after": 0.45,
+      "reason": "燃烧引爆 mechanism：C3实测弹性={\"single\":0.5103148001244584,\"clear\":0,\"survival\":0,\"elite\":0.6899287148695143,\"safety\":0}，锚点比值={\"single\":0.9433801617709663,\"clear\":1.0886075949367089,\"survival\":1.3879310344827585,\"elite\":0.8157894736842104,\"safety\":0.9231231231231231}，目标={\"single\":0.9,\"clear\":1.1904761904761905,\"survival\":1.05,\"elite\":0.95,\"safety\":0.9}，measured:C3 seeds=41,42,43 Δ=0.1 linear；网格0.05，边界0.15–0.6",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        26,
+        "parts",
+        "statMultipliers",
+        "attack"
+      ],
+      "before": 0.7,
+      "after": 0.55,
+      "reason": "冻结碎冰 identity：C3实测弹性={\"single\":1.253504590040937,\"clear\":0,\"survival\":0,\"elite\":1.5168628093761167,\"safety\":0}，锚点比值={\"single\":1.6522529406746025,\"clear\":2.3052866716306775,\"survival\":1.379310344827586,\"elite\":1.2547528517110267,\"safety\":3.9562419562419557}，目标={\"single\":1.1,\"clear\":0.7619047619047619,\"survival\":1.3,\"elite\":0.9,\"safety\":1.25}，measured:C3 seeds=41,42,43 Δ=0.15 log；网格0.05，边界0.5–1.5",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        26,
+        "parts",
+        "overrides",
+        0,
+        "set",
+        "action.onStacks.duration"
+      ],
+      "before": 60,
+      "after": 30,
+      "reason": "冻结碎冰 identity：C3实测弹性={\"single\":0,\"clear\":0,\"survival\":0.017193772175900995,\"elite\":0,\"safety\":0.023104906018664842}，锚点比值={\"single\":1.6522529406746025,\"clear\":2.3052866716306775,\"survival\":1.379310344827586,\"elite\":1.2547528517110267,\"safety\":3.9562419562419557}，目标={\"single\":1.1,\"clear\":0.7619047619047619,\"survival\":1.3,\"elite\":0.9,\"safety\":1.25}，measured:C3 seeds=41,42,43 Δ=30 linear；网格15，边界30–90",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        26,
+        "parts",
+        "rules",
+        1,
+        "icd"
+      ],
+      "before": 180,
+      "after": 105,
+      "reason": "冻结碎冰 cost：C3实测弹性={\"single\":0,\"clear\":0,\"survival\":0.0009245584990533278,\"elite\":0,\"safety\":0.0051383559942419455}，锚点比值={\"single\":1.6522529406746025,\"clear\":2.3052866716306775,\"survival\":1.379310344827586,\"elite\":1.2547528517110267,\"safety\":3.9562419562419557}，目标={\"single\":1.1,\"clear\":0.7619047619047619,\"survival\":1.3,\"elite\":0.9,\"safety\":1.25}，measured:C3 seeds=41,42,43 Δ=30 linear；网格15，边界60–300",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        54,
+        "parts",
+        "conversions",
+        0,
+        "ratio"
+      ],
+      "before": 0.5,
+      "after": 0.05,
+      "reason": "疾行游击 identity：C3实测弹性={\"single\":0.6622465907770158,\"clear\":0,\"survival\":0,\"elite\":0,\"safety\":0}，锚点比值={\"single\":1.0566198382290337,\"clear\":0.2141523137580411,\"survival\":1,\"elite\":1.2210992662328672,\"safety\":2.153159340659341}，目标={\"single\":0.8,\"clear\":1.0476190476190477,\"survival\":0.8,\"elite\":1,\"safety\":1.3}，measured:C3 seeds=41,42,43 Δ=0.1 linear；网格0.05，边界0.05–1",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        54,
+        "parts",
+        "statMultipliers",
+        "attack"
+      ],
+      "before": 1,
+      "after": 1.5,
+      "reason": "疾行游击 identity：C3实测弹性={\"single\":1.0677392221529811,\"clear\":3.7125980689882363,\"survival\":0,\"elite\":0,\"safety\":0}，锚点比值={\"single\":1.0566198382290337,\"clear\":0.2141523137580411,\"survival\":1,\"elite\":1.2210992662328672,\"safety\":2.153159340659341}，目标={\"single\":0.8,\"clear\":1.0476190476190477,\"survival\":0.8,\"elite\":1,\"safety\":1.3}，measured:C3 seeds=41,42,43 Δ=0.2 log；网格0.05，边界0.5–1.5",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        0,
+        "parts",
+        "statMultipliers",
+        "attack"
+      ],
+      "before": 1.2,
+      "after": 1.5,
+      "reason": "震地旋风 identity：C3实测弹性={\"single\":0.994212223695021,\"clear\":0,\"survival\":0,\"elite\":1.077074657867969,\"safety\":0}，锚点比值={\"single\":0.6380800030561034,\"clear\":1.0886075949367089,\"survival\":1,\"elite\":0.40270294950232854,\"safety\":0.9231231231231231}，目标={\"single\":1.1,\"clear\":1.2380952380952381,\"survival\":0.95,\"elite\":1.05,\"safety\":0.6}，measured:C3 seeds=41,42,43 Δ=0.25 log；网格0.05，边界0.5–1.5",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        0,
+        "parts",
+        "patches",
+        0,
+        "ops",
+        0,
+        "value"
+      ],
+      "before": 1.6,
+      "after": 2,
+      "reason": "震地旋风 identity：C3实测弹性={\"single\":1.0373854772532713,\"clear\":0,\"survival\":0,\"elite\":0.8184384644441451,\"safety\":0}，锚点比值={\"single\":0.6380800030561034,\"clear\":1.0886075949367089,\"survival\":1,\"elite\":0.40270294950232854,\"safety\":0.9231231231231231}，目标={\"single\":1.1,\"clear\":1.2380952380952381,\"survival\":0.95,\"elite\":1.05,\"safety\":0.6}，measured:C3 seeds=41,42,43 Δ=0.3 log；网格0.1，边界1–2",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        16,
+        "parts",
+        "patches",
+        0,
+        "ops",
+        3,
+        "value"
+      ],
+      "before": 0.1,
+      "after": 0.05,
+      "reason": "分裂箭雨 identity：C3实测弹性={\"single\":0.8421711903686442,\"clear\":0.6713772525386293,\"survival\":0,\"elite\":0.4211376988152615,\"safety\":0}，锚点比值={\"single\":3.373875448869652,\"clear\":0.9113924050632911,\"survival\":0.7247278382581649,\"elite\":1.4748341786968395,\"safety\":1.0370370370370372}，目标={\"single\":0.7,\"clear\":1.2380952380952381,\"survival\":0.9,\"elite\":1,\"safety\":1.1}，measured:C3 seeds=41,42,43 Δ=0.1 log；网格0.05，边界0.05–1",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        16,
+        "parts",
+        "statMultipliers",
+        "attack"
+      ],
+      "before": 1,
+      "after": 0.85,
+      "reason": "分裂箭雨 identity：C3实测弹性={\"single\":0.9306906751635909,\"clear\":0.6779996734389195,\"survival\":0,\"elite\":0.43323681909921885,\"safety\":0}，锚点比值={\"single\":3.373875448869652,\"clear\":0.9113924050632911,\"survival\":0.7247278382581649,\"elite\":1.4748341786968395,\"safety\":1.0370370370370372}，目标={\"single\":0.7,\"clear\":1.2380952380952381,\"survival\":0.9,\"elite\":1,\"safety\":1.1}，measured:C3 seeds=41,42,43 Δ=0.2 log；网格0.05，边界0.5–1.5",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        16,
+        "parts",
+        "rules",
+        0,
+        "action",
+        "ratio"
+      ],
+      "before": 0.2,
+      "after": 0.4,
+      "reason": "分裂箭雨 mechanism：C3实测弹性={\"single\":0,\"clear\":0.47628048989254673,\"survival\":0,\"elite\":0,\"safety\":0}，锚点比值={\"single\":3.373875448869652,\"clear\":0.9113924050632911,\"survival\":0.7247278382581649,\"elite\":1.4748341786968395,\"safety\":1.0370370370370372}，目标={\"single\":0.7,\"clear\":1.2380952380952381,\"survival\":0.9,\"elite\":1,\"safety\":1.1}，measured:C3 seeds=41,42,43 Δ=0.1 linear；网格0.05，边界0.15–0.6",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        16,
+        "parts",
+        "rules",
+        1,
+        "action",
+        "mods",
+        "dodge"
+      ],
+      "before": 0.15,
+      "after": 0.2,
+      "reason": "分裂箭雨 mechanism：C3实测弹性={\"single\":0,\"clear\":0,\"survival\":3.2661386965695596,\"elite\":0,\"safety\":0.9909090264423096}，锚点比值={\"single\":3.373875448869652,\"clear\":0.9113924050632911,\"survival\":0.7247278382581649,\"elite\":1.4748341786968395,\"safety\":1.0370370370370372}，目标={\"single\":0.7,\"clear\":1.2380952380952381,\"survival\":0.9,\"elite\":1,\"safety\":1.1}，measured:C3 seeds=41,42,43 Δ=0.1 linear；网格0.05，边界0.1–0.3",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        41,
+        "parts",
+        "rules",
+        0,
+        "action",
+        "mods",
+        "damageMult"
+      ],
+      "before": 0.6,
+      "after": 1.2,
+      "reason": "回响法师 identity：C3实测弹性={\"single\":0.23418177270971868,\"clear\":0,\"survival\":0,\"elite\":0,\"safety\":0}，锚点比值={\"single\":0.28800363610277224,\"clear\":0.05116171464454505,\"survival\":0.6103896103896104,\"elite\":0.6105496331164336,\"safety\":1.9781209781209779}，目标={\"single\":1.15,\"clear\":0.9523809523809523,\"survival\":0.8,\"elite\":1.3,\"safety\":0.9}，measured:C3 seeds=41,42,43 Δ=0.2 linear；网格0.1，边界0.3–1.5",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        41,
+        "parts",
+        "statMultipliers",
+        "attack"
+      ],
+      "before": 1.2,
+      "after": 1.5,
+      "reason": "回响法师 identity：C3实测弹性={\"single\":1.3744496441739653,\"clear\":0.6997021434027978,\"survival\":0,\"elite\":3.8360247977169464,\"safety\":0}，锚点比值={\"single\":0.28800363610277224,\"clear\":0.05116171464454505,\"survival\":0.6103896103896104,\"elite\":0.6105496331164336,\"safety\":1.9781209781209779}，目标={\"single\":1.15,\"clear\":0.9523809523809523,\"survival\":0.8,\"elite\":1.3,\"safety\":0.9}，measured:C3 seeds=41,42,43 Δ=0.25 log；网格0.05，边界0.5–1.5",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        41,
+        "parts",
+        "rules",
+        1,
+        "action",
+        "mods",
+        "cooldownRecovery"
+      ],
+      "before": 0.3,
+      "after": 0.15,
+      "reason": "回响法师 mechanism：C3实测弹性={\"single\":0,\"clear\":0,\"survival\":0,\"elite\":0,\"safety\":0.3636764417087478}，锚点比值={\"single\":0.28800363610277224,\"clear\":0.05116171464454505,\"survival\":0.6103896103896104,\"elite\":0.6105496331164336,\"safety\":1.9781209781209779}，目标={\"single\":1.15,\"clear\":0.9523809523809523,\"survival\":0.8,\"elite\":1.3,\"safety\":0.9}，measured:C3 seeds=41,42,43 Δ=0.1 linear；网格0.05，边界0.15–0.6",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        47,
+        "parts",
+        "statMultipliers",
+        "attack"
+      ],
+      "before": 0.8,
+      "after": 1.25,
+      "reason": "坚壁反伤 identity：C3实测弹性={\"single\":0.9624076849103416,\"clear\":0,\"survival\":0,\"elite\":2.078436618812487,\"safety\":0}，锚点比值={\"single\":0.41335891393398244,\"clear\":2.1772151898734178,\"survival\":1.3896103896103895,\"elite\":0.401279970882179,\"safety\":0.9231231231231231}，目标={\"single\":0.8,\"clear\":0.7142857142857143,\"survival\":1.5,\"elite\":0.9,\"safety\":1.3}，measured:C3 seeds=41,42,43 Δ=0.15 log；网格0.05，边界0.5–1.5",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        37,
+        "parts",
+        "rules",
+        1,
+        "action",
+        "ratio"
+      ],
+      "before": 0.4,
+      "after": 0.2,
+      "reason": "先手刺杀 identity：C3实测弹性={\"single\":6.38087403376918,\"clear\":0,\"survival\":0,\"elite\":0,\"safety\":0}，锚点比值={\"single\":7.3631118286652155,\"clear\":0.32932666737581107,\"survival\":1,\"elite\":12.618025751072961,\"safety\":0.9629629629629629}，目标={\"single\":1.4,\"clear\":0.7142857142857143,\"survival\":1.05,\"elite\":1.4,\"safety\":0.9}，measured:C3 seeds=41,42,43 Δ=0.1 linear；网格0.05，边界0.2–1",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        37,
+        "parts",
+        "statMultipliers",
+        "attack"
+      ],
+      "before": 0.8,
+      "after": 0.7,
+      "reason": "先手刺杀 identity：C3实测弹性={\"single\":3.7130430573009616,\"clear\":0,\"survival\":0,\"elite\":0,\"safety\":0}，锚点比值={\"single\":7.3631118286652155,\"clear\":0.32932666737581107,\"survival\":1,\"elite\":12.618025751072961,\"safety\":0.9629629629629629}，目标={\"single\":1.4,\"clear\":0.7142857142857143,\"survival\":1.05,\"elite\":1.4,\"safety\":0.9}，measured:C3 seeds=41,42,43 Δ=0.15 log；网格0.05，边界0.5–1.5",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        37,
+        "parts",
+        "rules",
+        4,
+        "action",
+        "fraction"
+      ],
+      "before": 0.3,
+      "after": 0.5,
+      "reason": "先手刺杀 mechanism：C3实测弹性={\"single\":0,\"clear\":1.2516314295400595,\"survival\":0,\"elite\":0,\"safety\":0}，锚点比值={\"single\":7.3631118286652155,\"clear\":0.32932666737581107,\"survival\":1,\"elite\":12.618025751072961,\"safety\":0.9629629629629629}，目标={\"single\":1.4,\"clear\":0.7142857142857143,\"survival\":1.05,\"elite\":1.4,\"safety\":0.9}，measured:C3 seeds=41,42,43 Δ=0.1 linear；网格0.05，边界0.15–0.6",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        0,
+        "description"
+      ],
+      "before": "攻击变为原来的120%。旋风的伤害变为原来的160%。旋风分为4段，每段间隔0.5秒，跟随你移动，移动不会打断。旋风可用剑、锤、斧释放。你周围4格内敌人至少3个且范围技能：伤害增加20%。旋风技能，命中时：施加破甲 3秒，强度20%。旋风技能，施放时：减伤增加45%，持续2秒，最多1层。",
+      "after": "攻击变为原来的150%。旋风的伤害变为原来的200%。旋风分为4段，每段间隔0.5秒，跟随你移动，移动不会打断。旋风可用剑、锤、斧释放。你周围4格内敌人至少3个且范围技能：伤害增加20%。旋风技能，命中时：施加破甲 3秒，强度20%。旋风技能，施放时：减伤增加45%，持续2秒，最多1层。",
+      "reason": "真实参数重新生成中文描述",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        16,
+        "description"
+      ],
+      "before": "攻击变为原来的100%。飞刀、扇刃环绕3秒，轨道半径1.5格，每0.5秒可接触一次，每秒转动4.2弧度。飞刀、扇刃以你为中心。飞刀、扇刃接触半径1格。飞刀、扇刃的命中及持续伤害变为原来的10%。目标处于流血且你周围4格内敌人至少3个：伤害增加20%。你周围4格内敌人至少3个：闪避增加15%，最多1层。",
+      "after": "攻击变为原来的85%。飞刀、扇刃环绕3秒，轨道半径1.5格，每0.5秒可接触一次，每秒转动4.2弧度。飞刀、扇刃以你为中心。飞刀、扇刃接触半径1格。飞刀、扇刃的命中及持续伤害变为原来的5%。目标处于流血且你周围4格内敌人至少3个：伤害增加40%。你周围4格内敌人至少3个：闪避增加20%，最多1层。",
+      "reason": "真实参数重新生成中文描述",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        16,
+        "parts",
+        "rules",
+        0,
+        "description"
+      ],
+      "before": "目标处于流血且你周围4格内敌人至少3个：伤害增加20%。",
+      "after": "目标处于流血且你周围4格内敌人至少3个：伤害增加40%。",
+      "reason": "真实参数重新生成中文描述",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        16,
+        "parts",
+        "rules",
+        1,
+        "description"
+      ],
+      "before": "你周围4格内敌人至少3个：闪避增加15%，最多1层。",
+      "after": "你周围4格内敌人至少3个：闪避增加20%，最多1层。",
+      "reason": "真实参数重新生成中文描述",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        24,
+        "description"
+      ],
+      "before": "燃烧可以暴击，使用你暴击率的50%。攻击变为原来的80%。引爆触发间隔1秒。燃烧：伤害增加20%。目标处于燃烧，直接命中：伤害增加50%。目标处于燃烧，击杀时：把你施加的燃烧扩散给3格内最多3个敌人。目标处于燃烧，直接命中，命中时：护盾取现有值与最大生命10%的较高值，至少持续3秒（触发间隔3秒）。",
+      "after": "燃烧可以暴击，使用你暴击率的50%。攻击变为原来的85%。引爆触发间隔1秒。燃烧：伤害增加20%。目标处于燃烧，直接命中：伤害增加45%。目标处于燃烧，击杀时：把你施加的燃烧扩散给3格内最多3个敌人。目标处于燃烧，直接命中，命中时：护盾取现有值与最大生命10%的较高值，至少持续3秒（触发间隔3秒）。",
+      "reason": "真实参数重新生成中文描述",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        24,
+        "parts",
+        "rules",
+        1,
+        "description"
+      ],
+      "before": "目标处于燃烧，直接命中：伤害增加50%。",
+      "after": "目标处于燃烧，直接命中：伤害增加45%。",
+      "reason": "真实参数重新生成中文描述",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        26,
+        "description"
+      ],
+      "before": "攻击变为原来的70%。寒蚀冰冻持续2秒。碎冰范围变为原来的150%。目标处于冰冻或减速：伤害增加20%。受击时：对你周围3格敌人造成攻击30%的冰霜伤害，施加冰冻 1.5秒（触发间隔6秒）。",
+      "after": "攻击变为原来的55%。寒蚀冰冻持续1秒。碎冰范围变为原来的150%。目标处于冰冻或减速：伤害增加20%。受击时：对你周围3格敌人造成攻击30%的冰霜伤害，施加冰冻 1.5秒（触发间隔3.5秒）。",
+      "reason": "真实参数重新生成中文描述",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        26,
+        "parts",
+        "rules",
+        1,
+        "description"
+      ],
+      "before": "受击时：对你周围3格敌人造成攻击30%的冰霜伤害，施加冰冻 1.5秒（触发间隔6秒）。",
+      "after": "受击时：对你周围3格敌人造成攻击30%的冰霜伤害，施加冰冻 1.5秒（触发间隔3.5秒）。",
+      "reason": "真实参数重新生成中文描述",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        37,
+        "description"
+      ],
+      "before": "攻击变为原来的80%。击杀精英或首领时：所有技能冷却全部重置。目标生命至少90%：伤害增加40%。进入战斗不足3秒：暴击伤害增加30%，最多1层。击杀精英或首领时：护盾取现有值与最大生命10%的较高值，至少持续3秒。击杀时：当前冷却最长的技能返还剩余冷却30%。",
+      "after": "攻击变为原来的70%。击杀精英或首领时：所有技能冷却全部重置。目标生命至少90%：伤害增加20%。进入战斗不足3秒：暴击伤害增加30%，最多1层。击杀精英或首领时：护盾取现有值与最大生命10%的较高值，至少持续3秒。击杀时：当前冷却最长的技能返还剩余冷却50%。",
+      "reason": "真实参数重新生成中文描述",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        37,
+        "parts",
+        "rules",
+        1,
+        "description"
+      ],
+      "before": "目标生命至少90%：伤害增加40%。",
+      "after": "目标生命至少90%：伤害增加20%。",
+      "reason": "真实参数重新生成中文描述",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        37,
+        "parts",
+        "rules",
+        4,
+        "description"
+      ],
+      "before": "击杀时：当前冷却最长的技能返还剩余冷却30%。",
+      "after": "击杀时：当前冷却最长的技能返还剩余冷却50%。",
+      "reason": "真实参数重新生成中文描述",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        41,
+        "description"
+      ],
+      "before": "攻击变为原来的120%。进入战斗立即就绪，之后每6秒：伤害增加60%，必定暴击，作用于下一次施法，持续6秒，最多1层。节拍强化就绪时，进入战斗立即就绪，之后每6秒：冷却恢复速度增加30%，持续3秒，最多1层。每累计消耗50点法力时：护盾取现有值与最大生命10%的较高值，至少持续3秒。",
+      "after": "攻击变为原来的150%。进入战斗立即就绪，之后每6秒：伤害增加120%，必定暴击，作用于下一次施法，持续6秒，最多1层。节拍强化就绪时，进入战斗立即就绪，之后每6秒：冷却恢复速度增加15%，持续3秒，最多1层。每累计消耗50点法力时：护盾取现有值与最大生命10%的较高值，至少持续3秒。",
+      "reason": "真实参数重新生成中文描述",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        41,
+        "parts",
+        "rules",
+        0,
+        "description"
+      ],
+      "before": "进入战斗立即就绪，之后每6秒：伤害增加60%，必定暴击，作用于下一次施法，持续6秒，最多1层。",
+      "after": "进入战斗立即就绪，之后每6秒：伤害增加120%，必定暴击，作用于下一次施法，持续6秒，最多1层。",
+      "reason": "真实参数重新生成中文描述",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        41,
+        "parts",
+        "rules",
+        1,
+        "description"
+      ],
+      "before": "节拍强化就绪时，进入战斗立即就绪，之后每6秒：冷却恢复速度增加30%，持续3秒，最多1层。",
+      "after": "节拍强化就绪时，进入战斗立即就绪，之后每6秒：冷却恢复速度增加15%，持续3秒，最多1层。",
+      "reason": "真实参数重新生成中文描述",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        47,
+        "description"
+      ],
+      "before": "攻击变为原来的80%。护盾破裂时：对你周围3格敌人造成本次护盾的历史最高值50%的物理伤害。格挡时：对攻击者造成格挡抵消的护甲减免前伤害50%的物理伤害。持盾时：受到伤害减少20%。格挡时：护盾取现有值与最大生命10%的较高值，至少持续3秒（触发间隔3秒）。",
+      "after": "攻击变为原来的125%。护盾破裂时：对你周围3格敌人造成本次护盾的历史最高值50%的物理伤害。格挡时：对攻击者造成格挡抵消的护甲减免前伤害50%的物理伤害。持盾时：受到伤害减少20%。格挡时：护盾取现有值与最大生命10%的较高值，至少持续3秒（触发间隔3秒）。",
+      "reason": "真实参数重新生成中文描述",
+      "scope": "bd"
+    },
+    {
+      "file": "packages/content/aspects.json",
+      "path": [
+        54,
+        "description"
+      ],
+      "before": "攻击变为原来的100%。移速加成的50%转为伤害加成，永久与临时移速分别计算。位移后：伤害增加30%，必定暴击，作用于下一次直接命中，持续3秒，最多1层。移动时：闪避增加15%，最多1层。位移后：对你周围2格敌人造成攻击50%的物理伤害。",
+      "after": "攻击变为原来的150%。移速加成的5%转为伤害加成，永久与临时移速分别计算。位移后：伤害增加30%，必定暴击，作用于下一次直接命中，持续3秒，最多1层。移动时：闪避增加15%，最多1层。位移后：对你周围2格敌人造成攻击50%的物理伤害。",
+      "reason": "真实参数重新生成中文描述",
+      "scope": "bd"
+    }
+  ],
+  "notes": [
+    "使用C3固定锚点与每旋钮一次实测弹性；确定性离散坐标下降，无额外战斗试跑。",
+    "约束floor/ceiling，单次计划位移不超过该旋钮范围50%；低于floor的余量由身份旋钮承担，剩余如实留档。"
+  ],
+  "predictions": {
+    "bd": [
+      {
+        "bd": "burn",
+        "observed": {
+          "single": 0.9433801617709663,
+          "clear": 1.0886075949367089,
+          "survival": 1.3879310344827585,
+          "elite": 0.8157894736842104,
+          "safety": 0.9231231231231231
+        },
+        "projected": {
+          "single": 0.9889204060601162,
+          "clear": 1.0886075949367089,
+          "survival": 1.3879310344827585,
+          "elite": 0.8888518353223172,
+          "safety": 0.9231231231231231
+        },
+        "loss": 0.012786336085933008,
+        "iterations": 2,
+        "adjustments": [
+          {
+            "rule": "aspect-st-ember-spread",
+            "path": [
+              "action",
+              "count"
+            ],
+            "before": 3,
+            "after": 3,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=2 linear",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-st-ember-attack",
+            "path": [
+              "statMultipliers",
+              "attack"
+            ],
+            "before": 0.8,
+            "after": 0.85,
+            "marginal": {
+              "single": 1.1985270144647113,
+              "clear": 0,
+              "survival": 0,
+              "elite": 1.9838584653154827,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.15 log",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-st-ember-detonate",
+            "path": [
+              "overrides",
+              0,
+              "set",
+              "icd"
+            ],
+            "before": 30,
+            "after": 30,
+            "marginal": {
+              "single": 0.0010101783165109685,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=30 linear",
+            "atFloor": true,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-st-ember-burning-hit",
+            "path": [
+              "action",
+              "ratio"
+            ],
+            "before": 0.5,
+            "after": 0.45,
+            "marginal": {
+              "single": 0.5103148001244584,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0.6899287148695143,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-st-ember-ember-shield",
+            "path": [
+              "action",
+              "ratio"
+            ],
+            "before": 0.1,
+            "after": 0.1,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": true,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-st-ember-burn",
+            "path": [
+              "action",
+              "ratio"
+            ],
+            "before": 0.2,
+            "after": 0.2,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": false,
+            "atCeiling": false
+          }
+        ]
+      },
+      {
+        "bd": "freeze",
+        "observed": {
+          "single": 1.6522529406746025,
+          "clear": 2.3052866716306775,
+          "survival": 1.379310344827586,
+          "elite": 1.2547528517110267,
+          "safety": 3.9562419562419557
+        },
+        "projected": {
+          "single": 1.2212098284093178,
+          "clear": 2.3052866716306775,
+          "survival": 0.768302741706476,
+          "elite": 0.8703401795899843,
+          "safety": 1.3455067307702258
+        },
+        "loss": 0.3990967660655206,
+        "iterations": 3,
+        "adjustments": [
+          {
+            "rule": "aspect-st-permafrost-attack",
+            "path": [
+              "statMultipliers",
+              "attack"
+            ],
+            "before": 0.7,
+            "after": 0.55,
+            "marginal": {
+              "single": 1.253504590040937,
+              "clear": 0,
+              "survival": 0,
+              "elite": 1.5168628093761167,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.15 log",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-st-permafrost-atom-chill",
+            "path": [
+              "overrides",
+              0,
+              "set",
+              "action.onStacks.duration"
+            ],
+            "before": 60,
+            "after": 30,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0.017193772175900995,
+              "elite": 0,
+              "safety": 0.023104906018664842
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=30 linear",
+            "atFloor": true,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-st-permafrost-atom-shatter",
+            "path": [
+              "overrides",
+              1,
+              "mul",
+              "action.radius"
+            ],
+            "before": 1.5,
+            "after": 1.5,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.5 log",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-st-permafrost-cold-hit",
+            "path": [
+              "action",
+              "ratio"
+            ],
+            "before": 0.2,
+            "after": 0.2,
+            "marginal": {
+              "single": 0.8195201612945684,
+              "clear": 0,
+              "survival": 0,
+              "elite": 2.9450803752218087,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-st-permafrost-frost-guard",
+            "path": [
+              "action",
+              "status",
+              "duration"
+            ],
+            "before": 45,
+            "after": 45,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0.0009245584990533278,
+              "elite": 0,
+              "safety": 0.0024702657384574013
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=30 linear",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-st-permafrost-frost-guard",
+            "path": [
+              "icd"
+            ],
+            "before": 180,
+            "after": 105,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0.0009245584990533278,
+              "elite": 0,
+              "safety": 0.0051383559942419455
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=30 linear",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-st-permafrost-frost-guard",
+            "path": [
+              "action",
+              "ratio"
+            ],
+            "before": 0.3,
+            "after": 0.3,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": true,
+            "atCeiling": false
+          }
+        ]
+      },
+      {
+        "bd": "mobile",
+        "observed": {
+          "single": 1.0566198382290337,
+          "clear": 0.2141523137580411,
+          "survival": 1,
+          "elite": 1.2210992662328672,
+          "safety": 2.153159340659341
+        },
+        "projected": {
+          "single": 1.2092435688345458,
+          "clear": 0.9648922970038725,
+          "survival": 1,
+          "elite": 1.2210992662328672,
+          "safety": 2.153159340659341
+        },
+        "loss": 0.11077926721942799,
+        "iterations": 3,
+        "adjustments": [
+          {
+            "rule": "aspect-mv-tailwind-conversion",
+            "path": [
+              "conversions",
+              0,
+              "ratio"
+            ],
+            "before": 0.5,
+            "after": 0.05,
+            "marginal": {
+              "single": 0.6622465907770158,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": true,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-mv-tailwind-attack",
+            "path": [
+              "statMultipliers",
+              "attack"
+            ],
+            "before": 1,
+            "after": 1.5,
+            "marginal": {
+              "single": 1.0677392221529811,
+              "clear": 3.7125980689882363,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.2 log",
+            "atFloor": false,
+            "atCeiling": true
+          },
+          {
+            "rule": "aspect-mv-tailwind-dash-strike",
+            "path": [
+              "action",
+              "mods",
+              "damageMult"
+            ],
+            "before": 0.3,
+            "after": 0.3,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-mv-tailwind-moving-evasion",
+            "path": [
+              "action",
+              "mods",
+              "dodge"
+            ],
+            "before": 0.15,
+            "after": 0.15,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-mv-tailwind-dash-nova",
+            "path": [
+              "action",
+              "ratio"
+            ],
+            "before": 0.5,
+            "after": 0.5,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": false,
+            "atCeiling": false
+          }
+        ]
+      },
+      {
+        "bd": "quake",
+        "observed": {
+          "single": 0.6380800030561034,
+          "clear": 1.0886075949367089,
+          "survival": 1,
+          "elite": 0.40270294950232854,
+          "safety": 0.9231231231231231
+        },
+        "projected": {
+          "single": 1.0040545163735144,
+          "clear": 1.0886075949367089,
+          "survival": 1,
+          "elite": 0.6147223619078404,
+          "safety": 0.9231231231231231
+        },
+        "loss": 0.09629424357690515,
+        "iterations": 2,
+        "adjustments": [
+          {
+            "rule": "aspect-tf-whirl-attack",
+            "path": [
+              "statMultipliers",
+              "attack"
+            ],
+            "before": 1.2,
+            "after": 1.5,
+            "marginal": {
+              "single": 0.994212223695021,
+              "clear": 0,
+              "survival": 0,
+              "elite": 1.077074657867969,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.25 log",
+            "atFloor": false,
+            "atCeiling": true
+          },
+          {
+            "rule": "aspect-tf-whirl-whirl",
+            "path": [
+              "patches",
+              0,
+              "ops",
+              0,
+              "value"
+            ],
+            "before": 1.6,
+            "after": 2,
+            "marginal": {
+              "single": 1.0373854772532713,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0.8184384644441451,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.3 log",
+            "atFloor": false,
+            "atCeiling": true
+          },
+          {
+            "rule": "aspect-tf-whirl-crowd-area",
+            "path": [
+              "action",
+              "ratio"
+            ],
+            "before": 0.2,
+            "after": 0.2,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-tf-whirl-whirl-guard",
+            "path": [
+              "action",
+              "mods",
+              "damageReduction"
+            ],
+            "before": 0.45,
+            "after": 0.45,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=-0.1 linear",
+            "atFloor": false,
+            "atCeiling": true
+          },
+          {
+            "rule": "aspect-tf-whirl-whirl-armor",
+            "path": [
+              "action",
+              "strength"
+            ],
+            "before": 0.2,
+            "after": 0.2,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": false,
+            "atCeiling": false
+          }
+        ]
+      },
+      {
+        "bd": "arrows",
+        "observed": {
+          "single": 3.373875448869652,
+          "clear": 0.9113924050632911,
+          "survival": 0.7247278382581649,
+          "elite": 1.4748341786968395,
+          "safety": 1.0370370370370372
+        },
+        "projected": {
+          "single": 1.6177861330710501,
+          "clear": 0.5637881795006136,
+          "survival": 0.8532931208563316,
+          "elite": 1.0265728965626613,
+          "safety": 1.0897116233386352
+        },
+        "loss": 0.32641458318942485,
+        "iterations": 3,
+        "adjustments": [
+          {
+            "rule": "aspect-tf-knife-orbit",
+            "path": [
+              "patches",
+              0,
+              "ops",
+              3,
+              "value"
+            ],
+            "before": 0.1,
+            "after": 0.05,
+            "marginal": {
+              "single": 0.8421711903686442,
+              "clear": 0.6713772525386293,
+              "survival": 0,
+              "elite": 0.4211376988152615,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 log",
+            "atFloor": true,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-tf-knife-attack",
+            "path": [
+              "statMultipliers",
+              "attack"
+            ],
+            "before": 1,
+            "after": 0.85,
+            "marginal": {
+              "single": 0.9306906751635909,
+              "clear": 0.6779996734389195,
+              "survival": 0,
+              "elite": 0.43323681909921885,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.2 log",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-tf-knife-bleeding-hit",
+            "path": [
+              "action",
+              "ratio"
+            ],
+            "before": 0.2,
+            "after": 0.4,
+            "marginal": {
+              "single": 0,
+              "clear": 0.47628048989254673,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-tf-knife-crowd-evasion",
+            "path": [
+              "action",
+              "mods",
+              "dodge"
+            ],
+            "before": 0.15,
+            "after": 0.2,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 3.2661386965695596,
+              "elite": 0,
+              "safety": 0.9909090264423096
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": false,
+            "atCeiling": false
+          }
+        ]
+      },
+      {
+        "bd": "echo",
+        "observed": {
+          "single": 0.28800363610277224,
+          "clear": 0.05116171464454505,
+          "survival": 0.6103896103896104,
+          "elite": 0.6105496331164336,
+          "safety": 1.9781209781209779
+        },
+        "projected": {
+          "single": 0.4504205688490604,
+          "clear": 0.059807167559296895,
+          "survival": 0.6103896103896104,
+          "elite": 1.4370444033897933,
+          "safety": 1.8731020877489204
+        },
+        "loss": 2.617131197000594,
+        "iterations": 2,
+        "adjustments": [
+          {
+            "rule": "aspect-tr-tempo:30",
+            "path": [
+              "action",
+              "mods",
+              "damageMult"
+            ],
+            "before": 0.6,
+            "after": 1.2,
+            "marginal": {
+              "single": 0.23418177270971868,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.2 linear",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-tr-tempo-attack",
+            "path": [
+              "statMultipliers",
+              "attack"
+            ],
+            "before": 1.2,
+            "after": 1.5,
+            "marginal": {
+              "single": 1.3744496441739653,
+              "clear": 0.6997021434027978,
+              "survival": 0,
+              "elite": 3.8360247977169464,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.25 log",
+            "atFloor": false,
+            "atCeiling": true
+          },
+          {
+            "rule": "aspect-tr-tempo-tempo-recovery",
+            "path": [
+              "action",
+              "mods",
+              "cooldownRecovery"
+            ],
+            "before": 0.3,
+            "after": 0.15,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0.3636764417087478
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": true,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-tr-tempo-mana-shield",
+            "path": [
+              "action",
+              "ratio"
+            ],
+            "before": 0.1,
+            "after": 0.1,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": true,
+            "atCeiling": false
+          }
+        ]
+      },
+      {
+        "bd": "bulwark",
+        "observed": {
+          "single": 0.41335891393398244,
+          "clear": 2.1772151898734178,
+          "survival": 1.3896103896103895,
+          "elite": 0.401279970882179,
+          "safety": 0.9231231231231231
+        },
+        "projected": {
+          "single": 0.6351278986523181,
+          "clear": 2.1772151898734178,
+          "survival": 1.3896103896103895,
+          "elite": 1.014588937791472,
+          "safety": 0.9231231231231231
+        },
+        "loss": 0.41533885028351464,
+        "iterations": 2,
+        "adjustments": [
+          {
+            "rule": "aspect-df-burst-attack",
+            "path": [
+              "statMultipliers",
+              "attack"
+            ],
+            "before": 0.8,
+            "after": 1.25,
+            "marginal": {
+              "single": 0.9624076849103416,
+              "clear": 0,
+              "survival": 0,
+              "elite": 2.078436618812487,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.15 log",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-df-burst:37",
+            "path": [
+              "action",
+              "ratio"
+            ],
+            "before": 0.5,
+            "after": 0.5,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-df-burst-block-counter",
+            "path": [
+              "action",
+              "ratio"
+            ],
+            "before": 0.5,
+            "after": 0.5,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-df-burst-shield-guard",
+            "path": [
+              "action",
+              "ratio"
+            ],
+            "before": 0.2,
+            "after": 0.2,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-df-burst-block-shield",
+            "path": [
+              "action",
+              "ratio"
+            ],
+            "before": 0.1,
+            "after": 0.1,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": true,
+            "atCeiling": false
+          }
+        ]
+      },
+      {
+        "bd": "opening",
+        "observed": {
+          "single": 7.3631118286652155,
+          "clear": 0.32932666737581107,
+          "survival": 1,
+          "elite": 12.618025751072961,
+          "safety": 0.9629629629629629
+        },
+        "projected": {
+          "single": 1.2516967478006695,
+          "clear": 0.42300180831826395,
+          "survival": 1,
+          "elite": 12.618025751072961,
+          "safety": 0.9629629629629629
+        },
+        "loss": 0.8113441834843533,
+        "iterations": 2,
+        "adjustments": [
+          {
+            "rule": "aspect-tr-headhunter-healthy-hit",
+            "path": [
+              "action",
+              "ratio"
+            ],
+            "before": 0.4,
+            "after": 0.2,
+            "marginal": {
+              "single": 6.38087403376918,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": true,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-tr-headhunter-attack",
+            "path": [
+              "statMultipliers",
+              "attack"
+            ],
+            "before": 0.8,
+            "after": 0.7,
+            "marginal": {
+              "single": 3.7130430573009616,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.15 log",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-tr-headhunter-opening-critical",
+            "path": [
+              "action",
+              "mods",
+              "critMultiplier"
+            ],
+            "before": 0.3,
+            "after": 0.3,
+            "marginal": {
+              "single": 6.380874033769176,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-tr-headhunter-elite-shield",
+            "path": [
+              "action",
+              "ratio"
+            ],
+            "before": 0.1,
+            "after": 0.1,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": true,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-tr-headhunter-kill-refund",
+            "path": [
+              "action",
+              "fraction"
+            ],
+            "before": 0.3,
+            "after": 0.5,
+            "marginal": {
+              "single": 0,
+              "clear": 1.2516314295400595,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=0.1 linear",
+            "atFloor": false,
+            "atCeiling": false
+          },
+          {
+            "rule": "aspect-tr-headhunter:26",
+            "path": [
+              "icd"
+            ],
+            "before": 0,
+            "after": 0,
+            "marginal": {
+              "single": 0,
+              "clear": 0,
+              "survival": 0,
+              "elite": 0,
+              "safety": 0
+            },
+            "basis": "measured:C3 seeds=41,42,43 Δ=30 linear",
+            "atFloor": true,
+            "atCeiling": false
+          }
+        ]
+      }
+    ]
+  },
+  "uncontrollable": [
+    {
+      "bd": "burn",
+      "scene": "clear",
+      "observed": 1.0886075949367089,
+      "target": 1.1904761904761905,
+      "predicted": 1.0886075949367089,
+      "elasticities": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "burn",
+      "scene": "survival",
+      "observed": 1.3879310344827585,
+      "target": 1.05,
+      "predicted": 1.3879310344827585,
+      "elasticities": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "burn",
+      "scene": "elite",
+      "observed": 0.8157894736842104,
+      "target": 0.95,
+      "predicted": 0.8888518353223172,
+      "elasticities": [
+        0,
+        1.9838584653154827,
+        0,
+        0.6899287148695143,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "freeze",
+      "scene": "single",
+      "observed": 1.6522529406746025,
+      "target": 1.1,
+      "predicted": 1.2212098284093178,
+      "elasticities": [
+        1.253504590040937,
+        0,
+        0,
+        0.8195201612945684,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "freeze",
+      "scene": "clear",
+      "observed": 2.3052866716306775,
+      "target": 0.7619047619047619,
+      "predicted": 2.3052866716306775,
+      "elasticities": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "freeze",
+      "scene": "survival",
+      "observed": 1.379310344827586,
+      "target": 1.3,
+      "predicted": 0.768302741706476,
+      "elasticities": [
+        0,
+        0.017193772175900995,
+        0,
+        0,
+        0.0009245584990533278,
+        0.0009245584990533278,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "mobile",
+      "scene": "survival",
+      "observed": 1,
+      "target": 0.8,
+      "predicted": 1,
+      "elasticities": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "mobile",
+      "scene": "elite",
+      "observed": 1.2210992662328672,
+      "target": 1,
+      "predicted": 1.2210992662328672,
+      "elasticities": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "mobile",
+      "scene": "safety",
+      "observed": 2.153159340659341,
+      "target": 1.3,
+      "predicted": 2.153159340659341,
+      "elasticities": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "quake",
+      "scene": "single",
+      "observed": 0.6380800030561034,
+      "target": 1.1,
+      "predicted": 1.0040545163735144,
+      "elasticities": [
+        0.994212223695021,
+        1.0373854772532713,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "quake",
+      "scene": "clear",
+      "observed": 1.0886075949367089,
+      "target": 1.2380952380952381,
+      "predicted": 1.0886075949367089,
+      "elasticities": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "quake",
+      "scene": "survival",
+      "observed": 1,
+      "target": 0.95,
+      "predicted": 1,
+      "elasticities": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "quake",
+      "scene": "elite",
+      "observed": 0.40270294950232854,
+      "target": 1.05,
+      "predicted": 0.6147223619078404,
+      "elasticities": [
+        1.077074657867969,
+        0.8184384644441451,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "quake",
+      "scene": "safety",
+      "observed": 0.9231231231231231,
+      "target": 0.6,
+      "predicted": 0.9231231231231231,
+      "elasticities": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "arrows",
+      "scene": "single",
+      "observed": 3.373875448869652,
+      "target": 0.7,
+      "predicted": 1.6177861330710501,
+      "elasticities": [
+        0.8421711903686442,
+        0.9306906751635909,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "echo",
+      "scene": "clear",
+      "observed": 0.05116171464454505,
+      "target": 0.9523809523809523,
+      "predicted": 0.059807167559296895,
+      "elasticities": [
+        0,
+        0.6997021434027978,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "echo",
+      "scene": "survival",
+      "observed": 0.6103896103896104,
+      "target": 0.8,
+      "predicted": 0.6103896103896104,
+      "elasticities": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "bulwark",
+      "scene": "single",
+      "observed": 0.41335891393398244,
+      "target": 0.8,
+      "predicted": 0.6351278986523181,
+      "elasticities": [
+        0.9624076849103416,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "bulwark",
+      "scene": "clear",
+      "observed": 2.1772151898734178,
+      "target": 0.7142857142857143,
+      "predicted": 2.1772151898734178,
+      "elasticities": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "bulwark",
+      "scene": "survival",
+      "observed": 1.3896103896103895,
+      "target": 1.5,
+      "predicted": 1.3896103896103895,
+      "elasticities": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "bulwark",
+      "scene": "safety",
+      "observed": 0.9231231231231231,
+      "target": 1.3,
+      "predicted": 0.9231231231231231,
+      "elasticities": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "opening",
+      "scene": "elite",
+      "observed": 12.618025751072961,
+      "target": 1.4,
+      "predicted": 12.618025751072961,
+      "elasticities": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    },
+    {
+      "bd": "opening",
+      "scene": "safety",
+      "observed": 0.9629629629629629,
+      "target": 0.9,
+      "predicted": 0.9629629629629629,
+      "elasticities": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "该场景无独立方向的有效实测弹性，或失败样本导致未知；不新增机制、不扩边界"
+    }
+  ],
+  "unknown": [],
+  "applied": false,
+  "files": [],
+  "versions": {
+    "before": "ow-69",
+    "after": "ow-69"
+  },
+  "input": "docs/reviews/pacing-identity-20261013/C3/baseline"
+}

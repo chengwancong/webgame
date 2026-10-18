@@ -1,0 +1,22 @@
+import {it,expect} from 'vitest';
+import {worldTables,loadWorldTables,validateWorldGeometry} from '../packages/content/world-tables.ts';
+import fixture from '../.design/open-world-m0/graybox.json';
+import {monsterContent} from '../packages/content/monsters.ts';
+import manifest from '../packages/asset-manifest/starsea.v1.json';
+import {regions,type Region} from '../packages/content/index.ts';
+import {regionById} from '../packages/content/index.ts';
+import {fieldRegionIds} from '../packages/content/open-world/index.ts';
+import {runtimeResources} from '../packages/asset-manifest/runtime-resources.ts';
+import {dungeonContent} from '../packages/content/dungeons.ts';
+import {conditions} from '../packages/content/task-tables.ts';
+it('loads the authored workbook and validates graybox, legacy and every formal island against their actual geometry',()=>{const result=validateWorldGeometry(worldTables,[fixture.region as Region,...regions,...fieldRegionIds.map(regionById)],{templates:new Set(monsterContent.templates.map(t=>t.id)),resources:new Set(runtimeResources.keys()),dungeons:new Set(dungeonContent.definitions.map(d=>d.id)),events:new Set(['field-event']),loot:new Set(['field-chest','field-rare','field-event']),conditions:new Set(conditions.map(c=>c.target))});expect(result.zones).toBeGreaterThanOrEqual(18+worldTables.islands.length*5);expect(result.camps).toBeGreaterThanOrEqual(150+worldTables.islands.length*150);expect(result.waypoints).toBeGreaterThanOrEqual(20+worldTables.islands.length*7);});
+it('fails build on duplicate IDs, missing waypoints, bad foreign keys and close camps',()=>{const change=(fn:(v:typeof worldTables)=>void)=>{const v=structuredClone(worldTables);fn(v);expect(()=>loadWorldTables(v)).toThrow();};change(v=>v.camps[1].id=v.camps[0].id);change(v=>v.waypoints=v.waypoints.filter(w=>w.zone!==v.zones[0].id));change(v=>v.camps[0].zone='missing');change(v=>{v.camps[1].x=v.camps[0].x;v.camps[1].y=v.camps[0].y;});change(v=>v.zones[0].levelBand=[9,1]);});
+it('rejects plane gates whose exit point is blocked or unreachable, that crowd other entrances, or name unknown conditions',()=>{
+ const maps=[fixture.region as Region,...regions,...fieldRegionIds.map(regionById)],refs={templates:new Set(monsterContent.templates.map(t=>t.id)),resources:new Set(runtimeResources.keys()),dungeons:new Set(dungeonContent.definitions.map(d=>d.id)),events:new Set(['field-event']),loot:new Set(['field-chest','field-rare','field-event']),conditions:new Set(conditions.map(c=>c.target))};
+ const edit=(fn:(g:typeof worldTables.planeGates[number],t:typeof worldTables)=>void)=>{const t=structuredClone(worldTables);fn(t.planeGates[0],t);return ()=>validateWorldGeometry(t,maps,refs);};
+ expect(edit(()=>{})).not.toThrow();
+ expect(edit(g=>{g.returnX=0;g.returnY=0;})).toThrow(/回落点/);
+ expect(edit((g,t)=>{const o=t.planeGates[1];g.x=o.x+2;g.y=o.y;g.zone=o.zone;g.returnX=o.returnX+2;g.returnY=o.returnY;})).toThrow();
+ expect(edit(g=>{g.requires='no-such-condition';})).toThrow(/未知位面入口条件/);
+ expect(edit(g=>{g.resource='no-such-art';})).toThrow(/未知世界引用/);
+},30000);

@@ -1,0 +1,18 @@
+import {it,expect} from 'vitest';
+import {applyCraft,previewCraft,ensureCrafting,craftingView} from '../packages/rules/crafting.ts';
+import {craftingViewSchema} from '../packages/contracts/crafting.ts';
+import {ensureProgression} from '../packages/rules/deep-progression.ts';
+import type {CharacterState} from '../packages/contracts/index.ts';
+import {makeGearByBase,gearBases} from '../packages/rules/index.ts';
+import {craftPatterns,craftPolicy} from '../packages/content/crafting.ts';
+import {worldProgressSchema} from '../packages/contracts/open-world.ts';
+const make=():CharacterState=>({id:crypto.randomUUID(),name:'制作验证',revision:0,build:1,level:1,xp:0,gold:1000,material:0,gear:[],equipment:{},skills:[],skillRanks:{},progress:{kills:0,regions:['ss-map-wind'],bosses:[],safe:'town',tasks:[]}});
+const place={atForge:true,reason:'',storyUnlocked:true};
+it('提纯预览不修改存档，执行扣除材料并发放星尘',()=>{const s=make();ensureProgression(s).materials.wind_ore=20;const before=structuredClone(s);expect(previewCraft(s,{op:'refine',from:'wind_ore',times:2},place).enabled).toBe(true);expect(s).toEqual(before);const delta=applyCraft(s,{op:'refine',from:'wind_ore',times:2},place);expect(delta.materials).toEqual({wind_ore:-20,stardust:2});expect(s.progression!.materials.wind_ore).toBe(0);});
+it('材料不足与工坊拒绝保持存档不变',()=>{const s=make();ensureProgression(s).materials.wind_ore=9;const before=structuredClone(s);expect(()=>applyCraft(s,{op:'refine',from:'wind_ore',times:1},place)).toThrow();expect(s).toEqual(before);expect(()=>applyCraft(s,{op:'refine',from:'wind_ore',times:1},{...place,atForge:false})).toThrow();expect(s).toEqual(before);});
+it('兑换不允许未解锁岛屿，且不能循环获利',()=>{const s=make();ensureProgression(s).materials.stardust=10;expect(()=>applyCraft(s,{op:'exchange',to:'mist_ore',times:1},place)).toThrow();applyCraft(s,{op:'exchange',to:'wind_ore',times:10},place);applyCraft(s,{op:'refine',from:'wind_ore',times:3},place);expect(s.progression!.materials.stardust).toBe(3);});
+it('制作消耗品的熟练经验会保留',()=>{const s=make(),p=ensureProgression(s);p.recipes.push('tonic_attack');p.materials={wind_herb:8,wind_part:4};applyCraft(s,{op:'craft',recipe:'tonic_attack',count:2},place);expect(s.progression!.consumables.tonic_attack).toBe(2);expect(ensureCrafting(s).professions.alchemy).toEqual({level:2,xp:8});});
+it('全量只读视图符合契约且没有修改源存档',()=>{const s=make(),before=structuredClone(s);expect(()=>craftingViewSchema.parse(craftingView(s,{atForge:false,reason:'不在工坊'}))).not.toThrow();expect(s).toEqual(before);});
+it('全部既有装备模板都能承接传奇或套装分解图样',()=>{for(const gear of gearBases)expect(craftPatterns.some(p=>p.base===gear.base),gear.base).toBe(true);});
+it('精良执行共享8%主属性语义，低级定向词缀使用已登记的最小值',()=>{const craft=(fine:boolean)=>{const s=make(),p=ensureProgression(s);p.recipes.push('wind-weapon');p.materials={wind_ore:100,wind_herb:100,wind_part:100};return applyCraft(s,{op:'craft',recipe:'wind-weapon',tendency:'martial'},{...place,maxCraftLevel:3},{int:(min:number)=>min,float:()=>fine?0:.999999});};const normal=craft(false),fine=craft(true);expect(normal.fine).toBe(false);expect(fine.fine).toBe(true);expect(fine.gear![0].attack).toBe(Math.round(normal.gear![0].attack*(1+craftPolicy.fine.mainBonus)));expect(fine.gear![0].affixes.some(a=>a.stat==='physicalDamage'&&a.value===.08)).toBe(true);});
+it('固定攻击装备精工从原始基数计算，恢复缺少基数的旧中间状态不重复加成',()=>{const s=make(),p=ensureProgression(s),g=makeGearByBase('blade',crypto.randomUUID());g.attack=112;s.gold=10000;s.gear.push(g);s.world=worldProgressSchema.parse({unlockedWorldTier:2});p.materials={omega_fragment:100,legendary_essence:100,glyph_dust:100};p.crafting.masterwork[g.id]=3;applyCraft(s,{op:'masterwork.apply',gear:g.id},place);expect(s.gear.find(x=>x.id===g.id)!.attack).toBe(116);});

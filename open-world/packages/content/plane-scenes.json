@@ -1,0 +1,131 @@
+{
+  "version": 2,
+  "kits": {
+    "cave": {"profile": "rock", "wallHeight": 130, "stub": 14, "background": "#1f2350", "glow": "#ffcf7a", "outline": "#3d2c45", "shadow": "#3a3478", "lightEvery": 9, "foot": ["prop-s1", "prop-s2", "prop-s3"], "footEvery": 6, "blockers": ["prop-m1", "prop-m2", "prop-m3"], "blockerEvery": 41, "blockerPlace": "open"},
+    "crypt": {"profile": "block", "wallHeight": 128, "stub": 14, "background": "#1e2246", "glow": "#ffb35c", "outline": "#2c2446", "shadow": "#3a3478", "lightEvery": 6, "foot": [], "footEvery": 1, "blockers": ["prop-s1", "prop-s2", "prop-m1", "prop-m2", "prop-m3"], "blockerEvery": 5, "blockerPlace": "wall"},
+    "maze": {"profile": "block", "wallHeight": 80, "stub": 14, "background": "#1b2a3c", "glow": "#8ff0d8", "outline": "#1d3440", "shadow": "#28456a", "lightEvery": 8, "foot": [], "footEvery": 1, "blockers": ["prop-s1", "prop-s2", "prop-m1"], "blockerEvery": 6, "blockerPlace": "wall"}
+  },
+  "stages": [
+    {
+      "id": "plane-wind-nest-cave-1", "name": "风车旧井·岩厅", "kit": "cave", "island": "ss-map-wind", "theme": "wind", "seed": 7101, "level": 4, "boss": false, "size": 128,
+      "safe": {"x": 20, "y": 20}, "portal": {"x": 18, "y": 22},
+      "carve": [
+        {"disk": [20, 20, 8]},
+        {"path": [[20, 20], [34, 17], [47, 24]], "width": 8},
+        {"disk": [58, 32, 15]},
+        {"path": [[52, 46], [44, 56], [36, 66]], "width": 8},
+        {"disk": [32, 78, 14]},
+        {"path": [[44, 82], [58, 88], [70, 88]], "width": 8},
+        {"disk": [84, 88, 15]},
+        {"path": [[94, 100], [102, 106]], "width": 7},
+        {"disk": [106, 108, 8]}
+      ],
+      "route": [[20, 20], [34, 17], [47, 24], [58, 32], [52, 46], [44, 56], [36, 66], [32, 78], [44, 82], [58, 88], [70, 88], [84, 88], [94, 100], [106, 108]],
+      "pack": [
+        {"template": "ow-mon-wind-1", "rank": "normal", "count": 6, "center": {"x": 60, "y": 31}, "radius": 7},
+        {"template": "ow-mon-wind-2", "rank": "normal", "count": 3, "center": {"x": 54, "y": 38}, "radius": 4},
+        {"template": "ow-mon-wind-1", "rank": "normal", "count": 5, "center": {"x": 30, "y": 79}, "radius": 7},
+        {"template": "ow-elite-wind", "rank": "elite", "count": 1, "center": {"x": 34, "y": 74}, "radius": 1},
+        {"template": "ow-mon-wind-2", "rank": "normal", "count": 5, "center": {"x": 84, "y": 88}, "radius": 8},
+        {"template": "ow-mon-wind-1", "rank": "normal", "count": 5, "center": {"x": 80, "y": 92}, "radius": 7},
+        {"template": "ow-elite-wind", "rank": "elite", "count": 1, "center": {"x": 88, "y": 84}, "radius": 1}
+      ],
+      "chests": [{"id": "cache", "name": "遗落的地城宝箱", "x": 23, "y": 83, "resource": "ow-art-chest-closed", "openResource": "ow-art-chest-open"}]
+    },
+    {
+      "id": "plane-wind-nest-cave-2", "name": "风车旧井·深井", "kit": "cave", "island": "ss-map-wind", "theme": "wind", "seed": 7102, "level": 4, "boss": true, "size": 100,
+      "safe": {"x": 18, "y": 50}, "portal": {"x": 16, "y": 52},
+      "carve": [
+        {"disk": [18, 50, 8]},
+        {"path": [[18, 50], [30, 47], [40, 50]], "width": 8},
+        {"disk": [62, 50, 22]}
+      ],
+      "route": [[18, 50], [30, 47], [40, 50], [62, 50]],
+      "pack": [
+        {"template": "ow-boss-wind-1", "rank": "boss", "count": 1, "center": {"x": 64, "y": 50}, "radius": 1},
+        {"template": "ow-mon-wind-1", "rank": "normal", "count": 3, "center": {"x": 58, "y": 46}, "radius": 4}
+      ],
+      "chests": []
+    },
+    {
+      "id": "plane-wind-nest-crypt-1", "name": "风车地宫·列柱廊", "kit": "crypt", "island": "ss-map-wind", "theme": "wind", "seed": 7201, "level": 4, "boss": false, "size": 116,
+      "safe": {"x": 15, "y": 15}, "portal": {"x": 13, "y": 17},
+      "carve": [
+        {"rect": [8, 8, 14, 14]},
+        {"path": [[21, 15], [41, 15]], "width": 7},
+        {"rect": [40, 7, 30, 22]},
+        {"pillars": {"x": 45, "y": 11, "w": 20, "h": 12, "step": 6}},
+        {"path": [[55, 28], [55, 47]], "width": 7},
+        {"rect": [38, 46, 36, 24]},
+        {"pillars": {"x": 43, "y": 50, "w": 26, "h": 14, "step": 7}},
+        {"path": [[24, 58], [39, 58]], "width": 7},
+        {"rect": [8, 49, 17, 18]},
+        {"path": [[73, 58], [88, 58]], "width": 7},
+        {"rect": [87, 46, 20, 24]},
+        {"path": [[97, 69], [97, 86]], "width": 7},
+        {"rect": [87, 86, 20, 20]}
+      ],
+      "route": [[15, 15], [41, 15], [55, 17], [55, 47], [55, 58], [88, 58], [97, 58], [97, 86], [97, 96]],
+      "pack": [
+        {"template": "ow-mon-wind-1", "rank": "normal", "count": 6, "center": {"x": 55, "y": 17}, "radius": 6},
+        {"template": "ow-mon-wind-2", "rank": "normal", "count": 3, "center": {"x": 62, "y": 22}, "radius": 3},
+        {"template": "ow-mon-wind-1", "rank": "normal", "count": 6, "center": {"x": 55, "y": 58}, "radius": 8},
+        {"template": "ow-elite-wind", "rank": "elite", "count": 1, "center": {"x": 58, "y": 61}, "radius": 1},
+        {"template": "ow-mon-wind-2", "rank": "normal", "count": 4, "center": {"x": 16, "y": 58}, "radius": 4},
+        {"template": "ow-mon-wind-2", "rank": "normal", "count": 4, "center": {"x": 97, "y": 57}, "radius": 5},
+        {"template": "ow-elite-wind", "rank": "elite", "count": 1, "center": {"x": 97, "y": 96}, "radius": 1}
+      ],
+      "chests": [{"id": "cache", "name": "遗落的地城宝箱", "x": 13, "y": 62, "resource": "ow-art-chest-closed", "openResource": "ow-art-chest-open"}]
+    },
+    {
+      "id": "plane-wind-nest-crypt-2", "name": "风车地宫·主墓室", "kit": "crypt", "island": "ss-map-wind", "theme": "wind", "seed": 7202, "level": 4, "boss": true, "size": 100,
+      "safe": {"x": 15, "y": 49}, "portal": {"x": 13, "y": 51},
+      "carve": [
+        {"rect": [8, 42, 14, 14]},
+        {"path": [[21, 49], [39, 49]], "width": 7},
+        {"rect": [38, 24, 46, 46]},
+        {"pillars": {"x": 42, "y": 28, "w": 36, "h": 36, "step": 9, "ring": true}}
+      ],
+      "route": [[15, 49], [39, 49], [60, 49]],
+      "pack": [
+        {"template": "ow-boss-wind-1", "rank": "boss", "count": 1, "center": {"x": 62, "y": 49}, "radius": 1},
+        {"template": "ow-mon-wind-1", "rank": "normal", "count": 3, "center": {"x": 56, "y": 45}, "radius": 4}
+      ],
+      "chests": []
+    },
+    {
+      "id": "plane-wind-nest-maze-1", "name": "风车迷宫·回廊", "kit": "maze", "island": "ss-map-wind", "theme": "wind", "seed": 7301, "level": 4, "boss": false, "size": 116,
+      "safe": {"x": 15, "y": 15}, "portal": {"x": 13, "y": 17},
+      "carve": [
+        {"maze": {"x": 7, "y": 7, "cols": 8, "rows": 8, "cell": 12, "wall": 4, "loops": 10, "rooms": [[3, 3, 2, 2]]}}
+      ],
+      "route": [],
+      "pack": [
+        {"template": "ow-mon-wind-1", "rank": "normal", "count": 5, "center": {"x": 57, "y": 57}, "radius": 6},
+        {"template": "ow-elite-wind", "rank": "elite", "count": 1, "center": {"x": 58, "y": 58}, "radius": 1},
+        {"template": "ow-mon-wind-2", "rank": "normal", "count": 4, "center": {"x": 99, "y": 15}, "radius": 3},
+        {"template": "ow-mon-wind-1", "rank": "normal", "count": 4, "center": {"x": 15, "y": 99}, "radius": 3},
+        {"template": "ow-mon-wind-2", "rank": "normal", "count": 4, "center": {"x": 51, "y": 27}, "radius": 3},
+        {"template": "ow-mon-wind-1", "rank": "normal", "count": 4, "center": {"x": 99, "y": 75}, "radius": 3},
+        {"template": "ow-elite-wind", "rank": "elite", "count": 1, "center": {"x": 99, "y": 99}, "radius": 1}
+      ],
+      "chests": [{"id": "cache", "name": "遗落的地城宝箱", "x": 101, "y": 13, "resource": "ow-art-chest-closed", "openResource": "ow-art-chest-open"}]
+    },
+    {
+      "id": "plane-wind-nest-maze-2", "name": "风车迷宫·核心", "kit": "maze", "island": "ss-map-wind", "theme": "wind", "seed": 7302, "level": 4, "boss": true, "size": 100,
+      "safe": {"x": 15, "y": 49}, "portal": {"x": 13, "y": 51},
+      "carve": [
+        {"rect": [8, 42, 14, 14]},
+        {"path": [[21, 49], [37, 49]], "width": 7},
+        {"rect": [36, 26, 46, 46]},
+        {"fill": [42, 32, 6, 6]}, {"fill": [70, 32, 6, 6]}, {"fill": [42, 60, 6, 6]}, {"fill": [70, 60, 6, 6]}
+      ],
+      "route": [[15, 49], [37, 49], [59, 49]],
+      "pack": [
+        {"template": "ow-boss-wind-1", "rank": "boss", "count": 1, "center": {"x": 61, "y": 49}, "radius": 1},
+        {"template": "ow-mon-wind-1", "rank": "normal", "count": 3, "center": {"x": 55, "y": 45}, "radius": 4}
+      ],
+      "chests": []
+    }
+  ]
+}

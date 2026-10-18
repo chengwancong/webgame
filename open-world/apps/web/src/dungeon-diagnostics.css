@@ -1,0 +1,54 @@
+/* Layout only: public controls and tokens own every visual value. */
+.battle-result:has(.dungeon-diagnostic){width:min(var(--size-panel-max),calc(var(--stage-width,100vw) - var(--space-8)));height:calc(var(--stage-height,100vh) - var(--space-8));grid-template-rows:var(--battle-result-pixel104) var(--battle-result-pixel44) var(--battle-result-pixel24) minmax(0,1fr) var(--battle-result-pixel28) var(--battle-result-pixel44);grid-template-columns:minmax(0,3fr) minmax(0,2fr);grid-template-areas:"hero hero" "resources diagnostic" "caption diagnostic" "loot diagnostic" "message diagnostic" "footer footer"}
+.battle-result:has(.dungeon-diagnostic)>.result-hero{grid-area:hero}
+.battle-result:has(.dungeon-diagnostic)>.resource-row{grid-area:resources}
+.battle-result:has(.dungeon-diagnostic)>.loot-caption{grid-area:caption}
+.battle-result:has(.dungeon-diagnostic)>.loot-body{grid-area:loot}
+.battle-result:has(.dungeon-diagnostic)>.result-message{grid-area:message}
+.battle-result:has(.dungeon-diagnostic)>.result-footer{grid-area:footer}
+.battle-result:has(.dungeon-diagnostic) .loot-grid{grid-template-columns:repeat(auto-fit,var(--battle-result-pixel64));gap:var(--space-2)}
+.dungeon-diagnostic{grid-area:diagnostic;min-width:0;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:var(--space-2);padding-inline-start:var(--space-3);border-inline-start:var(--border-width) solid var(--color-border-subtle)}
+.dungeon-diagnostic .ui-meter,.stage-key-progress>.ui-meter{width:100%}
+.stage-key-progress{display:grid;gap:var(--space-2)}
+.stage-key-choices{display:grid;gap:var(--space-2)}
+.stage-key-choices article{display:grid;gap:var(--space-1);padding-block:var(--space-2);border-block-start:var(--border-width) solid var(--color-border-subtle)}
+.stage-key-choices .ui-button{justify-self:start}
+
+.battle-result:has(.dungeon-diagnostic) .resource-row{gap:var(--space-2)}
+.battle-result:has(.dungeon-diagnostic) .resource-row .ui-resource b{min-width:0}
+.battle-result:has(.dungeon-diagnostic) .resource-row .ui-resource>span:last-child{flex-direction:column;align-items:flex-start;gap:0}
+.battle-result:has(.dungeon-diagnostic) .resource-row .ui-resource small{white-space:nowrap}
+.dungeon-diagnostic .ui-stat{grid-template-columns:minmax(0,1fr) auto;gap:var(--space-2)}
+/* 致命一击：一行讲清谁用什么招打掉你多少，状态用小标签贴在招式名旁。 */
+.review-fatal{display:grid;gap:var(--space-1);padding:var(--space-2);background:var(--color-panel-inset);border-radius:var(--radius-well)}
+.review-fatal__line{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--space-2);min-width:0}
+.review-fatal__line b{font-size:var(--font-size-body);font-weight:var(--font-weight-semibold);color:var(--color-text-primary);overflow-wrap:anywhere}
+.review-fatal__damage{margin-inline-start:auto;font-size:var(--font-size-body);font-variant-numeric:tabular-nums;color:var(--color-danger)}
+.review-fatal__tag{display:inline-flex;align-items:center;height:var(--space-5);padding:0 var(--space-1);border:var(--border-width) solid color-mix(in srgb,var(--color-warning) 45%,transparent);border-radius:var(--radius-control);background:color-mix(in srgb,var(--color-warning) 10%,transparent);color:var(--color-warning);font-size:var(--font-size-micro);line-height:var(--space-4)}
+.review-fatal p{margin:0;font-size:var(--font-size-caption);line-height:var(--font-line-body);color:var(--color-text-secondary)}
+.review-earlier summary{font-size:var(--font-size-caption);color:var(--color-text-secondary);cursor:pointer}
+.review-earlier ul{margin:var(--space-1) 0 0;padding-inline-start:var(--space-4);font-size:var(--font-size-caption);color:var(--color-text-secondary)}
+.review-advice__row{display:flex;flex-wrap:wrap;gap:var(--space-2)}
+.review-advice__button{min-width:var(--space-16);justify-content:center}
+.review-key{display:grid;gap:var(--space-1)}
+.review-key .ui-caption{margin:0}
+
+.result[data-outcome=success] .result-title h1{color:var(--color-text-primary);text-shadow:none}
+.result[data-outcome=success] .hero-flavour{color:var(--color-text-secondary)}
+
+/* 结算收尾：零收益只留短句；有收获时给物品更多空间。 */
+.battle-result.is-empty{display:flex;flex-direction:column;width:min(var(--battle-result-pixel816),calc(var(--stage-width,100vw) - var(--space-8)));height:auto;max-height:calc(var(--stage-height,100vh) - var(--space-8))}
+.battle-result.is-empty .result-hero{min-height:var(--battle-result-pixel104);flex-shrink:0}
+.battle-result.is-empty .resource-row,.battle-result.is-empty .loot-caption,.battle-result .result-message[data-empty-note=true]{display:none}
+.battle-result.is-empty .loot-body{flex:none;border:0;padding:var(--space-2) 0}
+.battle-result.is-empty .loot-empty{height:auto;align-items:flex-start}
+.battle-result.is-empty .dungeon-diagnostic{flex:0 1 auto;padding-inline-start:0;border-inline-start:0}
+.battle-result.is-empty .result-footer{justify-content:flex-end;margin-top:var(--space-2)}
+.result[data-outcome=success]:has(.dungeon-diagnostic){height:var(--battle-result-pixel524);grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+.result-first-reward{margin:0;padding:var(--space-2);color:var(--color-success);background:var(--color-panel-inset);border-radius:var(--radius-well)}
+.review-fatal{grid-template-columns:var(--space-12) minmax(0,1fr);align-items:center}
+.review-fatal__art{width:var(--space-12);height:var(--space-12);object-fit:contain}
+.review-fatal__copy{display:grid;gap:var(--space-1);min-width:0}
+.review-advice__art{width:var(--space-8);height:var(--space-8);object-fit:contain}
+
+.return-context:has(.unlock-notice:empty){display:none}

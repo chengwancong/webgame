@@ -1,0 +1,448 @@
+{
+  "id": "ss-map-port",
+  "name": "拾星港",
+  "kind": "hub",
+  "chapter": 1,
+  "width": 32,
+  "height": 32,
+  "cellPixels": 32,
+  "projection": [
+    32,
+    18
+  ],
+  "theme": {
+    "key": "port",
+    "description": "奶白石路、青蓝帆布、暖木与黄铜港具"
+  },
+  "groundResource": "ss-scene-ground-port",
+  "backdropResource": "ss-scene-sky",
+  "safe": [
+    {
+      "id": "hub",
+      "x": 0,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "allowAutoAggro": false
+    }
+  ],
+  "roads": [
+    {
+      "id": "landing--hall",
+      "from": "landing",
+      "to": "hall",
+      "widthCells": 3,
+      "points": [
+        [
+          5,
+          25
+        ],
+        [
+          5,
+          24
+        ],
+        [
+          5,
+          23
+        ],
+        [
+          6,
+          23
+        ],
+        [
+          6,
+          22
+        ],
+        [
+          7,
+          22
+        ],
+        [
+          7,
+          21
+        ],
+        [
+          8,
+          21
+        ],
+        [
+          8,
+          20
+        ],
+        [
+          9,
+          20
+        ],
+        [
+          9,
+          19
+        ],
+        [
+          10,
+          19
+        ]
+      ],
+      "resource": "ss-scene-road",
+      "sampling": "mirrored-repeat"
+    },
+    {
+      "id": "hall--forge",
+      "from": "hall",
+      "to": "forge",
+      "widthCells": 3,
+      "points": [
+        [
+          10,
+          19
+        ],
+        [
+          11,
+          19
+        ],
+        [
+          12,
+          19
+        ],
+        [
+          13,
+          19
+        ],
+        [
+          14,
+          19
+        ],
+        [
+          15,
+          19
+        ],
+        [
+          16,
+          19
+        ],
+        [
+          17,
+          19
+        ],
+        [
+          18,
+          19
+        ],
+        [
+          18,
+          20
+        ],
+        [
+          19,
+          20
+        ]
+      ],
+      "resource": "ss-scene-road",
+      "sampling": "mirrored-repeat"
+    },
+    {
+      "id": "forge--pier",
+      "from": "forge",
+      "to": "pier",
+      "widthCells": 3,
+      "points": [
+        [
+          19,
+          20
+        ],
+        [
+          19,
+          19
+        ],
+        [
+          19,
+          18
+        ],
+        [
+          20,
+          18
+        ],
+        [
+          21,
+          18
+        ],
+        [
+          21,
+          17
+        ],
+        [
+          21,
+          16
+        ],
+        [
+          21,
+          15
+        ],
+        [
+          21,
+          14
+        ],
+        [
+          21,
+          13
+        ],
+        [
+          22,
+          13
+        ],
+        [
+          22,
+          12
+        ],
+        [
+          23,
+          12
+        ],
+        [
+          23,
+          11
+        ],
+        [
+          24,
+          11
+        ],
+        [
+          24,
+          10
+        ],
+        [
+          25,
+          10
+        ]
+      ],
+      "resource": "ss-scene-road",
+      "sampling": "mirrored-repeat"
+    }
+  ],
+  "obstacles": [
+    {
+      "x": 2,
+      "y": 2,
+      "w": 8,
+      "h": 6
+    },
+    {
+      "x": 16,
+      "y": 3,
+      "w": 9,
+      "h": 5
+    }
+  ],
+  "landmarks": [
+    {
+      "id": "landing",
+      "x": 5,
+      "y": 25
+    },
+    {
+      "id": "hall",
+      "x": 10,
+      "y": 19
+    },
+    {
+      "id": "forge",
+      "x": 19,
+      "y": 20
+    },
+    {
+      "id": "pier",
+      "x": 25,
+      "y": 10
+    }
+  ],
+  "spawns": [],
+  "decorations": [
+    {
+      "id": "obstacle-art-0",
+      "resourceId": "ss-scene-house",
+      "x": 6,
+      "y": 7.8,
+      "variant": "default",
+      "displayWidth": 336,
+      "obstacleIndex": 0,
+      "depthMode": "footpoint",
+      "occlusion": "foreground"
+    },
+    {
+      "id": "scatter-4-12",
+      "resourceId": "ss-scene-tree",
+      "x": 2.8,
+      "y": 11.4,
+      "variant": "sapling",
+      "displayWidth": 153,
+      "depthMode": "footpoint",
+      "occlusion": "foreground"
+    },
+    {
+      "id": "scatter-4-19",
+      "resourceId": "ss-scene-tree",
+      "x": 4,
+      "y": 17.8,
+      "variant": "sapling",
+      "displayWidth": 181,
+      "depthMode": "footpoint",
+      "occlusion": "foreground"
+    },
+    {
+      "id": "scatter-10-12",
+      "resourceId": "ss-scene-tree",
+      "x": 10,
+      "y": 13.2,
+      "variant": "sapling",
+      "displayWidth": 180,
+      "depthMode": "footpoint",
+      "occlusion": "foreground"
+    },
+    {
+      "id": "hall-visual",
+      "resourceId": "ss-scene-house",
+      "x": 10,
+      "y": 16,
+      "displayWidth": 250,
+      "depthMode": "footpoint",
+      "occlusion": "foreground"
+    },
+    {
+      "id": "obstacle-art-1",
+      "resourceId": "ss-scene-rocks",
+      "x": 20.5,
+      "y": 7.8,
+      "variant": "default",
+      "displayWidth": 340,
+      "obstacleIndex": 1,
+      "depthMode": "footpoint",
+      "occlusion": "foreground"
+    },
+    {
+      "id": "scatter-16-12",
+      "resourceId": "ss-scene-tree",
+      "x": 17.2,
+      "y": 12,
+      "variant": "sapling",
+      "displayWidth": 162,
+      "depthMode": "footpoint",
+      "occlusion": "foreground"
+    },
+    {
+      "id": "pier-visual",
+      "resourceId": "ss-scene-pier",
+      "x": 25,
+      "y": 8,
+      "displayWidth": 260,
+      "depthMode": "ground",
+      "occlusion": "ground"
+    },
+    {
+      "id": "scatter-28-5",
+      "resourceId": "ss-scene-rocks",
+      "x": 27.4,
+      "y": 6.2,
+      "variant": "small",
+      "displayWidth": 90,
+      "depthMode": "footpoint",
+      "occlusion": "foreground"
+    },
+    {
+      "id": "ship-visual",
+      "resourceId": "ss-scene-airship",
+      "x": 27,
+      "y": 8,
+      "displayWidth": 290,
+      "depthMode": "footpoint",
+      "occlusion": "foreground"
+    },
+    {
+      "id": "scatter-10-26",
+      "resourceId": "ss-scene-rocks",
+      "x": 9.4,
+      "y": 26,
+      "variant": "small",
+      "displayWidth": 82,
+      "depthMode": "footpoint",
+      "occlusion": "foreground"
+    },
+    {
+      "id": "forge-visual",
+      "resourceId": "ss-scene-workshop",
+      "x": 19,
+      "y": 17,
+      "displayWidth": 255,
+      "depthMode": "footpoint",
+      "occlusion": "foreground"
+    },
+    {
+      "id": "scatter-28-12",
+      "resourceId": "ss-scene-tree",
+      "x": 28.6,
+      "y": 12.6,
+      "variant": "sapling",
+      "displayWidth": 171,
+      "depthMode": "footpoint",
+      "occlusion": "foreground"
+    },
+    {
+      "id": "scatter-16-26",
+      "resourceId": "ss-scene-rocks",
+      "x": 16.6,
+      "y": 24.8,
+      "variant": "small",
+      "displayWidth": 78,
+      "depthMode": "footpoint",
+      "occlusion": "foreground"
+    },
+    {
+      "id": "scatter-28-19",
+      "resourceId": "ss-scene-tree",
+      "x": 26.8,
+      "y": 19,
+      "variant": "sapling",
+      "displayWidth": 187,
+      "depthMode": "footpoint",
+      "occlusion": "foreground"
+    },
+    {
+      "id": "scatter-22-26",
+      "resourceId": "ss-scene-rocks",
+      "x": 20.8,
+      "y": 26.6,
+      "variant": "small",
+      "displayWidth": 106,
+      "depthMode": "footpoint",
+      "occlusion": "foreground"
+    },
+    {
+      "id": "scatter-28-26",
+      "resourceId": "ss-scene-rocks",
+      "x": 28,
+      "y": 25.4,
+      "variant": "small",
+      "displayWidth": 102,
+      "depthMode": "footpoint",
+      "occlusion": "foreground"
+    }
+  ],
+  "ambient": [
+    {
+      "resourceId": "ss-scene-ambient-star",
+      "position": {
+        "x": 16,
+        "y": 16
+      },
+      "area": {
+        "w": 32,
+        "h": 32
+      }
+    }
+  ],
+  "boundary": {
+    "kind": "floating-island",
+    "resourceId": "ss-scene-cliff",
+    "stepCells": 4,
+    "thicknessCells": 2
+  },
+  "rulesetMutation": false
+}

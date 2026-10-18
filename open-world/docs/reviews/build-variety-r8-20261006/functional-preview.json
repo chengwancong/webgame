@@ -1,0 +1,5633 @@
+{
+  "versions": {
+    "client": "0.11.6",
+    "protocol": 26,
+    "rules": "ow-47",
+    "assets": "world-art-20261006-v22-skill-variety",
+    "db": 15
+  },
+  "seed": 41,
+  "ticks": 300,
+  "mode": "controlled execution; isolated component proof, not live game acceptance",
+  "build": {
+    "stats": {
+      "weapon": "sword",
+      "hp": 1080,
+      "attack": 120,
+      "armor": 0,
+      "speed": 6,
+      "mana": 10000,
+      "regen": 10,
+      "effects": [],
+      "critChance": 0.3,
+      "zones": [
+        {
+          "id": "mastery",
+          "label": "等级精通",
+          "kind": "add",
+          "value": 1.47
+        },
+        {
+          "id": "affix-melee",
+          "label": "近战伤害",
+          "kind": "add",
+          "value": 0.2,
+          "tags": [
+            "melee"
+          ]
+        }
+      ],
+      "vsBoss": 0.24,
+      "conditional": [
+        {
+          "id": "stat-vsBoss",
+          "pool": "cond",
+          "value": 0.24,
+          "when": {
+            "kind": "target_rank",
+            "ranks": [
+              "boss"
+            ]
+          }
+        }
+      ],
+      "damageAdd": 1.47,
+      "damageMult": 1,
+      "combos": [
+        {
+          "id": "innate-sword-qi",
+          "name": "剑气",
+          "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+          "source": "剑势流 · 固有",
+          "weapons": [
+            "sword"
+          ],
+          "trigger": "nth",
+          "chance": 1,
+          "cooldown": 0,
+          "every": 3,
+          "action": {
+            "type": "nova",
+            "radius": 2.2,
+            "ratio": 0.35,
+            "damageType": "physical",
+            "vfx": "combo/sword-qi"
+          }
+        }
+      ],
+      "rules": [
+        {
+          "id": "atom-thunder",
+          "name": "落雷",
+          "description": "暴击，冷却 1 秒：召落雷（60%）",
+          "source": "原子",
+          "tier": 1,
+          "trigger": "crit",
+          "chance": 1,
+          "icd": 30,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "nova",
+            "ratio": 0.6,
+            "radius": 2,
+            "damageType": "lightning",
+            "ref": "hit",
+            "at": "target"
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/chain"
+        }
+      ]
+    },
+    "skillAccess": [
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "需主手：剑",
+        "mainHandWeapon": "sword",
+        "id": "cut",
+        "unlocked": true,
+        "unlockLevel": 1,
+        "activated": true,
+        "rank": 1,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 1,
+          "current": 50
+        },
+        "action": "upgrade",
+        "cost": {
+          "gold": 60,
+          "material": 0
+        },
+        "affordable": false,
+        "blocked": "resource",
+        "current": {
+          "id": "cut",
+          "category": "melee",
+          "unlockLevel": 1,
+          "name": "斩击",
+          "kind": "single",
+          "damage": 664,
+          "range": 3,
+          "radius": 0,
+          "cooldown": 24,
+          "cost": 0,
+          "windup": 3,
+          "duration": 0,
+          "description": "近距离斩击",
+          "weapons": [
+            "sword"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": []
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "single"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 24,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 24
+          }
+        },
+        "next": {
+          "id": "cut",
+          "category": "melee",
+          "unlockLevel": 1,
+          "name": "斩击",
+          "kind": "single",
+          "damage": 743,
+          "range": 3,
+          "radius": 0,
+          "cooldown": 24,
+          "cost": 0,
+          "windup": 3,
+          "duration": 0,
+          "description": "近距离斩击",
+          "weapons": [
+            "sword"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": []
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "single"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 24,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 24
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "需主手：剑",
+        "mainHandWeapon": "sword",
+        "id": "whirl",
+        "unlocked": false,
+        "unlockLevel": 2,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 2,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "whirl",
+          "category": "melee",
+          "unlockLevel": 2,
+          "name": "旋风斩",
+          "kind": "area",
+          "damage": 572,
+          "range": 0,
+          "radius": 4.5,
+          "cooldown": 75,
+          "cost": 15,
+          "windup": 7,
+          "duration": 0,
+          "description": "清剿身边敌群",
+          "weapons": [
+            "sword"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": []
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "area"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 75,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 75
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "需主手：剑",
+        "mainHandWeapon": "sword",
+        "id": "rush",
+        "unlocked": false,
+        "unlockLevel": 5,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 5,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "rush",
+          "category": "melee",
+          "unlockLevel": 5,
+          "name": "破阵",
+          "kind": "dash",
+          "damage": 801,
+          "range": 6,
+          "radius": 2,
+          "cooldown": 110,
+          "cost": 12,
+          "windup": 3,
+          "duration": 0,
+          "description": "突进并打击附近敌人",
+          "weapons": [
+            "sword"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": []
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "dash"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 110,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 110
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：锤／斧",
+        "mainHandWeapon": "sword",
+        "id": "cleave",
+        "unlocked": false,
+        "unlockLevel": 9,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 9,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "cleave",
+          "category": "melee",
+          "unlockLevel": 9,
+          "name": "裂地",
+          "kind": "area",
+          "damage": 1259,
+          "range": 0,
+          "radius": 4,
+          "cooldown": 180,
+          "cost": 25,
+          "windup": 18,
+          "duration": 0,
+          "description": "慢前摇的范围爆发",
+          "weapons": [
+            "hammer",
+            "axe"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": []
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "area"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 180,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 180
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "需主手：剑",
+        "mainHandWeapon": "sword",
+        "id": "dual_strike",
+        "unlocked": false,
+        "unlockLevel": 3,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 3,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "dual_strike",
+          "category": "melee",
+          "unlockLevel": 3,
+          "name": "双重打击",
+          "kind": "single",
+          "damage": 641,
+          "range": 3,
+          "radius": 0,
+          "cooldown": 35,
+          "cost": 8,
+          "windup": 4,
+          "duration": 0,
+          "description": "快速连击两次",
+          "weapons": [
+            "sword"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "schedule": {
+              "hits": 2,
+              "interval": 5,
+              "followCaster": false,
+              "interruptOnMove": false
+            },
+            "statuses": []
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "single"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 35,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 35
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：锤／斧",
+        "mainHandWeapon": "sword",
+        "id": "ground_slam",
+        "unlocked": false,
+        "unlockLevel": 6,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 6,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "ground_slam",
+          "category": "melee",
+          "unlockLevel": 6,
+          "name": "重击",
+          "kind": "area",
+          "damage": 961,
+          "range": 0,
+          "radius": 4,
+          "cooldown": 90,
+          "cost": 18,
+          "windup": 12,
+          "duration": 0,
+          "description": "震击地面造成范围伤害",
+          "weapons": [
+            "hammer",
+            "axe"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": []
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "area"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 90,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 90
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "需主手：剑",
+        "mainHandWeapon": "sword",
+        "id": "blade_fury",
+        "unlocked": false,
+        "unlockLevel": 8,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 8,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "blade_fury",
+          "category": "melee",
+          "unlockLevel": 8,
+          "name": "刀刃风暴",
+          "kind": "area",
+          "damage": 343,
+          "range": 0,
+          "radius": 4,
+          "cooldown": 120,
+          "cost": 22,
+          "windup": 5,
+          "duration": 90,
+          "description": "持续旋转攻击周围",
+          "weapons": [
+            "sword"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "schedule": {
+              "hits": 3,
+              "interval": 30,
+              "followCaster": true,
+              "interruptOnMove": false
+            },
+            "statuses": []
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "area"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 120,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 120
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "需主手：剑",
+        "mainHandWeapon": "sword",
+        "id": "execute",
+        "unlocked": false,
+        "unlockLevel": 10,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 10,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "execute",
+          "category": "melee",
+          "unlockLevel": 10,
+          "name": "斩杀",
+          "kind": "single",
+          "damage": 1831,
+          "range": 3,
+          "radius": 0,
+          "cooldown": 150,
+          "cost": 20,
+          "windup": 8,
+          "duration": 0,
+          "description": "对低血量敌人造成额外伤害",
+          "weapons": [
+            "sword"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": [],
+            "execute": {
+              "threshold": 0.2,
+              "bonus": 0.5
+            }
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "single"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 150,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 150
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "需主手：剑",
+        "mainHandWeapon": "sword",
+        "id": "leap_strike",
+        "unlocked": false,
+        "unlockLevel": 11,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 11,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "leap_strike",
+          "category": "melee",
+          "unlockLevel": 11,
+          "name": "跳斩",
+          "kind": "dash",
+          "damage": 1099,
+          "range": 8,
+          "radius": 2.5,
+          "cooldown": 95,
+          "cost": 16,
+          "windup": 4,
+          "duration": 0,
+          "description": "跳跃至目标位置并攻击",
+          "weapons": [
+            "sword"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": []
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "dash"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 95,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 95
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：锤／斧",
+        "mainHandWeapon": "sword",
+        "id": "blood_rage",
+        "unlocked": false,
+        "unlockLevel": 12,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 12,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "blood_rage",
+          "category": "melee",
+          "unlockLevel": 12,
+          "name": "血怒",
+          "kind": "shield",
+          "damage": 0,
+          "range": 0,
+          "radius": 0,
+          "cooldown": 240,
+          "cost": 30,
+          "windup": 2,
+          "duration": 180,
+          "description": "提升攻击力但持续消耗生命",
+          "weapons": [
+            "hammer",
+            "axe"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "self",
+            "statuses": [
+              {
+                "kind": "attack_up",
+                "duration": 180,
+                "strength": 0.25,
+                "scope": "self",
+                "interval": 30,
+                "cleanse": false,
+                "breakOnDamage": false,
+                "removeWithSource": false,
+                "hpDrainRatio": 0.02
+              }
+            ]
+          },
+          "resolution": {
+            "attackShare": 0,
+            "baseCooldown": 240,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 240
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "需主手：剑",
+        "mainHandWeapon": "sword",
+        "id": "vortex_blade",
+        "unlocked": false,
+        "unlockLevel": 13,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 13,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "vortex_blade",
+          "category": "melee",
+          "unlockLevel": 13,
+          "name": "漩涡之刃",
+          "kind": "area",
+          "damage": 870,
+          "range": 0,
+          "radius": 4.5,
+          "cooldown": 85,
+          "cost": 24,
+          "windup": 9,
+          "duration": 0,
+          "description": "制造吸引敌人的漩涡",
+          "weapons": [
+            "sword"
+          ],
+          "pull": 2,
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": []
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "area"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 85,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 85
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "需主手：剑",
+        "mainHandWeapon": "sword",
+        "id": "counter_strike",
+        "unlocked": false,
+        "unlockLevel": 14,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 14,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "counter_strike",
+          "category": "melee",
+          "unlockLevel": 14,
+          "name": "反击",
+          "kind": "shield",
+          "damage": 1059,
+          "range": 0,
+          "radius": 3,
+          "cooldown": 180,
+          "cost": 15,
+          "windup": 1,
+          "duration": 60,
+          "description": "格挡并反弹伤害",
+          "weapons": [
+            "sword"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "self",
+            "statuses": [
+              {
+                "kind": "counter",
+                "duration": 60,
+                "strength": 1,
+                "scope": "self",
+                "cleanse": false,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "resolution": {
+            "attackShare": 0,
+            "baseCooldown": 180,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 180
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：锤／斧",
+        "mainHandWeapon": "sword",
+        "id": "rampage",
+        "unlocked": false,
+        "unlockLevel": 15,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 15,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "rampage",
+          "category": "melee",
+          "unlockLevel": 15,
+          "name": "狂暴",
+          "kind": "area",
+          "damage": 732,
+          "range": 0,
+          "radius": 4,
+          "cooldown": 60,
+          "cost": 20,
+          "windup": 5,
+          "duration": 0,
+          "description": "快速范围攻击",
+          "weapons": [
+            "hammer",
+            "axe"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": []
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "area"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 60,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 60
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：锤／斧",
+        "mainHandWeapon": "sword",
+        "id": "berserker",
+        "unlocked": false,
+        "unlockLevel": 16,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 16,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "berserker",
+          "category": "melee",
+          "unlockLevel": 16,
+          "name": "狂战士",
+          "kind": "single",
+          "damage": 1488,
+          "range": 3.2,
+          "radius": 0,
+          "cooldown": 120,
+          "cost": 25,
+          "windup": 10,
+          "duration": 60,
+          "description": "牺牲防御换取巨额伤害",
+          "weapons": [
+            "hammer",
+            "axe"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "armor_down",
+                "duration": 60,
+                "strength": 0.2,
+                "scope": "self",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "single"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 120,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 120
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：锤／斧",
+        "mainHandWeapon": "sword",
+        "id": "war_cry",
+        "unlocked": false,
+        "unlockLevel": 17,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 17,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "war_cry",
+          "category": "melee",
+          "unlockLevel": 17,
+          "name": "战吼",
+          "kind": "area",
+          "damage": 458,
+          "range": 0,
+          "radius": 6,
+          "cooldown": 150,
+          "cost": 18,
+          "windup": 3,
+          "duration": 120,
+          "description": "降低周围敌人防御",
+          "weapons": [
+            "hammer",
+            "axe"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "armor_down",
+                "duration": 120,
+                "strength": 0.2,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "area"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 150,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 150
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：弓",
+        "mainHandWeapon": "sword",
+        "id": "bolt",
+        "unlocked": false,
+        "unlockLevel": 1,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 1,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "bolt",
+          "category": "ranged",
+          "unlockLevel": 1,
+          "name": "穿云箭",
+          "kind": "projectile",
+          "damage": 466,
+          "range": 12,
+          "radius": 0.35,
+          "cooldown": 25,
+          "cost": 4,
+          "windup": 4,
+          "duration": 0,
+          "description": "远程直线攻击",
+          "weapons": [
+            "bow"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "projectile": {
+              "collisionRadius": 0.35,
+              "penetrations": 0,
+              "turnRate": 0,
+              "explosionRadius": 0
+            },
+            "statuses": []
+          },
+          "tags": [
+            "ranged",
+            "physical",
+            "projectile"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 25,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 25
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：法杖",
+        "mainHandWeapon": "sword",
+        "id": "ember",
+        "unlocked": false,
+        "unlockLevel": 6,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": false,
+        "activation": {
+          "type": "book",
+          "book": "ember",
+          "name": "燎原技能书",
+          "required": 1,
+          "current": 0,
+          "source": "首次击败荒原守门人"
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": false,
+        "blocked": "book",
+        "current": null,
+        "next": {
+          "id": "ember",
+          "category": "ranged",
+          "unlockLevel": 6,
+          "activation": {
+            "type": "book",
+            "quantity": 1
+          },
+          "name": "燎原",
+          "kind": "zone",
+          "damage": 275,
+          "range": 8,
+          "radius": 3.3,
+          "cooldown": 130,
+          "cost": 20,
+          "windup": 10,
+          "duration": 150,
+          "description": "持续燃烧区域",
+          "weapons": [
+            "staff"
+          ],
+          "mechanics": {
+            "damageType": "fire",
+            "targeting": "ground",
+            "zone": {
+              "mode": "periodic",
+              "hits": 5,
+              "interval": 30,
+              "firstDelay": 29,
+              "pullSpeed": 0,
+              "budget": "per_tick"
+            },
+            "statuses": []
+          },
+          "tags": [
+            "spell",
+            "fire",
+            "area",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 130,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 130
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：法杖",
+        "mainHandWeapon": "sword",
+        "id": "chain",
+        "unlocked": false,
+        "unlockLevel": 7,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": false,
+        "activation": {
+          "type": "book",
+          "book": "chain",
+          "name": "雷链技能书",
+          "required": 1,
+          "current": 0,
+          "source": "首次击败雾林祭司"
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": false,
+        "blocked": "book",
+        "current": null,
+        "next": {
+          "id": "chain",
+          "category": "ranged",
+          "unlockLevel": 7,
+          "activation": {
+            "type": "book",
+            "quantity": 1
+          },
+          "name": "雷链",
+          "kind": "chain",
+          "damage": 550,
+          "range": 10,
+          "radius": 5,
+          "cooldown": 95,
+          "cost": 16,
+          "windup": 6,
+          "duration": 0,
+          "description": "依次跳跃三个目标",
+          "weapons": [
+            "staff"
+          ],
+          "mechanics": {
+            "damageType": "lightning",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "shock",
+                "duration": 90,
+                "strength": 0.12,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "lightning",
+            "chain"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 95,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 95
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：法杖",
+        "mainHandWeapon": "sword",
+        "id": "lance",
+        "unlocked": false,
+        "unlockLevel": 10,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 10,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "lance",
+          "category": "ranged",
+          "unlockLevel": 10,
+          "name": "星矛",
+          "kind": "projectile",
+          "damage": 1016,
+          "range": 15,
+          "radius": 0.5,
+          "cooldown": 90,
+          "cost": 18,
+          "windup": 12,
+          "duration": 0,
+          "description": "重型穿透弹",
+          "weapons": [
+            "staff"
+          ],
+          "mechanics": {
+            "damageType": "arcane",
+            "targeting": "enemy",
+            "projectile": {
+              "collisionRadius": 0.5,
+              "penetrations": 2,
+              "turnRate": 0,
+              "explosionRadius": 0
+            },
+            "statuses": []
+          },
+          "tags": [
+            "spell",
+            "arcane",
+            "projectile"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 90,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 90
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：弓",
+        "mainHandWeapon": "sword",
+        "id": "multi_shot",
+        "unlocked": false,
+        "unlockLevel": 3,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 3,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "multi_shot",
+          "category": "ranged",
+          "unlockLevel": 3,
+          "name": "多重箭",
+          "kind": "projectile",
+          "damage": 339,
+          "range": 11,
+          "radius": 0.3,
+          "cooldown": 40,
+          "cost": 10,
+          "windup": 5,
+          "duration": 0,
+          "description": "同时发射三支箭",
+          "weapons": [
+            "bow"
+          ],
+          "projectiles": 3,
+          "projectileSpread": 0.24,
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "projectile": {
+              "collisionRadius": 0.3,
+              "penetrations": 0,
+              "turnRate": 0,
+              "explosionRadius": 0
+            },
+            "statuses": []
+          },
+          "tags": [
+            "ranged",
+            "physical",
+            "projectile"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 40,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 40
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：弓",
+        "mainHandWeapon": "sword",
+        "id": "pierce_arrow",
+        "unlocked": false,
+        "unlockLevel": 4,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 4,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "pierce_arrow",
+          "category": "ranged",
+          "unlockLevel": 4,
+          "name": "穿透箭",
+          "kind": "projectile",
+          "damage": 677,
+          "range": 14,
+          "radius": 0.4,
+          "cooldown": 55,
+          "cost": 12,
+          "windup": 7,
+          "duration": 0,
+          "description": "穿透多个敌人",
+          "weapons": [
+            "bow"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "projectile": {
+              "collisionRadius": 0.4,
+              "penetrations": 2,
+              "turnRate": 0,
+              "explosionRadius": 0
+            },
+            "statuses": []
+          },
+          "tags": [
+            "ranged",
+            "physical",
+            "projectile"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 55,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 55
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：弓",
+        "mainHandWeapon": "sword",
+        "id": "rain_of_arrows",
+        "unlocked": false,
+        "unlockLevel": 8,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 8,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "rain_of_arrows",
+          "category": "ranged",
+          "unlockLevel": 8,
+          "name": "箭雨",
+          "kind": "zone",
+          "damage": 381,
+          "range": 10,
+          "radius": 4,
+          "cooldown": 110,
+          "cost": 22,
+          "windup": 15,
+          "duration": 90,
+          "description": "在区域内降下箭雨",
+          "weapons": [
+            "bow"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "ground",
+            "zone": {
+              "mode": "periodic",
+              "hits": 3,
+              "interval": 30,
+              "firstDelay": 0,
+              "pullSpeed": 0,
+              "budget": "total"
+            },
+            "statuses": []
+          },
+          "tags": [
+            "ranged",
+            "physical",
+            "area",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 110,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 110
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：弓",
+        "mainHandWeapon": "sword",
+        "id": "explosive_shot",
+        "unlocked": false,
+        "unlockLevel": 9,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 9,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "explosive_shot",
+          "category": "ranged",
+          "unlockLevel": 9,
+          "name": "爆破箭",
+          "kind": "projectile",
+          "damage": 847,
+          "range": 12,
+          "radius": 2,
+          "cooldown": 80,
+          "cost": 20,
+          "windup": 10,
+          "duration": 0,
+          "description": "命中后爆炸",
+          "weapons": [
+            "bow"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "projectile": {
+              "collisionRadius": 0.3,
+              "penetrations": 0,
+              "turnRate": 0,
+              "explosionRadius": 2
+            },
+            "statuses": []
+          },
+          "tags": [
+            "ranged",
+            "physical",
+            "projectile"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 80,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 80
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：弓",
+        "mainHandWeapon": "sword",
+        "id": "snipe",
+        "unlocked": false,
+        "unlockLevel": 11,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 11,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "snipe",
+          "category": "ranged",
+          "unlockLevel": 11,
+          "name": "狙击",
+          "kind": "single",
+          "damage": 1588,
+          "range": 18,
+          "radius": 0,
+          "cooldown": 120,
+          "cost": 16,
+          "windup": 20,
+          "duration": 0,
+          "description": "超远距离精准打击",
+          "weapons": [
+            "bow"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": []
+          },
+          "tags": [
+            "ranged",
+            "physical",
+            "single"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 120,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 120
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：弓",
+        "mainHandWeapon": "sword",
+        "id": "poison_arrow",
+        "unlocked": false,
+        "unlockLevel": 12,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 12,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "poison_arrow",
+          "category": "ranged",
+          "unlockLevel": 12,
+          "name": "毒箭",
+          "kind": "projectile",
+          "damage": 593,
+          "range": 11,
+          "radius": 0.35,
+          "cooldown": 70,
+          "cost": 14,
+          "windup": 6,
+          "duration": 90,
+          "description": "造成持续毒性伤害",
+          "weapons": [
+            "bow"
+          ],
+          "mechanics": {
+            "damageType": "poison",
+            "targeting": "enemy",
+            "projectile": {
+              "collisionRadius": 0.35,
+              "penetrations": 0,
+              "turnRate": 0,
+              "explosionRadius": 0
+            },
+            "statuses": [
+              {
+                "kind": "poison",
+                "duration": 90,
+                "strength": 0,
+                "scope": "hit",
+                "interval": 30,
+                "damageType": "poison",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false,
+                "total": 296
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "poison",
+            "projectile",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 70,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 70
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：弓",
+        "mainHandWeapon": "sword",
+        "id": "volley",
+        "unlocked": false,
+        "unlockLevel": 13,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 13,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "volley",
+          "category": "ranged",
+          "unlockLevel": 13,
+          "name": "齐射",
+          "kind": "projectile",
+          "damage": 423,
+          "range": 10,
+          "radius": 0.3,
+          "cooldown": 45,
+          "cost": 18,
+          "windup": 8,
+          "duration": 0,
+          "description": "快速连续射击",
+          "weapons": [
+            "bow"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "schedule": {
+              "hits": 3,
+              "interval": 3,
+              "followCaster": false,
+              "interruptOnMove": false
+            },
+            "projectile": {
+              "collisionRadius": 0.3,
+              "penetrations": 0,
+              "turnRate": 0,
+              "explosionRadius": 0
+            },
+            "statuses": []
+          },
+          "tags": [
+            "ranged",
+            "physical",
+            "projectile"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 45,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 45
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：魔杖",
+        "mainHandWeapon": "sword",
+        "id": "arcane_missile",
+        "unlocked": false,
+        "unlockLevel": 14,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 14,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "arcane_missile",
+          "category": "ranged",
+          "unlockLevel": 14,
+          "name": "奥术飞弹",
+          "kind": "projectile",
+          "damage": 741,
+          "range": 13,
+          "radius": 0.4,
+          "cooldown": 60,
+          "cost": 16,
+          "windup": 5,
+          "duration": 0,
+          "description": "追踪敌人的魔法飞弹",
+          "weapons": [
+            "wand"
+          ],
+          "mechanics": {
+            "damageType": "arcane",
+            "targeting": "enemy",
+            "projectile": {
+              "collisionRadius": 0.4,
+              "penetrations": 0,
+              "turnRate": 0.1,
+              "explosionRadius": 0
+            },
+            "statuses": []
+          },
+          "tags": [
+            "spell",
+            "arcane",
+            "projectile"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 60,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 60
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：法杖",
+        "mainHandWeapon": "sword",
+        "id": "meteor",
+        "unlocked": false,
+        "unlockLevel": 15,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 15,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "meteor",
+          "category": "ranged",
+          "unlockLevel": 15,
+          "name": "陨石术",
+          "kind": "zone",
+          "damage": 1270,
+          "range": 12,
+          "radius": 3.5,
+          "cooldown": 180,
+          "cost": 35,
+          "windup": 25,
+          "duration": 0,
+          "description": "召唤陨石砸击地面",
+          "weapons": [
+            "staff"
+          ],
+          "mechanics": {
+            "damageType": "fire",
+            "targeting": "ground",
+            "zone": {
+              "mode": "burst",
+              "hits": 1,
+              "interval": 30,
+              "firstDelay": 0,
+              "pullSpeed": 0,
+              "budget": "per_tick"
+            },
+            "statuses": [
+              {
+                "kind": "burn",
+                "duration": 90,
+                "strength": 0,
+                "scope": "hit",
+                "interval": 30,
+                "damageType": "fire",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false,
+                "total": 381
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "fire",
+            "area",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 180,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 180
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：法杖",
+        "mainHandWeapon": "sword",
+        "id": "barrage",
+        "unlocked": false,
+        "unlockLevel": 16,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 16,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "barrage",
+          "category": "ranged",
+          "unlockLevel": 16,
+          "name": "弹幕",
+          "kind": "zone",
+          "damage": 254,
+          "range": 10,
+          "radius": 5,
+          "cooldown": 90,
+          "cost": 25,
+          "windup": 10,
+          "duration": 60,
+          "description": "持续的远程打击",
+          "weapons": [
+            "staff"
+          ],
+          "mechanics": {
+            "damageType": "arcane",
+            "targeting": "ground",
+            "zone": {
+              "mode": "periodic",
+              "hits": 2,
+              "interval": 30,
+              "firstDelay": 29,
+              "pullSpeed": 0,
+              "budget": "per_tick"
+            },
+            "statuses": []
+          },
+          "tags": [
+            "spell",
+            "arcane",
+            "area",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 90,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 90
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：法杖",
+        "mainHandWeapon": "sword",
+        "id": "frost_bolt",
+        "unlocked": false,
+        "unlockLevel": 17,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 17,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "frost_bolt",
+          "category": "ranged",
+          "unlockLevel": 17,
+          "name": "冰霜箭",
+          "kind": "projectile",
+          "damage": 635,
+          "range": 12,
+          "radius": 0.4,
+          "cooldown": 50,
+          "cost": 12,
+          "windup": 6,
+          "duration": 0,
+          "description": "减速敌人的冰箭",
+          "weapons": [
+            "staff"
+          ],
+          "mechanics": {
+            "damageType": "cold",
+            "targeting": "enemy",
+            "projectile": {
+              "collisionRadius": 0.4,
+              "penetrations": 0,
+              "turnRate": 0,
+              "explosionRadius": 0
+            },
+            "statuses": [
+              {
+                "kind": "slow",
+                "duration": 60,
+                "strength": 0.3,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "cold",
+            "projectile"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 50,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 50
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：法杖",
+        "mainHandWeapon": "sword",
+        "id": "lightning_bolt",
+        "unlocked": false,
+        "unlockLevel": 18,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 18,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "lightning_bolt",
+          "category": "ranged",
+          "unlockLevel": 18,
+          "name": "闪电箭",
+          "kind": "projectile",
+          "damage": 953,
+          "range": 14,
+          "radius": 0.3,
+          "cooldown": 75,
+          "cost": 18,
+          "windup": 8,
+          "duration": 0,
+          "description": "快速的闪电攻击",
+          "weapons": [
+            "staff"
+          ],
+          "mechanics": {
+            "damageType": "lightning",
+            "targeting": "enemy",
+            "projectile": {
+              "collisionRadius": 0.3,
+              "penetrations": 0,
+              "turnRate": 0,
+              "explosionRadius": 0
+            },
+            "statuses": [
+              {
+                "kind": "shock",
+                "duration": 90,
+                "strength": 0.12,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "lightning",
+            "projectile"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 75,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 75
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：法杖",
+        "mainHandWeapon": "sword",
+        "id": "fireball",
+        "unlocked": false,
+        "unlockLevel": 19,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 19,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "fireball",
+          "category": "ranged",
+          "unlockLevel": 19,
+          "name": "火球术",
+          "kind": "projectile",
+          "damage": 1059,
+          "range": 11,
+          "radius": 1.5,
+          "cooldown": 85,
+          "cost": 20,
+          "windup": 10,
+          "duration": 0,
+          "description": "造成范围爆炸的火球",
+          "weapons": [
+            "staff"
+          ],
+          "mechanics": {
+            "damageType": "fire",
+            "targeting": "enemy",
+            "projectile": {
+              "collisionRadius": 0.3,
+              "penetrations": 0,
+              "turnRate": 0,
+              "explosionRadius": 1.5
+            },
+            "statuses": [
+              {
+                "kind": "burn",
+                "duration": 90,
+                "strength": 0,
+                "scope": "hit",
+                "interval": 30,
+                "damageType": "fire",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false,
+                "total": 318
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "fire",
+            "projectile",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 85,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 85
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：弓",
+        "mainHandWeapon": "sword",
+        "id": "dark_arrow",
+        "unlocked": false,
+        "unlockLevel": 20,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 20,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "dark_arrow",
+          "category": "ranged",
+          "unlockLevel": 20,
+          "name": "暗影箭",
+          "kind": "projectile",
+          "damage": 805,
+          "range": 15,
+          "radius": 0.35,
+          "cooldown": 65,
+          "cost": 15,
+          "windup": 7,
+          "duration": 0,
+          "description": "穿透护甲的暗影攻击",
+          "weapons": [
+            "bow"
+          ],
+          "mechanics": {
+            "damageType": "shadow",
+            "targeting": "enemy",
+            "projectile": {
+              "collisionRadius": 0.35,
+              "penetrations": 0,
+              "turnRate": 0,
+              "explosionRadius": 0
+            },
+            "statuses": [
+              {
+                "kind": "blind",
+                "duration": 60,
+                "strength": 0.15,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ],
+            "penetration": 0.3
+          },
+          "tags": [
+            "spell",
+            "shadow",
+            "projectile"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 65,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 65
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：法杖",
+        "mainHandWeapon": "sword",
+        "id": "frost",
+        "unlocked": false,
+        "unlockLevel": 3,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 3,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "frost",
+          "category": "control",
+          "unlockLevel": 3,
+          "name": "寒霜阵",
+          "kind": "zone",
+          "damage": 169,
+          "range": 9,
+          "radius": 3,
+          "cooldown": 150,
+          "cost": 18,
+          "windup": 8,
+          "duration": 120,
+          "description": "持续伤害并减速",
+          "weapons": [
+            "staff"
+          ],
+          "mechanics": {
+            "damageType": "cold",
+            "targeting": "ground",
+            "zone": {
+              "mode": "periodic",
+              "hits": 4,
+              "interval": 30,
+              "firstDelay": 29,
+              "pullSpeed": 0,
+              "budget": "per_tick"
+            },
+            "statuses": [
+              {
+                "kind": "slow",
+                "duration": 2,
+                "strength": 0.55,
+                "scope": "zone",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "cold",
+            "area",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 150,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 150
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：法杖",
+        "mainHandWeapon": "sword",
+        "id": "nova",
+        "unlocked": false,
+        "unlockLevel": 8,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 8,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "nova",
+          "category": "control",
+          "unlockLevel": 8,
+          "name": "冰环",
+          "kind": "area",
+          "damage": 677,
+          "range": 0,
+          "radius": 5,
+          "cooldown": 150,
+          "cost": 22,
+          "windup": 8,
+          "duration": 45,
+          "description": "范围伤害与短暂减速",
+          "weapons": [
+            "staff"
+          ],
+          "mechanics": {
+            "damageType": "cold",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "slow",
+                "duration": 45,
+                "strength": 0.55,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "cold",
+            "area"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 150,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 150
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：锤／斧",
+        "mainHandWeapon": "sword",
+        "id": "stun_strike",
+        "unlocked": false,
+        "unlockLevel": 4,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 4,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "stun_strike",
+          "category": "control",
+          "unlockLevel": 4,
+          "name": "震慑",
+          "kind": "single",
+          "damage": 529,
+          "range": 3,
+          "radius": 0,
+          "cooldown": 80,
+          "cost": 12,
+          "windup": 5,
+          "duration": 30,
+          "description": "眩晕单个敌人",
+          "weapons": [
+            "hammer",
+            "axe"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "stun",
+                "duration": 30,
+                "strength": 1,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "physical",
+            "single"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 80,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 80
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：魔杖",
+        "mainHandWeapon": "sword",
+        "id": "gravity_well",
+        "unlocked": false,
+        "unlockLevel": 7,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 7,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "gravity_well",
+          "category": "control",
+          "unlockLevel": 7,
+          "name": "重力陷阱",
+          "kind": "zone",
+          "damage": 212,
+          "range": 8,
+          "radius": 3,
+          "cooldown": 140,
+          "cost": 24,
+          "windup": 12,
+          "duration": 90,
+          "description": "减速并拉扯敌人",
+          "weapons": [
+            "wand"
+          ],
+          "mechanics": {
+            "damageType": "arcane",
+            "targeting": "ground",
+            "zone": {
+              "mode": "periodic",
+              "hits": 3,
+              "interval": 30,
+              "firstDelay": 0,
+              "pullSpeed": 2,
+              "budget": "per_tick"
+            },
+            "statuses": [
+              {
+                "kind": "slow",
+                "duration": 2,
+                "strength": 0.3,
+                "scope": "zone",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "arcane",
+            "area",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 140,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 140
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：魔杖",
+        "mainHandWeapon": "sword",
+        "id": "silence",
+        "unlocked": false,
+        "unlockLevel": 9,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 9,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "silence",
+          "category": "control",
+          "unlockLevel": 9,
+          "name": "沉默",
+          "kind": "area",
+          "damage": 0,
+          "range": 0,
+          "radius": 5,
+          "cooldown": 180,
+          "cost": 20,
+          "windup": 5,
+          "duration": 60,
+          "description": "禁止敌人使用技能",
+          "weapons": [
+            "wand"
+          ],
+          "mechanics": {
+            "damageType": "arcane",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "silence",
+                "duration": 60,
+                "strength": 1,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 180,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 180
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：魔杖",
+        "mainHandWeapon": "sword",
+        "id": "petrify",
+        "unlocked": false,
+        "unlockLevel": 11,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 11,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "petrify",
+          "category": "control",
+          "unlockLevel": 11,
+          "name": "石化",
+          "kind": "single",
+          "damage": 318,
+          "range": 10,
+          "radius": 0,
+          "cooldown": 200,
+          "cost": 28,
+          "windup": 15,
+          "duration": 90,
+          "description": "石化单个敌人",
+          "weapons": [
+            "wand"
+          ],
+          "mechanics": {
+            "damageType": "arcane",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "petrify",
+                "duration": 90,
+                "strength": 1,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": true,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "arcane",
+            "single"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 200,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 200
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：魔杖",
+        "mainHandWeapon": "sword",
+        "id": "slow_field",
+        "unlocked": false,
+        "unlockLevel": 12,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 12,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "slow_field",
+          "category": "control",
+          "unlockLevel": 12,
+          "name": "减速场",
+          "kind": "zone",
+          "damage": 106,
+          "range": 9,
+          "radius": 4,
+          "cooldown": 120,
+          "cost": 18,
+          "windup": 8,
+          "duration": 150,
+          "description": "大范围减速区域",
+          "weapons": [
+            "wand"
+          ],
+          "mechanics": {
+            "damageType": "arcane",
+            "targeting": "ground",
+            "zone": {
+              "mode": "periodic",
+              "hits": 5,
+              "interval": 30,
+              "firstDelay": 0,
+              "pullSpeed": 0,
+              "budget": "per_tick"
+            },
+            "statuses": [
+              {
+                "kind": "slow",
+                "duration": 2,
+                "strength": 0.3,
+                "scope": "zone",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "arcane",
+            "area",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 120,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 120
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：魔杖",
+        "mainHandWeapon": "sword",
+        "id": "fear",
+        "unlocked": false,
+        "unlockLevel": 13,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 13,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "fear",
+          "category": "control",
+          "unlockLevel": 13,
+          "name": "恐惧术",
+          "kind": "area",
+          "damage": 0,
+          "range": 0,
+          "radius": 4,
+          "cooldown": 160,
+          "cost": 22,
+          "windup": 10,
+          "duration": 45,
+          "description": "使敌人逃跑",
+          "weapons": [
+            "wand"
+          ],
+          "mechanics": {
+            "damageType": "arcane",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "fear",
+                "duration": 45,
+                "strength": 1,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 160,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 160
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：魔杖",
+        "mainHandWeapon": "sword",
+        "id": "root",
+        "unlocked": false,
+        "unlockLevel": 14,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 14,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "root",
+          "category": "control",
+          "unlockLevel": 14,
+          "name": "束缚",
+          "kind": "zone",
+          "damage": 169,
+          "range": 10,
+          "radius": 2.5,
+          "cooldown": 100,
+          "cost": 16,
+          "windup": 7,
+          "duration": 60,
+          "description": "固定敌人位置",
+          "weapons": [
+            "wand"
+          ],
+          "mechanics": {
+            "damageType": "arcane",
+            "targeting": "ground",
+            "zone": {
+              "mode": "periodic",
+              "hits": 2,
+              "interval": 30,
+              "firstDelay": 0,
+              "pullSpeed": 0,
+              "budget": "per_tick"
+            },
+            "statuses": [
+              {
+                "kind": "root",
+                "duration": 2,
+                "strength": 1,
+                "scope": "zone",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "arcane",
+            "area",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 100,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 100
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：魔杖",
+        "mainHandWeapon": "sword",
+        "id": "blind",
+        "unlocked": false,
+        "unlockLevel": 15,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 15,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "blind",
+          "category": "control",
+          "unlockLevel": 15,
+          "name": "致盲",
+          "kind": "area",
+          "damage": 0,
+          "range": 0,
+          "radius": 5,
+          "cooldown": 140,
+          "cost": 18,
+          "windup": 5,
+          "duration": 75,
+          "description": "降低敌人命中率",
+          "weapons": [
+            "wand"
+          ],
+          "mechanics": {
+            "damageType": "arcane",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "blind",
+                "duration": 75,
+                "strength": 0.25,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 140,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 140
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：魔杖",
+        "mainHandWeapon": "sword",
+        "id": "vortex",
+        "unlocked": false,
+        "unlockLevel": 16,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 16,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "vortex",
+          "category": "control",
+          "unlockLevel": 16,
+          "name": "虚空漩涡",
+          "kind": "zone",
+          "damage": 423,
+          "range": 8,
+          "radius": 3.5,
+          "cooldown": 170,
+          "cost": 30,
+          "windup": 18,
+          "duration": 90,
+          "description": "持续吸引并伤害",
+          "weapons": [
+            "wand"
+          ],
+          "mechanics": {
+            "damageType": "arcane",
+            "targeting": "ground",
+            "zone": {
+              "mode": "periodic",
+              "hits": 3,
+              "interval": 30,
+              "firstDelay": 0,
+              "pullSpeed": 2.5,
+              "budget": "per_tick"
+            },
+            "statuses": []
+          },
+          "tags": [
+            "spell",
+            "arcane",
+            "area",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 170,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 170
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：魔杖",
+        "mainHandWeapon": "sword",
+        "id": "time_stop",
+        "unlocked": false,
+        "unlockLevel": 18,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 18,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "time_stop",
+          "category": "control",
+          "unlockLevel": 18,
+          "name": "时间停滞",
+          "kind": "area",
+          "damage": 0,
+          "range": 0,
+          "radius": 6,
+          "cooldown": 300,
+          "cost": 40,
+          "windup": 20,
+          "duration": 30,
+          "description": "短暂定身所有敌人",
+          "weapons": [
+            "wand"
+          ],
+          "mechanics": {
+            "damageType": "arcane",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "time_stop",
+                "duration": 30,
+                "strength": 1,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 300,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 300
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "通用 · 任意主手",
+        "mainHandWeapon": "sword",
+        "id": "ward",
+        "unlocked": false,
+        "unlockLevel": 1,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 1,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "ward",
+          "category": "support",
+          "unlockLevel": 1,
+          "name": "护身印",
+          "kind": "shield",
+          "damage": 953,
+          "range": 0,
+          "radius": 0,
+          "cooldown": 240,
+          "cost": 15,
+          "windup": 1,
+          "duration": 150,
+          "description": "吸收伤害",
+          "weapons": [],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "self",
+            "statuses": []
+          },
+          "resolution": {
+            "attackShare": 0,
+            "baseCooldown": 240,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 240
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "通用 · 任意主手",
+        "mainHandWeapon": "sword",
+        "id": "mend",
+        "unlocked": false,
+        "unlockLevel": 4,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 4,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "mend",
+          "category": "support",
+          "unlockLevel": 4,
+          "name": "回春",
+          "kind": "heal",
+          "damage": 741,
+          "range": 0,
+          "radius": 0,
+          "cooldown": 270,
+          "cost": 25,
+          "windup": 15,
+          "duration": 0,
+          "description": "恢复生命",
+          "weapons": [],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "self",
+            "statuses": []
+          },
+          "resolution": {
+            "attackShare": 0,
+            "baseCooldown": 270,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 270
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "通用 · 任意主手",
+        "mainHandWeapon": "sword",
+        "id": "haste",
+        "unlocked": false,
+        "unlockLevel": 5,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 5,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "haste",
+          "category": "support",
+          "unlockLevel": 5,
+          "name": "加速",
+          "kind": "shield",
+          "damage": 0,
+          "range": 0,
+          "radius": 0,
+          "cooldown": 180,
+          "cost": 20,
+          "windup": 2,
+          "duration": 120,
+          "description": "提升移动速度",
+          "weapons": [],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "self",
+            "statuses": [
+              {
+                "kind": "speed_up",
+                "duration": 120,
+                "strength": 0.25,
+                "scope": "self",
+                "cleanse": false,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "resolution": {
+            "attackShare": 0,
+            "baseCooldown": 180,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 180
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "通用 · 任意主手",
+        "mainHandWeapon": "sword",
+        "id": "regen",
+        "unlocked": false,
+        "unlockLevel": 6,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 6,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "regen",
+          "category": "support",
+          "unlockLevel": 6,
+          "name": "再生",
+          "kind": "heal",
+          "damage": 0,
+          "range": 0,
+          "radius": 0,
+          "cooldown": 200,
+          "cost": 18,
+          "windup": 5,
+          "duration": 180,
+          "description": "持续恢复生命",
+          "weapons": [],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "self",
+            "statuses": [
+              {
+                "kind": "regen",
+                "duration": 180,
+                "strength": 0,
+                "scope": "self",
+                "interval": 30,
+                "cleanse": false,
+                "breakOnDamage": false,
+                "removeWithSource": false,
+                "total": 128
+              }
+            ]
+          },
+          "resolution": {
+            "attackShare": 0,
+            "baseCooldown": 200,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 200
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "通用 · 任意主手",
+        "mainHandWeapon": "sword",
+        "id": "blink",
+        "unlocked": false,
+        "unlockLevel": 10,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 10,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "blink",
+          "category": "support",
+          "unlockLevel": 10,
+          "name": "闪现",
+          "kind": "dash",
+          "damage": 0,
+          "range": 10,
+          "radius": 0,
+          "cooldown": 120,
+          "cost": 15,
+          "windup": 1,
+          "duration": 0,
+          "description": "瞬间移动",
+          "weapons": [],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "direction",
+            "statuses": []
+          },
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 120,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 120
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "通用 · 任意主手",
+        "mainHandWeapon": "sword",
+        "id": "barrier",
+        "unlocked": false,
+        "unlockLevel": 11,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 11,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "barrier",
+          "category": "support",
+          "unlockLevel": 11,
+          "name": "屏障",
+          "kind": "shield",
+          "damage": 1270,
+          "range": 0,
+          "radius": 0,
+          "cooldown": 220,
+          "cost": 22,
+          "windup": 3,
+          "duration": 180,
+          "description": "强力护盾",
+          "weapons": [],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "self",
+            "statuses": []
+          },
+          "resolution": {
+            "attackShare": 0,
+            "baseCooldown": 220,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 220
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "通用 · 任意主手",
+        "mainHandWeapon": "sword",
+        "id": "cleanse",
+        "unlocked": false,
+        "unlockLevel": 13,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 13,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "cleanse",
+          "category": "support",
+          "unlockLevel": 13,
+          "name": "净化",
+          "kind": "heal",
+          "damage": 0,
+          "range": 0,
+          "radius": 0,
+          "cooldown": 150,
+          "cost": 16,
+          "windup": 2,
+          "duration": 0,
+          "description": "移除减益效果",
+          "weapons": [],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "self",
+            "statuses": [],
+            "cleanse": {
+              "kinds": [
+                "burn",
+                "poison",
+                "slow",
+                "stun",
+                "silence",
+                "petrify",
+                "fear",
+                "root",
+                "blind",
+                "time_stop"
+              ],
+              "count": 2
+            }
+          },
+          "resolution": {
+            "attackShare": 0,
+            "baseCooldown": 150,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 150
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "通用 · 任意主手",
+        "mainHandWeapon": "sword",
+        "id": "phase_shift",
+        "unlocked": false,
+        "unlockLevel": 14,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 14,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "phase_shift",
+          "category": "support",
+          "unlockLevel": 14,
+          "name": "相位转换",
+          "kind": "shield",
+          "damage": 0,
+          "range": 0,
+          "radius": 0,
+          "cooldown": 180,
+          "cost": 20,
+          "windup": 1,
+          "duration": 90,
+          "description": "免疫物理伤害",
+          "weapons": [],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "self",
+            "statuses": [
+              {
+                "kind": "immunity",
+                "duration": 90,
+                "strength": 1,
+                "scope": "self",
+                "cleanse": false,
+                "breakOnDamage": false,
+                "removeWithSource": false,
+                "immunityTypes": [
+                  "physical"
+                ]
+              }
+            ]
+          },
+          "resolution": {
+            "attackShare": 0,
+            "baseCooldown": 180,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 180
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "通用 · 任意主手",
+        "mainHandWeapon": "sword",
+        "id": "second_wind",
+        "unlocked": false,
+        "unlockLevel": 16,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 16,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "second_wind",
+          "category": "support",
+          "unlockLevel": 16,
+          "name": "回气",
+          "kind": "heal",
+          "damage": 1059,
+          "range": 0,
+          "radius": 0,
+          "cooldown": 300,
+          "cost": 30,
+          "windup": 10,
+          "duration": 0,
+          "description": "大量恢复生命和法力",
+          "weapons": [],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "self",
+            "statuses": [],
+            "restoreMana": 50
+          },
+          "resolution": {
+            "attackShare": 0,
+            "baseCooldown": 300,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 300
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "通用 · 任意主手",
+        "mainHandWeapon": "sword",
+        "id": "guardian_angel",
+        "unlocked": false,
+        "unlockLevel": 18,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 18,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "guardian_angel",
+          "category": "support",
+          "unlockLevel": 18,
+          "name": "守护天使",
+          "kind": "shield",
+          "damage": 0,
+          "range": 0,
+          "radius": 0,
+          "cooldown": 600,
+          "cost": 0,
+          "windup": 1,
+          "duration": 300,
+          "description": "死亡时复活一次",
+          "weapons": [],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "self",
+            "statuses": [
+              {
+                "kind": "guardian",
+                "duration": 300,
+                "strength": 1,
+                "scope": "self",
+                "cleanse": false,
+                "breakOnDamage": false,
+                "removeWithSource": false,
+                "reviveRatio": 0.3
+              }
+            ]
+          },
+          "resolution": {
+            "attackShare": 0,
+            "baseCooldown": 600,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 600
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：暗器",
+        "mainHandWeapon": "sword",
+        "id": "throwing_knife",
+        "unlocked": false,
+        "unlockLevel": 1,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 1,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "throwing_knife",
+          "category": "ranged",
+          "unlockLevel": 1,
+          "name": "飞刀",
+          "kind": "projectile",
+          "damage": 381,
+          "range": 9,
+          "radius": 0.3,
+          "cooldown": 18,
+          "cost": 3,
+          "windup": 3,
+          "duration": 0,
+          "description": "快速掷出一柄飞刀",
+          "weapons": [
+            "hidden"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "projectile": {
+              "collisionRadius": 0.3,
+              "penetrations": 0,
+              "turnRate": 0,
+              "explosionRadius": 0
+            },
+            "statuses": []
+          },
+          "tags": [
+            "ranged",
+            "physical",
+            "projectile"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 18,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 18
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：暗器",
+        "mainHandWeapon": "sword",
+        "id": "fan_of_knives",
+        "unlocked": false,
+        "unlockLevel": 3,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 3,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "fan_of_knives",
+          "category": "ranged",
+          "unlockLevel": 3,
+          "name": "扇刃",
+          "kind": "projectile",
+          "damage": 635,
+          "range": 8,
+          "radius": 0.3,
+          "cooldown": 45,
+          "cost": 10,
+          "windup": 5,
+          "duration": 0,
+          "description": "扇形掷出五柄飞刀",
+          "weapons": [
+            "hidden"
+          ],
+          "projectiles": 5,
+          "projectileSpread": 0.22,
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "projectile": {
+              "collisionRadius": 0.3,
+              "penetrations": 0,
+              "turnRate": 0,
+              "explosionRadius": 0
+            },
+            "statuses": []
+          },
+          "tags": [
+            "ranged",
+            "physical",
+            "projectile"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 45,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 45
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：暗器",
+        "mainHandWeapon": "sword",
+        "id": "venom_needle",
+        "unlocked": false,
+        "unlockLevel": 4,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 4,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "venom_needle",
+          "category": "ranged",
+          "unlockLevel": 4,
+          "name": "淬毒针",
+          "kind": "projectile",
+          "damage": 550,
+          "range": 11,
+          "radius": 0.25,
+          "cooldown": 50,
+          "cost": 10,
+          "windup": 4,
+          "duration": 90,
+          "description": "穿透两名敌人并使其中毒",
+          "weapons": [
+            "hidden"
+          ],
+          "mechanics": {
+            "damageType": "poison",
+            "targeting": "enemy",
+            "projectile": {
+              "collisionRadius": 0.25,
+              "penetrations": 2,
+              "turnRate": 0,
+              "explosionRadius": 0
+            },
+            "statuses": [
+              {
+                "kind": "poison",
+                "duration": 90,
+                "strength": 0,
+                "scope": "hit",
+                "interval": 30,
+                "damageType": "poison",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false,
+                "total": 275
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "poison",
+            "projectile",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 50,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 50
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：暗器",
+        "mainHandWeapon": "sword",
+        "id": "shadow_step",
+        "unlocked": false,
+        "unlockLevel": 5,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 5,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "shadow_step",
+          "category": "melee",
+          "unlockLevel": 5,
+          "name": "影袭",
+          "kind": "dash",
+          "damage": 687,
+          "range": 6,
+          "radius": 1.8,
+          "cooldown": 90,
+          "cost": 12,
+          "windup": 2,
+          "duration": 0,
+          "description": "闪至目标身旁并割伤周围敌人",
+          "weapons": [
+            "hidden"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": []
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "dash"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 90,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 90
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：暗器",
+        "mainHandWeapon": "sword",
+        "id": "blade_flurry",
+        "unlocked": false,
+        "unlockLevel": 7,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 7,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "blade_flurry",
+          "category": "melee",
+          "unlockLevel": 7,
+          "name": "乱刃",
+          "kind": "single",
+          "damage": 961,
+          "range": 3,
+          "radius": 0,
+          "cooldown": 60,
+          "cost": 14,
+          "windup": 3,
+          "duration": 0,
+          "description": "四段快速刺击",
+          "weapons": [
+            "hidden"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "schedule": {
+              "hits": 4,
+              "interval": 4,
+              "followCaster": false,
+              "interruptOnMove": false
+            },
+            "statuses": []
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "single"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 60,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 60
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：暗器",
+        "mainHandWeapon": "sword",
+        "id": "explosive_kunai",
+        "unlocked": false,
+        "unlockLevel": 9,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 9,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "explosive_kunai",
+          "category": "ranged",
+          "unlockLevel": 9,
+          "name": "爆裂苦无",
+          "kind": "projectile",
+          "damage": 932,
+          "range": 10,
+          "radius": 1.8,
+          "cooldown": 85,
+          "cost": 18,
+          "windup": 8,
+          "duration": 0,
+          "description": "命中后爆炸",
+          "weapons": [
+            "hidden"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "projectile": {
+              "collisionRadius": 0.3,
+              "penetrations": 0,
+              "turnRate": 0,
+              "explosionRadius": 1.8
+            },
+            "statuses": []
+          },
+          "tags": [
+            "ranged",
+            "physical",
+            "projectile"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 85,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 85
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：暗器",
+        "mainHandWeapon": "sword",
+        "id": "assassinate",
+        "unlocked": false,
+        "unlockLevel": 11,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 11,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "assassinate",
+          "category": "melee",
+          "unlockLevel": 11,
+          "name": "暗杀",
+          "kind": "single",
+          "damage": 1602,
+          "range": 3,
+          "radius": 0,
+          "cooldown": 140,
+          "cost": 20,
+          "windup": 10,
+          "duration": 0,
+          "description": "对低血量敌人造成大量伤害",
+          "weapons": [
+            "hidden"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "statuses": [],
+            "execute": {
+              "threshold": 0.3,
+              "bonus": 0.8
+            }
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "single"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 140,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 140
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：暗器",
+        "mainHandWeapon": "sword",
+        "id": "death_lotus",
+        "unlocked": false,
+        "unlockLevel": 14,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 14,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "death_lotus",
+          "category": "melee",
+          "unlockLevel": 14,
+          "name": "死莲",
+          "kind": "area",
+          "damage": 1099,
+          "range": 0,
+          "radius": 4.5,
+          "cooldown": 160,
+          "cost": 26,
+          "windup": 6,
+          "duration": 0,
+          "description": "旋身挥刃三次并使敌人流血",
+          "weapons": [
+            "hidden"
+          ],
+          "mechanics": {
+            "damageType": "physical",
+            "targeting": "enemy",
+            "schedule": {
+              "hits": 3,
+              "interval": 10,
+              "followCaster": true,
+              "interruptOnMove": false
+            },
+            "statuses": [
+              {
+                "kind": "bleed",
+                "duration": 90,
+                "strength": 0,
+                "scope": "hit",
+                "interval": 30,
+                "damageType": "physical",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false,
+                "total": 275
+              }
+            ]
+          },
+          "tags": [
+            "melee",
+            "physical",
+            "area",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 160,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 160
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "需主手：剑",
+        "mainHandWeapon": "sword",
+        "id": "frost_blade",
+        "unlocked": false,
+        "unlockLevel": 9,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 9,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "frost_blade",
+          "category": "melee",
+          "unlockLevel": 9,
+          "name": "霜刃",
+          "kind": "single",
+          "damage": 778,
+          "range": 3,
+          "radius": 0,
+          "cooldown": 45,
+          "cost": 10,
+          "windup": 5,
+          "duration": 0,
+          "description": "以霜刃斩击并迟缓敌人",
+          "weapons": [
+            "sword"
+          ],
+          "mechanics": {
+            "damageType": "cold",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "slow",
+                "duration": 60,
+                "strength": 0.3,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "melee",
+            "cold",
+            "single"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 45,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 45
+          }
+        }
+      },
+      {
+        "weaponCompatible": true,
+        "weaponRequirement": "需主手：剑",
+        "mainHandWeapon": "sword",
+        "id": "thunder_dash",
+        "unlocked": false,
+        "unlockLevel": 12,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 12,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "thunder_dash",
+          "category": "melee",
+          "unlockLevel": 12,
+          "name": "雷闪",
+          "kind": "dash",
+          "damage": 870,
+          "range": 7,
+          "radius": 2,
+          "cooldown": 110,
+          "cost": 14,
+          "windup": 3,
+          "duration": 0,
+          "description": "突进并使命中的敌人感电",
+          "weapons": [
+            "sword"
+          ],
+          "mechanics": {
+            "damageType": "lightning",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "shock",
+                "duration": 90,
+                "strength": 0.12,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "melee",
+            "lightning",
+            "dash"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 110,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 110
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：锤／斧",
+        "mainHandWeapon": "sword",
+        "id": "magma_slam",
+        "unlocked": false,
+        "unlockLevel": 10,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 10,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "magma_slam",
+          "category": "melee",
+          "unlockLevel": 10,
+          "name": "熔岩重击",
+          "kind": "area",
+          "damage": 915,
+          "range": 0,
+          "radius": 4,
+          "cooldown": 110,
+          "cost": 20,
+          "windup": 12,
+          "duration": 0,
+          "description": "震击地面并施加燃烧",
+          "weapons": [
+            "hammer",
+            "axe"
+          ],
+          "mechanics": {
+            "damageType": "fire",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "burn",
+                "duration": 90,
+                "strength": 0,
+                "scope": "hit",
+                "interval": 30,
+                "damageType": "fire",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false,
+                "total": 275
+              }
+            ]
+          },
+          "tags": [
+            "melee",
+            "fire",
+            "area",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 110,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 110
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：锤／斧",
+        "mainHandWeapon": "sword",
+        "id": "venom_cleave",
+        "unlocked": false,
+        "unlockLevel": 13,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 13,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "venom_cleave",
+          "category": "melee",
+          "unlockLevel": 13,
+          "name": "腐蚀劈",
+          "kind": "area",
+          "damage": 824,
+          "range": 0,
+          "radius": 3.5,
+          "cooldown": 64,
+          "cost": 18,
+          "windup": 6,
+          "duration": 0,
+          "description": "劈击敌群，直接伤害与中毒各占一半",
+          "weapons": [
+            "hammer",
+            "axe"
+          ],
+          "mechanics": {
+            "damageType": "poison",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "poison",
+                "duration": 90,
+                "strength": 0,
+                "scope": "hit",
+                "interval": 30,
+                "damageType": "poison",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false,
+                "total": 412
+              }
+            ]
+          },
+          "tags": [
+            "melee",
+            "poison",
+            "area",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 64,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 64
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：锤／斧",
+        "mainHandWeapon": "sword",
+        "id": "frost_quake",
+        "unlocked": false,
+        "unlockLevel": 18,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 18,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "frost_quake",
+          "category": "melee",
+          "unlockLevel": 18,
+          "name": "冰裂",
+          "kind": "area",
+          "damage": 1144,
+          "range": 0,
+          "radius": 4.5,
+          "cooldown": 170,
+          "cost": 26,
+          "windup": 16,
+          "duration": 0,
+          "description": "冰霜震裂地面并迟缓敌群",
+          "weapons": [
+            "hammer",
+            "axe"
+          ],
+          "mechanics": {
+            "damageType": "cold",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "slow",
+                "duration": 60,
+                "strength": 0.55,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "melee",
+            "cold",
+            "area"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 170,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 170
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：弓",
+        "mainHandWeapon": "sword",
+        "id": "fire_arrow",
+        "unlocked": false,
+        "unlockLevel": 6,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 6,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "fire_arrow",
+          "category": "ranged",
+          "unlockLevel": 6,
+          "name": "火焰箭",
+          "kind": "projectile",
+          "damage": 635,
+          "range": 12,
+          "radius": 0.35,
+          "cooldown": 60,
+          "cost": 14,
+          "windup": 6,
+          "duration": 0,
+          "description": "射出火焰箭并施加燃烧",
+          "weapons": [
+            "bow"
+          ],
+          "mechanics": {
+            "damageType": "fire",
+            "targeting": "enemy",
+            "projectile": {
+              "collisionRadius": 0.35,
+              "penetrations": 0,
+              "turnRate": 0,
+              "explosionRadius": 0
+            },
+            "statuses": [
+              {
+                "kind": "burn",
+                "duration": 90,
+                "strength": 0,
+                "scope": "hit",
+                "interval": 30,
+                "damageType": "fire",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false,
+                "total": 191
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "fire",
+            "projectile",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 60,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 60
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：弓",
+        "mainHandWeapon": "sword",
+        "id": "thunder_arrow",
+        "unlocked": false,
+        "unlockLevel": 14,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 14,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "thunder_arrow",
+          "category": "ranged",
+          "unlockLevel": 14,
+          "name": "雷鸣箭",
+          "kind": "chain",
+          "damage": 593,
+          "range": 12,
+          "radius": 5,
+          "cooldown": 95,
+          "cost": 16,
+          "windup": 7,
+          "duration": 0,
+          "description": "闪电依次传导并施加感电",
+          "weapons": [
+            "bow"
+          ],
+          "mechanics": {
+            "damageType": "lightning",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "shock",
+                "duration": 90,
+                "strength": 0.12,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "lightning",
+            "chain"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 95,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 95
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：弓",
+        "mainHandWeapon": "sword",
+        "id": "night_volley",
+        "unlocked": false,
+        "unlockLevel": 17,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 17,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "night_volley",
+          "category": "ranged",
+          "unlockLevel": 17,
+          "name": "夜袭齐射",
+          "kind": "projectile",
+          "damage": 466,
+          "range": 13,
+          "radius": 0.3,
+          "cooldown": 52,
+          "cost": 18,
+          "windup": 8,
+          "duration": 0,
+          "description": "连续射出三段暗影箭，穿透护甲并致盲",
+          "weapons": [
+            "bow"
+          ],
+          "mechanics": {
+            "damageType": "shadow",
+            "targeting": "enemy",
+            "schedule": {
+              "hits": 3,
+              "interval": 3,
+              "followCaster": false,
+              "interruptOnMove": false
+            },
+            "projectile": {
+              "collisionRadius": 0.3,
+              "penetrations": 0,
+              "turnRate": 0,
+              "explosionRadius": 0
+            },
+            "statuses": [
+              {
+                "kind": "blind",
+                "duration": 60,
+                "strength": 0.15,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ],
+            "penetration": 0.3
+          },
+          "tags": [
+            "spell",
+            "shadow",
+            "projectile"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 52,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 52
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：暗器",
+        "mainHandWeapon": "sword",
+        "id": "toxic_bomb",
+        "unlocked": false,
+        "unlockLevel": 6,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 6,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "toxic_bomb",
+          "category": "ranged",
+          "unlockLevel": 6,
+          "name": "毒雾弹",
+          "kind": "zone",
+          "damage": 254,
+          "range": 9,
+          "radius": 3,
+          "cooldown": 120,
+          "cost": 18,
+          "windup": 8,
+          "duration": 120,
+          "description": "留下四段毒雾，每段命中刷新额外中毒",
+          "weapons": [
+            "hidden"
+          ],
+          "mechanics": {
+            "damageType": "poison",
+            "targeting": "ground",
+            "zone": {
+              "mode": "periodic",
+              "hits": 4,
+              "interval": 30,
+              "firstDelay": 29,
+              "pullSpeed": 0,
+              "budget": "per_tick"
+            },
+            "statuses": [
+              {
+                "kind": "poison",
+                "duration": 90,
+                "strength": 0,
+                "scope": "zone",
+                "interval": 30,
+                "damageType": "poison",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false,
+                "total": 169
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "poison",
+            "area",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 120,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 120
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：暗器",
+        "mainHandWeapon": "sword",
+        "id": "shadow_blade",
+        "unlocked": false,
+        "unlockLevel": 10,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 10,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "shadow_blade",
+          "category": "melee",
+          "unlockLevel": 10,
+          "name": "影刃",
+          "kind": "single",
+          "damage": 915,
+          "range": 3,
+          "radius": 0,
+          "cooldown": 55,
+          "cost": 14,
+          "windup": 4,
+          "duration": 0,
+          "description": "两段暗影刺击，穿透部分护甲",
+          "weapons": [
+            "hidden"
+          ],
+          "mechanics": {
+            "damageType": "shadow",
+            "targeting": "enemy",
+            "schedule": {
+              "hits": 2,
+              "interval": 5,
+              "followCaster": false,
+              "interruptOnMove": false
+            },
+            "statuses": [],
+            "penetration": 0.3
+          },
+          "tags": [
+            "melee",
+            "shadow",
+            "single"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 55,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 55
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：暗器",
+        "mainHandWeapon": "sword",
+        "id": "night_veil",
+        "unlocked": false,
+        "unlockLevel": 15,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 15,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "night_veil",
+          "category": "control",
+          "unlockLevel": 15,
+          "name": "夜幕",
+          "kind": "area",
+          "damage": 868,
+          "range": 0,
+          "radius": 4.5,
+          "cooldown": 120,
+          "cost": 20,
+          "windup": 5,
+          "duration": 0,
+          "description": "以暗影笼罩周围敌人并致盲",
+          "weapons": [
+            "hidden"
+          ],
+          "mechanics": {
+            "damageType": "shadow",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "blind",
+                "duration": 75,
+                "strength": 0.25,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "shadow",
+            "area"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 120,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 120
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：魔杖",
+        "mainHandWeapon": "sword",
+        "id": "static_field",
+        "unlocked": false,
+        "unlockLevel": 10,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 10,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "static_field",
+          "category": "control",
+          "unlockLevel": 10,
+          "name": "静电场",
+          "kind": "zone",
+          "damage": 127,
+          "range": 9,
+          "radius": 3.5,
+          "cooldown": 130,
+          "cost": 20,
+          "windup": 8,
+          "duration": 120,
+          "description": "四段静电伤害，区域内敌人持续感电",
+          "weapons": [
+            "wand"
+          ],
+          "mechanics": {
+            "damageType": "lightning",
+            "targeting": "ground",
+            "zone": {
+              "mode": "periodic",
+              "hits": 4,
+              "interval": 30,
+              "firstDelay": 29,
+              "pullSpeed": 0,
+              "budget": "per_tick"
+            },
+            "statuses": [
+              {
+                "kind": "shock",
+                "duration": 2,
+                "strength": 0.12,
+                "scope": "zone",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "lightning",
+            "area",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 130,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 130
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：魔杖",
+        "mainHandWeapon": "sword",
+        "id": "dark_grasp",
+        "unlocked": false,
+        "unlockLevel": 16,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 16,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "dark_grasp",
+          "category": "control",
+          "unlockLevel": 16,
+          "name": "暗影之握",
+          "kind": "single",
+          "damage": 233,
+          "range": 10,
+          "radius": 0,
+          "cooldown": 140,
+          "cost": 22,
+          "windup": 10,
+          "duration": 0,
+          "description": "暗影攫取敌人，穿透护甲并施加恐惧",
+          "weapons": [
+            "wand"
+          ],
+          "mechanics": {
+            "damageType": "shadow",
+            "targeting": "enemy",
+            "statuses": [
+              {
+                "kind": "fear",
+                "duration": 30,
+                "strength": 1,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              }
+            ],
+            "penetration": 0.3
+          },
+          "tags": [
+            "spell",
+            "shadow",
+            "single"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 140,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 140
+          }
+        }
+      },
+      {
+        "weaponCompatible": false,
+        "weaponRequirement": "需主手：法杖",
+        "mainHandWeapon": "sword",
+        "id": "miasma",
+        "unlocked": false,
+        "unlockLevel": 13,
+        "activated": false,
+        "rank": 0,
+        "max": false,
+        "eligible": true,
+        "activation": {
+          "type": "level",
+          "required": 13,
+          "current": 50
+        },
+        "action": "activate",
+        "cost": {
+          "gold": 0,
+          "material": 0
+        },
+        "affordable": true,
+        "blocked": "",
+        "current": null,
+        "next": {
+          "id": "miasma",
+          "category": "control",
+          "unlockLevel": 13,
+          "name": "瘴气",
+          "kind": "zone",
+          "damage": 85,
+          "range": 9,
+          "radius": 3.5,
+          "cooldown": 140,
+          "cost": 20,
+          "windup": 9,
+          "duration": 150,
+          "description": "留下五段瘴气，每段命中刷新额外中毒",
+          "weapons": [
+            "staff"
+          ],
+          "mechanics": {
+            "damageType": "poison",
+            "targeting": "ground",
+            "zone": {
+              "mode": "periodic",
+              "hits": 5,
+              "interval": 30,
+              "firstDelay": 29,
+              "pullSpeed": 0,
+              "budget": "per_tick"
+            },
+            "statuses": [
+              {
+                "kind": "poison",
+                "duration": 90,
+                "strength": 0,
+                "scope": "zone",
+                "interval": 30,
+                "damageType": "poison",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false,
+                "total": 127
+              }
+            ]
+          },
+          "tags": [
+            "spell",
+            "poison",
+            "area",
+            "dot"
+          ],
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 140,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 140
+          }
+        }
+      }
+    ],
+    "resolvedSkills": [
+      {
+        "id": "cut",
+        "category": "melee",
+        "unlockLevel": 1,
+        "name": "斩击",
+        "kind": "single",
+        "damage": 664,
+        "range": 3,
+        "radius": 0,
+        "cooldown": 24,
+        "cost": 0,
+        "windup": 3,
+        "duration": 0,
+        "description": "近距离斩击",
+        "weapons": [
+          "sword"
+        ],
+        "mechanics": {
+          "damageType": "physical",
+          "targeting": "enemy",
+          "statuses": []
+        },
+        "tags": [
+          "melee",
+          "physical",
+          "single"
+        ],
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 24,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 24
+        }
+      }
+    ]
+  },
+  "telemetry": {
+    "atom-thunder": {
+      "count": 4,
+      "damage": 2392
+    }
+  }
+}

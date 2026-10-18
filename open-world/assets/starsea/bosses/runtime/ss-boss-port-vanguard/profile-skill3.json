@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "id": "ss-boss-port-vanguard",
+  "runtime": {
+    "json": "/art/starsea/bosses/ss-boss-port-vanguard/Character.json",
+    "atlas": "/art/starsea/bosses/ss-boss-port-vanguard/Character.atlas",
+    "pma": true
+  },
+  "skinNames": [
+    "BODY/ss-boss-port-vanguard",
+    "HEAD/ss-boss-port-vanguard",
+    "SS/ss-boss-port-vanguard"
+  ],
+  "acceptedBodySets": [
+    "ss-boss-port-vanguard"
+  ],
+  "nativeFacing": "left",
+  "referenceHeight": 190.49598935720775,
+  "ground": [
+    -0.25,
+    0
+  ],
+  "fps": 60,
+  "previewBounds": {
+    "minX": -216.6999118066214,
+    "maxX": 108.40038284828947,
+    "minY": -65.12207714183256,
+    "maxY": 272.1097238454606
+  },
+  "weapons": {
+    "ss-boss-port-vanguard": {
+      "family": "sword",
+      "skinNames": [
+        "RIGHTHAND/ss-boss-port-vanguard"
+      ],
+      "actions": {
+        "idle": {
+          "name": "SS_idle",
+          "loop": true,
+          "sourceAnimation": "Wait2"
+        },
+        "move": {
+          "name": "SS_move",
+          "loop": true,
+          "sourceAnimation": "Run2"
+        },
+        "attack": {
+          "name": "SS_attack",
+          "loop": false,
+          "sourceAnimation": "Attack_TwoHand1",
+          "impactTime": 0.4166666666666667
+        },
+        "hurt": {
+          "name": "SS_hurt",
+          "loop": false,
+          "sourceAnimation": "Damage1"
+        },
+        "death": {
+          "name": "SS_death",
+          "loop": false,
+          "sourceAnimation": "Die"
+        },
+        "skill": {
+          "name": "SS_skill3",
+          "sourceAnimation": "Run2",
+          "loop": true,
+          "mount": "feet",
+          "mechanism": {
+            "id": "ss-fx-b01-charge",
+            "name": "先锋撞阵",
+            "rule": "AI/charger",
+            "kind": "dash",
+            "windupTicks": null,
+            "delayTicks": null,
+            "mount": "feet",
+            "visual": "短前向冲锋轨迹，角色脚底尘、真实撞击",
+            "owner": "monster_vfx",
+            "mechanismStatus": "existing-rule-reference; new actor binding not implemented",
+            "chapter": [
+              1
+            ]
+          },
+          "limitations": "共用原生双手持械奔跑；冲锋位移来自执行器，不新增虚构突进帧。"
+        },
+        "projectile": {
+          "name": "SS_skill3",
+          "sourceAnimation": "Run2",
+          "loop": true,
+          "mount": "feet",
+          "mechanism": {
+            "id": "ss-fx-b01-charge",
+            "name": "先锋撞阵",
+            "rule": "AI/charger",
+            "kind": "dash",
+            "windupTicks": null,
+            "delayTicks": null,
+            "mount": "feet",
+            "visual": "短前向冲锋轨迹，角色脚底尘、真实撞击",
+            "owner": "monster_vfx",
+            "mechanismStatus": "existing-rule-reference; new actor binding not implemented",
+            "chapter": [
+              1
+            ]
+          },
+          "limitations": "共用原生双手持械奔跑；冲锋位移来自执行器，不新增虚构突进帧。"
+        }
+      },
+      "sockets": {
+        "weapon": {
+          "slot": "RIGHTHAND",
+          "pixel": [
+            39.5,
+            12
+          ],
+          "imageSize": [
+            79,
+            243
+          ]
+        },
+        "muzzle": {
+          "slot": "RIGHTHAND",
+          "pixel": [
+            39.5,
+            12
+          ],
+          "imageSize": [
+            79,
+            243
+          ]
+        }
+      },
+      "muzzlePolicy": "weapon-tip"
+    }
+  },
+  "renderAppearance": {
+    "rig": "modular-hero",
+    "family": "sword",
+    "styleProfile": "v2-soft",
+    "revision": 1,
+    "parts": {
+      "head": {
+        "setId": "ss-boss-port-vanguard"
+      },
+      "body": {
+        "setId": "ss-boss-port-vanguard"
+      },
+      "hands": {
+        "setId": "ss-boss-port-vanguard"
+      },
+      "legs": {
+        "setId": "ss-boss-port-vanguard"
+      },
+      "feet": {
+        "setId": "ss-boss-port-vanguard"
+      },
+      "back": {
+        "setId": "ss-boss-port-vanguard"
+      },
+      "weapon": {
+        "setId": "ss-boss-port-vanguard"
+      }
+    }
+  },
+  "sourceNativeVersion": "4.2.43",
+  "actionSelection": {
+    "priority": [
+      "death",
+      "living-phase-transition",
+      "selected-living-action"
+    ],
+    "deathAction": "SS_death",
+    "deathCancelsPhaseTransition": true,
+    "phaseActive": "modifier for living actions only",
+    "deathCleanupTime": 0.65
+  }
+}

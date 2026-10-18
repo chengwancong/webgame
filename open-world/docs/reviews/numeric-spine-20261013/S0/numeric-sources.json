@@ -1,0 +1,437 @@
+{
+  "versions": {
+    "client": "0.11.26",
+    "protocol": 35,
+    "rules": "ow-70",
+    "assets": "world-art-20261007-v24-world-runtime",
+    "db": 16
+  },
+  "models": [
+    {
+      "file": ".design/standard-player-20261005/model.json",
+      "sha256": "6fb350679adbacf3c2e724139e550f21ea9068719c8fd301fb922eee42ba9895",
+      "versions": {
+        "client": "0.11.21",
+        "protocol": 32,
+        "rules": "ow-62",
+        "assets": "world-art-20261007-v24-world-runtime",
+        "db": 16
+      },
+      "stale": true
+    },
+    {
+      "file": ".design/starsea-balance-20261005/model.json",
+      "sha256": "616797c4ee91c69d0dde116c7dec5c9cacedd7c2fd1bb47e71733de29976fc24",
+      "versions": {
+        "client": "0.10.19",
+        "protocol": 23,
+        "rules": "ow-37",
+        "assets": "world-art-20261005-v21-collision",
+        "db": 13
+      },
+      "stale": true
+    },
+    {
+      "file": ".design/numeric-flow-20261006/flow.json",
+      "sha256": "5c9facba9f4485add92813e4f54dc95b706afac7124c98b0a8fc461ccdfefa74",
+      "versions": {
+        "client": "0.11.21",
+        "protocol": 32,
+        "rules": "ow-62",
+        "assets": "world-art-20261007-v24-world-runtime",
+        "db": 16
+      },
+      "stale": true
+    },
+    {
+      "file": "docs/reviews/open-world-m2-m4/W3/key-source-basis.json",
+      "sha256": "dd937d0359bdae978076d21e15589925a8c2bba25b1fda866289b3a117412a5e",
+      "versions": {
+        "client": "0.11.14",
+        "protocol": 30,
+        "rules": "ow-55",
+        "assets": "world-art-20261007-v24-world-runtime",
+        "db": 16
+      },
+      "stale": true
+    },
+    {
+      "file": "docs/reviews/open-world-m2-m4/W3/stage-aoe-hits.json",
+      "sha256": "a3379a9cbc34fffe74b97001fb7527d5eadcfee4f98c1398177c147bd957891e",
+      "versions": {
+        "client": "0.11.14",
+        "protocol": 30,
+        "rules": "ow-55",
+        "assets": "world-art-20261007-v24-world-runtime",
+        "db": 16
+      },
+      "stale": true
+    }
+  ],
+  "writers": [
+    {
+      "tool": "tools/accept-deep-progression.mjs",
+      "outputs": [
+        "packages/content/deep-progression.json"
+      ],
+      "inputs": []
+    },
+    {
+      "tool": "tools/activate-equipment-catalog.mjs",
+      "outputs": [
+        "packages/content/equipment-catalog.json"
+      ],
+      "inputs": []
+    },
+    {
+      "tool": "tools/apply-dungeon-walls.ts",
+      "outputs": [
+        "packages/content/dungeons.json"
+      ],
+      "inputs": [
+        ".design/numeric-flow-20261006/flow.json",
+        ".design/standard-player-20261005/model.json"
+      ]
+    },
+    {
+      "tool": "tools/apply-monster-curve.ts",
+      "outputs": [
+        "packages/content/monsters.json"
+      ],
+      "inputs": [
+        ".design/standard-player-20261005/model.json",
+        ".design/numeric-flow-20261006/flow.json",
+        "docs/reviews/open-world-m2-m4/W3/stage-aoe-hits.json"
+      ]
+    },
+    {
+      "tool": "tools/apply-world-monster-templates.ts",
+      "outputs": [
+        "packages/content/monsters.json",
+        "packages/content/world-monster-template-spec.json"
+      ],
+      "inputs": [
+        "docs/reviews/open-world-m2-m4/W3/world-monster-templates.json"
+      ]
+    },
+    {
+      "tool": "tools/apply-world-tier-curve.ts",
+      "outputs": [
+        "packages/content/world-tiers.json"
+      ],
+      "inputs": [
+        ".design/numeric-flow-20261006/flow.json"
+      ]
+    },
+    {
+      "tool": "tools/build-inscription-rubbings.mjs",
+      "outputs": [
+        "packages/content/inscription-rubbings.json"
+      ],
+      "inputs": [
+        "docs/reviews/build-variety-r6-20261006/inscription-art/result.json"
+      ]
+    },
+    {
+      "tool": "tools/build-legacy-key-gear.ts",
+      "outputs": [
+        "packages/content/legacy-progression-gear.json",
+        "packages/content/stage-key-gear-spec.json"
+      ],
+      "inputs": []
+    },
+    {
+      "tool": "tools/build-mini-hero.mjs",
+      "outputs": [
+        "packages/content/appearance.json"
+      ],
+      "inputs": []
+    },
+    {
+      "tool": "tools/build-production-islands.ts",
+      "outputs": [
+        "config/json/world.json",
+        "packages/content/field-dungeon-stages.json",
+        "packages/content/open-world/production.json"
+      ],
+      "inputs": [
+        "config/json/world.json"
+      ]
+    },
+    {
+      "tool": "tools/build-stage-key-pools.ts",
+      "outputs": [
+        "apps/api/src/stage-key-pools.json"
+      ],
+      "inputs": [
+        "docs/reviews/open-world-m2-m4/W3/key-source-basis.json",
+        ".design/numeric-flow-20261006/flow.json"
+      ]
+    },
+    {
+      "tool": "tools/build-starsea-campaign.mjs",
+      "outputs": [
+        "packages/content/starsea/campaign.json"
+      ],
+      "inputs": []
+    },
+    {
+      "tool": "tools/build-w3-numeric-handoff.ts",
+      "outputs": [
+        "packages/content/monsters.json",
+        "packages/content/world-tiers.json",
+        "apps/api/src/stage-key-pools.json"
+      ],
+      "inputs": [
+        ".design/standard-player-20261005/model.json",
+        ".design/numeric-flow-20261006/flow.json"
+      ]
+    },
+    {
+      "tool": "tools/calibrate-hardmode-dungeons.ts",
+      "outputs": [
+        "packages/content/dungeons.json"
+      ],
+      "inputs": [
+        ".design/standard-player-20261005/model.json",
+        ".design/numeric-flow-20261006/flow.json",
+        "docs/reviews/open-world-m2-m4/W10/hardmode-wall-calibration.json"
+      ]
+    },
+    {
+      "tool": "tools/check-world-resource-wiring.ts",
+      "outputs": [
+        "config/json/npcs.json",
+        "packages/content/open-world/production.json"
+      ],
+      "inputs": [
+        "config/json/npcs.json"
+      ]
+    },
+    {
+      "tool": "tools/copy-voice-host.mjs",
+      "outputs": [
+        "apps/api/src/stage-key-pools.json",
+        "packages/content/world-tiers.json"
+      ],
+      "inputs": []
+    },
+    {
+      "tool": "tools/correct-wall-opening-pressure.mjs",
+      "outputs": [
+        "packages/content/dungeons.json"
+      ],
+      "inputs": []
+    },
+    {
+      "tool": "tools/field-efficiency-probe.ts",
+      "outputs": [
+        "config/json/world.json",
+        "packages/content/monsters.json"
+      ],
+      "inputs": [
+        ".design/standard-player-20261005/efficiency.json",
+        "config/json/world.json"
+      ]
+    },
+    {
+      "tool": "tools/measure-build-variety-preflight.ts",
+      "outputs": [
+        "packages/content/gear-affixes.json",
+        "packages/content/level-stats.json",
+        "packages/content/monsters.json",
+        "packages/content/combat-numerics.json",
+        "packages/content/aspects.json",
+        "packages/content/set-effects.json",
+        "packages/content/effect-atoms.json",
+        "packages/content/inscriptions.json"
+      ],
+      "inputs": []
+    },
+    {
+      "tool": "tools/measure-build-variety-r8-skill-options.ts",
+      "outputs": [
+        "packages/content/stats.json",
+        "packages/content/level-stats.json",
+        "packages/content/monsters.json",
+        "packages/content/combat-numerics.json"
+      ],
+      "inputs": [
+        "docs/reviews/build-variety-r8-20261006/skill-options.json"
+      ]
+    },
+    {
+      "tool": "tools/measure-build-variety.ts",
+      "outputs": [
+        "packages/content/stats.json",
+        "packages/content/augments.json",
+        "packages/content/gear-affixes.json",
+        "packages/content/level-stats.json",
+        "packages/content/monsters.json",
+        "packages/content/combat-numerics.json",
+        "packages/content/aspects.json",
+        "packages/content/set-effects.json",
+        "packages/content/effect-atoms.json",
+        "packages/content/inscriptions.json"
+      ],
+      "inputs": []
+    },
+    {
+      "tool": "tools/measure-world-pack-growth.ts",
+      "outputs": [
+        "packages/content/monsters.json"
+      ],
+      "inputs": [
+        "docs/reviews/open-world-m2-m4/W3/pack-growth-current.json",
+        ".design/standard-player-20261005/model.json"
+      ]
+    },
+    {
+      "tool": "tools/propose-world-numeric-refresh.ts",
+      "outputs": [
+        "packages/content/monsters.json",
+        "packages/content/world-tiers.json",
+        "apps/api/src/stage-key-pools.json"
+      ],
+      "inputs": [
+        ".design/standard-player-20261005/model.json",
+        ".design/numeric-flow-20261006/flow.json",
+        "docs/reviews/open-world-m2-m4/W3/key-source-basis.json",
+        "docs/reviews/open-world-m2-m4/W3/world-tier-basis.json"
+      ]
+    },
+    {
+      "tool": "tools/recalibrate-legacy-dungeons.ts",
+      "outputs": [
+        "packages/content/legacy-dungeon-calibration.json",
+        "packages/content/dungeons.json"
+      ],
+      "inputs": [
+        ".design/standard-player-20261005/model.json"
+      ]
+    },
+    {
+      "tool": "tools/record-current-combat-fixtures.ts",
+      "outputs": [
+        "packages/content/combat-numerics.json"
+      ],
+      "inputs": []
+    },
+    {
+      "tool": "tools/record-w3-rank-feedback.ts",
+      "outputs": [
+        "packages/content/monsters.json",
+        "packages/content/skills-extended.json"
+      ],
+      "inputs": [
+        "docs/reviews/open-world-m2-m4/W3/rank-feedback-review.json"
+      ]
+    },
+    {
+      "tool": "tools/retarget-island-dungeons.mjs",
+      "outputs": [
+        "packages/content/field-dungeon-stages.json",
+        "packages/content/dungeons.json",
+        "packages/content/open-world/production.json"
+      ],
+      "inputs": []
+    },
+    {
+      "tool": "tools/serve-world-w2-visible.ts",
+      "outputs": [
+        "config/json/world.json",
+        "packages/content/open-world/production.json"
+      ],
+      "inputs": [
+        "config/json/world.json"
+      ]
+    },
+    {
+      "tool": "tools/serve-world-w3-visible.ts",
+      "outputs": [
+        "packages/content/dungeons.json",
+        "config/json/world.json",
+        "packages/content/open-world/production.json"
+      ],
+      "inputs": [
+        "config/json/world.json"
+      ]
+    },
+    {
+      "tool": "tools/starsea-balance-model.ts",
+      "outputs": [
+        "packages/content/encounter-balance.json",
+        "packages/content/monsters.json",
+        "packages/content/starsea/balance.json"
+      ],
+      "inputs": [
+        ".design/starsea-balance-20261005/model.json"
+      ]
+    },
+    {
+      "tool": "tools/tune-island-enemy-frequency.mjs",
+      "outputs": [
+        "packages/content/island-enemy-frequency.json",
+        "packages/content/monsters.json"
+      ],
+      "inputs": []
+    },
+    {
+      "tool": "tools/verify-build-variety-r1-frames.ts",
+      "outputs": [
+        "packages/content/stats.json"
+      ],
+      "inputs": []
+    },
+    {
+      "tool": "tools/verify-progression-ui-redesign.mjs",
+      "outputs": [
+        "packages/content/deep-progression.json"
+      ],
+      "inputs": []
+    },
+    {
+      "tool": "tools/verify-progression-ui-system.mjs",
+      "outputs": [
+        "packages/content/deep-progression.json"
+      ],
+      "inputs": []
+    },
+    {
+      "tool": "tools/world-graybox.mjs",
+      "outputs": [
+        "packages/content/open-world/ow-graybox-wind.json"
+      ],
+      "inputs": [
+        ".design/open-world-m0/graybox.json"
+      ]
+    },
+    {
+      "tool": "tools/world-island-resource-usage.mjs",
+      "outputs": [
+        "config/json/world.json",
+        "config/json/tasks.json",
+        "config/json/npcs.json",
+        "packages/content/open-world/production.json",
+        "packages/content/monsters.json"
+      ],
+      "inputs": [
+        "config/json/world.json",
+        "config/json/tasks.json",
+        "config/json/npcs.json"
+      ]
+    },
+    {
+      "tool": "tools/world-m2-baseline.ts",
+      "outputs": [
+        "config/json/tasks.json",
+        "config/json/npcs.json",
+        "packages/content/dungeons.json"
+      ],
+      "inputs": [
+        "config/json/tasks.json",
+        "config/json/npcs.json"
+      ]
+    }
+  ]
+}

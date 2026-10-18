@@ -1,0 +1,852 @@
+{
+  "innate": [
+    {
+      "id": "innate-sword-qi",
+      "name": "剑气",
+      "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+      "source": "剑势流 · 固有",
+      "tier": 1,
+      "trigger": "nth",
+      "filter": {
+        "weapons": [
+          "sword"
+        ]
+      },
+      "when": [],
+      "chance": 1,
+      "icd": 0,
+      "every": 3,
+      "count": "hit",
+      "action": {
+        "type": "nova",
+        "radius": 2.2,
+        "ratio": 0.35,
+        "damageType": "physical",
+        "vfx": "combo/sword-qi"
+      },
+      "scale": [
+        "action.ratio"
+      ],
+      "vfxKey": "combo/sword-qi"
+    },
+    {
+      "id": "innate-heavy-quake",
+      "name": "余震",
+      "description": "击杀敌人时引发余震（35% 伤害，半径 2.5）",
+      "source": "震地流 · 固有",
+      "tier": 1,
+      "trigger": "kill",
+      "filter": {
+        "weapons": [
+          "hammer",
+          "axe"
+        ]
+      },
+      "when": [],
+      "chance": 1,
+      "icd": 0,
+      "action": {
+        "type": "nova",
+        "radius": 2.5,
+        "ratio": 0.35,
+        "damageType": "physical",
+        "vfx": "combo/quake"
+      },
+      "scale": [
+        "action.ratio"
+      ],
+      "vfxKey": "combo/quake"
+    },
+    {
+      "id": "innate-bow-split",
+      "name": "裂矢",
+      "description": "投射物技能每第 3 次命中，向周围射出 2 支裂矢（各 40% 伤害）",
+      "source": "裂矢流 · 固有",
+      "tier": 1,
+      "trigger": "nth",
+      "filter": {
+        "weapons": [
+          "bow"
+        ],
+        "skillKinds": [
+          "projectile"
+        ]
+      },
+      "when": [],
+      "chance": 1,
+      "icd": 0,
+      "every": 3,
+      "count": "hit",
+      "action": {
+        "type": "shards",
+        "count": 2,
+        "ratio": 0.4,
+        "range": 6,
+        "damageType": "physical",
+        "vfx": "combo/split-arrow"
+      },
+      "scale": [
+        "action.ratio"
+      ],
+      "vfxKey": "combo/split-arrow"
+    },
+    {
+      "id": "innate-staff-ignite",
+      "name": "引燃",
+      "description": "火焰技能命中时点燃目标 3 秒（共 30% 伤害）",
+      "source": "元素流 · 固有",
+      "tier": 1,
+      "trigger": "hit",
+      "filter": {
+        "weapons": [
+          "staff"
+        ],
+        "damageTypes": [
+          "fire"
+        ]
+      },
+      "when": [],
+      "chance": 1,
+      "icd": 0,
+      "action": {
+        "type": "status",
+        "status": "burn",
+        "duration": 90,
+        "strength": 0,
+        "ratio": 0.3
+      },
+      "scale": [
+        "action.ratio"
+      ],
+      "vfxKey": "combo/innate-staff-ignite"
+    },
+    {
+      "id": "innate-staff-shatter",
+      "name": "碎冰",
+      "description": "冰霜伤害击中燃烧或迟缓中的敌人时碎冰爆发（60% 伤害，半径 2.5，1 秒冷却）",
+      "source": "元素流 · 固有",
+      "tier": 1,
+      "trigger": "hit",
+      "filter": {
+        "weapons": [
+          "staff"
+        ],
+        "damageTypes": [
+          "cold"
+        ]
+      },
+      "when": [
+        {
+          "kind": "target_status",
+          "statuses": [
+            "burn",
+            "slow"
+          ]
+        }
+      ],
+      "chance": 1,
+      "icd": 30,
+      "action": {
+        "type": "nova",
+        "radius": 2.5,
+        "ratio": 0.6,
+        "damageType": "cold",
+        "vfx": "combo/shatter"
+      },
+      "scale": [
+        "action.ratio"
+      ],
+      "vfxKey": "combo/shatter"
+    },
+    {
+      "id": "innate-wand-shock",
+      "name": "感电",
+      "description": "命中使目标感电 3 秒，受到伤害 +12%",
+      "source": "控场流 · 固有",
+      "tier": 1,
+      "trigger": "hit",
+      "filter": {
+        "weapons": [
+          "wand"
+        ]
+      },
+      "when": [],
+      "chance": 1,
+      "icd": 0,
+      "action": {
+        "type": "status",
+        "status": "shock",
+        "duration": 90,
+        "strength": 0.12,
+        "ratio": 0
+      },
+      "scale": [
+        "action.ratio"
+      ],
+      "vfxKey": "combo/innate-wand-shock"
+    },
+    {
+      "id": "innate-hidden-return",
+      "name": "回旋刃",
+      "description": "击杀时 50% 几率迸出 3 枚回旋刃（各 50% 伤害）",
+      "source": "回旋流 · 固有",
+      "tier": 1,
+      "trigger": "kill",
+      "filter": {
+        "weapons": [
+          "hidden"
+        ]
+      },
+      "when": [],
+      "chance": 0.5,
+      "icd": 0,
+      "action": {
+        "type": "shards",
+        "count": 3,
+        "ratio": 0.5,
+        "range": 6,
+        "damageType": "physical",
+        "vfx": "combo/return-blade"
+      },
+      "scale": [
+        "action.ratio"
+      ],
+      "vfxKey": "combo/return-blade"
+    }
+  ],
+  "aspects": [
+    {
+      "key": "bloodblade",
+      "name": "血刃",
+      "slot": "weapon",
+      "requiredLevel": 12,
+      "rule": {
+        "id": "aspect-combo-bloodblade",
+        "name": "血刃",
+        "description": "持剑：暴击使目标流血 4 秒（共 60% 伤害）",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "crit",
+        "filter": {
+          "weapons": [
+            "sword"
+          ]
+        },
+        "when": [],
+        "chance": 1,
+        "icd": 0,
+        "action": {
+          "type": "status",
+          "status": "bleed",
+          "duration": 120,
+          "strength": 0,
+          "ratio": 0.6
+        },
+        "scale": [
+          "action.ratio"
+        ],
+        "vfxKey": "combo/aspect-combo-bloodblade"
+      }
+    },
+    {
+      "key": "afterimage",
+      "name": "残影",
+      "slot": "armor",
+      "requiredLevel": 17,
+      "rule": {
+        "id": "aspect-combo-afterimage",
+        "name": "残影",
+        "description": "持剑：单体与范围技能 30% 几率在 0.5 秒后残影重放（60% 伤害）",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "cast",
+        "filter": {
+          "weapons": [
+            "sword"
+          ],
+          "skillKinds": [
+            "single",
+            "area"
+          ]
+        },
+        "when": [],
+        "chance": 0.3,
+        "icd": 0,
+        "action": {
+          "type": "echo",
+          "ratio": 0.6,
+          "delay": 15
+        },
+        "scale": [
+          "action.ratio"
+        ],
+        "vfxKey": "combo/aspect-combo-afterimage"
+      }
+    },
+    {
+      "key": "hemophage",
+      "name": "嗜血",
+      "slot": "accessory",
+      "requiredLevel": 17,
+      "rule": {
+        "id": "aspect-combo-hemophage",
+        "name": "嗜血",
+        "description": "持剑：对流血的敌人伤害提高 35%",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "passive",
+        "filter": {
+          "weapons": [
+            "sword"
+          ]
+        },
+        "when": [],
+        "chance": 1,
+        "icd": 0,
+        "action": {
+          "type": "amplify",
+          "ratio": 0.35,
+          "against": [
+            "bleed"
+          ]
+        },
+        "scale": [
+          "action.ratio"
+        ],
+        "vfxKey": "combo/aspect-combo-hemophage"
+      }
+    },
+    {
+      "key": "sunder",
+      "name": "破甲",
+      "slot": "weapon",
+      "requiredLevel": 12,
+      "rule": {
+        "id": "aspect-combo-sunder",
+        "name": "破甲",
+        "description": "持锤／斧：范围技能命中使目标护甲 -20%（3 秒）",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "hit",
+        "filter": {
+          "weapons": [
+            "hammer",
+            "axe"
+          ],
+          "skillKinds": [
+            "area",
+            "dash"
+          ]
+        },
+        "when": [],
+        "chance": 1,
+        "icd": 0,
+        "action": {
+          "type": "status",
+          "status": "armor_down",
+          "duration": 90,
+          "strength": 0.2,
+          "ratio": 0
+        },
+        "scale": [
+          "action.ratio"
+        ],
+        "vfxKey": "combo/aspect-combo-sunder"
+      }
+    },
+    {
+      "key": "warpath",
+      "name": "战意",
+      "slot": "armor",
+      "requiredLevel": 17,
+      "rule": {
+        "id": "aspect-combo-warpath",
+        "name": "战意",
+        "description": "持锤／斧：击杀时该技能剩余冷却 -1 秒",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "kill",
+        "filter": {
+          "weapons": [
+            "hammer",
+            "axe"
+          ]
+        },
+        "when": [],
+        "chance": 1,
+        "icd": 0,
+        "action": {
+          "type": "refund",
+          "ticks": 30
+        },
+        "scale": [],
+        "vfxKey": "combo/aspect-combo-warpath"
+      }
+    },
+    {
+      "key": "bonebreaker",
+      "name": "碎骨",
+      "slot": "accessory",
+      "requiredLevel": 17,
+      "rule": {
+        "id": "aspect-combo-bonebreaker",
+        "name": "碎骨",
+        "description": "持锤／斧：对被破甲的敌人伤害提高 30%",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "passive",
+        "filter": {
+          "weapons": [
+            "hammer",
+            "axe"
+          ]
+        },
+        "when": [],
+        "chance": 1,
+        "icd": 0,
+        "action": {
+          "type": "amplify",
+          "ratio": 0.3,
+          "against": [
+            "armor_down"
+          ]
+        },
+        "scale": [
+          "action.ratio"
+        ],
+        "vfxKey": "combo/aspect-combo-bonebreaker"
+      }
+    },
+    {
+      "key": "prism",
+      "name": "分光",
+      "slot": "weapon",
+      "requiredLevel": 12,
+      "rule": {
+        "id": "aspect-combo-prism",
+        "name": "分光",
+        "description": "持弓：投射物命中时 25% 几率分裂 2 支（各 35% 伤害）",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "hit",
+        "filter": {
+          "weapons": [
+            "bow"
+          ],
+          "skillKinds": [
+            "projectile"
+          ]
+        },
+        "when": [],
+        "chance": 0.25,
+        "icd": 0,
+        "action": {
+          "type": "shards",
+          "count": 2,
+          "ratio": 0.35,
+          "range": 6,
+          "damageType": "physical",
+          "vfx": "combo/split-arrow"
+        },
+        "scale": [
+          "action.ratio"
+        ],
+        "vfxKey": "combo/split-arrow"
+      }
+    },
+    {
+      "key": "weakspot",
+      "name": "弱点",
+      "slot": "accessory",
+      "requiredLevel": 17,
+      "rule": {
+        "id": "aspect-combo-weakspot",
+        "name": "弱点",
+        "description": "持弓：对变慢或中毒的敌人伤害提高 30%",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "passive",
+        "filter": {
+          "weapons": [
+            "bow"
+          ]
+        },
+        "when": [],
+        "chance": 1,
+        "icd": 0,
+        "action": {
+          "type": "amplify",
+          "ratio": 0.3,
+          "against": [
+            "slow",
+            "poison"
+          ]
+        },
+        "scale": [
+          "action.ratio"
+        ],
+        "vfxKey": "combo/aspect-combo-weakspot"
+      }
+    },
+    {
+      "key": "cascade",
+      "name": "连珠",
+      "slot": "armor",
+      "requiredLevel": 17,
+      "rule": {
+        "id": "aspect-combo-cascade",
+        "name": "连珠",
+        "description": "持弓：投射物技能 30% 几率 0.4 秒后再射一轮（60% 伤害）",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "cast",
+        "filter": {
+          "weapons": [
+            "bow"
+          ],
+          "skillKinds": [
+            "projectile"
+          ]
+        },
+        "when": [],
+        "chance": 0.3,
+        "icd": 0,
+        "action": {
+          "type": "echo",
+          "ratio": 0.6,
+          "delay": 12
+        },
+        "scale": [
+          "action.ratio"
+        ],
+        "vfxKey": "combo/aspect-combo-cascade"
+      }
+    },
+    {
+      "key": "wildfire",
+      "name": "野火",
+      "slot": "core",
+      "requiredLevel": 12,
+      "rule": {
+        "id": "aspect-combo-wildfire",
+        "name": "野火",
+        "description": "持法杖：燃烧的敌人死亡时，火焰蔓延到附近 3 个敌人",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "kill",
+        "filter": {
+          "weapons": [
+            "staff"
+          ]
+        },
+        "when": [
+          {
+            "kind": "target_status",
+            "statuses": [
+              "burn"
+            ]
+          }
+        ],
+        "chance": 1,
+        "icd": 0,
+        "action": {
+          "type": "spread",
+          "statuses": [
+            "burn"
+          ],
+          "radius": 3,
+          "count": 3
+        },
+        "scale": [],
+        "vfxKey": "combo/aspect-combo-wildfire"
+      }
+    },
+    {
+      "key": "thermal",
+      "name": "冷热交替",
+      "slot": "armor",
+      "requiredLevel": 17,
+      "rule": {
+        "id": "aspect-combo-thermal",
+        "name": "冷热交替",
+        "description": "持法杖：火焰打变慢的敌人、冰霜打燃烧的敌人，伤害提高 30%",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "passive",
+        "filter": {
+          "weapons": [
+            "staff"
+          ]
+        },
+        "when": [],
+        "chance": 1,
+        "icd": 0,
+        "action": {
+          "type": "amplify",
+          "ratio": 0.3,
+          "against": [
+            "slow",
+            "burn"
+          ]
+        },
+        "scale": [
+          "action.ratio"
+        ],
+        "vfxKey": "combo/aspect-combo-thermal"
+      }
+    },
+    {
+      "key": "stormcall",
+      "name": "唤雷",
+      "slot": "weapon",
+      "requiredLevel": 17,
+      "rule": {
+        "id": "aspect-combo-stormcall",
+        "name": "唤雷",
+        "description": "持法杖：闪电技能命中时召下落雷（40% 伤害，半径 2，0.5 秒冷却）",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "hit",
+        "filter": {
+          "weapons": [
+            "staff"
+          ],
+          "damageTypes": [
+            "lightning"
+          ]
+        },
+        "when": [],
+        "chance": 1,
+        "icd": 15,
+        "action": {
+          "type": "nova",
+          "radius": 2,
+          "ratio": 0.4,
+          "damageType": "lightning",
+          "vfx": "combo/storm"
+        },
+        "scale": [
+          "action.ratio"
+        ],
+        "vfxKey": "combo/storm"
+      }
+    },
+    {
+      "key": "dominate",
+      "name": "压制",
+      "slot": "accessory",
+      "requiredLevel": 12,
+      "rule": {
+        "id": "aspect-combo-dominate",
+        "name": "压制",
+        "description": "持魔杖：对眩晕、定身、石化、变慢、恐惧、停滞的敌人伤害提高 35%",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "passive",
+        "filter": {
+          "weapons": [
+            "wand"
+          ]
+        },
+        "when": [],
+        "chance": 1,
+        "icd": 0,
+        "action": {
+          "type": "amplify",
+          "ratio": 0.35,
+          "against": [
+            "stun",
+            "root",
+            "petrify",
+            "slow",
+            "fear",
+            "time_stop"
+          ]
+        },
+        "scale": [
+          "action.ratio"
+        ],
+        "vfxKey": "combo/aspect-combo-dominate"
+      }
+    },
+    {
+      "key": "overload",
+      "name": "过载",
+      "slot": "core",
+      "requiredLevel": 17,
+      "rule": {
+        "id": "aspect-combo-overload",
+        "name": "过载",
+        "description": "持魔杖：感电敌人死亡时放电（50% 奥术伤害，半径 3）",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "kill",
+        "filter": {
+          "weapons": [
+            "wand"
+          ]
+        },
+        "when": [
+          {
+            "kind": "target_status",
+            "statuses": [
+              "shock"
+            ]
+          }
+        ],
+        "chance": 1,
+        "icd": 0,
+        "action": {
+          "type": "nova",
+          "radius": 3,
+          "ratio": 0.5,
+          "damageType": "arcane",
+          "vfx": "combo/overload"
+        },
+        "scale": [
+          "action.ratio"
+        ],
+        "vfxKey": "combo/overload"
+      }
+    },
+    {
+      "key": "timeloop",
+      "name": "时回",
+      "slot": "armor",
+      "requiredLevel": 17,
+      "rule": {
+        "id": "aspect-combo-timeloop",
+        "name": "时回",
+        "description": "持魔杖：技能 25% 几率 0.5 秒后重演一次（60% 伤害）",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "cast",
+        "filter": {
+          "weapons": [
+            "wand"
+          ],
+          "skillKinds": [
+            "single",
+            "area",
+            "projectile",
+            "zone",
+            "chain"
+          ]
+        },
+        "when": [],
+        "chance": 0.25,
+        "icd": 0,
+        "action": {
+          "type": "echo",
+          "ratio": 0.6,
+          "delay": 15
+        },
+        "scale": [
+          "action.ratio"
+        ],
+        "vfxKey": "combo/aspect-combo-timeloop"
+      }
+    },
+    {
+      "key": "venomedge",
+      "name": "淬毒",
+      "slot": "weapon",
+      "requiredLevel": 12,
+      "rule": {
+        "id": "aspect-combo-venomedge",
+        "name": "淬毒",
+        "description": "持暗器：命中使目标中毒 3 秒（共 25% 伤害）",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "hit",
+        "filter": {
+          "weapons": [
+            "hidden"
+          ]
+        },
+        "when": [],
+        "chance": 1,
+        "icd": 0,
+        "action": {
+          "type": "status",
+          "status": "poison",
+          "duration": 90,
+          "strength": 0,
+          "ratio": 0.25
+        },
+        "scale": [
+          "action.ratio"
+        ],
+        "vfxKey": "combo/aspect-combo-venomedge"
+      }
+    },
+    {
+      "key": "flurry",
+      "name": "刃舞",
+      "slot": "armor",
+      "requiredLevel": 17,
+      "rule": {
+        "id": "aspect-combo-flurry",
+        "name": "刃舞",
+        "description": "持暗器：暴击时迸出 2 枚飞刃（各 40% 伤害）",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "crit",
+        "filter": {
+          "weapons": [
+            "hidden"
+          ]
+        },
+        "when": [],
+        "chance": 1,
+        "icd": 0,
+        "action": {
+          "type": "shards",
+          "count": 2,
+          "ratio": 0.4,
+          "range": 5,
+          "damageType": "physical",
+          "vfx": "combo/return-blade"
+        },
+        "scale": [
+          "action.ratio"
+        ],
+        "vfxKey": "combo/return-blade"
+      }
+    },
+    {
+      "key": "toxicology",
+      "name": "毒理",
+      "slot": "accessory",
+      "requiredLevel": 17,
+      "rule": {
+        "id": "aspect-combo-toxicology",
+        "name": "毒理",
+        "description": "持暗器：对中毒或流血的敌人伤害提高 30%",
+        "source": "传奇威能",
+        "tier": 1,
+        "trigger": "passive",
+        "filter": {
+          "weapons": [
+            "hidden"
+          ]
+        },
+        "when": [],
+        "chance": 1,
+        "icd": 0,
+        "action": {
+          "type": "amplify",
+          "ratio": 0.3,
+          "against": [
+            "poison",
+            "bleed"
+          ]
+        },
+        "scale": [
+          "action.ratio"
+        ],
+        "vfxKey": "combo/aspect-combo-toxicology"
+      }
+    }
+  ]
+}

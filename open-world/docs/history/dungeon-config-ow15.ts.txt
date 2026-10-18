@@ -1,0 +1,588 @@
+// 深渊行者 - 副本数值配置
+// 地图构建用模板与历史设计参考。实际战斗数值由 campaign-balance.json
+// 统一解析；角色成长由 packages/rules 计算，奖励由服务端 economy 计算。
+
+export const dungeonConfig = {
+  
+  // ============ 章节配置 ============
+  chapters: [
+    {
+      id: 'meadow',
+      name: '苍风原野',
+      levelRange: [1, 5],
+      recommendedLevel: 1,
+      theme: 'grassland'
+    },
+    {
+      id: 'forest',
+      name: '迷雾森林',
+      levelRange: [6, 10],
+      recommendedLevel: 6,
+      theme: 'forest',
+      requireBoss: 'meadow-boss'
+    },
+    {
+      id: 'rift',
+      name: '赤岩裂谷',
+      levelRange: [11, 15],
+      recommendedLevel: 11,
+      theme: 'canyon',
+      requireBoss: 'forest-boss'
+    },
+    {
+      id: 'tundra',
+      name: '冰封雪域',
+      levelRange: [16, 20],
+      recommendedLevel: 16,
+      theme: 'ice',
+      requireBoss: 'rift-boss'
+    },
+    {
+      id: 'abyss',
+      name: '暗影深渊',
+      levelRange: [21, 25],
+      recommendedLevel: 21,
+      theme: 'shadow',
+      requireBoss: 'tundra-boss'
+    },
+    {
+      id: 'dragonbone',
+      name: '龙骨荒漠',
+      levelRange: [26, 30],
+      recommendedLevel: 26,
+      theme: 'desert',
+      requireBoss: 'abyss-boss'
+    }
+  ],
+
+  // ============ 玩家成长曲线 ============
+  playerGrowth: {
+    baseHp: 100,
+    hpPerLevel: 38,
+    baseAttack: 15,
+    attackPerLevel: 4.5,
+    baseDefense: 5,
+    defensePerLevel: 2.3,
+    baseMana: 100,
+    manaPerLevel: 18,
+    
+    // 计算函数
+    getStats(level: number) {
+      return {
+        hp: this.baseHp + (level - 1) * this.hpPerLevel,
+        attack: this.baseAttack + (level - 1) * this.attackPerLevel,
+        defense: this.baseDefense + (level - 1) * this.defensePerLevel,
+        mana: this.baseMana + (level - 1) * this.manaPerLevel
+      };
+    }
+  },
+
+  // ============ 怪物模板 ============
+  monsterTemplates: {
+    // 第1章怪物
+    wolf: {
+      name: '柴狼',
+      kind: 'melee',
+      baseHp: 80,
+      baseAttack: 12,
+      speed: 2.8,
+      art: 'xiaolang',
+      chapter: 1
+    },
+    goblin_hunter: {
+      name: '地精猎手',
+      kind: 'ranged',
+      baseHp: 65,
+      baseAttack: 10,
+      speed: 2.8,
+      art: 'dijinglieshou',
+      chapter: 1
+    },
+    
+    // 第2章怪物
+    skeleton: {
+      name: '骷髅战士',
+      kind: 'melee',
+      baseHp: 180,
+      baseAttack: 32,
+      speed: 2.8,
+      art: 'kulouweishi',
+      chapter: 2
+    },
+    skeleton_mage: {
+      name: '骷髅法师',
+      kind: 'artillery',
+      baseHp: 150,
+      baseAttack: 36,
+      speed: 2.8,
+      art: 'kuloufashi',
+      chapter: 2
+    },
+    
+    // 第3章怪物
+    druid: {
+      name: '堕落德鲁伊',
+      kind: 'shaman',
+      baseHp: 320,
+      baseAttack: 48,
+      speed: 2.8,
+      art: 'deluyizhanglao',
+      chapter: 3
+    },
+    
+    // 第4章怪物（新增）
+    frost_wolf: {
+      name: '冰霜狼',
+      kind: 'melee',
+      baseHp: 650,
+      baseAttack: 75,
+      speed: 3.2,
+      art: 'xiaolang',
+      chapter: 4,
+      abilities: ['冰冻撕咬：减速30%持续3秒']
+    },
+    snow_ranger: {
+      name: '雪地游侠',
+      kind: 'ranged',
+      baseHp: 520,
+      baseAttack: 68,
+      speed: 2.8,
+      art: 'huoqiang',
+      chapter: 4,
+      abilities: ['冰箭：命中减速']
+    },
+    ice_elemental: {
+      name: '冰元素',
+      kind: 'summoner',
+      baseHp: 800,
+      baseAttack: 60,
+      speed: 2.5,
+      art: 'samannvwu',
+      chapter: 4,
+      abilities: ['召唤冰晶×2']
+    },
+    frost_giant: {
+      name: '霜巨人',
+      kind: 'charger',
+      baseHp: 2600,
+      baseAttack: 110,
+      speed: 3.5,
+      elite: true,
+      art: 'duyanjuren',
+      chapter: 4,
+      abilities: ['冰霜践踏：范围5格，眩晕1秒']
+    },
+    
+    // 第5章怪物（新增）
+    shadow_stalker: {
+      name: '暗影潜行者',
+      kind: 'assassin',
+      baseHp: 680,
+      baseAttack: 105,
+      speed: 5.5,
+      art: 'wushi',
+      chapter: 5,
+      abilities: ['隐身接近', '暴击率50%']
+    },
+    bone_mage: {
+      name: '骸骨法师',
+      kind: 'artillery',
+      baseHp: 750,
+      baseAttack: 95,
+      speed: 2.5,
+      art: 'kuloufashi',
+      chapter: 5,
+      abilities: ['暗影箭穿透', '死亡诅咒']
+    },
+    abomination: {
+      name: '憎恶缝合怪',
+      kind: 'guard',
+      baseHp: 1800,
+      baseAttack: 90,
+      speed: 1.5,
+      art: 'duyanjuren',
+      chapter: 5,
+      abilities: ['死亡爆炸：范围3格，伤害150']
+    },
+    shadow_lord: {
+      name: '暗影领主',
+      kind: 'summoner',
+      baseHp: 3200,
+      baseAttack: 125,
+      speed: 3.0,
+      elite: true,
+      art: 'deluyizhanglao',
+      chapter: 5,
+      abilities: ['召唤暗影潜行者×3', '传送CD15秒']
+    },
+    
+    // 第6章怪物（新增）
+    dragon_whelp: {
+      name: '幼龙',
+      kind: 'melee',
+      baseHp: 900,
+      baseAttack: 125,
+      speed: 3.5,
+      art: 'xiaolang',
+      chapter: 6,
+      abilities: ['龙息：前方锥形伤害']
+    },
+    dragon_guard: {
+      name: '龙人守卫',
+      kind: 'charger',
+      baseHp: 1200,
+      baseAttack: 135,
+      speed: 3.2,
+      art: 'dijinglieshou',
+      chapter: 6,
+      abilities: ['冲锋', '击退']
+    },
+    dragon_priest: {
+      name: '龙祭司',
+      kind: 'shaman',
+      baseHp: 1000,
+      baseAttack: 120,
+      speed: 2.8,
+      elite: true,
+      art: 'samannvwu',
+      chapter: 6,
+      abilities: ['治疗友军', '龙之祝福']
+    }
+  },
+
+  // ============ 怪物倍率 ============
+  monsterMultipliers: {
+    normal: {
+      hp: 1.0,
+      attack: 1.0,
+      xp: 1.0,
+      gold: 1.0
+    },
+    elite: {
+      hp: 4.0,
+      attack: 1.5,
+      xp: 5.0,
+      gold: 3.0
+    },
+    boss: {
+      hp: 10.0,
+      attack: 1.5,
+      xp: 50.0,
+      gold: 20.0
+    }
+  },
+
+  // ============ BOSS配置 ============
+  bosses: {
+    frost_queen: {
+      id: 'frost_queen',
+      name: '冰霜女王·艾莎',
+      level: 20,
+      chapter: 4,
+      hp: 8000,
+      attack: 120,
+      defense: 45,
+      kind: 'shaman',
+      art: 'samannvwu',
+      
+      skills: [
+        {
+          id: 'ice_lance',
+          name: '冰枪突刺',
+          damage: 150,
+          cooldown: 90, // 3秒
+          windup: 15,   // 0.5秒
+          range: 12,
+          description: '穿透型攻击，命中减速50%'
+        },
+        {
+          id: 'blizzard',
+          name: '暴风雪',
+          damage: 25,
+          cooldown: 240, // 8秒
+          windup: 30,    // 1秒
+          radius: 6,
+          duration: 150, // 持续5秒
+          description: '全场AOE，持续伤害+减速'
+        },
+        {
+          id: 'ice_prison',
+          name: '寒冰牢笼',
+          cooldown: 300, // 10秒
+          duration: 90,  // 冰冻3秒
+          windup: 20,
+          range: 15,
+          description: '定身玩家，需移动破解'
+        },
+        {
+          id: 'summon_wolves',
+          name: '唤狼',
+          count: 3,
+          cooldown: 450, // 15秒
+          trigger: 'hp < 70% 和 hp < 40%',
+          description: '召唤3只冰霜狼'
+        }
+      ],
+      
+      phases: [
+        {
+          phase: 1,
+          hpRange: [100, 70],
+          pattern: '冰枪为主，偶尔暴风雪'
+        },
+        {
+          phase: 2,
+          hpRange: [70, 40],
+          trigger: '召唤3只冰霜狼',
+          pattern: '增加寒冰牢笼，暴风雪频率提升'
+        },
+        {
+          phase: 3,
+          hpRange: [40, 0],
+          trigger: '再次召唤3只狼',
+          pattern: '所有技能CD减半，狂暴'
+        }
+      ],
+      
+      rewards: {
+        xp: 1200,
+        gold: 300,
+        guaranteed: [
+          { type: 'gear', quality: 'rare', slot: 'weapon', name: '冰霜女王的权杖' },
+          { type: 'skillbook', skill: 'ice_nova', name: '技能书：冰霜新星' }
+        ]
+      }
+    },
+    
+    abyss_lord: {
+      id: 'abyss_lord',
+      name: '深渊之主·莫格斯',
+      level: 25,
+      chapter: 5,
+      hp: 12000,
+      attack: 145,
+      defense: 60,
+      kind: 'summoner',
+      art: 'deluyizhanglao',
+      
+      mechanic: '黑暗领域 - 战斗区域持续扣血，需站在光明祭坛恢复',
+      
+      skills: [
+        {
+          id: 'soul_drain',
+          name: '灵魂汲取',
+          damage: 180,
+          cooldown: 120,
+          lifesteal: 0.5,
+          description: '吸取伤害50%转化为自身HP'
+        },
+        {
+          id: 'dark_ritual',
+          name: '黑暗仪式',
+          summon: 6,
+          unit: 'skeleton_warrior',
+          cooldown: 360,
+          windup: 60, // 可打断！
+          description: '2秒前摇，打断可取消召唤'
+        },
+        {
+          id: 'void_zone',
+          name: '虚空领域',
+          damage: 40,
+          radius: 5,
+          count: 3,
+          duration: 180,
+          cooldown: 240,
+          description: '同时3个虚空区域'
+        },
+        {
+          id: 'death_mark',
+          name: '死亡印记',
+          cooldown: 180,
+          delay: 150, // 5秒后爆炸
+          damage: 300,
+          description: '标记玩家，5秒后爆炸'
+        }
+      ],
+      
+      mechanics: [
+        { trigger: '战斗开始', effect: '场地生成4个光明祭坛' },
+        { trigger: 'hp = 60% 和 30%', effect: 'BOSS无敌，击杀6只骷髅解除' },
+        { trigger: '战斗时间 > 8分钟', effect: '狂暴：攻击力+100%，CD减半' }
+      ],
+      
+      rewards: {
+        xp: 2000,
+        gold: 500,
+        guaranteed: [
+          { type: 'gear', quality: 'rare', slot: 'weapon', name: '深渊之刃' },
+          { type: 'gear', quality: 'rare', slot: 'armor', name: '暗影斗篷' },
+          { type: 'skillbook', skill: 'shadow_bolt', name: '技能书：暗影箭' }
+        ]
+      }
+    },
+    
+    dragon_king: {
+      id: 'dragon_king',
+      name: '远古龙王·巴哈姆特',
+      level: 30,
+      chapter: 6,
+      hp: 20000,
+      attack: 180,
+      defense: 85,
+      kind: 'boss',
+      art: 'chilongwang',
+      
+      phases: [
+        {
+          phase: 1,
+          name: '地面形态',
+          hpRange: [100, 75],
+          skills: ['dragon_breath', 'tail_sweep', 'stomp'],
+          description: '近战为主'
+        },
+        {
+          phase: 2,
+          name: '飞行形态',
+          hpRange: [75, 50],
+          skills: ['dive_bomb', 'fire_rain', 'tornado'],
+          description: '远程压制，需要躲避'
+        },
+        {
+          phase: 3,
+          name: '狂怒形态',
+          hpRange: [50, 25],
+          summon: '4只龙人守卫',
+          skills: ['dragon_roar', 'chain_breath'],
+          description: '必须先清小怪'
+        },
+        {
+          phase: 4,
+          name: '灭世形态',
+          hpRange: [25, 0],
+          ultimate: '毁灭吐息（蓄力5秒，秒杀技）',
+          description: '打断或躲到掩体后'
+        }
+      ],
+      
+      rewards: {
+        xp: 3000,
+        gold: 1000,
+        guaranteed: [
+          { type: 'gear', quality: 'legendary', slot: 'weapon', name: '龙王之怒' },
+          { type: 'gear', quality: 'legendary', slot: 'armor', name: '龙鳞铠甲' },
+          { type: 'skillbook', skill: 'dragon_breath', name: '技能书：龙息术' },
+          { type: 'achievement', name: '屠龙勇士' }
+        ]
+      }
+    }
+  },
+
+  // ============ 奖励配置 ============
+  rewards: {
+    // 经验值
+    xpByChapter: [
+      { chapter: 1, normalMob: 15, eliteMob: 75, boss: 500 },
+      { chapter: 2, normalMob: 30, eliteMob: 150, boss: 800 },
+      { chapter: 3, normalMob: 55, eliteMob: 275, boss: 1000 },
+      { chapter: 4, normalMob: 95, eliteMob: 475, boss: 1200 },
+      { chapter: 5, normalMob: 150, eliteMob: 750, boss: 2000 },
+      { chapter: 6, normalMob: 230, eliteMob: 1150, boss: 3000 }
+    ],
+    
+    // 金币
+    goldByChapter: [
+      { chapter: 1, normalMob: [3, 8], eliteMob: [30, 50], boss: 200 },
+      { chapter: 2, normalMob: [8, 15], eliteMob: [40, 60], boss: 300 },
+      { chapter: 3, normalMob: [15, 25], eliteMob: [50, 70], boss: 400 },
+      { chapter: 4, normalMob: [25, 40], eliteMob: [60, 90], boss: 500 },
+      { chapter: 5, normalMob: [40, 60], eliteMob: [80, 120], boss: 700 },
+      { chapter: 6, normalMob: [60, 90], eliteMob: [100, 150], boss: 1000 }
+    ],
+    
+    // 装备掉落率
+    gearDropRates: {
+      normalMob: {
+        common: 0.60,
+        magic: 0.30,
+        rare: 0.09,
+        legendary: 0.01
+      },
+      eliteMob: {
+        common: 0.30,
+        magic: 0.50,
+        rare: 0.18,
+        legendary: 0.02
+      },
+      boss: {
+        common: 0.00,
+        magic: 0.40,
+        rare: 0.50,
+        legendary: 0.10
+      }
+    }
+  },
+
+  // ============ 难度倍率 ============
+  difficultyMultipliers: {
+    normal: {
+      monsterHp: 1.0,
+      monsterAttack: 1.0,
+      xpReward: 1.0,
+      goldReward: 1.0,
+      dropRate: 1.0
+    },
+    hard: {
+      monsterHp: 1.5,
+      monsterAttack: 1.3,
+      xpReward: 1.5,
+      goldReward: 1.5,
+      dropRate: 1.3
+    },
+    nightmare: {
+      monsterHp: 2.5,
+      monsterAttack: 1.8,
+      xpReward: 2.0,
+      goldReward: 2.0,
+      dropRate: 1.8
+    }
+  },
+
+  // ============ 平衡目标 ============
+  balanceTargets: {
+    clearTimeMinutes: {
+      chapter1: 15,
+      chapter2: 18,
+      chapter3: 20,
+      chapter4: 22,
+      chapter5: 25,
+      chapter6: 30
+    },
+    
+    bossTimeMinutes: {
+      chapter1: 5,
+      chapter2: 6,
+      chapter3: 7,
+      chapter4: 8,
+      chapter5: 10,
+      chapter6: 12
+    },
+    
+    deathsAllowed: {
+      normal: 3,
+      hard: 5,
+      nightmare: 10
+    },
+    
+    clearRate: {
+      normal: 0.70,  // 70%通关率
+      hard: 0.40,    // 40%通关率
+      nightmare: 0.15 // 15%通关率
+    }
+  }
+};
+
+// 导出类型
+export type MonsterTemplate = keyof typeof dungeonConfig.monsterTemplates;
+export type BossId = keyof typeof dungeonConfig.bosses;
+export type Difficulty = 'normal' | 'hard' | 'nightmare';

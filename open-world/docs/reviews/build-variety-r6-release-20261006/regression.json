@@ -1,0 +1,59 @@
+{
+  "ok": true,
+  "batch": "r6-release",
+  "checks": [
+    {
+      "name": "regression",
+      "code": 0,
+      "log": "regression.log"
+    },
+    {
+      "name": "types",
+      "code": 0,
+      "log": "types.log"
+    },
+    {
+      "name": "content",
+      "code": 1,
+      "log": "content.log"
+    },
+    {
+      "name": "content after 41 dedicated icon registration",
+      "code": 0,
+      "command": "node --import tsx tools/validate-content.ts",
+      "counts": {
+        "skills": 77,
+        "stats": 65,
+        "atoms": 50,
+        "sets": 18,
+        "newAspects": 60,
+        "legacyAspects": 154,
+        "rubbings": 41
+      }
+    },
+    {
+      "name": "bag UI after 41 destinations",
+      "code": 0,
+      "files": [
+        "tests/bag-ui.test.ts",
+        "tests/inventory-ui-system.test.ts"
+      ],
+      "passed": 19
+    },
+    {
+      "name": "exact effect descriptions review",
+      "code": 0,
+      "passed": 8
+    }
+  ],
+  "started": "2026-10-06T17:31:57.139Z",
+  "cleanup": {
+    "temporary": true,
+    "stopped": true,
+    "bytes_before": 428518340,
+    "bytes_after": 0,
+    "bytes_removed": 428518340
+  },
+  "finished": "2026-10-06T17:37:04.790Z",
+  "error_before_repair": "Error: content failed; retain and repair all failures"
+}

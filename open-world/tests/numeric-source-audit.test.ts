@@ -1,0 +1,7 @@
+import {it,expect} from 'vitest';
+import {createHash} from 'node:crypto';
+import {auditMeasuredModel,auditNumericFlow} from '../tools/numeric-source-audit.ts';
+import {versions} from '../packages/contracts/index.ts';
+const model=()=>({meta:{versions:{...versions} as {client:string;protocol:number;rules:string;assets:string;db:number},measurement:{samples:360,hitAoeSamples:60}},rows:Array.from({length:60},(_,i)=>({level:i+1,full:{dps1:100,ehp:1000,hitAoe:10}}))});
+it('requires current complete actual samples and rejects stale rule or missing AOE provenance',()=>{expect(auditMeasuredModel(model()).dpsSamples).toBe(360);const stale=model();stale.meta.versions.rules='old';expect(()=>auditMeasuredModel(stale)).toThrow('Stale');const partial=model();partial.meta.measurement.hitAoeSamples=0;expect(()=>auditMeasuredModel(partial)).toThrow('actual');});
+it('requires the exact measured model bytes and all24 declared targets before content derivation',()=>{const bytes=Buffer.from(JSON.stringify(model())),flow={versions:{...versions},modelSha256:createHash('sha256').update(bytes).digest('hex'),stages:Array.from({length:24},(_,i)=>({index:i+1,bossHp:100,bossDps:1}))};expect(auditNumericFlow(flow,bytes).stages).toBe(24);expect(()=>auditNumericFlow(flow,Buffer.concat([bytes,Buffer.from('\n')]))).toThrow('different measured');flow.stages.pop();expect(()=>auditNumericFlow(flow,bytes)).toThrow('all24');});

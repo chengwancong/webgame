@@ -1,0 +1,11 @@
+import {it,expect} from 'vitest';
+import {randomUUID} from 'node:crypto';
+import {makeGearByBase} from '../packages/rules/index.ts';
+import {freezeItemRules,issueCombatGear} from '../packages/rules/item-issuance.ts';
+import {reinforceAffixNode} from '../packages/rules/affix-reinforcement.ts';
+import {gearMaxRank} from '../packages/rules/item-power.ts';
+import {gearSchema} from '../packages/contracts/index.ts';
+const random={int:(min:number)=>min,float:()=>0};
+it('new issuance uses a private independent rule snapshot and old permissions do not gain inscriptions',()=>{const frozen=freezeItemRules(),before=structuredClone(frozen),make=()=>{const g=makeGearByBase('standard-sword-t1-weapon',randomUUID());g.quality='legendary';g.ilvl=45;return g;},newGear=issueCombatGear(make(),45,3,50,false,frozen,random),oldGear=issueCombatGear(make(),45,3,50,false,undefined,random);expect(newGear.inscription).toBeDefined();expect(newGear.aspectId).toMatch(/^aspect-(tf|st|tr|df|mv|rs)-/);expect(oldGear.inscription).toBeUndefined();expect(oldGear.aspectId).toMatch(/^aspect-(build|skill|combo|[0-9])/);expect(frozen).toEqual(before);frozen.inscriptions.chance.legendary=0;expect(issueCombatGear(make(),45,3,50,false,frozen,random).inscription).toBeUndefined();});
+it('ordinary reinforcement opens a real single affix without changing initial drop rarity',()=>{const g=makeGearByBase('standard-sword-t1-helmet',randomUUID());g.quality='common';g.rank=2;const original=structuredClone(g);gearSchema.parse(g);expect(g).toEqual(original);reinforceAffixNode(g,random);expect(g.affixes).toHaveLength(0);g.rank=3;reinforceAffixNode(g,random);expect(g.affixes).toHaveLength(1);expect(g.affixNode).toMatchObject({rank:3,kind:'opened'});});
+it('all-maximal affixes show the ceiling and never invent a fourth tier or lower a historical value',()=>{const g=makeGearByBase('standard-sword-t1-helmet',randomUUID());g.quality='legendary';g.rank=15;g.affixes=Array.from({length:6},(_,i)=>({id:'old'+i,name:'生命',stat:'hp',value:5000,tier:3 as const,description:'保留旧值'}));const before=structuredClone(g.affixes);reinforceAffixNode(g,random);expect(g.affixes).toEqual(before);expect(g.affixNode).toEqual({rank:15,kind:'max'});expect(gearMaxRank(g,5)).toBe(15);});

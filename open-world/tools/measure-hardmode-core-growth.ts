@@ -1,0 +1,21 @@
+// 数值来源已迁到 tools/spine；本文件保留历史探针，正式派生请使用 pnpm spine:check 与主干CLI。
+import {mkdir,readFile,writeFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {versions} from '../packages/contracts/index.ts';
+import {resolveBuild} from '../packages/rules/index.ts';
+import {resolveMonsterSpawn} from '../packages/rules/monster-stats.ts';
+import {monsterContent} from '../packages/content/monsters.ts';
+import type {Region} from '../packages/content/index.ts';
+import {freezeStageKeyRewardRules,grantStageKeyOutputs} from '../apps/api/src/stage-key-rewards.ts';
+import {standard} from './standard-player-model.ts';
+import {sampleCombatBuild} from './build-variety-benchmark.ts';
+const seeds=[41,73,107],frozen=freezeStageKeyRewardRules(),character=standard(50),before=structuredClone(character);if(!before.starsea?.hardmode)throw Error('Core growth needs the actual hardmode character');
+before.starsea.crystals=before.starsea.crystals.filter(id=>!id.startsWith('core-'));grantStageKeyOutputs(before,[{kind:'cores',total:6}],50,frozen);const after=structuredClone(before);grantStageKeyOutputs(after,[{kind:'cores',total:12}],50,frozen);
+const template=monsterContent.templates.find(t=>t.kind==='melee'&&!t.bossKey)!,region:Region={id:'core-growth-control',name:'星核配对输出',subtitle:'受控同构筑',theme:'meadow',width:30,height:30,safe:{x:10,y:10},portal:{x:2,y:2},spawns:[],obstacles:[],landmarks:[],boss:false,auto:true};
+const samples=[before,after].map(state=>{const resolved=resolveBuild(state),target=resolveMonsterSpawn({id:'core-growth-target',template:template.id,level:50,rank:'normal',x:12,y:10});target.hp=1e14;target.attack=0;target.monster!.armor=0;target.monster!.baseStats={hp:1e14,attack:0,armor:0};target.monster!.ai.skillChance=0;target.monster!.skills=[];
+ const worlds=seeds.map(seed=>sampleCombatBuild({requestedSkills:state.skills,skillRanks:state.skillRanks,build:{stats:resolved.stats,skills:resolved.resolvedSkills},region,spawns:[target],seed,maxTicks:900,mode:'auto',stopWhen:'window'}));if(worlds.some(w=>w.failed||w.incomingDamage!==0))throw Error('Paired core growth window was not a valid nonattacking reference');
+ return {cores:state.starsea!.crystals.filter(id=>id.startsWith('core-')).length,build:{stats:resolved.stats,skills:resolved.resolvedSkills},meanDps:worlds.reduce((n,w)=>n+w.dps,0)/worlds.length,worlds};});
+if(samples[0].build.stats.hp!==samples[1].build.stats.hp||samples[0].build.stats.armor!==samples[1].build.stats.armor)throw Error('Pure core pair unexpectedly changed survival stats');
+const realizedLogPower=Math.log(samples[1].meanDps/samples[0].meanDps),remaining=Math.max(0,.9-realizedLogPower),modelBytes=await readFile('.design/standard-player-20261005/model.json'),directory='docs/reviews/open-world-m2-m4/W3';await mkdir(directory,{recursive:true});
+const report={versions:structuredClone(versions),generated:new Date().toISOString(),modelSha256:createHash('sha256').update(modelBytes).digest('hex'),seeds,samples:6,level:50,grantOwner:'actual grantStageKeyOutputs with frozen reward rules',pair:samples,realizedLogPower,targetAdditionalLogPower:.9,remainingLogPower:remaining,equivalentAdditionalSurvivalMultiplier:Math.exp(remaining),limits:['The same controlled expected build and seeds differ only by the actual server grant of core total6 versus12. No inventory/mana/HP/skill damage override is introduced.','This isolates the realized effect of six extra cores at L50, not the natural acquisition time or the full L40–L50 journey.','The residual is a proposal requirement for real set/aspect/other acquisition mechanics. It is not added as a post-measurement damage or survival multiplier and does not mark ln0.9 runtime implementation complete.']};
+await writeFile(directory+'/hardmode-core-growth.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({samples:6,realizedLogPower,remainingLogPower:remaining,equivalentSurvivalRequirement:Math.exp(remaining),formalWritten:false}));

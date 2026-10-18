@@ -1,0 +1,19 @@
+import {readFile,writeFile,readdir,stat} from 'node:fs/promises';
+import {resolve,relative,join} from 'node:path';
+import {createHash} from 'node:crypto';
+import {spawnSync} from 'node:child_process';
+import {pgCommand} from '../../../../tools/runtime.mjs';
+import sharp from 'sharp';
+const base=resolve('docs/reviews/playability-20261008'),files=[];
+async function walk(dir){for(const e of await readdir(dir,{withFileTypes:true})){const path=join(dir,e.name);if(e.isDirectory())await walk(path);else if(e.isFile())files.push(path);}}
+await walk(base);const broken=[],links=[];
+for(const path of files.filter(f=>f.endsWith('.md'))){const content=await readFile(path,'utf8');for(const match of content.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)){let target=match[1].replace(/^<|>$/g,'');if(/^(https?:|#)/.test(target))continue;target=target.split('#')[0];if(!target)continue;const absolute=resolve(path,'..',target);links.push({from:relative(base,path),target});try{await stat(absolute);}catch{broken.push({from:relative(base,path),target});}}}
+const malformed=[];for(const path of files.filter(f=>f.endsWith('.json'))){if(/(?:manifest|verification)\.json$/.test(path))continue;try{JSON.parse((await readFile(path,'utf8')).replace(/^\uFEFF/,''));}catch(e){malformed.push({file:relative(base,path),error:String(e)});}}
+const archiveChecks=[];for(const path of files.filter(f=>f.endsWith('.dump'))){const r=spawnSync(pgCommand('pg_restore'),['--list',path],{encoding:'utf8',windowsHide:true});archiveChecks.push({file:relative(base,path),readable:r.status===0,entries:r.stdout?.split('\n').filter(s=>s&&!s.startsWith(';')).length,error:r.status===0?undefined:r.stderr});}
+const images=[];for(const path of files.filter(f=>f.endsWith('.jpg'))){const m=await sharp(path).metadata();images.push({file:relative(base,path),width:m.width,height:m.height});}
+const baseline=JSON.parse(await readFile(base+'/evidence/runtime-baseline.json','utf8')),end=JSON.parse(await readFile(base+'/evidence/source-end.json','utf8')),cleanup=JSON.parse(await readFile(base+'/evidence/cleanup.json','utf8'));
+const playImages=images.filter(i=>/(?:^|[\\/])s[1-4]-/.test(i.file));
+const result={at:new Date().toISOString(),scope:'Documentation/evidence validation only; no game test, migration, restore, or numerical scan. Preparation screenshots are retained separately and are not resolution acceptance evidence.',markdownLinks:links.length,brokenLinks:broken,malformedJson:malformed,archives:archiveChecks,images:images.length,playImages:playImages.length,non1280x720:playImages.filter(i=>i.width!==1280||i.height!==720),preparationNon1280x720:images.filter(i=>!playImages.includes(i)&&(i.width!==1280||i.height!==720)),sourceUnchanged:baseline.source.sha256===end.sha256,ownedPgStopped:cleanup.stopped&&cleanup.bytes_after===0};
+result.passed=!broken.length&&!malformed.length&&archiveChecks.every(a=>a.readable)&&!result.non1280x720.length&&result.sourceUnchanged&&result.ownedPgStopped;await writeFile(base+'/evidence/verification.json',JSON.stringify(result,null,2));
+const manifest=[];for(const path of files.filter(f=>!/(?:manifest|verification)\.json$/.test(f)).sort()){const bytes=await readFile(path),text=/\.(?:md|mjs|txt|log|json|jsonl)$/.test(path);manifest.push({file:relative(base,path).replaceAll('\\','/'),bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex'),...(text?{utf8LfSha256:createHash('sha256').update(bytes.toString('utf8').replaceAll('\r\n','\n')).digest('hex')}:{})});}await writeFile(base+'/evidence/manifest.json',JSON.stringify({at:new Date().toISOString(),textHashNote:'sha256 is original bytes; utf8LfSha256 allows text verification after Git EOL conversion. Binary evidence is always hashed as original bytes.',files:manifest},null,2));
+console.log(JSON.stringify({...result,archives:archiveChecks.map(a=>({file:a.file,readable:a.readable})),manifestFiles:manifest.length},null,2));if(!result.passed)process.exitCode=1;

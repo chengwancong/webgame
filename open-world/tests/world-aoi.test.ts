@@ -1,0 +1,15 @@
+import {describe,it,expect} from 'vitest';
+import {World} from '../packages/simulation/index.ts';
+import {regionById,skillCatalog} from '../packages/content/index.ts';
+import type {Spawn} from '../packages/contracts/index.ts';
+const stats={hp:10000,attack:20,armor:4,speed:6,mana:100,regen:10,effects:[]};
+const spawn=(id:string,x:number,y:number):Spawn=>({id,x,y,kind:'melee',name:id,hp:1000,attack:2,elite:false,boss:false,art:'raider'});
+const region={...regionById('meadow'),width:512,height:512,obstacles:[],safe:{x:100,y:100},activationRadius:40};
+describe('world activation and spatial effects',()=>{
+ it('executes awake AI outside the legacy 20-cell radius',()=>{const w=new World(region,stats,[],[spawn('awake',130,100)]);for(let i=0;i<30;i++)w.step();expect(w.enemies[0].position.x).toBeLessThan(130);expect(w.simulationDiagnostics().active).toBe(1);});
+ it('returns to the camp without healing or pursuing a player beyond its leash',()=>{const w=new World(region,stats,[],[spawn('guard',103,100)]);w.bindCamp({x:100,y:100,radius:4},['guard']);const enemy=w.enemies[0];enemy.hp=700;enemy.position={x:110,y:100};w.hero.position={x:125,y:100};for(let i=0;i<120;i++)w.step();expect(Math.abs(enemy.position.x-103)).toBeLessThan(.4);expect(enemy.hp).toBe(700);expect(enemy.engaged).toBe(false);const restored=World.restore(JSON.parse(JSON.stringify(w.exportCheckpoint())));expect(restored.enemies[0].home).toEqual({x:100,y:100});expect(restored.enemies[0].leashRadius).toBe(16);});
+ it('sleeps remote instances and wakes them with their existing health and cooldown',()=>{const w=new World(region,stats,[],[spawn('near',108,100),spawn('far',350,350)]);const far=w.enemies[1];far.hp=700;const before=structuredClone(far);for(let i=0;i<60;i++)w.step();expect(far).toEqual(before);w.hero.position={x:345,y:350};w.step();expect(far.hp).toBe(700);expect(far.position).not.toEqual(before.position);expect(w.simulationDiagnostics().active).toBe(1);});
+ it('queries activation around every independent party member',()=>{const w=new World(region,stats,[],[spawn('far',350,350)]);w.addPlayer('remote',stats,[],{x:345,y:350});w.step();expect(w.simulationDiagnostics().active).toBe(1);expect(w.enemies[0].position.x).toBeLessThan(350);});
+ it('resumes checkpoints deterministically and never resurrects a killed instance',()=>{const w=new World(region,stats,skillCatalog.filter(s=>['cut','whirl'].includes(s.id)),[spawn('near',102,100),spawn('far',350,350)],[],23);w.setMode('auto');for(let i=0;i<100;i++)w.step();const restored=World.restore(JSON.parse(JSON.stringify(w.exportCheckpoint())));for(let i=0;i<120;i++){w.step();restored.step();expect(restored.events).toEqual(w.events);}expect(restored.exportCheckpoint()).toEqual(w.exportCheckpoint());});
+ it('loads an added instance into nearby area and projectile queries',()=>{const w=new World(region,stats,[skillCatalog.find(s=>s.id==='whirl')!],[]);w.addSpawns([spawn('new',102,100),spawn('remote',400,400)]);expect(w.cast('whirl')).toBe(true);for(let i=0;i<20;i++)w.step();expect(w.enemies[0].hp).toBeLessThan(1000);expect(w.enemies[1].hp).toBe(1000);});
+});

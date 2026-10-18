@@ -1,0 +1,1795 @@
+{
+  "ok": true,
+  "versions": {
+    "client": "0.11.6",
+    "protocol": 26,
+    "rules": "ow-47",
+    "assets": "world-art-20261006-v22-skill-variety",
+    "db": 15
+  },
+  "scope": "compiled Chrome; real isolated PostgreSQL; level/wallet/weapon fixtures, actual activation and equip commands; actual authoritative casts",
+  "paths": [
+    {
+      "weapon": "sword",
+      "base": "standard-sword-t1-weapon",
+      "id": "frost_blade",
+      "rank": 1,
+      "requested": [
+        "frost_blade"
+      ],
+      "executed": [
+        "frost_blade"
+      ],
+      "frozen": {
+        "weapons": [
+          "sword"
+        ],
+        "id": "frost_blade",
+        "name": "霜刃",
+        "kind": "single",
+        "damage": 720,
+        "range": 3,
+        "radius": 0,
+        "cooldown": 45,
+        "cost": 10,
+        "windup": 5,
+        "duration": 0,
+        "description": "以霜刃斩击并迟缓敌人",
+        "mechanics": {
+          "damageType": "cold",
+          "targeting": "enemy",
+          "statuses": [
+            {
+              "kind": "slow",
+              "duration": 60,
+              "strength": 0.3,
+              "scope": "hit",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false
+            }
+          ]
+        },
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 45,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 45,
+          "encounterCooldownMultiplier": 1
+        },
+        "tags": [
+          "melee",
+          "cold",
+          "single"
+        ]
+      },
+      "events": [
+        {
+          "castId": 3,
+          "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+          "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "vfxKey": "player/frost_blade",
+          "type": "cast_started",
+          "id": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+          "position": {
+            "x": 6,
+            "y": 6
+          },
+          "origin": {
+            "x": 6,
+            "y": 6
+          },
+          "target": {
+            "x": 7.8,
+            "y": 6
+          },
+          "skill": "frost_blade",
+          "windup": 5,
+          "radius": 0,
+          "tick": 507
+        },
+        {
+          "castId": 3,
+          "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+          "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "vfxKey": "player/frost_blade",
+          "type": "cast_released",
+          "id": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+          "position": {
+            "x": 6,
+            "y": 6
+          },
+          "origin": {
+            "x": 6,
+            "y": 6
+          },
+          "target": {
+            "x": 7.8,
+            "y": 6
+          },
+          "skill": "frost_blade",
+          "radius": 0,
+          "duration": 0,
+          "tick": 512,
+          "part": 1
+        },
+        {
+          "castId": 3,
+          "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+          "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "vfxKey": "player/frost_blade",
+          "type": "hit_resolved",
+          "id": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "position": {
+            "x": 7.8,
+            "y": 6
+          },
+          "amount": 720,
+          "skill": "frost_blade",
+          "tick": 512,
+          "category": "direct",
+          "damageType": "cold"
+        },
+        {
+          "type": "effect_triggered",
+          "id": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+          "ruleId": "qa-vulnerable",
+          "source": "controlled QA",
+          "action": "status",
+          "amount": 0,
+          "vfxKey": "player/war_cry",
+          "position": {
+            "x": 6,
+            "y": 6
+          },
+          "tick": 512
+        },
+        {
+          "type": "status_changed",
+          "id": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+          "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "castId": 4,
+          "position": {
+            "x": 7.8,
+            "y": 6
+          },
+          "skill": "atom-chill",
+          "status": "slow",
+          "change": "applied",
+          "duration": 60,
+          "amount": 0.3,
+          "tick": 512,
+          "vfxKey": "player/frost"
+        },
+        {
+          "type": "status_changed",
+          "id": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+          "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "position": {
+            "x": 7.8,
+            "y": 6
+          },
+          "skill": "frost_blade",
+          "status": "slow",
+          "change": "consumed",
+          "duration": 60,
+          "amount": 0.3,
+          "tick": 512,
+          "vfxKey": "player/frost_blade"
+        },
+        {
+          "type": "status_changed",
+          "id": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+          "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "castId": 4,
+          "position": {
+            "x": 7.8,
+            "y": 6
+          },
+          "skill": "atom-chill",
+          "status": "slow",
+          "change": "consumed",
+          "duration": 60,
+          "amount": 0.3,
+          "tick": 512,
+          "vfxKey": "player/frost"
+        },
+        {
+          "type": "status_changed",
+          "id": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+          "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "castId": 4,
+          "position": {
+            "x": 7.8,
+            "y": 6
+          },
+          "skill": "atom-chill",
+          "status": "freeze",
+          "change": "applied",
+          "duration": 45,
+          "amount": 0,
+          "tick": 512,
+          "vfxKey": "player/frost"
+        },
+        {
+          "type": "status_changed",
+          "id": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+          "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "castId": 5,
+          "position": {
+            "x": 7.8,
+            "y": 6
+          },
+          "skill": "qa-vulnerable",
+          "status": "vulnerable",
+          "change": "applied",
+          "duration": 900,
+          "amount": 0.15,
+          "tick": 512,
+          "vfxKey": "player/qa-vulnerable"
+        },
+        {
+          "type": "status_changed",
+          "id": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+          "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "castId": 3,
+          "position": {
+            "x": 7.8,
+            "y": 6
+          },
+          "skill": "frost_blade",
+          "status": "slow",
+          "change": "applied",
+          "duration": 60,
+          "amount": 0.3,
+          "tick": 512,
+          "vfxKey": "player/frost_blade"
+        },
+        {
+          "type": "status_changed",
+          "id": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+          "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "castId": 4,
+          "position": {
+            "x": 7.8,
+            "y": 6
+          },
+          "skill": "atom-chill",
+          "status": "freeze",
+          "change": "expired",
+          "duration": 0,
+          "amount": 0,
+          "tick": 557,
+          "vfxKey": "player/frost"
+        },
+        {
+          "type": "status_changed",
+          "id": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+          "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+          "castId": 3,
+          "position": {
+            "x": 7.8,
+            "y": 6
+          },
+          "skill": "frost_blade",
+          "status": "slow",
+          "change": "expired",
+          "duration": 0,
+          "amount": 0.3,
+          "tick": 572,
+          "vfxKey": "player/frost_blade"
+        }
+      ],
+      "frames": [
+        {
+          "tick": 502,
+          "hero": {
+            "hp": 1080,
+            "mana": 100,
+            "action": "idle",
+            "facing": 1,
+            "shield": 0,
+            "position": {
+              "x": 6,
+              "y": 6
+            },
+            "actionUntil": 43,
+            "shieldUntil": 0
+          },
+          "fx": {
+            "statusMarkers": 0,
+            "version": "vfx-v3-enemy",
+            "texture": "skill-source-fx",
+            "totalCreated": 0,
+            "cancelReason": null,
+            "beams": [],
+            "shield": {
+              "phase": "none",
+              "max": 0,
+              "hitAt": -100,
+              "angle": 0
+            },
+            "shake": {
+              "tier": 0,
+              "at": -100
+            },
+            "ready": true,
+            "errors": [],
+            "consumeTick": 502,
+            "totalConsumed": 0,
+            "clock": 502,
+            "flashes": 0,
+            "projectiles": 0,
+            "flights": [],
+            "telegraphs": 0,
+            "pool": {
+              "active": 0,
+              "allocated": 0,
+              "pooled": 0,
+              "culled": 0,
+              "dropped": 0,
+              "peakActive": 0,
+              "peakDropped": 0
+            },
+            "warningCount": 0,
+            "beamSegments": 0,
+            "particles": 0,
+            "recentProfiles": [],
+            "images": []
+          },
+          "statuses": [
+            {
+              "id": "f3656299-eaec-4e00-8d4a-6906e85b0092:f8cdfe2a-8369-47b1-a2a0-710b7e06c882:frost_blade:slow:2",
+              "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+              "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+              "skill": "frost_blade",
+              "effect": {
+                "maxStacks": 3,
+                "onStacks": {
+                  "at": 3,
+                  "convert": "freeze",
+                  "duration": 45,
+                  "consume": 3
+                },
+                "kind": "slow",
+                "duration": 900,
+                "strength": 0.3,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              },
+              "started": 84,
+              "ends": 984,
+              "next": 984,
+              "emitted": 0,
+              "sourcePosition": {
+                "x": 6,
+                "y": 6
+              },
+              "penetration": 0
+            },
+            {
+              "id": "f3656299-eaec-4e00-8d4a-6906e85b0092:f8cdfe2a-8369-47b1-a2a0-710b7e06c882:frost_blade:slow:3",
+              "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+              "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+              "skill": "frost_blade",
+              "effect": {
+                "maxStacks": 3,
+                "onStacks": {
+                  "at": 3,
+                  "convert": "freeze",
+                  "duration": 45,
+                  "consume": 3
+                },
+                "kind": "slow",
+                "duration": 900,
+                "strength": 0.3,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              },
+              "started": 84,
+              "ends": 984,
+              "next": 984,
+              "emitted": 0,
+              "sourcePosition": {
+                "x": 6,
+                "y": 6
+              },
+              "penetration": 0
+            }
+          ],
+          "projectiles": []
+        },
+        {
+          "tick": 510,
+          "hero": {
+            "hp": 1080,
+            "mana": 90.99999999999999,
+            "action": "attack",
+            "facing": 1,
+            "shield": 0,
+            "position": {
+              "x": 6,
+              "y": 6
+            },
+            "actionUntil": 520,
+            "shieldUntil": 0
+          },
+          "fx": {
+            "statusMarkers": 0,
+            "version": "vfx-v3-enemy",
+            "texture": "skill-source-fx",
+            "totalCreated": 2,
+            "cancelReason": null,
+            "beams": [],
+            "shield": {
+              "phase": "none",
+              "max": 0,
+              "hitAt": -100,
+              "angle": 0
+            },
+            "shake": {
+              "tier": 0,
+              "at": -100
+            },
+            "ready": true,
+            "errors": [],
+            "consumeTick": 510,
+            "totalConsumed": 1,
+            "clock": 510,
+            "flashes": 1,
+            "projectiles": 0,
+            "flights": [],
+            "telegraphs": 0,
+            "pool": {
+              "active": 2,
+              "allocated": 2,
+              "pooled": 0,
+              "culled": 0,
+              "dropped": 0,
+              "peakActive": 2,
+              "peakDropped": 0
+            },
+            "warningCount": 0,
+            "beamSegments": 0,
+            "particles": 0,
+            "recentProfiles": [
+              "player/frost_blade"
+            ],
+            "images": [
+              {
+                "key": "event:1:charge-body",
+                "texture": "combat-library-warm-burst",
+                "frame": "8",
+                "x": -65.01458846109989,
+                "y": 155.55111718359262,
+                "depth": 220,
+                "scale": [
+                  0.12866141732283465,
+                  0.12866141732283465
+                ]
+              }
+            ]
+          },
+          "statuses": [
+            {
+              "id": "f3656299-eaec-4e00-8d4a-6906e85b0092:f8cdfe2a-8369-47b1-a2a0-710b7e06c882:frost_blade:slow:2",
+              "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+              "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+              "skill": "frost_blade",
+              "effect": {
+                "maxStacks": 3,
+                "onStacks": {
+                  "at": 3,
+                  "convert": "freeze",
+                  "duration": 45,
+                  "consume": 3
+                },
+                "kind": "slow",
+                "duration": 900,
+                "strength": 0.3,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              },
+              "started": 84,
+              "ends": 984,
+              "next": 984,
+              "emitted": 0,
+              "sourcePosition": {
+                "x": 6,
+                "y": 6
+              },
+              "penetration": 0
+            },
+            {
+              "id": "f3656299-eaec-4e00-8d4a-6906e85b0092:f8cdfe2a-8369-47b1-a2a0-710b7e06c882:frost_blade:slow:3",
+              "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+              "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+              "skill": "frost_blade",
+              "effect": {
+                "maxStacks": 3,
+                "onStacks": {
+                  "at": 3,
+                  "convert": "freeze",
+                  "duration": 45,
+                  "consume": 3
+                },
+                "kind": "slow",
+                "duration": 900,
+                "strength": 0.3,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              },
+              "started": 84,
+              "ends": 984,
+              "next": 984,
+              "emitted": 0,
+              "sourcePosition": {
+                "x": 6,
+                "y": 6
+              },
+              "penetration": 0
+            }
+          ],
+          "projectiles": []
+        },
+        {
+          "tick": 520,
+          "hero": {
+            "hp": 1080,
+            "mana": 94.33333333333327,
+            "action": "attack",
+            "facing": 1,
+            "shield": 0,
+            "position": {
+              "x": 6,
+              "y": 6
+            },
+            "actionUntil": 520,
+            "shieldUntil": 0
+          },
+          "fx": {
+            "statusMarkers": 2,
+            "version": "vfx-v3-enemy",
+            "texture": "skill-source-fx",
+            "totalCreated": 9,
+            "cancelReason": null,
+            "beams": [],
+            "shield": {
+              "phase": "none",
+              "max": 0,
+              "hitAt": -100,
+              "angle": 0
+            },
+            "shake": {
+              "tier": 1,
+              "at": 512
+            },
+            "ready": true,
+            "errors": [],
+            "consumeTick": 520,
+            "totalConsumed": 12,
+            "clock": 520,
+            "flashes": 1,
+            "projectiles": 0,
+            "flights": [],
+            "telegraphs": 0,
+            "pool": {
+              "active": 4,
+              "allocated": 9,
+              "pooled": 5,
+              "culled": 0,
+              "dropped": 0,
+              "peakActive": 7,
+              "peakDropped": 0
+            },
+            "warningCount": 0,
+            "beamSegments": 0,
+            "particles": 0,
+            "recentProfiles": [
+              "player/frost_blade"
+            ],
+            "images": [
+              {
+                "key": "event:4:frost-impact",
+                "texture": "combat-library-ice-burst",
+                "frame": "10",
+                "x": 48.4223108146398,
+                "y": 213.8248325863362,
+                "depth": 252.4726312947604,
+                "scale": [
+                  0.5671875000000001,
+                  0.5671875000000001
+                ]
+              }
+            ]
+          },
+          "statuses": [
+            {
+              "id": "f3656299-eaec-4e00-8d4a-6906e85b0092:f8cdfe2a-8369-47b1-a2a0-710b7e06c882:atom-chill:freeze",
+              "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+              "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+              "skill": "atom-chill",
+              "castId": 4,
+              "effect": {
+                "kind": "freeze",
+                "duration": 45,
+                "strength": 0,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              },
+              "vfxKey": "player/frost",
+              "started": 512,
+              "ends": 557,
+              "next": 557,
+              "emitted": 0,
+              "sourcePosition": {
+                "x": 6,
+                "y": 6
+              },
+              "penetration": 0
+            },
+            {
+              "id": "f3656299-eaec-4e00-8d4a-6906e85b0092:f8cdfe2a-8369-47b1-a2a0-710b7e06c882:qa-vulnerable:vulnerable",
+              "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+              "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+              "skill": "qa-vulnerable",
+              "castId": 5,
+              "effect": {
+                "kind": "vulnerable",
+                "duration": 900,
+                "strength": 0.15,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              },
+              "started": 512,
+              "ends": 1412,
+              "next": 1412,
+              "emitted": 0,
+              "sourcePosition": {
+                "x": 6,
+                "y": 6
+              },
+              "penetration": 0
+            },
+            {
+              "id": "f3656299-eaec-4e00-8d4a-6906e85b0092:f8cdfe2a-8369-47b1-a2a0-710b7e06c882:frost_blade:slow",
+              "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+              "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+              "skill": "frost_blade",
+              "castId": 3,
+              "effect": {
+                "kind": "slow",
+                "duration": 60,
+                "strength": 0.3,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              },
+              "started": 512,
+              "ends": 572,
+              "next": 572,
+              "emitted": 0,
+              "sourcePosition": {
+                "x": 6,
+                "y": 6
+              },
+              "penetration": 0
+            }
+          ],
+          "projectiles": []
+        },
+        {
+          "tick": 554,
+          "hero": {
+            "hp": 1080,
+            "mana": 100,
+            "action": "idle",
+            "facing": 1,
+            "shield": 0,
+            "position": {
+              "x": 6,
+              "y": 6
+            },
+            "actionUntil": 520,
+            "shieldUntil": 0
+          },
+          "fx": {
+            "statusMarkers": 2,
+            "version": "vfx-v3-enemy",
+            "texture": "skill-source-fx",
+            "totalCreated": 9,
+            "cancelReason": null,
+            "beams": [],
+            "shield": {
+              "phase": "none",
+              "max": 0,
+              "hitAt": -100,
+              "angle": 0
+            },
+            "shake": {
+              "tier": 1,
+              "at": 512
+            },
+            "ready": true,
+            "errors": [],
+            "consumeTick": 554,
+            "totalConsumed": 12,
+            "clock": 554,
+            "flashes": 0,
+            "projectiles": 0,
+            "flights": [],
+            "telegraphs": 0,
+            "pool": {
+              "active": 2,
+              "allocated": 9,
+              "pooled": 7,
+              "culled": 0,
+              "dropped": 0,
+              "peakActive": 7,
+              "peakDropped": 0
+            },
+            "warningCount": 0,
+            "beamSegments": 0,
+            "particles": 0,
+            "recentProfiles": [
+              "player/frost_blade"
+            ],
+            "images": []
+          },
+          "statuses": [
+            {
+              "id": "f3656299-eaec-4e00-8d4a-6906e85b0092:f8cdfe2a-8369-47b1-a2a0-710b7e06c882:atom-chill:freeze",
+              "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+              "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+              "skill": "atom-chill",
+              "castId": 4,
+              "effect": {
+                "kind": "freeze",
+                "duration": 45,
+                "strength": 0,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              },
+              "vfxKey": "player/frost",
+              "started": 512,
+              "ends": 557,
+              "next": 557,
+              "emitted": 0,
+              "sourcePosition": {
+                "x": 6,
+                "y": 6
+              },
+              "penetration": 0
+            },
+            {
+              "id": "f3656299-eaec-4e00-8d4a-6906e85b0092:f8cdfe2a-8369-47b1-a2a0-710b7e06c882:qa-vulnerable:vulnerable",
+              "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+              "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+              "skill": "qa-vulnerable",
+              "castId": 5,
+              "effect": {
+                "kind": "vulnerable",
+                "duration": 900,
+                "strength": 0.15,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              },
+              "started": 512,
+              "ends": 1412,
+              "next": 1412,
+              "emitted": 0,
+              "sourcePosition": {
+                "x": 6,
+                "y": 6
+              },
+              "penetration": 0
+            },
+            {
+              "id": "f3656299-eaec-4e00-8d4a-6906e85b0092:f8cdfe2a-8369-47b1-a2a0-710b7e06c882:frost_blade:slow",
+              "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+              "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+              "skill": "frost_blade",
+              "castId": 3,
+              "effect": {
+                "kind": "slow",
+                "duration": 60,
+                "strength": 0.3,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              },
+              "started": 512,
+              "ends": 572,
+              "next": 572,
+              "emitted": 0,
+              "sourcePosition": {
+                "x": 6,
+                "y": 6
+              },
+              "penetration": 0
+            }
+          ],
+          "projectiles": []
+        },
+        {
+          "tick": 562,
+          "hero": {
+            "hp": 1080,
+            "mana": 100,
+            "action": "idle",
+            "facing": 1,
+            "shield": 0,
+            "position": {
+              "x": 6,
+              "y": 6
+            },
+            "actionUntil": 520,
+            "shieldUntil": 0
+          },
+          "fx": {
+            "statusMarkers": 1,
+            "version": "vfx-v3-enemy",
+            "texture": "skill-source-fx",
+            "totalCreated": 9,
+            "cancelReason": null,
+            "beams": [],
+            "shield": {
+              "phase": "none",
+              "max": 0,
+              "hitAt": -100,
+              "angle": 0
+            },
+            "shake": {
+              "tier": 1,
+              "at": 512
+            },
+            "ready": true,
+            "errors": [],
+            "consumeTick": 562,
+            "totalConsumed": 13,
+            "clock": 562,
+            "flashes": 0,
+            "projectiles": 0,
+            "flights": [],
+            "telegraphs": 0,
+            "pool": {
+              "active": 1,
+              "allocated": 9,
+              "pooled": 8,
+              "culled": 0,
+              "dropped": 0,
+              "peakActive": 7,
+              "peakDropped": 0
+            },
+            "warningCount": 0,
+            "beamSegments": 0,
+            "particles": 0,
+            "recentProfiles": [
+              "player/frost_blade"
+            ],
+            "images": []
+          },
+          "statuses": [
+            {
+              "id": "f3656299-eaec-4e00-8d4a-6906e85b0092:f8cdfe2a-8369-47b1-a2a0-710b7e06c882:qa-vulnerable:vulnerable",
+              "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+              "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+              "skill": "qa-vulnerable",
+              "castId": 5,
+              "effect": {
+                "kind": "vulnerable",
+                "duration": 900,
+                "strength": 0.15,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              },
+              "started": 512,
+              "ends": 1412,
+              "next": 1412,
+              "emitted": 0,
+              "sourcePosition": {
+                "x": 6,
+                "y": 6
+              },
+              "penetration": 0
+            },
+            {
+              "id": "f3656299-eaec-4e00-8d4a-6906e85b0092:f8cdfe2a-8369-47b1-a2a0-710b7e06c882:frost_blade:slow",
+              "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+              "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+              "skill": "frost_blade",
+              "castId": 3,
+              "effect": {
+                "kind": "slow",
+                "duration": 60,
+                "strength": 0.3,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              },
+              "started": 512,
+              "ends": 572,
+              "next": 572,
+              "emitted": 0,
+              "sourcePosition": {
+                "x": 6,
+                "y": 6
+              },
+              "penetration": 0
+            }
+          ],
+          "projectiles": []
+        },
+        {
+          "tick": 565,
+          "hero": {
+            "hp": 1080,
+            "mana": 100,
+            "action": "idle",
+            "facing": 1,
+            "shield": 0,
+            "position": {
+              "x": 6,
+              "y": 6
+            },
+            "actionUntil": 520,
+            "shieldUntil": 0
+          },
+          "fx": {
+            "statusMarkers": 1,
+            "version": "vfx-v3-enemy",
+            "texture": "skill-source-fx",
+            "totalCreated": 9,
+            "cancelReason": null,
+            "beams": [],
+            "shield": {
+              "phase": "none",
+              "max": 0,
+              "hitAt": -100,
+              "angle": 0
+            },
+            "shake": {
+              "tier": 1,
+              "at": 512
+            },
+            "ready": true,
+            "errors": [],
+            "consumeTick": 565,
+            "totalConsumed": 13,
+            "clock": 565,
+            "flashes": 0,
+            "projectiles": 0,
+            "flights": [],
+            "telegraphs": 0,
+            "pool": {
+              "active": 1,
+              "allocated": 9,
+              "pooled": 8,
+              "culled": 0,
+              "dropped": 0,
+              "peakActive": 7,
+              "peakDropped": 0
+            },
+            "warningCount": 0,
+            "beamSegments": 0,
+            "particles": 0,
+            "recentProfiles": [
+              "player/frost_blade"
+            ],
+            "images": []
+          },
+          "statuses": [
+            {
+              "id": "f3656299-eaec-4e00-8d4a-6906e85b0092:f8cdfe2a-8369-47b1-a2a0-710b7e06c882:qa-vulnerable:vulnerable",
+              "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+              "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+              "skill": "qa-vulnerable",
+              "castId": 5,
+              "effect": {
+                "kind": "vulnerable",
+                "duration": 900,
+                "strength": 0.15,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              },
+              "started": 512,
+              "ends": 1412,
+              "next": 1412,
+              "emitted": 0,
+              "sourcePosition": {
+                "x": 6,
+                "y": 6
+              },
+              "penetration": 0
+            },
+            {
+              "id": "f3656299-eaec-4e00-8d4a-6906e85b0092:f8cdfe2a-8369-47b1-a2a0-710b7e06c882:frost_blade:slow",
+              "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+              "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+              "skill": "frost_blade",
+              "castId": 3,
+              "effect": {
+                "kind": "slow",
+                "duration": 60,
+                "strength": 0.3,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              },
+              "started": 512,
+              "ends": 572,
+              "next": 572,
+              "emitted": 0,
+              "sourcePosition": {
+                "x": 6,
+                "y": 6
+              },
+              "penetration": 0
+            }
+          ],
+          "projectiles": []
+        },
+        {
+          "tick": 573,
+          "hero": {
+            "hp": 1080,
+            "mana": 100,
+            "action": "idle",
+            "facing": 1,
+            "shield": 0,
+            "position": {
+              "x": 6,
+              "y": 6
+            },
+            "actionUntil": 520,
+            "shieldUntil": 0
+          },
+          "fx": {
+            "statusMarkers": 1,
+            "version": "vfx-v3-enemy",
+            "texture": "skill-source-fx",
+            "totalCreated": 9,
+            "cancelReason": null,
+            "beams": [],
+            "shield": {
+              "phase": "none",
+              "max": 0,
+              "hitAt": -100,
+              "angle": 0
+            },
+            "shake": {
+              "tier": 1,
+              "at": 512
+            },
+            "ready": true,
+            "errors": [],
+            "consumeTick": 573,
+            "totalConsumed": 14,
+            "clock": 573,
+            "flashes": 0,
+            "projectiles": 0,
+            "flights": [],
+            "telegraphs": 0,
+            "pool": {
+              "active": 1,
+              "allocated": 9,
+              "pooled": 8,
+              "culled": 0,
+              "dropped": 0,
+              "peakActive": 7,
+              "peakDropped": 0
+            },
+            "warningCount": 0,
+            "beamSegments": 0,
+            "particles": 0,
+            "recentProfiles": [
+              "player/frost_blade"
+            ],
+            "images": []
+          },
+          "statuses": [
+            {
+              "id": "f3656299-eaec-4e00-8d4a-6906e85b0092:f8cdfe2a-8369-47b1-a2a0-710b7e06c882:qa-vulnerable:vulnerable",
+              "sourceId": "f3656299-eaec-4e00-8d4a-6906e85b0092",
+              "targetId": "f8cdfe2a-8369-47b1-a2a0-710b7e06c882",
+              "skill": "qa-vulnerable",
+              "castId": 5,
+              "effect": {
+                "kind": "vulnerable",
+                "duration": 900,
+                "strength": 0.15,
+                "scope": "hit",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false
+              },
+              "started": 512,
+              "ends": 1412,
+              "next": 1412,
+              "emitted": 0,
+              "sourcePosition": {
+                "x": 6,
+                "y": 6
+              },
+              "penetration": 0
+            }
+          ],
+          "projectiles": []
+        }
+      ],
+      "screenshot": true
+    }
+  ],
+  "errors": [],
+  "transport": [
+    {
+      "url": "/api/health",
+      "status": 200,
+      "elapsedMs": 2.219699999997829
+    },
+    {
+      "url": "/api/character",
+      "status": 401,
+      "elapsedMs": 1.042700000001787
+    },
+    {
+      "url": "/api/session/login",
+      "status": 200,
+      "elapsedMs": 73.07469999999739
+    },
+    {
+      "url": "/api/character",
+      "status": 404,
+      "elapsedMs": 5.151699999998527
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 93.81069999999818
+    },
+    {
+      "url": "/api/control",
+      "status": 200,
+      "elapsedMs": 14.097099999999045
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 80.45390000000043
+    },
+    {
+      "url": "/api/dungeons/catalog",
+      "status": 200,
+      "elapsedMs": 8.528399999999237
+    },
+    {
+      "url": "/api/dungeons/lobbies",
+      "status": 200,
+      "elapsedMs": 9.232799999997951
+    },
+    {
+      "url": "/api/tasks",
+      "status": 200,
+      "elapsedMs": 33.54320000000007
+    },
+    {
+      "url": "/api/story",
+      "status": 200,
+      "elapsedMs": 37.77419999999984
+    },
+    {
+      "url": "/api/dungeons/active",
+      "status": 200,
+      "elapsedMs": 16.507100000002538
+    },
+    {
+      "url": "/api/location",
+      "status": 200,
+      "elapsedMs": 119.86239999999816
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 26.94640000000072
+    },
+    {
+      "url": "/api/story",
+      "status": 200,
+      "elapsedMs": 4.610000000000582
+    },
+    {
+      "url": "/api/tasks",
+      "status": 200,
+      "elapsedMs": 4.798399999999674
+    },
+    {
+      "url": "/api/health",
+      "status": 200,
+      "elapsedMs": 1.631999999997788
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 37.14409999999771
+    },
+    {
+      "url": "/api/control",
+      "status": 200,
+      "elapsedMs": 11.194299999995565
+    },
+    {
+      "url": "/api/story",
+      "status": 200,
+      "elapsedMs": 4.108400000004622
+    },
+    {
+      "url": "/api/tasks",
+      "status": 200,
+      "elapsedMs": 13.521600000000035
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 58.52189999999973
+    },
+    {
+      "url": "/api/dungeons/catalog",
+      "status": 200,
+      "elapsedMs": 4.441899999997986
+    },
+    {
+      "url": "/api/dungeons/lobbies",
+      "status": 200,
+      "elapsedMs": 10.098699999995006
+    },
+    {
+      "url": "/api/dungeons/active",
+      "status": 200,
+      "elapsedMs": 10.620600000002014
+    },
+    {
+      "url": "/api/location",
+      "status": 200,
+      "elapsedMs": 104.35889999999927
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 60.26610000000073
+    },
+    {
+      "url": "/api/story",
+      "status": 200,
+      "elapsedMs": 3.2534000000014203
+    },
+    {
+      "url": "/api/tasks",
+      "status": 200,
+      "elapsedMs": 3.517699999996694
+    },
+    {
+      "url": "/api/control",
+      "status": 200,
+      "elapsedMs": 5.852599999998347
+    },
+    {
+      "url": "/api/health",
+      "status": 200,
+      "elapsedMs": 1.8388000000049942
+    },
+    {
+      "url": "/api/content",
+      "status": 200,
+      "elapsedMs": 3.9769000000014785
+    },
+    {
+      "url": "/api/health",
+      "status": 200,
+      "elapsedMs": 1.0059000000037486
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 87.9951000000001
+    },
+    {
+      "url": "/api/control",
+      "status": 200,
+      "elapsedMs": 15.783400000000256
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 51.43880000000354
+    },
+    {
+      "url": "/api/story",
+      "status": 200,
+      "elapsedMs": 4.043899999996938
+    },
+    {
+      "url": "/api/tasks",
+      "status": 200,
+      "elapsedMs": 44.89860000000044
+    },
+    {
+      "url": "/api/dungeons/catalog",
+      "status": 200,
+      "elapsedMs": 36.55800000000454
+    },
+    {
+      "url": "/api/dungeons/lobbies",
+      "status": 200,
+      "elapsedMs": 64.9939000000013
+    },
+    {
+      "url": "/api/dungeons/active",
+      "status": 200,
+      "elapsedMs": 14.147500000006403
+    },
+    {
+      "url": "/api/location",
+      "status": 200,
+      "elapsedMs": 63.93420000000333
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 20.01980000000185
+    },
+    {
+      "url": "/api/story",
+      "status": 200,
+      "elapsedMs": 4.277600000001257
+    },
+    {
+      "url": "/api/tasks",
+      "status": 200,
+      "elapsedMs": 5.044099999999162
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 12.4204000000027
+    },
+    {
+      "url": "/api/gear/equip",
+      "status": 200,
+      "elapsedMs": 84.75940000000264
+    },
+    {
+      "url": "/api/health",
+      "status": 200,
+      "elapsedMs": 1.359199999998964
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 53.301800000001094
+    },
+    {
+      "url": "/api/control",
+      "status": 200,
+      "elapsedMs": 26.565200000004552
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 46.970799999995506
+    },
+    {
+      "url": "/api/story",
+      "status": 200,
+      "elapsedMs": 38.808399999994435
+    },
+    {
+      "url": "/api/tasks",
+      "status": 200,
+      "elapsedMs": 38.39659999999276
+    },
+    {
+      "url": "/api/dungeons/catalog",
+      "status": 200,
+      "elapsedMs": 25.776500000007218
+    },
+    {
+      "url": "/api/dungeons/lobbies",
+      "status": 200,
+      "elapsedMs": 2.2352000000100816
+    },
+    {
+      "url": "/api/dungeons/active",
+      "status": 200,
+      "elapsedMs": 14.848500000007334
+    },
+    {
+      "url": "/api/location",
+      "status": 200,
+      "elapsedMs": 28.468999999997322
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 15.759300000005169
+    },
+    {
+      "url": "/api/tasks",
+      "status": 200,
+      "elapsedMs": 22.275699999998324
+    },
+    {
+      "url": "/api/story",
+      "status": 200,
+      "elapsedMs": 25.160799999997835
+    },
+    {
+      "url": "/api/skills/activate",
+      "status": 200,
+      "elapsedMs": 84.98620000001392
+    },
+    {
+      "url": "/api/story",
+      "status": 200,
+      "elapsedMs": 4.063800000003539
+    },
+    {
+      "url": "/api/tasks",
+      "status": 200,
+      "elapsedMs": 4.460999999995693
+    },
+    {
+      "url": "/api/skills",
+      "status": 200,
+      "elapsedMs": 46.34769999999844
+    },
+    {
+      "url": "/api/story",
+      "status": 200,
+      "elapsedMs": 1.9680999999982305
+    },
+    {
+      "url": "/api/tasks",
+      "status": 200,
+      "elapsedMs": 2.001799999998184
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 35.08230000000913
+    },
+    {
+      "url": "/api/skills",
+      "status": 200,
+      "elapsedMs": 32.20709999999963
+    },
+    {
+      "url": "/api/dungeons/command",
+      "status": 200,
+      "elapsedMs": 133.45669999999518
+    },
+    {
+      "url": "/api/health",
+      "status": 200,
+      "elapsedMs": 1.9974999999976717
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 32.25890000000072
+    },
+    {
+      "url": "/api/control",
+      "status": 200,
+      "elapsedMs": 5.735400000005029
+    },
+    {
+      "url": "/api/story",
+      "status": 200,
+      "elapsedMs": 2.830600000001141
+    },
+    {
+      "url": "/api/tasks",
+      "status": 200,
+      "elapsedMs": 4.358800000001793
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 100.06489999999758
+    },
+    {
+      "url": "/api/dungeons/catalog",
+      "status": 200,
+      "elapsedMs": 3.837199999994482
+    },
+    {
+      "url": "/api/dungeons/lobbies",
+      "status": 200,
+      "elapsedMs": 9.770199999999022
+    },
+    {
+      "url": "/api/dungeons/active",
+      "status": 200,
+      "elapsedMs": 5.376900000002934
+    },
+    {
+      "url": "/api/dungeons/command",
+      "status": 200,
+      "elapsedMs": 44.50470000000496
+    },
+    {
+      "url": "/api/dungeons/command",
+      "status": 200,
+      "elapsedMs": 207.57249999999476
+    },
+    {
+      "url": "/api/story",
+      "status": 200,
+      "elapsedMs": 9.874400000000605
+    },
+    {
+      "url": "/api/tasks",
+      "status": 200,
+      "elapsedMs": 10.526199999992969
+    },
+    {
+      "url": "/api/control/renew",
+      "status": 200,
+      "elapsedMs": 63.516600000002654
+    },
+    {
+      "url": "/api/health",
+      "status": 200,
+      "elapsedMs": 3.0834000000031665
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 43.82719999999972
+    },
+    {
+      "url": "/api/control",
+      "status": 200,
+      "elapsedMs": 12.406199999997625
+    },
+    {
+      "url": "/api/story",
+      "status": 200,
+      "elapsedMs": 11.522299999996903
+    },
+    {
+      "url": "/api/tasks",
+      "status": 200,
+      "elapsedMs": 11.863400000002002
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 48.43630000000121
+    },
+    {
+      "url": "/api/dungeons/catalog",
+      "status": 200,
+      "elapsedMs": 9.251499999998487
+    },
+    {
+      "url": "/api/dungeons/lobbies",
+      "status": 200,
+      "elapsedMs": 16.82640000000538
+    },
+    {
+      "url": "/api/dungeons/active",
+      "status": 200,
+      "elapsedMs": 13.677999999999884
+    },
+    {
+      "url": "/api/control/renew",
+      "status": 200,
+      "elapsedMs": 85.89879999999539
+    },
+    {
+      "url": "/api/dungeons/command",
+      "status": 200,
+      "elapsedMs": 248.54950000000827
+    },
+    {
+      "url": "/api/dungeons/command",
+      "status": 200,
+      "elapsedMs": 126.32820000000356
+    },
+    {
+      "url": "/api/health",
+      "status": 200,
+      "elapsedMs": 1.8043999999936204
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 42.757199999992736
+    },
+    {
+      "url": "/api/control",
+      "status": 200,
+      "elapsedMs": 13.711800000004587
+    },
+    {
+      "url": "/api/story",
+      "status": 200,
+      "elapsedMs": 2.7549999999901047
+    },
+    {
+      "url": "/api/tasks",
+      "status": 200,
+      "elapsedMs": 3.560399999987567
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 51.26929999999993
+    },
+    {
+      "url": "/api/dungeons/catalog",
+      "status": 200,
+      "elapsedMs": 2.731599999999162
+    },
+    {
+      "url": "/api/dungeons/lobbies",
+      "status": 200,
+      "elapsedMs": 2.1576999999961117
+    },
+    {
+      "url": "/api/dungeons/active",
+      "status": 200,
+      "elapsedMs": 8.235599999999977
+    },
+    {
+      "url": "/api/location",
+      "status": 200,
+      "elapsedMs": 72.87389999999141
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 17.281100000007427
+    },
+    {
+      "url": "/api/story",
+      "status": 200,
+      "elapsedMs": 48.934700000012526
+    },
+    {
+      "url": "/api/tasks",
+      "status": 200,
+      "elapsedMs": 49.79649999999674
+    },
+    {
+      "url": "/api/character",
+      "status": 200,
+      "elapsedMs": 29.01909999999043
+    }
+  ],
+  "httpErrors": [
+    {
+      "url": "http://127.0.0.1:8844/api/character",
+      "status": 401,
+      "body": {
+        "code": "AUTH",
+        "message": "请先登录。"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8844/api/character",
+      "status": 404,
+      "body": {
+        "code": "CHARACTER",
+        "message": "请先创建角色。"
+      }
+    }
+  ],
+  "assetsReadyBeforeLogin": true,
+  "activationGuard": {
+    "realRestoreHeldUntilKeyboardCheck": true,
+    "menuDisabled": true,
+    "keyboardBlockedWhileBusy": true,
+    "panelStableAfterReady": true
+  },
+  "failedRequests": [
+    {
+      "url": "http://127.0.0.1:8844/api/story",
+      "failure": {
+        "errorText": "net::ERR_CONNECTION_REFUSED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8844/api/tasks",
+      "failure": {
+        "errorText": "net::ERR_CONNECTION_REFUSED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8844/api/story",
+      "failure": {
+        "errorText": "net::ERR_CONNECTION_REFUSED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8844/api/story",
+      "failure": {
+        "errorText": "net::ERR_CONNECTION_REFUSED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8844/api/story",
+      "failure": {
+        "errorText": "net::ERR_CONNECTION_REFUSED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8844/api/story",
+      "failure": {
+        "errorText": "net::ERR_CONNECTION_REFUSED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8844/api/story",
+      "failure": {
+        "errorText": "net::ERR_CONNECTION_REFUSED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8844/api/story",
+      "failure": {
+        "errorText": "net::ERR_CONNECTION_REFUSED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8844/api/story",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    }
+  ],
+  "originalGearUnchanged": true,
+  "cleanup": {
+    "temporary": true,
+    "stopped": true,
+    "bytes_before": 800788837,
+    "bytes_after": 0,
+    "bytes_removed": 800788837
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "mode": "built-in image_gen image edit",
+  "model": "not exposed by built-in tool",
+  "prompt": "Use case: precise-object-edit.\nAsset type: one isolated face/head attachment PNG for an existing 2D modular Spine character, not a character illustration.\nInput image 1 is the edit target: a 96x96 transparent PNG showing a brown-haired youthful chibi hero head turned slightly toward screen left.\nPrimary request: retain the entire existing head and add ONE subtle thin healed pale scar near the outer eyebrow and upper cheek. The scar should be tasteful and small, visible at native sprite resolution, without blood or an open wound.\nInvariants: keep the exact existing face shape, eye positions and eye color, gaze, expression, jaw, ear, brown hairstyle, hair silhouette, head angle, light direction, warm shaded hand-painted cartoon style and outline weight. Do not redesign the head. Keep the original head's relative position and visual bounds within a square canvas; retain transparent padding.\nScene/backdrop: genuinely transparent background, including all empty area around the head. Preserve alpha. Output only the head attachment. No neck, shoulders, clothing, body, accessories outside the head, background, shadow under the asset, checkerboard pixels, text, watermark, border, or showcase sheet.",
+  "editTarget": "assets/wardrobe/stylized/100011-face.png",
+  "alignmentReference": "assets/wardrobe/sets/100011/face.png",
+  "generatedFile": "C:/Users/ccc/.codex/generated_images/01a0f5bb-3cb4-79b1-8bd2-9dc62c4aa191/exec-36658a97-3e4b-4f8d-b04b-0f5486f62660.png",
+  "transparentBackground": true,
+  "outputs": {
+    "raw": "raw.png",
+    "normalized": "face.png"
+  },
+  "limitations": [
+    "Canvas and alpha bounds alignment preserve the existing attachment rectangle, not pixel-perfect anatomical landmarks.",
+    "Generated head includes face and front hair together, matching the source attachment.",
+    "No skeleton, atlas, manifest or runtime integration was modified."
+  ],
+  "normalization": {
+    "operation": "Crop the visible alpha>=8 subject bounds (discard remote nearly-transparent generator noise), Lanczos3 resize into original attachment bounds, and extend transparent padding to the original canvas. Preserve alpha within cropped artwork; no painted pixels or artistic filters added in code.",
+    "referenceCanvas": {
+      "width": 96,
+      "height": 96
+    },
+    "referenceAlphaBounds": {
+      "left": 17,
+      "top": 25,
+      "width": 61,
+      "height": 51
+    },
+    "rawVisibleAlphaThreshold": 8,
+    "rawVisibleAlphaBounds": {
+      "left": 236,
+      "top": 312,
+      "width": 814,
+      "height": 672
+    },
+    "finalAlphaBounds": {
+      "left": 17,
+      "top": 25,
+      "width": 61,
+      "height": 51
+    }
+  },
+  "hashes": {
+    "editTarget": "be151869559fbef9027697f90605173f860bad727aed772863e1b3acbbb46ac0",
+    "alignmentReference": "b70ee458f12abf38636c404d5a46f44e7b760c97191128e843dbc8696e1532b0",
+    "raw": "4de112756a6a39a5effac04032cc731ff627551794787c9f165c3959151609c9",
+    "normalized": "c9ea1ffdc216ef99478a3ff5ec0a4ba2af95362ab03201b8f6c34fb90800c686"
+  },
+  "validation": {
+    "canvas": {
+      "width": 96,
+      "height": 96
+    },
+    "channels": 4,
+    "transparentPixels": 6952,
+    "opaquePixels": 109,
+    "partialAlphaPixels": 2155,
+    "cornerAlpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "visualInspection": "Final native-resolution files inspected. Scar and rune are visible; brown hair, head angle, expression and face identity remain close to reference. AI edit can shift small interior anatomy details; exact landmark identity is not guaranteed."
+  }
+}

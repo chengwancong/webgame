@@ -1,0 +1,343 @@
+{
+ "generated": "2026-09-28",
+ "purpose": "Evidence for the four items the second independent acceptance could not sign off.",
+ "full_check_run": {
+  "command": "make check",
+  "exit_code": 0,
+  "seconds": 47.7,
+  "ok": true,
+  "tests": {
+   "passed": 43,
+   "failed": 0,
+   "skipped": 0,
+   "required_tests": 42,
+   "missing_required": []
+  },
+  "steps": {
+   "content": {
+    "ok": true,
+    "seconds": 0.17
+   },
+   "compile-client": {
+    "ok": true,
+    "seconds": 0.3
+   },
+   "export-web": {
+    "ok": true,
+    "seconds": 1.76
+   },
+   "postgres": {
+    "ok": true,
+    "seconds": 0.53
+   },
+   "migrate": {
+    "ok": true,
+    "seconds": 0.18
+   },
+   "pytest": {
+    "ok": true,
+    "seconds": 36.83
+   },
+   "browser-flow": {
+    "ok": true,
+    "seconds": 7.87
+   }
+  },
+  "cleanup": {
+   "run_dir": "/var/folders/8y/bmbw4kv90zv5c_839txf8vjh0000gn/T/awr-check-v7ex1vgl",
+   "removed": true,
+   "before_bytes": 93757607,
+   "after_bytes": 0,
+   "errors": []
+  },
+  "cleanup_entries": [
+   {
+    "resource": "postgres",
+    "work_dir": "/var/folders/8y/bmbw4kv90zv5c_839txf8vjh0000gn/T/awr-check-v7ex1vgl/awr-pg-8lxsvsv9",
+    "data_dir": "/var/folders/8y/bmbw4kv90zv5c_839txf8vjh0000gn/T/awr-check-v7ex1vgl/awr-pg-8lxsvsv9/data",
+    "port": 62537,
+    "bytes": 40514192,
+    "stopped": true,
+    "verified": true,
+    "detail": "server stopped"
+   }
+  ],
+  "reaped_stale_runs_at_startup": []
+ },
+ "default_entry_clean_terminal": {
+  "environment": "every ABYSS* variable and PYTHONPATH removed: env -u PYTHONPATH -u ABYSS_DSN -u ABYSS_CORS_ORIGINS -u ABYSS_WEB_BUILD -u ABYSS_WEB_PORT -u ABYSS_API_PORT -u ABYSS_DEV_EXIT_AFTER make dev",
+  "addresses": {
+   "page": "http://127.0.0.1:8602/",
+   "api": "http://127.0.0.1:8601"
+  },
+  "page_http": {
+   "status": 200,
+   "bytes": 5450
+  },
+  "api_health": {
+   "status": "ok",
+   "database": "ok"
+  },
+  "cors_preflight": {
+   "request": "OPTIONS /sessions, Origin http://127.0.0.1:8602",
+   "status": 200,
+   "note": "returned 405 before the first remediation; the allow-list is still restricted to that one origin"
+  },
+  "interrupt_shutdown_stdout": "stopped: api (pid 84166); static server :8602; postgres (stopped, deleted /tmp/awr-mkdev-check/awr-pg-52tiot40, 40407185 bytes)",
+  "after_shutdown": {
+   "live_awr_pg_directories": 0,
+   "ports_listening": 0,
+   "scratch_bytes_remaining": 0
+  }
+ },
+ "manual_web_flow_real_input": {
+  "entry": "http://127.0.0.1:8602/index.html",
+  "api": "http://127.0.0.1:8601",
+  "typed_login": "m0manual562639",
+  "typed_password_length": 20,
+  "used_aw_auto": false,
+  "used_url_credentials": false,
+  "coordinates": {
+   "login_field": [
+    330,
+    83
+   ],
+   "password_field": [
+    330,
+    126
+   ],
+   "login_button": [
+    47,
+    168
+   ],
+   "start_button": [
+    330,
+    244
+   ]
+  },
+  "status_text": "战斗结果：胜利",
+  "trace": {
+   "character": "回廊行者",
+   "display_source": "server",
+   "encounter": "m0_opening",
+   "encounter_id": "m0_opening",
+   "events": [
+    {
+     "kind": "rejected",
+     "reason": "out_of_range",
+     "skill_id": "strike",
+     "tick": 1
+    },
+    {
+     "actor_id": "hero",
+     "kind": "cast_started",
+     "skill_id": "strike",
+     "tick": 9
+    },
+    {
+     "amount": 6,
+     "cause": "auto",
+     "kind": "damage",
+     "source": "hero",
+     "target": "raider_1",
+     "tick": 9
+    },
+    {
+     "amount": 12,
+     "cause": "strike",
+     "kind": "damage",
+     "source": "hero",
+     "target": "raider_1",
+     "tick": 10
+    },
+    {
+     "amount": 6,
+     "cause": "auto",
+     "kind": "damage",
+     "source": "raider_1",
+     "target": "hero",
+     "tick": 13
+    },
+    {
+     "amount": 5,
+     "cause": "auto",
+     "kind": "damage",
+     "source": "hero",
+     "target": "raider_1",
+     "tick": 15
+    },
+    {
+     "actor_id": "hero",
+     "kind": "cast_started",
+     "skill_id": "strike",
+     "tick": 17
+    },
+    {
+     "amount": 11,
+     "cause": "strike",
+     "kind": "damage",
+     "source": "hero",
+     "target": "raider_1",
+     "tick": 18
+    },
+    {
+     "amount": 6,
+     "cause": "auto",
+     "kind": "damage",
+     "source": "hero",
+     "target": "raider_1",
+     "tick": 21
+    },
+    {
+     "kind": "death",
+     "target": "raider_1",
+     "tick": 21
+    },
+    {
+     "amount": 4,
+     "cause": "auto",
+     "kind": "damage",
+     "source": "raider_2",
+     "target": "hero",
+     "tick": 23
+    },
+    {
+     "actor_id": "hero",
+     "kind": "cast_started",
+     "skill_id": "strike",
+     "tick": 25
+    },
+    {
+     "amount": 12,
+     "cause": "strike",
+     "kind": "damage",
+     "source": "hero",
+     "target": "raider_2",
+     "tick": 26
+    },
+    {
+     "amount": 7,
+     "cause": "auto",
+     "kind": "damage",
+     "source": "hero",
+     "target": "raider_2",
+     "tick": 27
+    },
+    {
+     "actor_id": "hero",
+     "kind": "cast_started",
+     "skill_id": "strike",
+     "tick": 33
+    },
+    {
+     "amount": 5,
+     "cause": "auto",
+     "kind": "damage",
+     "source": "hero",
+     "target": "raider_2",
+     "tick": 33
+    },
+    {
+     "amount": 6,
+     "cause": "auto",
+     "kind": "damage",
+     "source": "raider_2",
+     "target": "hero",
+     "tick": 33
+    },
+    {
+     "amount": 12,
+     "cause": "strike",
+     "kind": "damage",
+     "source": "hero",
+     "target": "raider_2",
+     "tick": 34
+    },
+    {
+     "amount": 6,
+     "cause": "auto",
+     "kind": "damage",
+     "source": "hero",
+     "target": "raider_2",
+     "tick": 39
+    },
+    {
+     "kind": "death",
+     "target": "raider_2",
+     "tick": 39
+    }
+   ],
+   "outcome": "cleared",
+   "seed": 20260927,
+   "snapshot": {
+    "actors": [
+     {
+      "alive": true,
+      "hp": 104,
+      "id": "hero",
+      "max_hp": 120,
+      "ready_tick": 45,
+      "side": "player",
+      "x": 7.8
+     },
+     {
+      "alive": false,
+      "hp": 0,
+      "id": "raider_1",
+      "max_hp": 40,
+      "ready_tick": 23,
+      "side": "enemy",
+      "x": 9.2
+     },
+     {
+      "alive": false,
+      "hp": 0,
+      "id": "raider_2",
+      "max_hp": 40,
+      "ready_tick": 43,
+      "side": "enemy",
+      "x": 9.2
+     }
+    ],
+    "outcome": "cleared",
+    "tick": 39
+   },
+   "source": "server",
+   "tick": 39
+  },
+  "trace_tick": 39,
+  "trace_outcome": "cleared",
+  "trace_events": 20,
+  "console_errors": []
+ },
+ "orphan_reaped_by_project_tooling": {
+  "note": "A shell teardown killed one dev.py mid-cleanup during this round and left a real postmaster on port 58007 with its files already listed for deletion; the project reaper stopped it and removed the directory. A second orphan from a previous round (owner.json created_at 09:20:11) was also reaped. Both are extra to this round's own accounting.",
+  "records": [
+   {
+    "path": "/tmp/awr-manual-81571/awr-pg-7joxy_5i",
+    "owner_pid": 81586,
+    "postmaster_pid_alive_before": 81601,
+    "port_before": 58007,
+    "stopped": true,
+    "verified": true,
+    "bytes_removed": 40407226,
+    "removed": true
+   },
+   {
+    "path": "/tmp/awr-pg-syjaep_1",
+    "owner_pid": 68297,
+    "created_at": "2026-09-28T09:20:11",
+    "stopped": true,
+    "verified": true,
+    "detail": "no postmaster.pid; nothing running",
+    "bytes_removed": 40407209,
+    "removed": true,
+    "counted_in_this_round": false
+   }
+  ]
+ },
+ "this_round_scratch_cleanup": {
+  "before_bytes": 694,
+  "after_bytes": 0
+ }
+}

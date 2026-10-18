@@ -1,0 +1,431 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+ ✓ tests/island-story-player-flows.database.test.ts (11 tests) 407800ms
+   ✓ 雾铃岛 follows all real clue orders and confirms convergence and rewards without duplicate history  33748ms
+   ✓ 雾铃岛 opens its gate and boss without optional quests, preserves individual phase and reconnect, and takes regional quests in parallel  3395ms
+   ✓ 赤炉岛 follows all real clue orders and confirms convergence and rewards without duplicate history  34333ms
+   ✓ 赤炉岛 opens its gate and boss without optional quests, preserves individual phase and reconnect, and takes regional quests in parallel  4149ms
+   ✓ 霜镜岛 follows all real clue orders and confirms convergence and rewards without duplicate history  27249ms
+   ✓ 霜镜岛 opens its gate and boss without optional quests, preserves individual phase and reconnect, and takes regional quests in parallel  3355ms
+   ✓ 沉星岛 follows all real clue orders and confirms convergence and rewards without duplicate history  58766ms
+   ✓ 沉星岛 opens its gate and boss without optional quests, preserves individual phase and reconnect, and takes regional quests in parallel  6290ms
+   ✓ real victories across the six islands unlock every configured final-phase waypoint, retire only authored invasion camps and allow later camp-fact quests without invented kills  16850ms
+   ✓ 龙眠岛 follows all real clue orders and confirms convergence and rewards without duplicate history  193419ms
+   ✓ 龙眠岛 opens its gate and boss without optional quests, preserves individual phase and reconnect, and takes regional quests in parallel  26073ms
+stdout | tests/earned-all-quests.database.test.ts > a genuinely earned character walks every authored story and side quest through World/PG, keeping late world facts and replay consistent
+{"pass":0,"completed":165,"remaining":["ss-c01-t06","ss-c02-t06","ss-c03-t04","ss-c03-t05","ss-c03-t06","ss-c04-t03","ss-c04-t04","ss-c05-t06","ss-c06-t06","ow-rift-dungeon-guide3"]}
+
+stdout | tests/earned-all-quests.database.test.ts > a genuinely earned character walks every authored story and side quest through World/PG, keeping late world facts and replay consistent
+{"pass":1,"completed":174,"remaining":["ow-rift-dungeon-guide3"]}
+
+ ✓ tests/earned-all-quests.database.test.ts (1 test) 384255ms
+   ✓ a genuinely earned character walks every authored story and side quest through World/PG, keeping late world facts and replay consistent  384254ms
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"no-quests","round":0,"level":2,"minutes":0.6920985961914062,"bosses":[]}
+
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"no-quests","round":40,"level":17,"minutes":30.83668877360026,"bosses":["ss-map-boss-1","ss-map-boss-2"]}
+
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"no-quests","round":80,"level":33,"minutes":64.12740259602865,"bosses":["ss-map-boss-1","ss-map-boss-2","ss-map-boss-3","ss-map-boss-4","ss-map-boss-5"]}
+
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"no-quests","round":120,"level":39,"minutes":97.54556207275391,"bosses":["ss-map-boss-1","ss-map-boss-2","ss-map-boss-3","ss-map-boss-4","ss-map-boss-5","ss-map-boss-6"]}
+
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"no-quests","round":160,"level":43,"minutes":123.8701071858724,"bosses":["ss-map-boss-1","ss-map-boss-2","ss-map-boss-3","ss-map-boss-4","ss-map-boss-5","ss-map-boss-6"]}
+
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"no-quests","round":200,"level":45,"minutes":149.96718083496094,"bosses":["ss-map-boss-1","ss-map-boss-2","ss-map-boss-3","ss-map-boss-4","ss-map-boss-5","ss-map-boss-6"]}
+
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"no-quests","round":240,"level":47,"minutes":175.91060127766926,"bosses":["ss-map-boss-1","ss-map-boss-2","ss-map-boss-3","ss-map-boss-4","ss-map-boss-5","ss-map-boss-6"]}
+
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"no-quests","round":280,"level":49,"minutes":201.09055196533203,"bosses":["ss-map-boss-1","ss-map-boss-2","ss-map-boss-3","ss-map-boss-4","ss-map-boss-5","ss-map-boss-6"]}
+
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"no-quests","level":50,"minutes":212.1756166341146,"bosses":["ss-map-boss-1","ss-map-boss-2","ss-map-boss-3","ss-map-boss-4","ss-map-boss-5","ss-map-boss-6"],"failures":[]}
+
+ ✓ tests/world-natural-calendar.database.test.ts (1 test) 157111ms
+   ✓ runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent  157110ms
+ ✓ tests/story.database.test.ts (4 tests) 69672ms
+   ✓ all six chapters progress through server movement, combat, branch selection, rescue, defend and boss settlement exactly once  41798ms
+   ✓ real-time defend and a server restart preserve phase, held time, exact enemies and rewards before a manual boss transition  27549ms
+stdout | tests/build-variety-r3.test.ts > all atoms stay within the global 24-action budget for ten minutes
+{"pressure":{"seed":41,"ticks":18000,"maxActions":24,"triggeredRules":38}}
+
+ ✓ tests/build-variety-r3.test.ts (77 tests) 42573ms
+   ✓ all atoms stay within the global 24-action budget for ten minutes  42357ms
+stderr | tests/dungeon-instance.database.test.ts > an unrecoverable server checkpoint refunds entry cost once, preserves previous receipts and closes participation
+Dungeon checkpoint cannot be restored 9e7e3fe0-4689-4429-bbf5-901d3431a861 Error: Unknown combat checkpoint version
+    at World.restore (G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/packages/simulation/index.ts:1275:36)
+    at DungeonService.hydrate (G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/apps/api/src/dungeon-service.ts:73:75)
+    at DungeonService.start (G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/apps/api/src/dungeon-service.ts:69:23)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+ ✓ tests/dungeon-instance.database.test.ts (20 tests) 36215ms
+   ✓ creates, loads, freezes configuration and awards the real boss once without a client kill report  1873ms
+   ✓ one active instance, server-enforced build lock, retained disconnect and ticking without clients  1013ms
+   ✓ shared realtime roster, leadership transfer, checkpoint-only join and personal departure  1056ms
+   ✓ per-definition fees and short retention are enforced by real transactions and an expired slot cannot rejoin  1602ms
+   ✓ simulation disconnection ends only that member while the remaining actor and simulation clock continue  740ms
+   ✓ loading failure does not charge a fee or quota and success quota is charged only by the immutable terminal transaction  2233ms
+   ✓ server enforces a short deadline and never simulates or rewards a later kill  686ms
+   ✓ a downed solo character fails and can return without losing committed inventory  563ms
+   ✓ nearby rescue uses configured health, movement interrupts it, and retained allies can be rescued  1601ms
+   ✓ all downed characters fail the whole instance, while a valid final kill takes priority over death in the same tick  1434ms
+   ✓ an unrecoverable server checkpoint refunds entry cost once, preserves previous receipts and closes participation  530ms
+   ✓ twenty independent accounts share one authoritative encounter and retain the configured 2/4/14 roster  8962ms
+   ✓ checkpoint replacement pays once, receives no earlier loot, and stage transition carries health instead of resurrecting an old wave  5951ms
+   ✓ restores pending casts and projectiles with exact cooldowns and frozen stats, without a new entry charge or killed enemy reset  832ms
+   ✓ all disconnected bodies still take damage while projectiles, zone lifetimes, cooldowns and the deadline advance  1247ms
+   ✓ late reconnect or cast cannot be inserted into historical catch-up frames after the deadline  611ms
+   ✓ seven-day cleanup removes raw battle detail but preserves the true result, rewards and command receipts  2391ms
+   ✓ real permit and WebSocket retain resolved monster identities, independent levels and the creation-time catalogue  651ms
+   ✓ real full-health casts restore mana and cleanse a recorded debuff through the server  1208ms
+   ✓ guardian consumes one lethal interception across a real database restart and a second lethal hit ends participation  962ms
+ ✓ tests/equipment-runtime.database.test.ts (7 tests) 36949ms
+   ✓ the current island campaign crafts all six slots and reinforces them beyond the legacy cap  1388ms
+   ✓ all 324 items can be earned by real crafting commands, equipped, quoted, reinforced once and restored  34149ms
+ ✓ tests/stage-keys.database.test.ts (6 tests) 23515ms
+   ✓ settles a real dungeon chest and elite sources with frozen private rules, then crafts one actual item with matching idempotent receipts and no cross-stage material  4413ms
+   ✓ a real layer4 boss victory opens5 and a newly started layer5 freezes the declared relative difficulty  4404ms
+   ✓ changing the private probability for a newly created instance grants an actual key on an actual elite kill  4190ms
+   ✓ returns persisted diagnostics from actual damage and the real timeout; reconnect returns the same result  1835ms
+   ✓ real endgame material sources craft canonical cores or capped glyph overflow, with identical replay and persisted power after reconnect  8332ms
+ ✓ tests/build-variety-r7.database.test.ts (4 tests) 23652ms
+   ✓ real private offers, same-tier reroll, selection replay, no free heal and durable reconnect use only frozen entry data  897ms
+   ✓ per-dungeon one-round and reroll overrides freeze in real commands instead of the global three-round policy  454ms
+   ✓ real next command keeps the same selected build and accumulated rule counters across stages  6702ms
+   ✓ controlled world-IV catalogue adds a fourth offer only after real boss damage crosses half health  15513ms
+ ✓ tests/world-loot-cadence.database.test.ts (1 test) 67270ms
+   ✓ measures earned camp loot through real World/PG and preserves filtered rewards and pickup replay  67269ms
+ ✓ tests/authored-dungeon-entry.database.test.ts (2 tests) 15181ms
+   ✓ a player enters every authored island dungeon through the real catalogue and create/leave commands without copying island access into legacy progression  6210ms
+   ✓ an actual production endgame dungeon runs its declared rooms, opens the next world tier, and resumes identical confirmed results  8764ms
+ ✓ tests/wind-island-driver.database.test.ts (7 tests) 9458ms
+   ✓ runs both real parallel clue orders, exposes convergence only after A+B, and keeps task records unique on retry  4246ms
+   ✓ settles actual camp and clue facts before accepting a regional task, then confirms one reward and archive  1605ms
+   ✓ uses a real boss victory for the no-quest phase, isolates two characters, applies condition edits and preserves reconnect  2432ms
+   ✓ opens the world gate from real guard kills without story completion and keeps one durable reward per guard  484ms
+ ✓ tests/starsea-events.database.test.ts (2 tests) 5833ms
+   ✓ a zone tide night joins the live permit and its actually killed invader drops rare or better  5619ms
+ ✓ tests/database.test.ts (39 tests) 4121ms
+   ✓ activation migration preserves trained and equipped skills and runs once  391ms
+   ✓ regional migration uses confirmed kill sources, preserves rewards, and runs only once  419ms
+ ✓ tests/stage-key-ledger.database.test.ts (1 test) 3103ms
+   ✓ keeps every actual elite fragment in character progress, instance gains, receipt and immutable ledger when ordinary world progression also awards  2883ms
+ ✓ tests/api-startup-preflight.test.ts (1 test) 2607ms
+   ✓ rejects syntax and content errors before restarting the healthy API  2606ms
+ ✓ tests/campaign-balance.test.ts (8 tests | 2 skipped) 2837ms
+   ✓ starter can earn its way through all six areas without relying on randomized gear  2827ms
+ ✓ tests/progression-challenges.test.ts (6 tests) 2791ms
+   ✓ requires 20 actual ready players, enforces roles, locks build versions and settles every member once  1981ms
+ ✓ tests/field-dungeon-facts.database.test.ts (1 test) 2059ms
+   ✓ enforces field-dungeon unlock, records an actual server boss victory, recognizes an earlier completion at acceptance and archives its reward exactly once  1871ms
+ ✓ tests/field-activities.database.test.ts (7 tests) 2330ms
+   ✓ opens a chest once per character with actual private 2–4 item rewards and command replay without duplicate ledger or rewards  307ms
+   ✓ defend executes all real waves, persists the exact checkpoint across app restart, completes and awards only once  468ms
+   ✓ horde executes all real waves, persists the exact checkpoint across app restart, completes and awards only once  438ms
+   ✓ new higher-tier events consume changed configuration, retained events freeze difficulty and currency, and actual World success claims once  318ms
+ ✓ tests/world-island-quest-config.test.ts (1 test) 2403ms
+   ✓ rejects all three required deliberate progression breaks for each authored island  2403ms
+ ✓ tests/starsea-reputation.database.test.ts (1 test) 1869ms
+   ✓ persists actual simulated camp kills as reputation exactly once through the battle API  1725ms
+ ✓ tests/field-camps.database.test.ts (10 tests) 1974ms
+   ✓ runs repeatable bounties: board at an activated outpost, server-confirmed zone kills only, one claim per instance, cooldown redraw  496ms
+ ✓ tests/quest-v2.database.test.ts (2 tests) 1597ms
+   ✓ db15 preserves every non-quest field and every historical row; migration is idempotent  1409ms
+ ✓ tests/tasks.database.test.ts (6 tests) 1616ms
+   ✓ migrates proven legacy payments, leaves unknown history empty and preserves wallets on repeated startup  1064ms
+ ✓ tests/world-phase-config.test.ts (2 tests) 1158ms
+   ✓ config check rejects an unknown phase condition on every phase-capable world table and NPC positions  883ms
+ ✓ tests/world-dressing.test.ts (2 tests) 1371ms
+   ✓ scatters dense, deterministic decoration that stays off roads, camps, waypoints and spawn points  1358ms
+ ✓ tests/first-chapter-combat.test.ts (12 tests) 1176ms
+ ✓ tests/combat-fatal-hint-advice.test.ts (11 tests) 1176ms
+   ✓ the settlement page has no banned words left  1165ms
+ ✓ tests/world-production.database.test.ts (1 test) 980ms
+   ✓ runs real workbook → exporter → geometry → references → production registry → normal server camp API, with pack and rectangle edits  846ms
+ ✓ tests/playability-polish.database.test.ts (5 tests) 1133ms
+   ✓ normal rift create/leave commands alternate frozen formations and same-command retries never reroll or award loot  477ms
+ ✓ tests/skill-mechanisms.test.ts (120 tests) 1018ms
+ ✓ tests/weapon-story.database.test.ts (3 tests) 908ms
+   ✓ runs db12 exactly once, changing only incompatible slots and bar memory  457ms
+ ✓ tests/deep-progression-api.test.ts (9 tests) 831ms
+ ✓ tests/progression-ui-fix.test.ts (8 tests) 726ms
+ ✓ tests/build-variety-r2.test.ts (48 tests) 757ms
+   ✓ upper-bound chance is guaranteed in 100 seeds; telemetry survives checkpoint  345ms
+ ✓ tests/progression-ui-system.test.ts (14 tests) 703ms
+ ✓ tests/appearance-api.test.ts (7 tests) 669ms
+ ✓ tests/build-variety-r6.database.test.ts (1 test) 671ms
+   ✓ a confirmed drop has a real main stat, claims once, equips, rerolls without touching it, and survives reads  637ms
+ ✓ tests/battle-result.database.test.ts (4 tests) 694ms
+ ✓ tests/build-variety-r7.test.ts (95 tests) 647ms
+ ✓ tests/world-tables.test.ts (2 tests) 627ms
+   ✓ loads the authored workbook and validates graybox, legacy and every formal island against their actual geometry  553ms
+ ✓ tests/equipment-runtime.test.ts (8 tests) 529ms
+   ✓ every set activates 2/4/6 distinct pieces and only worn pieces contribute to live attributes  309ms
+ ✓ tests/story-encounter.test.ts (4 tests) 472ms
+   ✓ both route choices produce different actual enemies and complete every chapter through real combat  393ms
+ ✓ tests/world-phase.database.test.ts (1 test) 437ms
+ ✓ tests/pacing-lab.database.test.ts (2 tests) 426ms
+ ✓ tests/deep-progression-rules.test.ts (24 tests) 438ms
+ ✓ tests/field-recovery.database.test.ts (3 tests) 457ms
+ ✓ tests/world-patrols.database.test.ts (1 test) 428ms
+ ✓ tests/playability-phase.database.test.ts (2 tests) 355ms
+ ✓ tests/simulation.test.ts (25 tests) 374ms
+ ✓ tests/world-warehouse.test.ts (3 tests) 382ms
+ ✓ tests/world-navigation.test.ts (6 tests) 336ms
+ ✓ tests/build-variety-r6.test.ts (74 tests) 358ms
+ ✓ tests/item-affix-power.database.test.ts (1 test) 362ms
+ ✓ tests/wall-probe.test.ts (5 tests) 306ms
+ ✓ tests/build-variety-r4.database.test.ts (1 test) 300ms
+ ✓ tests/starsea-collision.test.ts (5 tests) 282ms
+ ✓ tests/test-login.test.ts (2 tests) 256ms
+ ✓ tests/build-variety-builds.test.ts (19 tests) 254ms
+ ✓ tests/wardrobe-icon-content.test.ts (4 tests) 60ms
+ ✓ tests/playability-preview.database.test.ts (1 test) 233ms
+stderr | tests/pool-resilience.database.test.ts > the resident warm pool serves normal bursts on prewarmed backends and refills after a disconnect
+Database idle connection disconnected terminating connection due to administrator command
+
+ ✓ tests/pool-resilience.database.test.ts (2 tests) 246ms
+ ✓ tests/progression-layouts.test.ts (5 tests) 221ms
+ ✓ tests/playability-reward-preview.test.ts (13 tests) 234ms
+ ✓ tests/world-checkpoint.test.ts (4 tests) 221ms
+ ✓ tests/playability-polish.test.ts (7 tests) 245ms
+ ✓ tests/field-zone-probe.test.ts (3 tests) 232ms
+ ✓ tests/vfx-art.test.ts (6 tests) 90ms
+ ✓ tests/ui-graphics.test.ts (11 tests) 203ms
+ ✓ tests/vfx-v2.test.ts (5 tests) 181ms
+ ✓ tests/build-variety-r4.test.ts (15 tests) 178ms
+ ✓ tests/build-variety-rs.test.ts (30 tests) 168ms
+ ✓ tests/world-pack-growth.test.ts (3 tests) 181ms
+ ✓ tests/skill-audio-events.test.ts (1 test) 155ms
+ ✓ tests/build-variety-r6-review.test.ts (6 tests) 122ms
+ ✓ tests/pacing-ablation.test.ts (1 test) 129ms
+ ✓ tests/build-variety-r5.test.ts (27 tests) 135ms
+ ✓ tests/world-camps.test.ts (5 tests) 123ms
+ ✓ tests/monster-pursuit.test.ts (8 tests) 113ms
+ ✓ tests/vfx-presence.test.ts (3 tests) 47ms
+ ✓ tests/build-variety-r1.test.ts (61 tests) 124ms
+ ✓ tests/combat-event-feedback.test.ts (4 tests) 105ms
+ ✓ tests/starsea-reputation.test.ts (12 tests) 108ms
+ ✓ tests/world-night.test.ts (1 test) 95ms
+ ✓ tests/weapon-story-flow.test.ts (9 tests) 99ms
+ ✓ tests/bag-ui.test.ts (14 tests) 95ms
+ ✓ tests/world-production.test.ts (3 tests) 94ms
+ ✓ tests/field-event-runtime.test.ts (4 tests) 88ms
+ ✓ tests/build-variety-frozen-attributes.test.ts (9 tests) 102ms
+ ✓ tests/build-variety-r7-review.test.ts (4 tests) 84ms
+ ✓ tests/weapon-combos.test.ts (14 tests) 78ms
+ ✓ tests/skills-ui-system.test.ts (8 tests) 85ms
+ ✓ tests/build-variety-r4-review.test.ts (7 tests) 75ms
+ ✓ tests/quest-v2.test.ts (8 tests) 78ms
+ ✓ tests/zone-roam.test.ts (3 tests) 78ms
+ ✓ tests/playability-boss-approach.test.ts (17 tests) 77ms
+ ✓ tests/balance-integrity.test.ts (9 tests) 77ms
+ ✓ tests/build-variety-orbit-auto.test.ts (1 test) 74ms
+ ✓ tests/field-kill-talents.test.ts (4 tests) 79ms
+ ✓ tests/world-resource-wiring.test.ts (2 tests) 74ms
+ ✓ tests/weapon-affinity.test.ts (9 tests) 71ms
+ ✓ tests/effect-attachments.test.ts (4 tests) 65ms
+ ✓ tests/gear-ui.test.ts (7 tests) 66ms
+ ✓ tests/starsea-boss-enrage.test.ts (3 tests) 58ms
+ ✓ tests/zone-guide.test.ts (1 test) 60ms
+ ✓ tests/minimap-scene.test.ts (1 test) 56ms
+ ✓ tests/starsea-boss-pressure.test.ts (3 tests) 54ms
+ ✓ tests/skill-approach.test.ts (11 tests) 51ms
+ ✓ tests/world-aoi.test.ts (6 tests) 53ms
+ ✓ tests/skill-progression.test.ts (9 tests) 53ms
+ ✓ tests/combat-collision.test.ts (21 tests) 50ms
+ ✓ tests/pacing-budget-close.test.ts (1 test) 53ms
+ ✓ tests/drop-progression.test.ts (4 tests) 48ms
+ ✓ tests/world-sprint.test.ts (6 tests) 48ms
+ ✓ tests/elite-affixes-w2.test.ts (4 tests) 50ms
+ ✓ tests/world-field-foundations.test.ts (10 tests) 50ms
+ ✓ tests/elite-affixes.test.ts (3 tests) 48ms
+ ✓ tests/appearance-rules.test.ts (9 tests) 46ms
+ ✓ tests/build-variety-r8-measurement.test.ts (5 tests) 42ms
+ ✓ tests/pacing-derive.test.ts (4 tests) 40ms
+ ✓ tests/service-log-rotation.test.ts (1 test) 43ms
+ ✓ tests/build-variety-r6-issuance-review.test.ts (5 tests) 38ms
+ ✓ tests/lightning-arrow-vfx.test.ts (3 tests) 25ms
+ ✓ tests/world-aoe-hit-probe.test.ts (2 tests) 35ms
+ ✓ tests/playability-phase.test.ts (11 tests) 35ms
+ ✓ tests/level-stats.test.ts (4 tests) 32ms
+ ✓ tests/monster-model.test.ts (6 tests) 31ms
+ ✓ tests/copy-voice-polish.test.ts (9 tests) 30ms
+ ✓ tests/build-variety-replace-build.test.ts (5 tests) 33ms
+ ✓ tests/build-variety-r5-review.test.ts (3 tests) 30ms
+ ✓ tests/starsea-dialogue.test.ts (2 tests) 32ms
+ ✓ tests/playability-dialogue.test.ts (1 test) 26ms
+ ✓ tests/pacing-mechanisms.test.ts (5 tests) 31ms
+ ✓ tests/build-variety-stage-continuity.test.ts (2 tests) 27ms
+ ✓ tests/pacing-completion.test.ts (2 tests) 26ms
+ ✓ tests/playability-failure-review.test.ts (4 tests) 25ms
+ ✓ tests/item-affix-power.test.ts (3 tests) 26ms
+ ✓ tests/build-variety-benchmark.test.ts (4 tests) 26ms
+ ✓ tests/pacing-identity.test.ts (9 tests) 27ms
+ ✓ tests/copy-voice-surfaces.test.ts (8 tests) 18ms
+ ✓ tests/blizzard-vfx.test.ts (2 tests) 21ms
+ ✓ tests/combat-permit.test.ts (7 tests) 20ms
+ ✓ tests/pacing-calibrate.test.ts (1 test) 20ms
+ ✓ tests/build-variety-augment-offers.test.ts (7 tests) 21ms
+ ✓ tests/camp-capacity-spec.test.ts (3 tests) 19ms
+ ✓ tests/story-npc-art.test.ts (7 tests) 17ms
+ ✓ tests/enemy-vfx.test.ts (7 tests) 20ms
+ ✓ tests/swarm-health-line.test.ts (5 tests) 20ms
+ ✓ tests/progression-combat.test.ts (4 tests) 17ms
+ ✓ tests/dungeon-diagnostics.test.ts (2 tests) 17ms
+ ✓ tests/build-variety-dungeon-policy.test.ts (4 tests) 18ms
+ ✓ tests/inventory-ui-system.test.ts (7 tests) 17ms
+ ✓ tests/field-activity-state.test.ts (2 tests) 17ms
+ ✓ tests/mini-native-renderer.test.ts (9 tests) 15ms
+ ✓ tests/world-tier.test.ts (2 tests) 18ms
+ ✓ tests/build-variety-skill-patches.test.ts (18 tests) 15ms
+ ✓ tests/dungeon-content.test.ts (3 tests) 15ms
+ ✓ tests/equipment-names.test.ts (4 tests) 16ms
+ ✓ tests/playability-result-tooltip.test.ts (2 tests) 15ms
+ ✓ tests/skill-effect-comparison.test.ts (6 tests) 16ms
+ ✓ tests/ui-tokens.test.ts (5 tests) 14ms
+ ✓ tests/projectile-emitter.test.ts (5 tests) 14ms
+ ✓ tests/telegraph-polish.test.ts (4 tests) 12ms
+ ✓ tests/vfx-physical.test.ts (6 tests) 12ms
+ ✓ tests/ui-components.test.ts (4 tests) 14ms
+ ✓ tests/gameres-motion-timing.test.ts (3 tests) 13ms
+ ✓ tests/hit-feedback.test.ts (9 tests) 12ms
+ ✓ tests/build-variety-damage-breakdown.test.ts (10 tests) 12ms
+ ✓ tests/build-variety-r3-review.test.ts (4 tests) 12ms
+ ✓ tests/api-source-guard.test.ts (1 test) 10ms
+ ✓ tests/skill-effects.test.ts (8 tests) 13ms
+ ✓ tests/monster-curve-tool.test.ts (4 tests) 11ms
+ ✓ tests/hud-art-layout.test.ts (16 tests) 10ms
+ ✓ tests/bounty.test.ts (1 test) 12ms
+ ✓ tests/swarm-role-proposal.test.ts (3 tests) 9ms
+ ✓ tests/build-variety-atom-parts.test.ts (6 tests) 8ms
+ ✓ tests/ground-loot.test.ts (3 tests) 8ms
+ ✓ tests/skill-audio-vfx-structure.test.ts (3 tests) 8ms
+ ✓ tests/loaded-actor-animations.test.ts (1 test) 7ms
+ ✓ tests/playability-zone-context.test.ts (1 test) 8ms
+ ✓ tests/build-variety-skill-charges.test.ts (6 tests) 8ms
+ ✓ tests/build-variety-results.test.ts (5 tests) 8ms
+ ✓ tests/world-numbers.test.ts (7 tests) 7ms
+ ✓ tests/playability-outbox.test.ts (7 tests) 7ms
+ ✓ tests/build-variety-r6-item-rules.test.ts (3 tests) 7ms
+ ✓ tests/numeric-refresh-proposal.test.ts (3 tests) 8ms
+stderr | tests/hero-appearance.test.ts > hero appearance renderer switching > retains the complete native outfit until the legacy outfit is ready, including failed loads
+[hero-appearance] Previous outfit retained Error: Outfit not ready: ["modular-hero","bow","v2-soft",["100011","100011","100011","100011","100011","100011","400104"]]
+    at HeroPreview.setAppearance (G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/apps/web/src/hero-appearance.ts:29:34)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/tests/hero-appearance.test.ts:37:45
+    at file:///G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/hero-appearance.test.ts > hero appearance renderer switching > a successfully decoded outfit with a broken first render does not replace the visible outfit
+[hero-appearance] Previous outfit retained Error: First outfit frame failed to render
+    at HeroPreview.setAppearance (G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/apps/web/src/hero-appearance.ts:37:120)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/tests/hero-appearance.test.ts:50:10
+    at file:///G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+ ✓ tests/hero-appearance.test.ts (4 tests) 6ms
+ ✓ tests/element-resist.test.ts (3 tests) 6ms
+ ✓ tests/field-activity-view.test.ts (1 test) 6ms
+ ✓ tests/build-variety-inscriptions.test.ts (7 tests) 7ms
+ ✓ tests/sea-difficulty.test.ts (6 tests) 5ms
+ ✓ tests/world-exploration.test.ts (4 tests) 5ms
+ ✓ tests/build-variety-effect-descriptions.test.ts (5 tests) 5ms
+ ✓ tests/aspect-description-consistency.test.ts (9 tests) 6ms
+ ✓ tests/vfx-hit-style.test.ts (2 tests) 6ms
+ ✓ tests/pacing-validation.test.ts (3 tests) 6ms
+ ✓ tests/mini-native-loading.test.ts (3 tests) 5ms
+ ✓ tests/pacing-targets.test.ts (3 tests) 5ms
+ ✓ tests/field-dungeon-generator.test.ts (1 test) 5ms
+ ✓ tests/ground-zone-vfx.test.ts (3 tests) 5ms
+ ✓ tests/build-variety-stat-conversions.test.ts (4 tests) 4ms
+ ✓ tests/camp-health-budget-proposal.test.ts (2 tests) 4ms
+ ✓ tests/combat-audio.test.ts (2 tests) 4ms
+ ✓ tests/build-variety-single-reroll.test.ts (4 tests) 4ms
+ ✓ tests/pacing-refine.test.ts (1 test) 3ms
+ ✓ tests/travel-browser.test.ts (6 tests) 3ms
+ ✓ tests/native-skin-composition.test.ts (3 tests) 3ms
+ ✓ tests/battle-result-controller.test.ts (4 tests) 3ms
+ ✓ tests/island-enemy-audio-vfx.test.ts (1 test) 3ms
+ ✓ tests/build-variety-augment-panel.test.ts (5 tests) 5ms
+ ✓ tests/shield-feedback.test.ts (6 tests) 3ms
+ ✓ tests/playability-automation-preferences.test.ts (3 tests) 3ms
+ ✓ tests/copy-voice.test.ts (4 tests) 3ms
+ ✓ tests/ice-vfx.test.ts (3 tests) 3ms
+ ✓ tests/story-gates-ui.test.ts (3 tests) 3ms
+ ✓ tests/hud-context.test.ts (6 tests) 3ms
+ ✓ tests/numeric-source-audit.test.ts (2 tests) 3ms
+ ✓ tests/gear-compare-verdict.test.ts (11 tests) 3ms
+ ✓ tests/world-inventory.test.ts (3 tests) 3ms
+ ✓ tests/build-variety-build-sources.test.ts (2 tests) 3ms
+ ✓ tests/spine21-conversion.test.ts (2 tests) 2ms
+ ✓ tests/field-activity-input.test.ts (3 tests) 3ms
+ ✓ tests/world-road-raster.test.ts (1 test) 3ms
+ ✓ tests/dungeon-wall-tool.test.ts (2 tests) 2ms
+ ✓ tests/wardrobe-renderer.test.ts (6 tests) 3ms
+ ✓ tests/guide-label-layout.test.ts (12 tests) 2ms
+ ✓ tests/physical-actions.test.ts (3 tests) 2ms
+ ✓ tests/build-variety-set-stage-ui.test.ts (3 tests) 2ms
+ ✓ tests/authoritative-motion.test.ts (3 tests) 2ms
+ ✓ tests/skill-sound-mixer.test.ts (1 test) 3ms
+ ✓ tests/playability-interaction.test.ts (7 tests) 2ms
+ ✓ tests/world-chunks.test.ts (1 test) 2ms
+ ✓ tests/playability-dungeon-feedback.test.ts (3 tests) 2ms
+ ✓ tests/boss-entry.test.ts (3 tests) 2ms
+ ✓ tests/objective.test.ts (2 tests) 2ms
+ ✓ tests/automatic-quest-dialogue.test.ts (1 test) 2ms
+ ✓ tests/field-readiness.test.ts (1 test) 1ms
+ ✓ tests/preview-guard.test.ts (4 tests) 2ms
+ ✓ tests/hero-death-playback.test.ts (2 tests) 2ms
+
+ Test Files  240 passed (240)
+      Tests  1737 passed | 2 skipped (1739)
+   Start at  17:09:37
+   Duration  1454.92s (transform 5.37s, setup 0ms, import 91.13s, tests 1338.54s, environment 18ms)
+
+
+第二个独立自然策略（原600秒时限）
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"attempt-all-tasks","round":0,"level":3,"minutes":1.3045664672851562,"bosses":[]}
+
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"attempt-all-tasks","round":40,"level":18,"minutes":37.42989980061849,"bosses":["ss-map-boss-1","ss-map-boss-2"]}
+
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"attempt-all-tasks","round":80,"level":33,"minutes":71.58287701009115,"bosses":["ss-map-boss-1","ss-map-boss-2","ss-map-boss-3","ss-map-boss-4"]}
+
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"attempt-all-tasks","round":120,"level":39,"minutes":105.80125912272135,"bosses":["ss-map-boss-1","ss-map-boss-2","ss-map-boss-3","ss-map-boss-4","ss-map-boss-5","ss-map-boss-6"]}
+
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"attempt-all-tasks","round":160,"level":44,"minutes":132.71735083007812,"bosses":["ss-map-boss-1","ss-map-boss-2","ss-map-boss-3","ss-map-boss-4","ss-map-boss-5","ss-map-boss-6"]}
+
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"attempt-all-tasks","round":200,"level":46,"minutes":159.01268442382812,"bosses":["ss-map-boss-1","ss-map-boss-2","ss-map-boss-3","ss-map-boss-4","ss-map-boss-5","ss-map-boss-6"]}
+
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"attempt-all-tasks","round":240,"level":48,"minutes":183.9453301554362,"bosses":["ss-map-boss-1","ss-map-boss-2","ss-map-boss-3","ss-map-boss-4","ss-map-boss-5","ss-map-boss-6"]}
+
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"attempt-all-tasks","round":280,"level":49,"minutes":209.75765137125651,"bosses":["ss-map-boss-1","ss-map-boss-2","ss-map-boss-3","ss-map-boss-4","ss-map-boss-5","ss-map-boss-6"]}
+
+stdout | tests/world-natural-calendar.database.test.ts > runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent
+{"strategy":"attempt-all-tasks","level":50,"minutes":212.2972740966797,"bosses":["ss-map-boss-1","ss-map-boss-2","ss-map-boss-3","ss-map-boss-4","ss-map-boss-5","ss-map-boss-6"],"failures":[]}
+
+ ✓ tests/world-natural-calendar.database.test.ts (1 test) 152999ms
+   ✓ runs earned-only farming and task-attempt calendars through World/PG; reconnect and every source remain consistent  152998ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  17:33:52
+   Duration  154.91s (transform 1.06s, setup 0ms, import 1.80s, tests 153.00s, environment 0ms)
+

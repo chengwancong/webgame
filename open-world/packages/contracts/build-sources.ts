@@ -1,0 +1,11 @@
+import {z} from 'zod';
+import {statIdSchema} from './stats.ts';
+import {conditionSchema} from './conditions.ts';
+import {statusKindSchema} from './skill-mechanics.ts';
+import {effectRuleSchema,statusOverrideSchema} from './effects.ts';
+import {damageZoneSchema} from './damage-zones.ts';
+import {skillPatchSchema} from './skill-patches.ts';
+const n=z.number().finite().nonnegative(),atom=z.object({id:z.string().min(1),tier:z.number().positive(),set:z.record(z.string(),z.unknown()).optional()}).strict();
+const override=z.object({target:z.string(),set:z.record(z.string(),z.unknown()).optional(),mul:z.record(z.string(),z.number().finite()).optional(),add:z.record(z.string(),z.number().finite()).optional()}).strict();
+export const buildSourcePartsSchema=z.object({stats:z.array(z.object({stat:statIdSchema,value:n}).strict()).default([]),zones:z.array(damageZoneSchema).default([]),atoms:z.array(atom).default([]),rules:z.array(effectRuleSchema).default([]),patches:z.array(skillPatchSchema).default([]),overrides:z.array(override).default([]),conditional:z.array(z.object({id:z.string(),pool:z.enum(['cond','stat']),stat:z.string().optional(),value:z.number().finite(),when:conditionSchema,perStillSecond:z.boolean().optional(),max:n.optional()}).strict()).default([]),flags:z.object({dotCrit:z.boolean().optional(),dotCritFull:z.boolean().optional(),unsharedProjectiles:z.boolean().optional()}).strict().optional(),flagFilter:effectRuleSchema.shape.filter.optional(),statusOverrides:z.partialRecord(statusKindSchema,statusOverrideSchema).optional(),conversions:z.array(z.object({fromStat:z.enum(['speedBonus','cdr']),toStat:z.literal('damageAdd'),ratio:n,threshold:n.optional()}).strict()).default([]),statusMultipliers:z.partialRecord(statusKindSchema,n).optional(),statMultipliers:z.partialRecord(statIdSchema,n).optional(),statOverrides:z.partialRecord(statIdSchema,n).optional(),loadoutLimit:z.number().int().min(1).max(4).optional(),slotPatches:z.array(z.object({slot:z.number().int().min(0).max(3),scalePeriodicBudget:z.boolean().optional(),ops:skillPatchSchema.shape.ops}).strict()).default([]),fullSet:z.boolean().optional()}).strict();
+export type BuildSourceParts=z.infer<typeof buildSourcePartsSchema>;

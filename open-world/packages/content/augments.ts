@@ -1,0 +1,3 @@
+import {z} from 'zod';import raw from './augments.json';import {buildSourcePartsSchema} from '../contracts/build-sources.ts';import {augmentTierSchema} from '../contracts/run-augments.ts';
+export const augmentDefinitionSchema=z.object({id:z.string().min(1),name:z.string(),description:z.string(),tier:augmentTierSchema,tags:z.array(z.string()).min(1),parts:buildSourcePartsSchema,requires:z.object({setId:z.string(),pieces:z.number().int().min(1).max(6)}).strict().optional(),gamble:z.boolean().optional()}).strict();
+export const augments=z.array(augmentDefinitionSchema).length(90).parse(raw);if(new Set(augments.map(a=>a.id)).size!==90)throw Error('Duplicate augment');export const augmentById=new Map(augments.map(a=>[a.id,a]));

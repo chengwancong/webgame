@@ -1,0 +1,60 @@
+import assert from 'node:assert/strict';
+import {chromium} from 'playwright';
+import {Pool} from 'pg';
+import {createServer} from 'vite';
+import {mkdir,writeFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {startDatabase,freePort,child,stopChild,waitFor,registerApi} from './runtime.mjs';
+const out=resolve('../.design/global-ui-system/screenshots'),reportFile=resolve('../.design/global-ui-system/skills-system-verification.json');
+await mkdir(out,{recursive:true});
+const report={ok:false,checks:[],errors:[],screenshots:[]},db=await startDatabase({temporary:true}),pool=new Pool({connectionString:db.dsn});
+let api,web,browser,page;
+const note=(name,details={})=>{report.checks.push({name,...details});console.log(name);};
+try{
+ const apiPort=await freePort(),webPort=await freePort(),origin=`http://127.0.0.1:${webPort}`;
+ api=child(process.execPath,['--import','tsx','apps/api/src/main.ts'],{AW_DATABASE_URL:db.dsn,AW_API_PORT:String(apiPort),AW_ORIGINS:origin,AW_TEST_LOGIN:'1'},{stdio:['ignore','ignore','inherit','ipc']});await registerApi(db,api);await waitFor(`http://127.0.0.1:${apiPort}/api/health`,api);
+ web=await createServer({configFile:resolve('apps/web/vite.config.ts'),server:{host:'127.0.0.1',port:webPort,strictPort:true,hmr:false,watch:null,proxy:{'/api':`http://127.0.0.1:${apiPort}`}}});await web.listen();await waitFor(origin);
+ browser=await chromium.launch({channel:'chrome',headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-webgl']});
+ page=await browser.newPage({viewport:{width:1280,height:720}});page.on('pageerror',error=>report.errors.push(String(error)));
+ const inspect=()=>page.evaluate(()=>window.awInspect());
+ const imageReady=()=>page.evaluate(()=>Promise.all([document.fonts.ready,...[...document.querySelectorAll('#modal img')].map(i=>i.decode())]));
+ const shot=async name=>{await imageReady();await page.mouse.move(1,1);const path=resolve(out,`skills-system-${name}.png`);await page.screenshot({path});report.screenshots.push(path);};
+ const open=async()=>{await page.locator('[data-action=panel][data-id=skills]').click();await page.locator('.skill-book').waitFor();};
+ const select=async(category,id)=>{await page.locator(`[data-action=skill-category][data-id=${category}]`).click();await page.locator(`[data-action=skill-focus][data-id=${id}]`).click();};
+ const snapshot=async()=> (await inspect()).snapshot;
+ await page.goto(origin);await page.locator('[data-action=login]:not([disabled])').waitFor();assert.equal(await page.locator('#password').count(),0);await page.locator('#username').fill('ui_skill_'+Date.now().toString(36));await page.locator('[data-action=login]').click();await page.locator('#hero-name').fill('技能界面验收');await page.locator('[data-action=create]').click();await page.waitForFunction(()=>window.awInspect?.().loggedIn&&window.awInspect().panel==='');
+ const characterId=(await snapshot()).id;
+ const seed=async change=>{await page.locator('[data-action=close]').click();const s=(await pool.query('SELECT state FROM ow_characters WHERE id=$1',[characterId])).rows[0].state;change(s);s.revision++;s.build++;await pool.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[s,characterId]);await page.reload();await page.waitForFunction(()=>window.awInspect?.().loggedIn&&window.awInspect().panel==='');await open();};
+ await open();await select('melee','whirl');assert.equal(await page.locator('[data-action=skill-upgrade]').count(),0);assert(await page.locator('[data-action=skill-activate]').isDisabled());assert((await page.locator('.skill-training').innerText()).includes('等级激活'));await shot('level-locked');
+ await select('ranged','ember');assert((await page.locator('.skill-training').innerText()).includes('技能书激活'));assert(!(await page.locator('.skill-training').innerText()).includes('当前角色等级'));assert(await page.locator('[data-action=skill-activate]').isDisabled());await shot('book-missing');
+ await select('melee','cut');assert(await page.locator('[data-action=skill-upgrade]').isDisabled());assert((await page.locator('.skill-training').innerText()).includes('金币还差'));note('Real level, book and resource-insufficient lifecycle states');
+ await seed(s=>{s.level=2;s.gold=1000;s.material=100;});await select('melee','whirl');
+ let activationRequests=0;await page.route('**/api/skills/activate',async route=>{activationRequests++;await new Promise(r=>setTimeout(r,300));await route.continue();});await page.locator('[data-action=skill-activate]').click();await page.locator('[data-action=skill-activate][aria-busy=true]').waitFor();assert(await page.locator('[data-action=skill-activate]').isDisabled());await page.keyboard.press('Enter');await page.waitForFunction(()=>window.awInspect().snapshot.skillRanks.whirl===1);await page.unroute('**/api/skills/activate');assert.equal(activationRequests,1);assert.equal(await page.locator('[data-action=skill-activate]').count(),0);assert.equal(await page.locator('[data-action=skill-upgrade]').count(),1);await shot('active-upgrade');
+ const beforeUpgrade=await snapshot();await page.locator('[data-action=skill-upgrade]').click();await page.waitForFunction(()=>window.awInspect().snapshot.skillRanks.whirl===2);const upgraded=await snapshot();assert.equal(upgraded.gold,beforeUpgrade.gold-60);assert.equal(upgraded.material,beforeUpgrade.material-3);
+ await page.locator('input[name=skill][value=whirl]').check();await select('support','ward');await select('melee','whirl');assert(await page.locator('input[name=skill][value=whirl]').isChecked());await page.locator('[data-action=save-skills]').click();await page.waitForFunction(()=>window.awInspect().snapshot.skills.includes('whirl'));note('Real activation, one busy submission, upgrade payment and cross-category saved loadout');
+ await seed(s=>{s.skillRanks.whirl=5;});await select('melee','whirl');assert(await page.locator('[data-action=skill-upgrade]').isDisabled());assert.equal(await page.locator('.skill-training [data-ui=resource-cost]').count(),0);await shot('max-rank');
+ await seed(s=>{s.level=1;s.skillBooks.ember=1;delete s.skillRanks.ember;});await select('ranged','ember');assert(!(await page.locator('[data-action=skill-activate]').isDisabled()));
+ let dropped=false;await page.route('**/api/skills/activate',async route=>{if(!dropped){dropped=true;await route.fetch();return route.abort('failed');}return route.continue();});await page.locator('[data-action=skill-activate]').click();await page.waitForFunction(()=>window.awInspect().blocked);assert.equal(await page.locator('.skill-training [data-ui=resource-cost]').count(),0);assert(!(await page.locator('.skill-feedback [data-action=recover]').isDisabled()));await shot('pending-recovery');await page.unroute('**/api/skills/activate');await page.locator('.skill-feedback [data-action=recover]').click();await page.waitForFunction(()=>!window.awInspect().blocked&&window.awInspect().panel==='skills');assert.equal((await snapshot()).skillRanks.ember,1);assert.equal((await snapshot()).skillBooks.ember,0);note('Real book activation ignores level threshold, lost response recovers original receipt without double consumption');
+ for(const [width,height]of [[1280,720],[1024,576],[768,1024],[375,812],[1600,900]]){
+  await page.setViewportSize({width,height});await select('melee','cut');await imageReady();
+  const sizes=await page.evaluate(()=>{const r=s=>{const e=document.querySelector(s),b=e.getBoundingClientRect();return {x:b.x,y:b.y,width:b.width,height:b.height,right:b.right,bottom:b.bottom,scroll:e.scrollWidth,client:e.clientWidth};};return {panel:r('[data-panel=skills]'),library:r('.library'),icon:r('.lib-pick>img'),upgrade:r('.skill-primary'),save:r('[data-action=save-skills]'),book:r('.skill-book'),detail:r('.skill-detail'),overflow:document.documentElement.scrollWidth-innerWidth};});
+  assert(sizes.panel.x>=0&&sizes.panel.right<=width+1&&sizes.panel.bottom<=height+1,JSON.stringify(sizes));assert(sizes.overflow<=1,JSON.stringify(sizes));assert(sizes.library.height>=120,JSON.stringify(sizes));assert.equal(sizes.upgrade.width,sizes.save.width);assert.equal(sizes.upgrade.height,sizes.save.height);assert(sizes.icon.width>=48&&sizes.icon.height===sizes.icon.width);assert(sizes.detail.scroll<=sizes.detail.client+1,JSON.stringify(sizes));
+  const focus=page.locator('[data-action=skill-focus][data-id=cut]'),bounds=await focus.locator('img').boundingBox();await focus.hover();assert.deepEqual(await focus.locator('img').boundingBox(),bounds);await focus.focus();assert.deepEqual(await focus.locator('img').boundingBox(),bounds);
+  await page.locator('.library').evaluate(e=>e.scrollTop=200);const scroll=await page.locator('.library').evaluate(e=>e.scrollTop);await page.locator('[data-action=skill-focus][data-id=dual_strike]').evaluate(e=>e.click());assert.equal(await page.locator('.library').evaluate(e=>e.scrollTop),scroll);
+  await select('ranged','ember');await page.locator('[data-action=skill-category][data-id=ranged]').focus();await page.keyboard.press('ArrowRight');assert.equal(await page.locator('[data-action=skill-category][aria-selected=true]').getAttribute('data-id'),'control');await select('melee','cut');
+  await page.locator('.skill-book').evaluate(e=>e.scrollTop=0);await page.locator('.library').evaluate(e=>e.scrollTop=0);await shot(`${width}x${height}-overview`);
+  if(width<=900){await page.locator('.skill-detail').scrollIntoViewIfNeeded();await shot(`${width}x${height}-detail`);}
+  note('Responsive live skills UI',{width,height,libraryHeight:sizes.library.height,icon:sizes.icon.width,actionHeight:sizes.upgrade.height});
+ }
+ // The following is explicitly a rendering fixture, not evidence of a server transaction.
+ await page.setViewportSize({width:375,height:812});await select('melee','cut');
+ await page.evaluate(async()=>{const {renderSkills}=await import('/src/skills-panel.ts');
+  const s=structuredClone(window.awInspect().snapshot),q=s.skillAccess.find(x=>x.id==='cut');s.gold=123456789;s.material=987654321;q.cost={gold:12345678,material:1234567};q.affordable=true;
+  const view={snapshot:s,draft:s.skills,skillFocus:'cut',skillCategory:'melee',processing:false,blocked:false,lastError:'',skillOperation:'',skillOperationId:'',skillStatus:'error',skillMessage:'服务端暂时无法核对这次操作，请恢复连接后重试。'.repeat(4)};
+  document.querySelector('.skill-book').outerHTML=renderSkills(view);
+  const pick=document.querySelector('[data-action=skill-focus][data-id=cut]');pick.querySelector('b').textContent='用于验证连续切换与长标题稳定性的技能名称';pick.querySelector('.skill-card-copy>span:not(.ui-badge)').textContent='长说明应自然换行而不会改变图标占位。'.repeat(10);document.querySelector('.skill-description').textContent='这是仅用于版面验证的长技能说明。'.repeat(50);document.querySelector('.skill-detail h3').textContent='用于验证长标题与固定图标的技能名称';
+ });
+ await page.locator('.skill-detail').scrollIntoViewIfNeeded();const long=await page.evaluate(()=>({overflow:document.documentElement.scrollWidth-innerWidth,detail:document.querySelector('.skill-detail').scrollWidth-document.querySelector('.skill-detail').clientWidth,icon:document.querySelector('.skill-detail-heading>img').getBoundingClientRect().width,buttons:[...document.querySelectorAll('.skill-command')].map(e=>({w:e.getBoundingClientRect().width,h:e.getBoundingClientRect().height}))}));assert(long.overflow<=1&&long.detail<=1&&long.icon===64,JSON.stringify(long));assert.deepEqual(long.buttons[0],long.buttons[1]);await shot('375-long-text-cost-fixture');note('Layout-only long name, description, status and large resource fixture',long);
+ assert.deepEqual(report.errors,[]);report.ok=true;
+}catch(error){report.error=String(error.stack??error);console.error(error);process.exitCode=1;if(page)await page.screenshot({path:resolve(out,'skills-system-failure.png')});}
+finally{await browser?.close();await web?.close();await stopChild(api);await pool.end();report.cleanup=await db.stop();await writeFile(reportFile,JSON.stringify(report,null,2));console.log(JSON.stringify({ok:report.ok,checks:report.checks.length,error:report.error,cleanup:report.cleanup}));}

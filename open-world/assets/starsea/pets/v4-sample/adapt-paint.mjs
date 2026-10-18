@@ -1,0 +1,12 @@
+import {readFile,writeFile} from 'node:fs/promises';import {join,dirname} from 'node:path';import {fileURLToPath} from 'node:url';const d=dirname(fileURLToPath(import.meta.url));
+let s=await readFile(join(d,'paint.mjs'),'utf8');
+s="import {tierArt} from './tier-art.mjs';\n"+s;
+s=s.replace("join(group,'sources',name)","join(group,'sources',p.key,name)").replace("p.family+'-parts.json'","p.key+'-parts.json'");
+s=s.replace("Math.min(w,h)*.012","Math.min(w,h)*.003");
+s=s.replace("const eyeSize=map", "const eyeSize=map");
+s=s.replace("if(p.family==='C6'&&r==='head')", "body+=tierArt(p,n,r,w,h,c,stage);\n if(p.family==='C6'&&r==='head')");
+s=s.replace("function glyph(x,y,size,c,closed=false)","function glyph(x,y,size,c,closed=false,heavy=false)");
+s=s.replace("${c[6]}\"/>`;}","${c[6]}\"/>${heavy?`<circle cx=\"${x+size*.23}\" cy=\"${y+size*.28}\" r=\"${size*.12}\" fill=\"${c[6]}\"/>`:''}`;}");
+s=s.replace("Math.max(1.8,Math.min(w,h)*.15),c,closed)","Math.max(1.8,Math.min(w,h)*(p.tier==='heavy'?.21:.15)),c,closed,p.tier==='heavy')");
+s=s.replace("eyeSize,c,map&&!map.closedOverlay)","eyeSize*(p.tier==='heavy'?1.25:1),c,map&&!map.closedOverlay,p.tier==='heavy')");
+await writeFile(join(d,'paint.mjs'),s);

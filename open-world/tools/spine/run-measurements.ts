@@ -1,0 +1,13 @@
+import {measureWeights,measureSources,measureContent} from './audit.ts';
+import {measureScenes} from './scenes.ts';
+import {completeFieldTargets} from './field.ts';
+import {finishBudgetAudit} from './budget.ts';
+import {review,decision,readJson,save} from './io.ts';
+const args=process.argv.slice(2),out=args.find(s=>s.startsWith('--out='))?.slice(6)??review+'/S2';
+if(args.includes('--scenes'))await measureScenes(out);
+if(args.includes('--weights'))await measureWeights(out);
+if(args.includes('--sources'))await measureSources(out);
+if(args.includes('--content'))await measureContent(out);
+if(args.includes('--field-targets'))await completeFieldTargets();
+if(args.includes('--finish-audit'))await finishBudgetAudit(out);
+const core=await readJson(review+'/S2/core-summary.json');for(const [axis,sigma]of Object.entries(core.sigma))if((sigma as number)>2.5||(sigma as number)<1)await decision('标准人溢价异常 '+axis,'S2当前规则实测σ='+Number(sigma).toPrecision(6)+'。理想构筑只含受控装备，标准人另含武器盘、召唤、岛屿成长等；通过来源留一量化，不把σ强制拉回区间','S2/core-summary.json、sources.json');

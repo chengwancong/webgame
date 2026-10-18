@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-05",
+  "workingTreeChecks": {
+    "tsc": "passed",
+    "tokenGenerationCheck": "passed",
+    "contentValidation": "passed",
+    "productionBuild": "passed"
+  },
+  "newTests": {
+    "passed": 22,
+    "failed": 0
+  },
+  "relatedTests": {
+    "total": 190,
+    "passed": 188,
+    "failed": 2,
+    "workers": 1
+  },
+  "preExistingFailures": [
+    {
+      "test": "skill-mechanisms.test.ts: execute applies only its own threshold, and berserker/war cry change incoming/outgoing defense then expire",
+      "expected": 14,
+      "actual": 25,
+      "reproducedBeforeChange": true
+    },
+    {
+      "test": "vfx-v2.test.ts: retains recorded traces, player/cut",
+      "expectedHp": 9982,
+      "actualHp": 9971,
+      "reproducedBeforeChange": true
+    }
+  ],
+  "determinism": {
+    "seed": 41,
+    "ticks": 600,
+    "matched": [
+      "hit sequence",
+      "hero state",
+      "kills",
+      "randomState"
+    ]
+  },
+  "browser": {
+    "passedCases": 15,
+    "runtimeErrors": 0,
+    "login": true,
+    "sessionRestore": true,
+    "viewport": "desktop"
+  },
+  "service": {
+    "restored": true,
+    "windowsTask": "Limited",
+    "loginAutostart": true,
+    "accountsAndSaveDataPreserved": true
+  },
+  "logs": "Raw test/content/build logs retained locally and ignored by Git."
+}

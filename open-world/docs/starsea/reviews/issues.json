@@ -1,0 +1,108 @@
+{
+  "updatedAt": "2026-10-04",
+  "items": [
+    {
+      "id": "SS-R01",
+      "group": "npc",
+      "resource": "npc-preview",
+      "problem": "256px buffer缩成151px CSS，100px角色变约60px",
+      "evidence": "npc-initial-1280.png",
+      "fix": "220px buffer/CSS 1:1，4+3排，角色100/96/104px",
+      "status": "root-retested-fixed",
+      "owner": "npc_art"
+    },
+    {
+      "id": "SS-R02",
+      "group": "npc",
+      "resource": "npc-preview",
+      "problem": "暂停按钮/footer未反映真实状态",
+      "fix": "继续/已暂停与暂停/持续播放",
+      "status": "root-retested-fixed",
+      "owner": "npc_art"
+    },
+    {
+      "id": "SS-R03",
+      "group": "monsters",
+      "resource": "ss-elite-hook-leader",
+      "problem": "110px精英长钩在176px卡片中裁切",
+      "evidence": "monster-initial-skill-1280.png",
+      "fix": "按全动作/镜像最大bounds扩到404×236，保持110px",
+      "status": "root-retested-fixed",
+      "owner": "monster_art"
+    },
+    {
+      "id": "SS-R04",
+      "group": "monsters",
+      "resource": "ss-mon-dusk-gunner",
+      "problem": "旧绿制服与暮界灰紫/黄铜/青蓝识别不一致",
+      "fix": "实际制服适配与晶核/徽章骨骼前景",
+      "status": "root-retested-fixed",
+      "owner": "monster_art"
+    },
+    {
+      "id": "SS-R05",
+      "group": "bosses",
+      "resource": "ss-boss-rift-marshal",
+      "problem": "death+phase-end选SS_phaseEnd站立姿势覆盖死亡",
+      "evidence": "boss-marshal-death-1280.png",
+      "fix": "死亡最高优先，所有阶段profile death=SS_death，6×4组合",
+      "status": "root-retested-fixed",
+      "owner": "boss_art"
+    },
+    {
+      "id": "SS-R06",
+      "group": "monsters",
+      "resources": [
+        "ss-mon-bone-sentinel",
+        "ss-elite-oath-keeper"
+      ],
+      "problem": "龙角头饰漂浮在头部之上，未接头盔/头侧",
+      "evidence": "monster-dragon-final-1280.png",
+      "fix": "真实头部可见RegionAttachment局部offset/尺寸校正，两向/各动作复验",
+      "status": "root-retested-fixed",
+      "owner": "monster_art"
+    },
+    {
+      "id": "SS-R07",
+      "group": "props",
+      "resource": "ss-prop-cargo",
+      "problem": "开盖图按含盖总高度缩放，箱体宽从约120变95px",
+      "fix": "统一 referenceFootprint/referenceScale，箱体两态宽约120.86px，固定足点；开盖总高增加，统一页实测通过",
+      "status": "root-retested-fixed",
+      "owner": "props_integration",
+      "evidence": "cargo-footprint-fixed-1280.png"
+    },
+    {
+      "id": "SS-R08",
+      "group": "integration",
+      "resource": "starsea-publication-service",
+      "owner": "props_integration",
+      "problem": "无界CIM/WMI进程与任务查询使托管前端启动挂起；祖先验证读系统StartTime被拒后误判调度来源",
+      "fix": "10秒进程身份与15秒TaskScheduler COM查询；创建时间加argv验证并兼容旧记录；仅祖先链读取name/parent，不用于终止授权；无法证明API退出时保留目录",
+      "status": "root-reviewed-tests-passed",
+      "evidence": [
+        "service-identity-independent.json",
+        "assets/starsea/integration/evidence/service-identity.json",
+        "assets/starsea/integration/evidence/source-reload/result.json",
+        "assets/starsea/integration/evidence/service-survival/result.json"
+      ]
+    },
+    {
+      "id": "SS-R09",
+      "group": "integration",
+      "resource": "ss-fx-b03-flame",
+      "owner": "props_integration",
+      "problem": "正式统一页 normal 前摇0.22s，预警圆被画布左边缘裁切，不能完整核对攻击范围",
+      "evidence": "built-vfx-warning-clipped-1280.png",
+      "reproduce": "8611/starsea-art-qa.html?group=vfx&id=ss-fx-b03-flame，normal，加载后立即暂停",
+      "fix": "按真实圆/束和原生动作bounds整体平移，保留32×18投影/scale1；长束扩展画布并可滚动，两向共60组bounds通过，正式B3左右独立复验",
+      "status": "root-retested-fixed",
+      "fixedEvidence": [
+        "built-vfx-warning-fixed-left-1280.png",
+        "built-vfx-warning-fixed-right-1280.png",
+        "vfx-long-beam-far-1280.png",
+        "vfx-long-beam-source-1280.png"
+      ]
+    }
+  ]
+}

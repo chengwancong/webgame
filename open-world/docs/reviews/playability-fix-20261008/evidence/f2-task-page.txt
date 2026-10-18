@@ -1,0 +1,261 @@
+- generic "游戏世界"
+- region "角色状态":
+  - button "打开人物":
+    - img "角色外观"
+    - generic "自然日程驾驶器"
+    - generic: Lv. 50
+  - meter "生命":
+    - generic: 4039 / 4039
+  - meter "灵力":
+    - generic: 100 / 100
+- button "展开区域地图":
+  - generic "拾星港"
+- heading "拾星港" [level=1]
+- text: 群岛的主港，每次远航都从这里出发
+- status
+- generic "金币":
+  - generic: "33990"
+- toolbar "系统入口":
+  - button "背包，装备 45/60，待领取 2 件":
+    - generic: 行囊
+    - generic "待领取装备 2 件": "2"
+  - button "技能":
+    - generic: 技能
+  - button "养成":
+    - generic: 养成
+  - button "外观":
+    - generic: 外观
+  - button "任务" [expanded]:
+    - generic: 任务
+  - button "设置":
+    - generic: 设置
+- dialog "任务":
+  - banner:
+    - heading "任务" [level=2]
+    - tablist "当前任务与任务档案":
+      - tab "当前任务 27" [active] [selected]:
+        - generic: 当前任务
+        - generic: "27"
+      - tab "任务档案 1":
+        - generic: 任务档案
+        - generic: "1"
+    - button "关闭任务":
+      - generic: 关闭任务
+  - button "全部类型":
+    - generic: 全部类型
+  - generic: 搜索当前任务
+  - searchbox "搜索当前任务"
+  - tablist "按任务状态筛选":
+    - tab "全部" [selected]:
+      - generic: 全部
+    - tab "进行中":
+      - generic: 进行中
+    - tab "待领取":
+      - generic: 待领取
+    - tab "待确认":
+      - generic: 待确认
+  - text: 列表显示
+  - generic: "27"
+  - text: 项
+  - listbox "当前任务列表":
+    - generic: 雾铃岛 · 线索 0/3
+    - option "封印货箱 支线 可接取 检查青芒留下的封印货箱。" [selected]:
+      - generic "封印货箱"
+      - generic: 支线
+      - img "可接取"
+      - generic: 检查青芒留下的封印货箱。
+    - option "登上雾铃岛 支线 可接取 登上雾铃岛，把消息记入航图。 0":
+      - generic "登上雾铃岛"
+      - generic: 支线
+      - img "可接取"
+      - generic: 登上雾铃岛，把消息记入航图。
+      - meter "登上雾铃岛，把消息记入航图。 0/2"
+    - generic: 赤炉岛 · 线索 0/3
+    - option "熔渣码头 支线 可接取 熔渣码头，把消息记入航图。 0":
+      - generic "熔渣码头"
+      - generic: 支线
+      - img "可接取"
+      - generic: 熔渣码头，把消息记入航图。
+      - meter "熔渣码头，把消息记入航图。 0/2"
+    - generic: 霜镜岛 · 线索 0/3
+    - option "解读旧航约 支线 可接取 回港整理应答名录，确认契约与召唤石的记录用途。":
+      - generic "解读旧航约"
+      - generic: 支线
+      - img "可接取"
+      - generic: 回港整理应答名录，确认契约与召唤石的记录用途。
+    - option "冰锚湾 支线 可接取 冰锚湾，把消息记入航图。 0":
+      - generic "冰锚湾"
+      - generic: 支线
+      - img "可接取"
+      - generic: 冰锚湾，把消息记入航图。
+      - meter "冰锚湾，把消息记入航图。 0/2"
+    - generic: 龙眠岛 · 线索 0/3
+    - option "龙裔会盟 支线 可接取 在龙眠誓约庭提交五章记录与航钥。":
+      - generic "龙裔会盟"
+      - generic: 支线
+      - img "可接取"
+      - generic: 在龙眠誓约庭提交五章记录与航钥。
+    - option "龙骨海岸 支线 可接取 龙骨海岸，把消息记入航图。 0":
+      - generic "龙骨海岸"
+      - generic: 支线
+      - img "可接取"
+      - generic: 龙骨海岸，把消息记入航图。
+      - meter "龙骨海岸，把消息记入航图。 0/2"
+    - option "落点求生 引导 进行中 在落点拾起航钥，并击退2只风原巡猎兽。":
+      - generic "落点求生"
+      - generic: 引导
+      - img "进行中"
+      - generic: 在落点拾起航钥，并击退2只风原巡猎兽。
+    - option "通往field-dragon-1的旧路 支线 可接取 找到入口，完成首次通关。 0":
+      - generic "通往field-dragon-1的旧路"
+      - generic: 支线
+      - img "可接取"
+      - generic: 找到入口，完成首次通关。
+      - meter "找到入口，完成首次通关。 0/2"
+    - option "探索龙骨海岸 支线 可接取 认清航标，找到宝箱，完成本地事件。 0":
+      - generic "探索龙骨海岸"
+      - generic: 支线
+      - img "可接取"
+      - generic: 认清航标，找到宝箱，完成本地事件。
+      - meter "认清航标，找到宝箱，完成本地事件。 0/3"
+    - option "探索誓约庭 支线 可接取 认清航标，找到宝箱，完成本地事件。 0":
+      - generic "探索誓约庭"
+      - generic: 支线
+      - img "可接取"
+      - generic: 认清航标，找到宝箱，完成本地事件。
+      - meter "认清航标，找到宝箱，完成本地事件。 0/3"
+    - option "归还被盗龙骨 支线 可接取 归还被盗龙骨，回来告诉苍。 0":
+      - generic "归还被盗龙骨"
+      - generic: 支线
+      - img "可接取"
+      - generic: 归还被盗龙骨，回来告诉苍。
+      - meter "归还被盗龙骨，回来告诉苍。 0/2"
+    - option "核对龙骨海岸的记录 支线 可接取 核对龙骨海岸的记录，回来告诉苍。":
+      - generic "核对龙骨海岸的记录"
+      - generic: 支线
+      - img "可接取"
+      - generic: 核对龙骨海岸的记录，回来告诉苍。
+    - option "重燃誓约火盆 支线 可接取 重燃誓约火盆，回来告诉羽。 0":
+      - generic "重燃誓约火盆"
+      - generic: 支线
+      - img "可接取"
+      - generic: 重燃誓约火盆，回来告诉羽。
+      - meter "重燃誓约火盆，回来告诉羽。 0/2"
+    - option "核对誓约庭的记录 支线 可接取 核对誓约庭的记录，回来告诉羽。":
+      - generic "核对誓约庭的记录"
+      - generic: 支线
+      - img "可接取"
+      - generic: 核对誓约庭的记录，回来告诉羽。
+    - option "通往field-forge-1的旧路 支线 可接取 找到入口，完成首次通关。 0":
+      - generic "通往field-forge-1的旧路"
+      - generic: 支线
+      - img "可接取"
+      - generic: 找到入口，完成首次通关。
+      - meter "找到入口，完成首次通关。 0/2"
+    - option "探索熔渣码头 支线 可接取 认清航标，找到宝箱，完成本地事件。 0":
+      - generic "探索熔渣码头"
+      - generic: 支线
+      - img "可接取"
+      - generic: 认清航标，找到宝箱，完成本地事件。
+      - meter "认清航标，找到宝箱，完成本地事件。 0/3"
+    - option "清理脱轨的装载机 支线 可接取 清理脱轨的装载机，回来告诉铁锚。 0":
+      - generic "清理脱轨的装载机"
+      - generic: 支线
+      - img "可接取"
+      - generic: 清理脱轨的装载机，回来告诉铁锚。
+      - meter "清理脱轨的装载机，回来告诉铁锚。 0/2"
+    - option "核对熔渣码头的记录 支线 可接取 核对熔渣码头的记录，回来告诉铁锚。":
+      - generic "核对熔渣码头的记录"
+      - generic: 支线
+      - img "可接取"
+      - generic: 核对熔渣码头的记录，回来告诉铁锚。
+    - option "通往field-frost-1的旧路 支线 可接取 找到入口，完成首次通关。 0":
+      - generic "通往field-frost-1的旧路"
+      - generic: 支线
+      - img "可接取"
+      - generic: 找到入口，完成首次通关。
+      - meter "找到入口，完成首次通关。 0/2"
+    - option "探索冰锚湾 支线 可接取 认清航标，找到宝箱，完成本地事件。 0":
+      - generic "探索冰锚湾"
+      - generic: 支线
+      - img "可接取"
+      - generic: 认清航标，找到宝箱，完成本地事件。
+      - meter "认清航标，找到宝箱，完成本地事件。 0/3"
+    - option "取回冰下渔网 支线 可接取 取回冰下渔网，回来告诉白须。 0":
+      - generic "取回冰下渔网"
+      - generic: 支线
+      - img "可接取"
+      - generic: 取回冰下渔网，回来告诉白须。
+      - meter "取回冰下渔网，回来告诉白须。 0/2"
+    - option "核对冰锚湾的记录 支线 可接取 核对冰锚湾的记录，回来告诉白须。":
+      - generic "核对冰锚湾的记录"
+      - generic: 支线
+      - img "可接取"
+      - generic: 核对冰锚湾的记录，回来告诉白须。
+    - option "通往field-mist-1的旧路 支线 可接取 找到入口，完成首次通关。 0":
+      - generic "通往field-mist-1的旧路"
+      - generic: 支线
+      - img "可接取"
+      - generic: 找到入口，完成首次通关。
+      - meter "找到入口，完成首次通关。 0/2"
+    - option "探索雾铃渡口 支线 可接取 认清航标，找到宝箱，完成本地事件。 0":
+      - generic "探索雾铃渡口"
+      - generic: 支线
+      - img "可接取"
+      - generic: 认清航标，找到宝箱，完成本地事件。
+      - meter "认清航标，找到宝箱，完成本地事件。 0/3"
+    - option "找回迷航渡船的铃 支线 可接取 找回迷航渡船的铃，回来告诉苇。 0":
+      - generic "找回迷航渡船的铃"
+      - generic: 支线
+      - img "可接取"
+      - generic: 找回迷航渡船的铃，回来告诉苇。
+      - meter "找回迷航渡船的铃，回来告诉苇。 0/2"
+    - option "核对雾铃渡口的记录 支线 可接取 核对雾铃渡口的记录，回来告诉苇。":
+      - generic "核对雾铃渡口的记录"
+      - generic: 支线
+      - img "可接取"
+      - generic: 核对雾铃渡口的记录，回来告诉苇。
+  - region "选中任务详情":
+    - text: 支线
+    - heading "封印货箱" [level=2]
+    - img "可接取"
+    - heading "任务说明" [level=3]:
+      - generic: 任务说明
+    - paragraph: 检查青芒留下的封印货箱。
+    - heading "任务目标" [level=3]:
+      - generic: 任务目标
+    - generic: 检查青芒留下的封印货箱。
+    - strong: 0 / 1
+    - heading "任务关联" [level=3]:
+      - generic: 任务关联
+    - button "三处邮站 尚无记录" [disabled]:
+      - generic: 三处邮站
+      - generic: 尚无记录
+    - paragraph: 前往发现点或人物身边接取。
+    - button "查看任务地点":
+      - generic: 查看任务地点
+    - complementary:
+      - generic: 任务地点
+      - generic: 检查青芒留下的封印货箱。
+      - generic: 雾铃岛
+      - heading "任务奖励" [level=3]:
+        - generic: 任务奖励
+      - generic "金币 120":
+        - generic: "120"
+        - generic: 金币
+      - generic "强化石 0":
+        - generic: "0"
+        - generic: 强化石
+      - generic: 完成目标后可领取
+      - heading "任务记录" [level=3]:
+        - generic: 任务记录
+      - paragraph: 前往发现点或人物身边接取。
+      - emphasis: 岛屿故事
+  - contentinfo:
+    - status
+- status: 拾星港
+- complementary "星潮海任务":
+  - generic: 阶段
+  - generic: 裂星潮 5/6，下一岛：龙眠岛
+  - button "→":
+    - generic: →

@@ -1,0 +1,416 @@
+{
+  "version": 1,
+  "craftQuality": "rare",
+  "parts": {
+    "weapon": {
+      "primary": "attack",
+      "value": 9,
+      "reinforcementMinimum": 2
+    },
+    "armor": {
+      "primary": "armor",
+      "value": 2,
+      "reinforcementMinimum": 1
+    },
+    "helmet": {
+      "primary": "armor",
+      "value": 1,
+      "reinforcementMinimum": 1
+    },
+    "boots": {
+      "primary": "armor",
+      "value": 1,
+      "reinforcementMinimum": 1
+    },
+    "necklace": {
+      "primary": "attack",
+      "value": 2,
+      "reinforcementMinimum": 1
+    },
+    "ring": {
+      "primary": "attack",
+      "value": 1,
+      "reinforcementMinimum": 1
+    }
+  },
+  "stages": [
+    {
+      "tier": 1,
+      "primaryScale": 1,
+      "requiredLevel": 1,
+      "craftLevel": 1,
+      "craftRegion": "meadow",
+      "ore": 8,
+      "leather": 2
+    },
+    {
+      "tier": 2,
+      "primaryScale": 1.7,
+      "requiredLevel": 4,
+      "craftLevel": 80,
+      "craftRegion": "rift",
+      "ore": 20,
+      "leather": 4
+    },
+    {
+      "tier": 3,
+      "primaryScale": 2.8,
+      "requiredLevel": 7,
+      "craftLevel": 160,
+      "craftRegion": "abyss",
+      "ore": 40,
+      "leather": 8
+    }
+  ],
+  "series": {
+    "standard": {
+      "bonusScale": 1,
+      "craftMaterial": null,
+      "craftQuantity": 0
+    },
+    "omega": {
+      "bonusScale": 1.1,
+      "craftMaterial": "omega_fragment",
+      "craftQuantity": 2
+    },
+    "primal": {
+      "bonusScale": 1.15,
+      "craftMaterial": "boss_essence",
+      "craftQuantity": 1
+    }
+  },
+  "families": {
+    "sword": {
+      "name": "剑",
+      "animationFamily": "sword",
+      "appearances": [
+        "100011",
+        "300601",
+        "400101"
+      ],
+      "weaponSkill": {
+        "type": "attack",
+        "value": 0.25
+      },
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "attack": 1
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "critChance": 0.03
+          }
+        },
+        {
+          "pieces": 6,
+          "stats": {
+            "critMultiplier": 0.1
+          }
+        }
+      ],
+      "setZones": {
+        "4": {
+          "tags": [
+            "melee"
+          ],
+          "mult": [
+            1.2,
+            1.3,
+            1.4
+          ]
+        },
+        "6": {
+          "tags": [
+            "single"
+          ],
+          "mult": [
+            1.15,
+            1.2,
+            1.3
+          ]
+        }
+      }
+    },
+    "hammer": {
+      "name": "锤",
+      "animationFamily": "axe",
+      "appearances": [
+        "100041",
+        "300571",
+        "300571"
+      ],
+      "weaponSkill": {
+        "type": "armor",
+        "value": 0.3
+      },
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "armor": 1
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "hp": 0.03
+          }
+        },
+        {
+          "pieces": 6,
+          "stats": {
+            "armor": 2
+          }
+        }
+      ],
+      "setZones": {
+        "4": {
+          "tags": [
+            "area"
+          ],
+          "mult": [
+            1.2,
+            1.3,
+            1.4
+          ]
+        },
+        "6": {
+          "tags": [
+            "physical"
+          ],
+          "mult": [
+            1.15,
+            1.2,
+            1.3
+          ]
+        }
+      }
+    },
+    "axe": {
+      "name": "斧",
+      "animationFamily": "axe",
+      "appearances": [
+        "100031",
+        "300571",
+        "100041"
+      ],
+      "weaponSkill": {
+        "type": "attack",
+        "value": 0.3
+      },
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "attack": 1
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "penetration": 0.03
+          }
+        },
+        {
+          "pieces": 6,
+          "stats": {
+            "lifesteal": 0.02
+          }
+        }
+      ],
+      "setZones": {
+        "4": {
+          "tags": [
+            "physical"
+          ],
+          "mult": [
+            1.2,
+            1.3,
+            1.4
+          ]
+        },
+        "6": {
+          "tags": [
+            "melee"
+          ],
+          "mult": [
+            1.15,
+            1.2,
+            1.3
+          ]
+        }
+      }
+    },
+    "staff": {
+      "name": "法杖",
+      "animationFamily": "magic",
+      "appearances": [
+        "200291",
+        "400105",
+        "400105"
+      ],
+      "weaponSkill": {
+        "type": "skill",
+        "value": 0.35
+      },
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "mana": 10
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "regen": 1
+          }
+        },
+        {
+          "pieces": 6,
+          "stats": {
+            "cdr": 0.03
+          }
+        }
+      ],
+      "setZones": {
+        "4": {
+          "tags": [
+            "spell"
+          ],
+          "mult": [
+            1.2,
+            1.3,
+            1.4
+          ]
+        },
+        "6": {
+          "tags": [
+            "dot"
+          ],
+          "mult": [
+            1.15,
+            1.2,
+            1.3
+          ]
+        }
+      }
+    },
+    "hidden": {
+      "name": "暗器",
+      "animationFamily": "fist",
+      "appearances": [
+        "100061",
+        "100102",
+        "100102"
+      ],
+      "weaponSkill": {
+        "type": "crit",
+        "value": 0.15
+      },
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "speed": 0.2
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "critChance": 0.03
+          }
+        },
+        {
+          "pieces": 6,
+          "stats": {
+            "dodge": 0.03
+          }
+        }
+      ],
+      "setZones": {
+        "4": {
+          "tags": [
+            "projectile"
+          ],
+          "mult": [
+            1.2,
+            1.3,
+            1.4
+          ]
+        },
+        "6": {
+          "tags": [
+            "ranged"
+          ],
+          "mult": [
+            1.15,
+            1.2,
+            1.3
+          ]
+        }
+      }
+    },
+    "wand": {
+      "name": "魔杖",
+      "animationFamily": "magic",
+      "appearances": [
+        "200291",
+        "400105",
+        "400105"
+      ],
+      "weaponSkill": {
+        "type": "skill",
+        "value": 0.3
+      },
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "mana": 10
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "regen": 2
+          }
+        },
+        {
+          "pieces": 6,
+          "stats": {
+            "cdr": 0.03
+          }
+        }
+      ],
+      "setZones": {
+        "4": {
+          "tags": [
+            "lightning",
+            "arcane",
+            "chain"
+          ],
+          "mult": [
+            1.2,
+            1.3,
+            1.4
+          ]
+        },
+        "6": {
+          "tags": [
+            "spell"
+          ],
+          "mult": [
+            1.15,
+            1.2,
+            1.3
+          ]
+        }
+      }
+    }
+  }
+}

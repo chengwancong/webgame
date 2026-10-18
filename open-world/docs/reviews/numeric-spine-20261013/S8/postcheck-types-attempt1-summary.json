@@ -1,0 +1,35 @@
+{
+  "steps": [
+    {
+      "command": [
+        "node",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "-p",
+        "tsconfig.json"
+      ],
+      "exitCode": 0,
+      "name": "主工程类型检查",
+      "log": "S8/final-types.log",
+      "expectedExit": 0,
+      "seconds": 15.7434292
+    },
+    {
+      "command": [
+        "node",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "-p",
+        "tools/spine/tsconfig.json"
+      ],
+      "exitCode": 2,
+      "name": "主干工具类型检查",
+      "log": "S8/final-tools-types.log",
+      "expectedExit": 0,
+      "seconds": 6.794889
+    }
+  ],
+  "source": "G:\\webgame\\abyss-walker-migration\\abyss-walker-rewrite\\open-world\\.qa\\numeric-spine-verify-1_kepbei\\source",
+  "status": "停止：主干工具类型检查退出码2",
+  "updated": "2026-10-15T04:06:01.0078586+08:00"
+}

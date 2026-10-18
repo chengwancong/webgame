@@ -1,0 +1,2366 @@
+{
+  "versions": {
+    "client": "0.11.24",
+    "protocol": 34,
+    "rules": "ow-63",
+    "assets": "world-art-20261007-v24-world-runtime",
+    "db": 16
+  },
+  "profileSubstitutions": {
+    "arrows": {
+      "original": "bow / rain_of_arrows / aspect-build-split",
+      "actual": "hidden / throwing_knife + fan_of_knives + blade_flurry / aspect-tf-knife",
+      "reason": "目标指定暗器；现有弓技能与分裂箭威能不支持暗器，按任务单 §3 采用同谱系最近的千刃投射物构筑，不静默过滤技能。"
+    }
+  },
+  "rows": [
+    {
+      "id": "burn",
+      "name": "燃烧引爆",
+      "profile": {
+        "id": "burn",
+        "name": "燃烧引爆",
+        "weapon": "staff",
+        "four": "set-staff-standard",
+        "two": "set-staff-primal",
+        "skills": [
+          "fireball",
+          "meteor",
+          "ember"
+        ],
+        "aspect": "aspect-st-ember",
+        "keyStats": [
+          "igniteChance",
+          "statusDuration",
+          "fireDamage"
+        ],
+        "preferredAugment": "aug-g-set-forge",
+        "focus": "clear"
+      },
+      "skills": [
+        "fireball",
+        "meteor",
+        "ember"
+      ],
+      "stats": {
+        "weapon": "staff",
+        "hp": 8366,
+        "attack": 1292,
+        "armor": 330,
+        "speed": 6,
+        "mana": 100,
+        "regen": 10,
+        "effects": [],
+        "igniteChance": 0.42000000000000004,
+        "statusDuration": 0.6900000000000001,
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 1.47
+          },
+          {
+            "id": "weapon-affinity",
+            "label": "主手加成 · 武技",
+            "kind": "mult",
+            "value": 1.14,
+            "tags": [
+              "martial"
+            ]
+          },
+          {
+            "id": "affix-fire",
+            "label": "火焰伤害",
+            "kind": "add",
+            "value": 1.6,
+            "tags": [
+              "fire"
+            ]
+          },
+          {
+            "id": "affix-dot",
+            "label": "持续伤害",
+            "kind": "add",
+            "value": 0.15,
+            "tags": [
+              "dot"
+            ]
+          }
+        ],
+        "hpPercent": 0.4,
+        "attackPercent": 0.2,
+        "rules": [
+          {
+            "id": "innate-staff-ignite",
+            "name": "引燃",
+            "description": "火焰技能命中时点燃目标 3 秒（共 30% 伤害）",
+            "source": "元素流 · 固有",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "weapons": [
+                "staff"
+              ],
+              "damageTypes": [
+                "fire"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "status",
+              "ref": "hit",
+              "status": "burn",
+              "duration": 90,
+              "strength": 0,
+              "ratio": 0.3
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "combo/innate-staff-ignite"
+          },
+          {
+            "id": "innate-staff-shatter",
+            "name": "碎冰",
+            "description": "冰霜伤害击中燃烧或迟缓中的敌人时碎冰爆发（60% 伤害，半径 2.5，1 秒冷却）",
+            "source": "元素流 · 固有",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 30,
+            "filter": {
+              "weapons": [
+                "staff"
+              ],
+              "damageTypes": [
+                "cold"
+              ]
+            },
+            "when": [
+              {
+                "kind": "target_status",
+                "statuses": [
+                  "burn",
+                  "slow"
+                ]
+              }
+            ],
+            "action": {
+              "type": "nova",
+              "ratio": 0.6,
+              "radius": 2.5,
+              "damageType": "cold",
+              "ref": "hit",
+              "at": "target",
+              "vfx": "combo/shatter"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "combo/shatter"
+          },
+          {
+            "id": "atom-flame-stack",
+            "name": "叠焰",
+            "description": "被动：燃烧最多叠 3 层",
+            "source": "set-staff-standard",
+            "tier": 1,
+            "trigger": "passive",
+            "chance": 1,
+            "icd": 0,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "buff",
+              "duration": 90,
+              "maxStacks": 1,
+              "mods": {},
+              "statusOverrides": {
+                "burn": {
+                  "maxStacks": 3,
+                  "stackMode": "refresh"
+                }
+              }
+            },
+            "scale": [],
+            "vfxKey": "player/ember"
+          },
+          {
+            "id": "atom-detonate",
+            "name": "引爆",
+            "description": "火焰命中燃烧满层目标：引爆剩余燃烧，范围 2.5",
+            "source": "set-staff-standard",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "damageTypes": [
+                "fire"
+              ]
+            },
+            "when": [
+              {
+                "kind": "target_status",
+                "statuses": [
+                  "burn"
+                ],
+                "minStacks": 3
+              }
+            ],
+            "action": {
+              "type": "detonate",
+              "statuses": [
+                "burn"
+              ],
+              "ratio": 1,
+              "remove": true,
+              "radius": 2.5
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "player/fireball"
+          },
+          {
+            "id": "atom-quake",
+            "name": "震波",
+            "description": "范围技能命中 ≥ 4 敌，冷却 1 秒：震波（50%，半径 2.5）",
+            "source": "铭纹：古枝吊坠",
+            "tier": 0.5,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 30,
+            "filter": {
+              "tags": [
+                "area"
+              ]
+            },
+            "when": [
+              {
+                "kind": "cast_hits",
+                "op": "gte",
+                "value": 4
+              }
+            ],
+            "action": {
+              "type": "nova",
+              "ratio": 0.25,
+              "radius": 2.5,
+              "damageType": "physical",
+              "ref": "hit",
+              "at": "target"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "player/ground_slam"
+          },
+          {
+            "id": "aspect-st-ember-burn",
+            "name": "余烬之心",
+            "description": "燃烧伤害 ×1.2",
+            "source": "aspect-st-ember",
+            "tier": 1,
+            "trigger": "passive",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "statusKinds": [
+                "burn"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "amplify",
+              "ratio": 0.2,
+              "against": []
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "player/ember"
+          },
+          {
+            "id": "aspect-st-ember-state",
+            "name": "余烬之心",
+            "description": "余烬之心",
+            "source": "aspect-st-ember",
+            "tier": 1,
+            "trigger": "passive",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "statusKinds": [
+                "burn"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "buff",
+              "duration": 1,
+              "maxStacks": 1,
+              "mods": {},
+              "flags": {
+                "dotCrit": true
+              }
+            },
+            "scale": [],
+            "vfxKey": "player/ward"
+          },
+          {
+            "id": "stat-igniteChance",
+            "name": "点燃几率",
+            "description": "装备属性触发",
+            "source": "装备与养成属性",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 0.42000000000000004,
+            "icd": 0,
+            "filter": {
+              "categories": [
+                "direct"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "status",
+              "ref": "dealt",
+              "status": "burn",
+              "duration": 90,
+              "strength": 0,
+              "ratio": 0.3
+            },
+            "scale": [],
+            "vfxKey": "player/ember"
+          }
+        ],
+        "damageAdd": 1.47,
+        "damageMult": 1,
+        "combos": [
+          {
+            "id": "innate-staff-ignite",
+            "name": "引燃",
+            "description": "火焰技能命中时点燃目标 3 秒（共 30% 伤害）",
+            "source": "元素流 · 固有",
+            "weapons": [
+              "staff"
+            ],
+            "trigger": "hit",
+            "chance": 1,
+            "cooldown": 0,
+            "damageTypes": [
+              "fire"
+            ],
+            "action": {
+              "type": "status",
+              "status": "burn",
+              "duration": 90,
+              "strength": 0,
+              "ratio": 0.3
+            }
+          },
+          {
+            "id": "innate-staff-shatter",
+            "name": "碎冰",
+            "description": "冰霜伤害击中燃烧或迟缓中的敌人时碎冰爆发（60% 伤害，半径 2.5，1 秒冷却）",
+            "source": "元素流 · 固有",
+            "weapons": [
+              "staff"
+            ],
+            "trigger": "hit",
+            "chance": 1,
+            "cooldown": 30,
+            "damageTypes": [
+              "cold"
+            ],
+            "targetStatus": [
+              "burn",
+              "slow"
+            ],
+            "action": {
+              "type": "nova",
+              "radius": 2.5,
+              "ratio": 0.6,
+              "damageType": "cold",
+              "vfx": "combo/shatter"
+            }
+          }
+        ]
+      },
+      "sets": [
+        {
+          "setId": "set-staff-standard",
+          "setName": "炽炉",
+          "count": 4,
+          "total": 6,
+          "activeBonuses": [
+            2,
+            4
+          ],
+          "artStage": 1,
+          "bonusDescriptions": {
+            "2": "火焰伤害 +15%",
+            "4": "被动：燃烧最多叠 3 层；火焰命中燃烧满层目标：引爆剩余燃烧，范围 2.5"
+          }
+        },
+        {
+          "setId": "set-staff-primal",
+          "setName": "余烬",
+          "count": 2,
+          "total": 6,
+          "activeBonuses": [
+            2
+          ],
+          "artStage": 1,
+          "bonusDescriptions": {
+            "2": "持续伤害 +15%",
+            "4": "余烬4件提高 20%；持续伤害可暴击（暴击率减半）"
+          }
+        }
+      ],
+      "acquisition": {
+        "scope": "controlled attainable grants; not a natural-drop estimate",
+        "level": 50,
+        "itemLevel": 50,
+        "skillRank": 5,
+        "artStage": 1,
+        "rareAffixes": 3,
+        "legendaryAffixes": 5,
+        "affixTier": 3,
+        "rollFraction": 0.5,
+        "coreRank": 1,
+        "publicRulesUnmodified": true
+      }
+    },
+    {
+      "id": "freeze",
+      "name": "冻结碎冰",
+      "profile": {
+        "id": "freeze",
+        "name": "冻结碎冰",
+        "weapon": "staff",
+        "four": "set-staff-omega",
+        "two": "set-hammer-primal",
+        "skills": [
+          "frost",
+          "nova",
+          "frost_bolt"
+        ],
+        "aspect": "aspect-st-permafrost",
+        "keyStats": [
+          "chillChance",
+          "vsControlled",
+          "coldDamage"
+        ],
+        "preferredAugment": "aug-g-aftershock",
+        "focus": "clear"
+      },
+      "skills": [
+        "frost",
+        "nova",
+        "frost_bolt"
+      ],
+      "stats": {
+        "weapon": "staff",
+        "hp": 6653,
+        "attack": 1391,
+        "armor": 72,
+        "speed": 8,
+        "mana": 100,
+        "regen": 10,
+        "effects": [],
+        "chillChance": 0.42000000000000004,
+        "vsControlled": 0.6900000000000001,
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 1.47
+          },
+          {
+            "id": "weapon-affinity",
+            "label": "主手加成 · 法术",
+            "kind": "mult",
+            "value": 1.14,
+            "tags": [
+              "spell"
+            ]
+          },
+          {
+            "id": "affix-cold",
+            "label": "冰霜伤害",
+            "kind": "add",
+            "value": 1.6,
+            "tags": [
+              "cold"
+            ]
+          }
+        ],
+        "critChance": 0.12,
+        "statusDuration": 0.2,
+        "hpPercent": 0.4,
+        "attackPercent": 0.2,
+        "conditional": [
+          {
+            "id": "stat-vsControlled",
+            "pool": "cond",
+            "value": 0.6900000000000001,
+            "when": {
+              "kind": "target_status",
+              "statuses": [
+                "stun",
+                "root",
+                "petrify",
+                "slow",
+                "fear",
+                "time_stop",
+                "freeze"
+              ]
+            }
+          }
+        ],
+        "rules": [
+          {
+            "id": "innate-staff-ignite",
+            "name": "引燃",
+            "description": "火焰技能命中时点燃目标 3 秒（共 30% 伤害）",
+            "source": "元素流 · 固有",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "weapons": [
+                "staff"
+              ],
+              "damageTypes": [
+                "fire"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "status",
+              "ref": "hit",
+              "status": "burn",
+              "duration": 90,
+              "strength": 0,
+              "ratio": 0.3
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "combo/innate-staff-ignite"
+          },
+          {
+            "id": "innate-staff-shatter",
+            "name": "碎冰",
+            "description": "冰霜伤害击中燃烧或迟缓中的敌人时碎冰爆发（60% 伤害，半径 2.5，1 秒冷却）",
+            "source": "元素流 · 固有",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 30,
+            "filter": {
+              "weapons": [
+                "staff"
+              ],
+              "damageTypes": [
+                "cold"
+              ]
+            },
+            "when": [
+              {
+                "kind": "target_status",
+                "statuses": [
+                  "burn",
+                  "slow"
+                ]
+              }
+            ],
+            "action": {
+              "type": "nova",
+              "ratio": 0.6,
+              "radius": 2.5,
+              "damageType": "cold",
+              "ref": "hit",
+              "at": "target",
+              "vfx": "combo/shatter"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "combo/shatter"
+          },
+          {
+            "id": "atom-chill",
+            "name": "寒蚀",
+            "description": "冰霜命中：变慢 2 秒；第 3 次冰冻 1.5 秒",
+            "source": "set-staff-omega",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "damageTypes": [
+                "cold"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "status",
+              "ref": "hit",
+              "status": "slow",
+              "duration": 60,
+              "strength": 0.3,
+              "ratio": 0,
+              "maxStacks": 3,
+              "onStacks": {
+                "at": 3,
+                "convert": "freeze",
+                "duration": 75,
+                "consume": 3
+              }
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "player/frost"
+          },
+          {
+            "id": "atom-shatter",
+            "name": "碎冰",
+            "description": "冰冻的敌人死亡时碎裂，造成最大生命 10% 的范围伤害",
+            "source": "set-staff-omega",
+            "tier": 1,
+            "trigger": "kill",
+            "chance": 1,
+            "icd": 0,
+            "filter": {},
+            "when": [
+              {
+                "kind": "target_status",
+                "statuses": [
+                  "freeze"
+                ]
+              }
+            ],
+            "action": {
+              "type": "nova",
+              "ratio": 0.1,
+              "radius": 5,
+              "damageType": "cold",
+              "ref": "maxHp",
+              "at": "target"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "player/nova"
+          },
+          {
+            "id": "atom-bulwark",
+            "name": "坚壁",
+            "description": "受击：获得相当于护甲 200% 的护盾，持续 3 秒；护盾在时伤害提高 20%，冷却 3 秒",
+            "source": "铭纹：铭文法袍",
+            "tier": 0.5,
+            "trigger": "hurt",
+            "chance": 1,
+            "icd": 90,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "shield",
+              "ratio": 1,
+              "ref": "armor",
+              "duration": 90,
+              "mods": {
+                "damageMult": 0.2
+              }
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "player/ward"
+          },
+          {
+            "id": "stat-chillChance",
+            "name": "冰缓几率",
+            "description": "装备属性触发",
+            "source": "装备与养成属性",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 0.42000000000000004,
+            "icd": 0,
+            "filter": {
+              "categories": [
+                "direct"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "status",
+              "ref": "dealt",
+              "status": "slow",
+              "duration": 60,
+              "strength": 0.3,
+              "ratio": 0
+            },
+            "scale": [],
+            "vfxKey": "player/frost"
+          }
+        ],
+        "damageAdd": 1.47,
+        "damageMult": 1,
+        "combos": [
+          {
+            "id": "innate-staff-ignite",
+            "name": "引燃",
+            "description": "火焰技能命中时点燃目标 3 秒（共 30% 伤害）",
+            "source": "元素流 · 固有",
+            "weapons": [
+              "staff"
+            ],
+            "trigger": "hit",
+            "chance": 1,
+            "cooldown": 0,
+            "damageTypes": [
+              "fire"
+            ],
+            "action": {
+              "type": "status",
+              "status": "burn",
+              "duration": 90,
+              "strength": 0,
+              "ratio": 0.3
+            }
+          },
+          {
+            "id": "innate-staff-shatter",
+            "name": "碎冰",
+            "description": "冰霜伤害击中燃烧或迟缓中的敌人时碎冰爆发（60% 伤害，半径 2.5，1 秒冷却）",
+            "source": "元素流 · 固有",
+            "weapons": [
+              "staff"
+            ],
+            "trigger": "hit",
+            "chance": 1,
+            "cooldown": 30,
+            "damageTypes": [
+              "cold"
+            ],
+            "targetStatus": [
+              "burn",
+              "slow"
+            ],
+            "action": {
+              "type": "nova",
+              "radius": 2.5,
+              "ratio": 0.6,
+              "damageType": "cold",
+              "vfx": "combo/shatter"
+            }
+          }
+        ]
+      },
+      "sets": [
+        {
+          "setId": "set-staff-omega",
+          "setName": "霜镜",
+          "count": 4,
+          "total": 6,
+          "activeBonuses": [
+            2,
+            4
+          ],
+          "artStage": 1,
+          "bonusDescriptions": {
+            "2": "冰霜伤害 +15%",
+            "4": "冰霜命中：变慢 2 秒；第 3 次冰冻 1.5 秒；冰冻的敌人死亡时碎裂，造成最大生命 10% 的范围伤害"
+          }
+        },
+        {
+          "setId": "set-hammer-primal",
+          "setName": "镇压",
+          "count": 2,
+          "total": 6,
+          "activeBonuses": [
+            2
+          ],
+          "artStage": 1,
+          "bonusDescriptions": {
+            "2": "状态持续时间 +20%",
+            "4": "对被控住的敌人伤害提高 25%；眩晕敌人时，30%：再眩晕附近 1 个"
+          }
+        }
+      ],
+      "acquisition": {
+        "scope": "controlled attainable grants; not a natural-drop estimate",
+        "level": 50,
+        "itemLevel": 50,
+        "skillRank": 5,
+        "artStage": 1,
+        "rareAffixes": 3,
+        "legendaryAffixes": 5,
+        "affixTier": 3,
+        "rollFraction": 0.5,
+        "coreRank": 1,
+        "publicRulesUnmodified": true
+      }
+    },
+    {
+      "id": "mobile",
+      "name": "疾行游击",
+      "profile": {
+        "id": "mobile",
+        "name": "疾行游击",
+        "weapon": "hidden",
+        "four": "set-axe-primal",
+        "two": "set-hidden-primal",
+        "skills": [
+          "shadow_step",
+          "shadow_blade",
+          "blade_flurry"
+        ],
+        "aspect": "aspect-mv-tailwind",
+        "keyStats": [
+          "speed",
+          "dodge",
+          "critMultiplier"
+        ],
+        "preferredAugment": "aug-s-speed",
+        "focus": "single"
+      },
+      "skills": [
+        "shadow_step",
+        "shadow_blade",
+        "blade_flurry"
+      ],
+      "stats": {
+        "weapon": "hidden",
+        "hp": 4939,
+        "attack": 4335,
+        "armor": 66,
+        "speed": 19.8,
+        "mana": 100,
+        "regen": 10,
+        "effects": [],
+        "critMultiplier": 3.2500000000000004,
+        "dodge": 0.51,
+        "critChance": 0.006112666666666666,
+        "hpPercent": 0.4,
+        "attackPercent": 0.4,
+        "speedPercent": 0.1,
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 1.47
+          },
+          {
+            "id": "weapon-affinity",
+            "label": "主手加成 · 武技",
+            "kind": "mult",
+            "value": 1.14,
+            "tags": [
+              "martial"
+            ]
+          },
+          {
+            "id": "conversion-aspect-mv-tailwind:0",
+            "label": "追风之力",
+            "kind": "add",
+            "pool": "type",
+            "value": 1.1500000000000001
+          }
+        ],
+        "dynamicConversions": [
+          {
+            "source": "aspect-mv-tailwind:0",
+            "ratio": 0.5,
+            "baselineSpeed": 6,
+            "permanentBonus": 2.3000000000000003
+          }
+        ],
+        "rules": [
+          {
+            "id": "innate-hidden-return",
+            "name": "回旋刃",
+            "description": "击杀时 50% 几率迸出 3 枚回旋刃（各 50% 伤害）",
+            "source": "回旋流 · 固有",
+            "tier": 1,
+            "trigger": "kill",
+            "chance": 0.5,
+            "icd": 0,
+            "filter": {
+              "weapons": [
+                "hidden"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "shards",
+              "count": 3,
+              "ratio": 0.5,
+              "range": 6,
+              "damageType": "physical",
+              "ref": "hit",
+              "vfx": "combo/return-blade"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "combo/return-blade"
+          },
+          {
+            "id": "atom-whirl-edge",
+            "name": "旋锋",
+            "description": "移动时每秒叠1层，下次近战命中每层伤害 +15%，最多5层，命中后消耗",
+            "source": "set-axe-primal",
+            "tier": 1,
+            "trigger": "interval",
+            "chance": 1,
+            "icd": 0,
+            "every": 30,
+            "filter": {},
+            "when": [
+              {
+                "kind": "self_state",
+                "state": "moving",
+                "value": 0
+              }
+            ],
+            "action": {
+              "type": "buff",
+              "duration": 3600,
+              "maxStacks": 5,
+              "mods": {
+                "damageMult": 0.15
+              },
+              "consume": "nextMelee"
+            },
+            "scale": [
+              "action.mods.damageMult"
+            ],
+            "vfxKey": "player/whirl"
+          },
+          {
+            "id": "atom-fire-path",
+            "name": "火径",
+            "description": "位移后：路径留下火海 3 秒",
+            "source": "铭纹：猎兽皮靴",
+            "tier": 0.5,
+            "trigger": "dash",
+            "chance": 1,
+            "icd": 0,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "field",
+              "ratio": 0.15,
+              "damageType": "fire",
+              "radius": 0.8,
+              "duration": 90,
+              "interval": 30,
+              "at": "path"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "player/ember"
+          }
+        ],
+        "damageAdd": 2.62,
+        "damageMult": 1,
+        "combos": [
+          {
+            "id": "innate-hidden-return",
+            "name": "回旋刃",
+            "description": "击杀时 50% 几率迸出 3 枚回旋刃（各 50% 伤害）",
+            "source": "回旋流 · 固有",
+            "weapons": [
+              "hidden"
+            ],
+            "trigger": "kill",
+            "chance": 0.5,
+            "cooldown": 0,
+            "action": {
+              "type": "shards",
+              "count": 3,
+              "ratio": 0.5,
+              "range": 6,
+              "damageType": "physical",
+              "vfx": "combo/return-blade"
+            }
+          }
+        ]
+      },
+      "sets": [
+        {
+          "setId": "set-hidden-primal",
+          "setName": "疾影",
+          "count": 2,
+          "total": 6,
+          "activeBonuses": [
+            2
+          ],
+          "artStage": 1,
+          "bonusDescriptions": {
+            "2": "闪避率 +6%",
+            "4": "闪避或位移后：下一次技能必定暴击，持续3秒，效果冷却4秒"
+          }
+        },
+        {
+          "setId": "set-axe-primal",
+          "setName": "旋锋",
+          "count": 4,
+          "total": 6,
+          "activeBonuses": [
+            2,
+            4
+          ],
+          "artStage": 1,
+          "bonusDescriptions": {
+            "2": "移动速度加成 +10%",
+            "4": "移动时每秒叠1层，下次近战命中每层伤害 +15%，最多5层，命中后消耗"
+          }
+        }
+      ],
+      "acquisition": {
+        "scope": "controlled attainable grants; not a natural-drop estimate",
+        "level": 50,
+        "itemLevel": 50,
+        "skillRank": 5,
+        "artStage": 1,
+        "rareAffixes": 3,
+        "legendaryAffixes": 5,
+        "affixTier": 3,
+        "rollFraction": 0.5,
+        "coreRank": 1,
+        "publicRulesUnmodified": true
+      }
+    },
+    {
+      "id": "quake",
+      "name": "震地旋风",
+      "profile": {
+        "id": "quake",
+        "name": "震地旋风",
+        "weapon": "axe",
+        "four": "set-hammer-standard",
+        "two": "set-axe-primal",
+        "skills": [
+          "whirl",
+          "ground_slam",
+          "cleave"
+        ],
+        "aspect": "aspect-tf-whirl",
+        "keyStats": [
+          "areaSize",
+          "areaDamage",
+          "castSpeed"
+        ],
+        "preferredAugment": "aug-g-aftershock",
+        "focus": "clear"
+      },
+      "skills": [
+        "whirl",
+        "ground_slam",
+        "cleave"
+      ],
+      "stats": {
+        "weapon": "axe",
+        "hp": 3226,
+        "attack": 1746,
+        "armor": 330,
+        "speed": 8.8,
+        "mana": 100,
+        "regen": 10,
+        "effects": [],
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 1.47
+          },
+          {
+            "id": "weapon-affinity",
+            "label": "主手加成 · 武技",
+            "kind": "mult",
+            "value": 1.14,
+            "tags": [
+              "martial"
+            ]
+          },
+          {
+            "id": "affix-area",
+            "label": "范围伤害",
+            "kind": "add",
+            "value": 1.53,
+            "tags": [
+              "area"
+            ]
+          }
+        ],
+        "critChance": 0.12,
+        "areaSize": 0.51,
+        "castSpeed": 0.48,
+        "hpPercent": 0.4,
+        "attackPercent": 0.4,
+        "speedPercent": 0.1,
+        "rules": [
+          {
+            "id": "innate-heavy-quake",
+            "name": "余震",
+            "description": "击杀敌人时引发余震（35% 伤害，半径 2.5）",
+            "source": "震地流 · 固有",
+            "tier": 1,
+            "trigger": "kill",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "weapons": [
+                "hammer",
+                "axe"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "nova",
+              "ratio": 0.35,
+              "radius": 2.5,
+              "damageType": "physical",
+              "ref": "hit",
+              "at": "target",
+              "vfx": "combo/quake"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "combo/quake"
+          },
+          {
+            "id": "atom-quake",
+            "name": "震波",
+            "description": "范围技能命中 ≥ 4 敌，冷却 1 秒：震波（50%，半径 2.5）",
+            "source": "set-hammer-standard",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 30,
+            "filter": {
+              "tags": [
+                "area"
+              ]
+            },
+            "when": [
+              {
+                "kind": "cast_hits",
+                "op": "gte",
+                "value": 4
+              }
+            ],
+            "action": {
+              "type": "nova",
+              "ratio": 0.5,
+              "radius": 2.5,
+              "damageType": "physical",
+              "ref": "hit",
+              "at": "target"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "player/ground_slam"
+          },
+          {
+            "id": "atom-ignite",
+            "name": "引燃",
+            "description": "火焰技能命中：燃烧 3 秒（30% 伤害）",
+            "source": "铭纹：獠牙战斧",
+            "tier": 0.5,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "damageTypes": [
+                "fire"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "status",
+              "ref": "hit",
+              "status": "burn",
+              "duration": 90,
+              "strength": 0,
+              "ratio": 0.15
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "player/ember"
+          }
+        ],
+        "damageAdd": 1.47,
+        "damageMult": 1,
+        "combos": [
+          {
+            "id": "innate-heavy-quake",
+            "name": "余震",
+            "description": "击杀敌人时引发余震（35% 伤害，半径 2.5）",
+            "source": "震地流 · 固有",
+            "weapons": [
+              "hammer",
+              "axe"
+            ],
+            "trigger": "kill",
+            "chance": 1,
+            "cooldown": 0,
+            "action": {
+              "type": "nova",
+              "radius": 2.5,
+              "ratio": 0.35,
+              "damageType": "physical",
+              "vfx": "combo/quake"
+            }
+          }
+        ]
+      },
+      "sets": [
+        {
+          "setId": "set-axe-primal",
+          "setName": "旋锋",
+          "count": 2,
+          "total": 6,
+          "activeBonuses": [
+            2
+          ],
+          "artStage": 1,
+          "bonusDescriptions": {
+            "2": "移动速度加成 +10%",
+            "4": "移动时每秒叠1层，下次近战命中每层伤害 +15%，最多5层，命中后消耗"
+          }
+        },
+        {
+          "setId": "set-hammer-standard",
+          "setName": "震岳",
+          "count": 4,
+          "total": 6,
+          "activeBonuses": [
+            2,
+            4
+          ],
+          "artStage": 1,
+          "bonusDescriptions": {
+            "2": "范围伤害 +15%",
+            "4": "范围技能命中 ≥ 4 敌，冷却 1 秒：震波（50%，半径 2.5）"
+          }
+        }
+      ],
+      "acquisition": {
+        "scope": "controlled attainable grants; not a natural-drop estimate",
+        "level": 50,
+        "itemLevel": 50,
+        "skillRank": 5,
+        "artStage": 1,
+        "rareAffixes": 3,
+        "legendaryAffixes": 5,
+        "affixTier": 3,
+        "rollFraction": 0.5,
+        "coreRank": 1,
+        "publicRulesUnmodified": true
+      }
+    },
+    {
+      "id": "arrows",
+      "name": "分裂箭雨",
+      "profile": {
+        "id": "arrows",
+        "name": "分裂箭雨",
+        "weapon": "hidden",
+        "four": "set-hidden-omega",
+        "two": "set-sword-standard",
+        "skills": [
+          "throwing_knife",
+          "fan_of_knives",
+          "blade_flurry"
+        ],
+        "aspect": "aspect-tf-knife",
+        "keyStats": [
+          "critChance",
+          "projectileDamage",
+          "bleedChance"
+        ],
+        "preferredAugment": "aug-g-volley",
+        "focus": "clear"
+      },
+      "skills": [
+        "throwing_knife",
+        "fan_of_knives",
+        "blade_flurry"
+      ],
+      "stats": {
+        "weapon": "hidden",
+        "hp": 3226,
+        "attack": 1917,
+        "armor": 330,
+        "speed": 6,
+        "mana": 100,
+        "regen": 10,
+        "effects": [],
+        "critChance": 0.8052999999999999,
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 1.47
+          },
+          {
+            "id": "weapon-affinity",
+            "label": "主手加成 · 武技",
+            "kind": "mult",
+            "value": 1.14,
+            "tags": [
+              "martial"
+            ]
+          },
+          {
+            "id": "affix-projectile",
+            "label": "投射物伤害",
+            "kind": "add",
+            "value": 1.42,
+            "tags": [
+              "projectile"
+            ]
+          }
+        ],
+        "bleedChance": 0.42000000000000004,
+        "hpPercent": 0.4,
+        "attackPercent": 0.4,
+        "rules": [
+          {
+            "id": "innate-hidden-return",
+            "name": "回旋刃",
+            "description": "击杀时 50% 几率迸出 3 枚回旋刃（各 50% 伤害）",
+            "source": "回旋流 · 固有",
+            "tier": 1,
+            "trigger": "kill",
+            "chance": 0.5,
+            "icd": 0,
+            "filter": {
+              "weapons": [
+                "hidden"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "shards",
+              "count": 3,
+              "ratio": 0.5,
+              "range": 6,
+              "damageType": "physical",
+              "ref": "hit",
+              "vfx": "combo/return-blade"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "combo/return-blade"
+          },
+          {
+            "id": "atom-arrow-stack",
+            "name": "叠矢",
+            "description": "投射物命中同一目标：+6% 伤害，最多 5 层",
+            "source": "set-hidden-omega",
+            "tier": 0.5,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "tags": [
+                "projectile"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "buff",
+              "duration": 90,
+              "maxStacks": 5,
+              "mods": {
+                "damageAdd": 0.03
+              },
+              "targetScoped": true,
+              "resetOnTarget": true
+            },
+            "scale": [
+              "action.mods.damageAdd"
+            ],
+            "vfxKey": "player/bolt"
+          },
+          {
+            "id": "atom-ignite",
+            "name": "引燃",
+            "description": "火焰技能命中：燃烧 3 秒（30% 伤害）",
+            "source": "铭纹：影纹飞刃",
+            "tier": 0.5,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "damageTypes": [
+                "fire"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "status",
+              "ref": "hit",
+              "status": "burn",
+              "duration": 90,
+              "strength": 0,
+              "ratio": 0.15
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "player/ember"
+          },
+          {
+            "id": "set-blades-volley",
+            "name": "千刃",
+            "description": "每第三次投射物技能额外1投射物",
+            "source": "set-hidden-omega",
+            "tier": 1,
+            "trigger": "nth",
+            "chance": 1,
+            "icd": 0,
+            "every": 3,
+            "count": "cast",
+            "filter": {
+              "tags": [
+                "projectile"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "buff",
+              "duration": 1,
+              "maxStacks": 1,
+              "mods": {
+                "projectiles": 1
+              },
+              "consume": "nextCast",
+              "currentCast": true
+            },
+            "scale": [],
+            "vfxKey": "player/bolt"
+          },
+          {
+            "id": "stat-bleedChance",
+            "name": "流血几率",
+            "description": "装备属性触发",
+            "source": "装备与养成属性",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 0.42000000000000004,
+            "icd": 0,
+            "filter": {
+              "categories": [
+                "direct"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "status",
+              "ref": "dealt",
+              "status": "bleed",
+              "duration": 90,
+              "strength": 0,
+              "ratio": 0.3
+            },
+            "scale": [],
+            "vfxKey": "player/execute"
+          }
+        ],
+        "damageAdd": 1.47,
+        "damageMult": 1,
+        "combos": [
+          {
+            "id": "innate-hidden-return",
+            "name": "回旋刃",
+            "description": "击杀时 50% 几率迸出 3 枚回旋刃（各 50% 伤害）",
+            "source": "回旋流 · 固有",
+            "weapons": [
+              "hidden"
+            ],
+            "trigger": "kill",
+            "chance": 0.5,
+            "cooldown": 0,
+            "action": {
+              "type": "shards",
+              "count": 3,
+              "ratio": 0.5,
+              "range": 6,
+              "damageType": "physical",
+              "vfx": "combo/return-blade"
+            }
+          }
+        ]
+      },
+      "sets": [
+        {
+          "setId": "set-hidden-omega",
+          "setName": "千刃",
+          "count": 4,
+          "total": 6,
+          "activeBonuses": [
+            2,
+            4
+          ],
+          "artStage": 1,
+          "bonusDescriptions": {
+            "2": "投射物伤害 +4%",
+            "4": "投射物命中同一目标：+3% 伤害，最多 5 层；每第三次投射物技能额外1投射物"
+          }
+        },
+        {
+          "setId": "set-sword-standard",
+          "setName": "割裂",
+          "count": 2,
+          "total": 6,
+          "activeBonuses": [
+            2
+          ],
+          "artStage": 1,
+          "bonusDescriptions": {
+            "2": "暴击率 +8%",
+            "4": "暴击：施加4秒流血（本次命中伤害的40%）；被动 · 目标流血时，伤害提高 25%"
+          }
+        }
+      ],
+      "acquisition": {
+        "scope": "controlled attainable grants; not a natural-drop estimate",
+        "level": 50,
+        "itemLevel": 50,
+        "skillRank": 5,
+        "artStage": 1,
+        "rareAffixes": 3,
+        "legendaryAffixes": 5,
+        "affixTier": 3,
+        "rollFraction": 0.5,
+        "coreRank": 1,
+        "publicRulesUnmodified": true
+      }
+    },
+    {
+      "id": "echo",
+      "name": "回响法师",
+      "profile": {
+        "id": "echo",
+        "name": "回响法师",
+        "weapon": "wand",
+        "four": "set-wand-primal",
+        "two": "set-wand-omega",
+        "skills": [
+          "arcane_missile",
+          "gravity_well",
+          "static_field",
+          "blink"
+        ],
+        "aspect": "aspect-tr-tempo",
+        "keyStats": [
+          "cdr",
+          "castSpeed",
+          "arcaneDamage"
+        ],
+        "preferredAugment": "aug-g-blinkreset",
+        "focus": "single"
+      },
+      "skills": [
+        "arcane_missile",
+        "gravity_well",
+        "static_field",
+        "blink"
+      ],
+      "stats": {
+        "weapon": "wand",
+        "hp": 3226,
+        "attack": 4184,
+        "armor": 330,
+        "speed": 8,
+        "mana": 120,
+        "regen": 10,
+        "effects": [],
+        "cdr": 0.98,
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 1.47
+          },
+          {
+            "id": "weapon-affinity",
+            "label": "主手加成 · 法术",
+            "kind": "mult",
+            "value": 1.14,
+            "tags": [
+              "spell"
+            ]
+          },
+          {
+            "id": "affix-arcane",
+            "label": "奥术伤害",
+            "kind": "add",
+            "value": 1.45,
+            "tags": [
+              "arcane"
+            ]
+          }
+        ],
+        "castSpeed": 0.48,
+        "hpPercent": 0.4,
+        "attackPercent": 0.2,
+        "manaPercent": 0.2,
+        "rules": [
+          {
+            "id": "innate-wand-shock",
+            "name": "感电",
+            "description": "命中使目标感电 3 秒，受到伤害 +12%",
+            "source": "控场流 · 固有",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "weapons": [
+                "wand"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "status",
+              "ref": "hit",
+              "status": "shock",
+              "duration": 90,
+              "strength": 0.12,
+              "ratio": 0
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "combo/innate-wand-shock"
+          },
+          {
+            "id": "atom-time-sand",
+            "name": "时砂",
+            "description": "施放当前冷却最长的技能：重置其他技能冷却，效果冷却20秒",
+            "source": "set-wand-primal",
+            "tier": 1,
+            "trigger": "cast",
+            "chance": 1,
+            "icd": 600,
+            "filter": {},
+            "when": [
+              {
+                "kind": "skill",
+                "longest": true
+              }
+            ],
+            "action": {
+              "type": "cooldown",
+              "mode": "others",
+              "reset": true
+            },
+            "scale": [],
+            "vfxKey": "player/time_stop"
+          },
+          {
+            "id": "atom-ignite",
+            "name": "引燃",
+            "description": "火焰技能命中：燃烧 3 秒（30% 伤害）",
+            "source": "铭纹：花灵魔杖",
+            "tier": 0.5,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "damageTypes": [
+                "fire"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "status",
+              "ref": "hit",
+              "status": "burn",
+              "duration": 90,
+              "strength": 0,
+              "ratio": 0.15
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "player/ember"
+          },
+          {
+            "id": "aspect-tr-tempo:30",
+            "name": "节拍",
+            "description": "每 6 秒，下一个技能 ×1.5 且必定暴击",
+            "source": "aspect-tr-tempo",
+            "tier": 1,
+            "trigger": "interval",
+            "chance": 1,
+            "icd": 0,
+            "every": 180,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "buff",
+              "duration": 180,
+              "maxStacks": 1,
+              "mods": {
+                "damageMult": 0.5
+              },
+              "consume": "nextCast",
+              "flags": {
+                "forceCrit": true
+              }
+            },
+            "scale": [],
+            "vfxKey": "player/whirl"
+          }
+        ],
+        "damageAdd": 1.47,
+        "damageMult": 1,
+        "combos": [
+          {
+            "id": "innate-wand-shock",
+            "name": "感电",
+            "description": "命中使目标感电 3 秒，受到伤害 +12%",
+            "source": "控场流 · 固有",
+            "weapons": [
+              "wand"
+            ],
+            "trigger": "hit",
+            "chance": 1,
+            "cooldown": 0,
+            "action": {
+              "type": "status",
+              "status": "shock",
+              "duration": 90,
+              "strength": 0.12,
+              "ratio": 0
+            }
+          }
+        ]
+      },
+      "sets": [
+        {
+          "setId": "set-wand-primal",
+          "setName": "时砂",
+          "count": 4,
+          "total": 6,
+          "activeBonuses": [
+            2,
+            4
+          ],
+          "artStage": 1,
+          "bonusDescriptions": {
+            "2": "冷却缩减 +8%",
+            "4": "施放当前冷却最长的技能：重置其他技能冷却，效果冷却20秒"
+          }
+        },
+        {
+          "setId": "set-wand-omega",
+          "setName": "潮汐",
+          "count": 2,
+          "total": 6,
+          "activeBonuses": [
+            2
+          ],
+          "artStage": 1,
+          "bonusDescriptions": {
+            "2": "灵力上限加成 +20%",
+            "4": "被动 · 灵力不低于一半时，伤害提高 20%；施放：消耗的 20% 返还"
+          }
+        }
+      ],
+      "acquisition": {
+        "scope": "controlled attainable grants; not a natural-drop estimate",
+        "level": 50,
+        "itemLevel": 50,
+        "skillRank": 5,
+        "artStage": 1,
+        "rareAffixes": 3,
+        "legendaryAffixes": 5,
+        "affixTier": 3,
+        "rollFraction": 0.5,
+        "coreRank": 1,
+        "publicRulesUnmodified": true
+      }
+    },
+    {
+      "id": "bulwark",
+      "name": "坚壁反伤",
+      "profile": {
+        "id": "bulwark",
+        "name": "坚壁反伤",
+        "weapon": "hammer",
+        "four": "set-hammer-omega",
+        "two": "set-hammer-primal",
+        "skills": [
+          "ground_slam",
+          "rampage",
+          "ward"
+        ],
+        "aspect": "aspect-df-burst",
+        "keyStats": [
+          "armor",
+          "thorns",
+          "blockChance"
+        ],
+        "preferredAugment": "aug-s-hp",
+        "focus": "survival"
+      },
+      "skills": [
+        "ground_slam",
+        "rampage",
+        "ward"
+      ],
+      "stats": {
+        "weapon": "hammer",
+        "hp": 10080,
+        "attack": 2755,
+        "armor": 1681,
+        "speed": 8,
+        "mana": 100,
+        "regen": 10,
+        "effects": [],
+        "thorns": 3.1,
+        "blockChance": 0.24,
+        "statusDuration": 0.2,
+        "hpPercent": 0.4,
+        "attackPercent": 0.4,
+        "armorPercent": 0.2,
+        "rules": [
+          {
+            "id": "innate-heavy-quake",
+            "name": "余震",
+            "description": "击杀敌人时引发余震（35% 伤害，半径 2.5）",
+            "source": "震地流 · 固有",
+            "tier": 1,
+            "trigger": "kill",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "weapons": [
+                "hammer",
+                "axe"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "nova",
+              "ratio": 0.35,
+              "radius": 2.5,
+              "damageType": "physical",
+              "ref": "hit",
+              "at": "target",
+              "vfx": "combo/quake"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "combo/quake"
+          },
+          {
+            "id": "atom-bulwark",
+            "name": "坚壁",
+            "description": "受击：获得相当于护甲 200% 的护盾，持续 3 秒；护盾在时伤害提高 20%，冷却 3 秒",
+            "source": "set-hammer-omega",
+            "tier": 1,
+            "trigger": "hurt",
+            "chance": 1,
+            "icd": 90,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "shield",
+              "ratio": 2,
+              "ref": "armor",
+              "duration": 90,
+              "mods": {
+                "damageMult": 0.2
+              }
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "player/ward"
+          },
+          {
+            "id": "atom-focus",
+            "name": "专注",
+            "description": "静止 1 秒以上：暴击率 +15%",
+            "source": "铭纹：磐石护盔",
+            "tier": 0.5,
+            "trigger": "passive",
+            "chance": 1,
+            "icd": 0,
+            "filter": {},
+            "when": [
+              {
+                "kind": "self_state",
+                "state": "still",
+                "value": 1
+              }
+            ],
+            "action": {
+              "type": "buff",
+              "duration": 90,
+              "maxStacks": 1,
+              "mods": {
+                "critChance": 0.075
+              }
+            },
+            "scale": [
+              "action.mods.critChance"
+            ],
+            "vfxKey": "player/ward"
+          },
+          {
+            "id": "aspect-df-burst:37",
+            "name": "爆盾",
+            "description": "护盾破裂时爆炸，伤害 = 护盾值 150%（半径 3）",
+            "source": "aspect-df-burst",
+            "tier": 1,
+            "trigger": "shield_break",
+            "chance": 1,
+            "icd": 0,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "nova",
+              "ratio": 1.5,
+              "radius": 3,
+              "damageType": "physical",
+              "ref": "shield",
+              "at": "self"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "player/whirl"
+          },
+          {
+            "id": "stat-thorns",
+            "name": "荆棘",
+            "description": "装备属性触发",
+            "source": "装备与养成属性",
+            "tier": 1,
+            "trigger": "hurt",
+            "chance": 1,
+            "icd": 0,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "nova",
+              "ratio": 3.1,
+              "radius": 0,
+              "damageType": "physical",
+              "ref": "armor",
+              "at": "target",
+              "maxTargets": 1
+            },
+            "scale": [],
+            "vfxKey": "player/counter_strike"
+          }
+        ],
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 1.47
+          },
+          {
+            "id": "weapon-affinity",
+            "label": "主手加成 · 武技",
+            "kind": "mult",
+            "value": 1.14,
+            "tags": [
+              "martial"
+            ]
+          }
+        ],
+        "damageAdd": 1.47,
+        "damageMult": 1,
+        "combos": [
+          {
+            "id": "innate-heavy-quake",
+            "name": "余震",
+            "description": "击杀敌人时引发余震（35% 伤害，半径 2.5）",
+            "source": "震地流 · 固有",
+            "weapons": [
+              "hammer",
+              "axe"
+            ],
+            "trigger": "kill",
+            "chance": 1,
+            "cooldown": 0,
+            "action": {
+              "type": "nova",
+              "radius": 2.5,
+              "ratio": 0.35,
+              "damageType": "physical",
+              "vfx": "combo/quake"
+            }
+          }
+        ]
+      },
+      "sets": [
+        {
+          "setId": "set-hammer-omega",
+          "setName": "坚壁",
+          "count": 4,
+          "total": 6,
+          "activeBonuses": [
+            2,
+            4
+          ],
+          "artStage": 1,
+          "bonusDescriptions": {
+            "2": "护甲加成 +20%",
+            "4": "受击：获得相当于护甲 200% 的护盾，持续 3 秒；护盾在时伤害提高 20%，冷却 3 秒"
+          }
+        },
+        {
+          "setId": "set-hammer-primal",
+          "setName": "镇压",
+          "count": 2,
+          "total": 6,
+          "activeBonuses": [
+            2
+          ],
+          "artStage": 1,
+          "bonusDescriptions": {
+            "2": "状态持续时间 +20%",
+            "4": "对被控住的敌人伤害提高 25%；眩晕敌人时，30%：再眩晕附近 1 个"
+          }
+        }
+      ],
+      "acquisition": {
+        "scope": "controlled attainable grants; not a natural-drop estimate",
+        "level": 50,
+        "itemLevel": 50,
+        "skillRank": 5,
+        "artStage": 1,
+        "rareAffixes": 3,
+        "legendaryAffixes": 5,
+        "affixTier": 3,
+        "rollFraction": 0.5,
+        "coreRank": 1,
+        "publicRulesUnmodified": true
+      }
+    },
+    {
+      "id": "opening",
+      "name": "先手刺杀",
+      "profile": {
+        "id": "opening",
+        "name": "先手刺杀",
+        "weapon": "sword",
+        "four": "set-sword-primal",
+        "two": "set-hidden-primal",
+        "skills": [
+          "execute",
+          "dual_strike",
+          "leap_strike"
+        ],
+        "aspect": "aspect-tr-headhunter",
+        "keyStats": [
+          "vsHealthy",
+          "critMultiplier",
+          "penetration"
+        ],
+        "preferredAugment": "aug-p-solo",
+        "focus": "single"
+      },
+      "skills": [
+        "execute",
+        "dual_strike",
+        "leap_strike"
+      ],
+      "stats": {
+        "weapon": "sword",
+        "hp": 4939,
+        "attack": 937,
+        "armor": 330,
+        "speed": 8,
+        "mana": 100,
+        "regen": 10,
+        "effects": [],
+        "vsHealthy": 0.54,
+        "critMultiplier": 3.2500000000000004,
+        "penetration": 0.6,
+        "vsElite": 0.15,
+        "dodge": 0.06,
+        "hpPercent": 0.4,
+        "attackPercent": 0.4,
+        "conditional": [
+          {
+            "id": "stat-vsElite",
+            "pool": "cond",
+            "value": 0.15,
+            "when": {
+              "kind": "target_rank",
+              "ranks": [
+                "elite",
+                "boss"
+              ]
+            }
+          },
+          {
+            "id": "stat-vsHealthy",
+            "pool": "cond",
+            "value": 0.54,
+            "when": {
+              "kind": "target_hp",
+              "op": "gt",
+              "value": 0.8
+            }
+          }
+        ],
+        "rules": [
+          {
+            "id": "innate-sword-qi",
+            "name": "剑气",
+            "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+            "source": "剑势流 · 固有",
+            "tier": 1,
+            "trigger": "nth",
+            "chance": 1,
+            "icd": 0,
+            "every": 3,
+            "count": "hit",
+            "filter": {
+              "weapons": [
+                "sword"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "nova",
+              "ratio": 0.35,
+              "radius": 2.2,
+              "damageType": "physical",
+              "ref": "hit",
+              "at": "target",
+              "vfx": "combo/sword-qi"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "combo/sword-qi"
+          },
+          {
+            "id": "atom-opening",
+            "name": "先手",
+            "description": "首次命中新目标：必定暴击",
+            "source": "set-sword-primal",
+            "tier": 1,
+            "trigger": "passive",
+            "chance": 1,
+            "icd": 0,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "buff",
+              "duration": 90,
+              "maxStacks": 1,
+              "mods": {},
+              "consume": "nextHit",
+              "flags": {
+                "forceCrit": true
+              },
+              "firstPerTarget": 1
+            },
+            "scale": [],
+            "vfxKey": "player/assassinate"
+          },
+          {
+            "id": "atom-focus",
+            "name": "专注",
+            "description": "静止 1 秒以上：暴击率 +15%",
+            "source": "铭纹：鹿角护盔",
+            "tier": 0.5,
+            "trigger": "passive",
+            "chance": 1,
+            "icd": 0,
+            "filter": {},
+            "when": [
+              {
+                "kind": "self_state",
+                "state": "still",
+                "value": 1
+              }
+            ],
+            "action": {
+              "type": "buff",
+              "duration": 90,
+              "maxStacks": 1,
+              "mods": {
+                "critChance": 0.075
+              }
+            },
+            "scale": [
+              "action.mods.critChance"
+            ],
+            "vfxKey": "player/ward"
+          },
+          {
+            "id": "set-sword-primal-duel-boss",
+            "name": "决斗",
+            "description": "对首领的伤害提高 15%",
+            "source": "set-sword-primal",
+            "tier": 1,
+            "trigger": "passive",
+            "chance": 1,
+            "icd": 0,
+            "filter": {},
+            "when": [
+              {
+                "kind": "target_rank",
+                "ranks": [
+                  "boss"
+                ]
+              }
+            ],
+            "action": {
+              "type": "amplify",
+              "ratio": 0.15,
+              "against": []
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "player/war_cry"
+          },
+          {
+            "id": "aspect-tr-headhunter:26",
+            "name": "猎首",
+            "description": "击杀精英或首领时，所有技能冷却重置",
+            "source": "aspect-tr-headhunter",
+            "tier": 1,
+            "trigger": "kill_elite",
+            "chance": 1,
+            "icd": 0,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "cooldown",
+              "mode": "all",
+              "reset": true
+            },
+            "scale": [],
+            "vfxKey": "player/whirl"
+          }
+        ],
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 1.47
+          },
+          {
+            "id": "weapon-affinity",
+            "label": "主手加成 · 武技",
+            "kind": "mult",
+            "value": 1.14,
+            "tags": [
+              "martial"
+            ]
+          }
+        ],
+        "damageAdd": 1.47,
+        "damageMult": 1,
+        "combos": [
+          {
+            "id": "innate-sword-qi",
+            "name": "剑气",
+            "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+            "source": "剑势流 · 固有",
+            "weapons": [
+              "sword"
+            ],
+            "trigger": "nth",
+            "chance": 1,
+            "cooldown": 0,
+            "every": 3,
+            "action": {
+              "type": "nova",
+              "radius": 2.2,
+              "ratio": 0.35,
+              "damageType": "physical",
+              "vfx": "combo/sword-qi"
+            }
+          }
+        ]
+      },
+      "sets": [
+        {
+          "setId": "set-sword-primal",
+          "setName": "决斗",
+          "count": 4,
+          "total": 6,
+          "activeBonuses": [
+            2,
+            4
+          ],
+          "artStage": 1,
+          "bonusDescriptions": {
+            "2": "对精英伤害 +15%",
+            "4": "首次命中新目标：必定暴击；对首领的伤害提高 15%"
+          }
+        },
+        {
+          "setId": "set-hidden-primal",
+          "setName": "疾影",
+          "count": 2,
+          "total": 6,
+          "activeBonuses": [
+            2
+          ],
+          "artStage": 1,
+          "bonusDescriptions": {
+            "2": "闪避率 +6%",
+            "4": "闪避或位移后：下一次技能必定暴击，持续3秒，效果冷却4秒"
+          }
+        }
+      ],
+      "acquisition": {
+        "scope": "controlled attainable grants; not a natural-drop estimate",
+        "level": 50,
+        "itemLevel": 50,
+        "skillRank": 5,
+        "artStage": 1,
+        "rareAffixes": 3,
+        "legendaryAffixes": 5,
+        "affixTier": 3,
+        "rollFraction": 0.5,
+        "coreRank": 1,
+        "publicRulesUnmodified": true
+      }
+    }
+  ]
+}

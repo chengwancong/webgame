@@ -1,0 +1,55 @@
+{
+  "batch": "W1",
+  "build": {
+    "passed": true,
+    "command": "pnpm build",
+    "publicationOrder": [
+      "service:stop",
+      "build",
+      "service:start"
+    ],
+    "sourceHashes": {
+      "config/excel/世界.xlsx": "73ab6517795055eb12163b50fdb8df04ae03729f20073210308317cafee77181",
+      "config/json/world.json": "20081e7668230e950e55fbfa800897c02f6f181c35114de5d178a8da3351a4b3",
+      "tools/build-production-islands.ts": "631c141c1e584759943edfc6e93a7c362f8e56450e1f542f95d818cfaef4728d",
+      "packages/contracts/open-world.ts": "48f89204bff95ae5d9a472d75212f54defdea5d973dc2c57a772be0fde425038",
+      "packages/content/world-tables.ts": "5477cd167f7977afff89ded0efc77298d11cc7bbde735174e1aa790ab0759311",
+      "packages/content/open-world/index.ts": "58c5b4cad30239a83d8435bee92634ed4569abf4fe2ccb61b4846b7f5bd6173e"
+    },
+    "productionIslands": 0
+  },
+  "directed": {
+    "unitFiles": [
+      "tests/world-production.test.ts",
+      "tests/world-tables.test.ts"
+    ],
+    "unitPassed": 5,
+    "databaseFiles": [
+      "tests/world-production.database.test.ts"
+    ],
+    "databasePassed": 1,
+    "realTemporaryPostgres": true,
+    "fieldQa": false
+  },
+  "configuration": {
+    "chainEvidence": "config-chain.json",
+    "oldCellsPreserved": true,
+    "oldStylesPreserved": true,
+    "oldCommentsPreserved": true,
+    "oldPanesPreserved": true,
+    "newFieldHeaderNotes": true,
+    "configCheck": true,
+    "contentCheck": true,
+    "typeCheck": true,
+    "newContentIdLiterals": 0
+  },
+  "gui": {
+    "visibleInAppBrowser": true,
+    "account": "ow_m2m4_gui",
+    "character": "群岛验收",
+    "opened": "风栖岛 · 落点求生",
+    "screenshot": "gui-login.jpg",
+    "consoleErrors": []
+  },
+  "limits": "This is the generic pipeline and a two-zone fixture, not six released islands. W4–W9 content remains unchecked."
+}

@@ -1,0 +1,3 @@
+import {readFile,writeFile} from 'node:fs/promises';import {join} from 'node:path';import {spawnSync} from 'node:child_process';import {group} from './pipeline.mjs';
+let s=await readFile(join(group,'export.mjs'),'utf8');s=s.replace('(form.height-1.2)/verticalExtent','(form.height-2.4)/verticalExtent');await writeFile(join(group,'export.mjs'),s);
+for(const args of [['export.mjs','--pets=dragon-heavy-a,dragon-heavy-b'],['socket-transforms.mjs'],['partition.mjs'],['pack-runtime.mjs'],['mounts.mjs'],['verify-preview.mjs']]){const r=spawnSync(process.execPath,[join(group,args[0]),...args.slice(1)],{stdio:'inherit'});if(r.status!==0)throw Error(args[0]+' failed '+r.status);}

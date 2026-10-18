@@ -1,0 +1,137 @@
+{
+  "id": "ss-boss-vilo",
+  "native": {
+    "path": "assets/mini-hero/navy/runtime",
+    "version": "4.2.43",
+    "sha256": "92ef889c590476c0eacdbc0f77f1206e35a1c77329867331fbc731a17fa5205a",
+    "skins": [
+      "BODY/knight_epic2",
+      "RIGHTHAND/Sword_TwoHand_Common3"
+    ],
+    "animations": {
+      "SS_idle": "Wait2",
+      "SS_move": "Run2",
+      "SS_attack": "Attack_TwoHand1",
+      "SS_hurt": "Damage2",
+      "SS_death": "Die",
+      "SS_skill1": "Attack_TwoHand2",
+      "SS_skill2": "Cast1",
+      "SS_skill3": "Cast2",
+      "SS_idle_active": "Wait2",
+      "SS_move_active": "Run2",
+      "SS_attack_active": "Attack_TwoHand1",
+      "SS_hurt_active": "Damage2",
+      "SS_death_active": "Die",
+      "SS_skill1_active": "Attack_TwoHand2",
+      "SS_skill2_active": "Cast1",
+      "SS_skill3_active": "Cast2",
+      "SS_phaseEnter": "Wait2",
+      "SS_phaseEnd": "Wait2"
+    }
+  },
+  "imagegen": {
+    "source": "assets/starsea/bosses/source/ss-boss-vilo/accessories.png",
+    "sha256": "66eec6efe3f8e056565150d61e974b95668ce2a49c066188a71cbb638bcb9c93",
+    "cacheOrigin": "C:/Users/ccc/.codex/generated_images/01a10242-100e-7ba1-959e-b0dce8a0854d/exec-e10affdc-e210-4fa5-a44e-4e5236c6636f.png",
+    "prompts": "assets/starsea/bosses/source/generation-prompts.md",
+    "tool": "built-in image_gen",
+    "transparent": true,
+    "parts": [
+      {
+        "name": "head",
+        "sourceRect": {
+          "left": 53,
+          "top": 87,
+          "width": 589,
+          "height": 543,
+          "count": 230922
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-vilo/head.png",
+        "sha256": "419a51ebfab902cd8704f89bdf27bfabfd184568296bab59bef3714f398045ec",
+        "width": 256,
+        "height": 236,
+        "atlas": {
+          "x": 4,
+          "y": 4
+        }
+      },
+      {
+        "name": "core",
+        "sourceRect": {
+          "left": 706,
+          "top": 125,
+          "width": 496,
+          "height": 476,
+          "count": 155233
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-vilo/core.png",
+        "sha256": "d5dc1d666e953fb29b945c977c57b506a4294cb06b2ef6f4e4dcd83a764d4381",
+        "width": 128,
+        "height": 123,
+        "atlas": {
+          "x": 268,
+          "y": 4
+        }
+      },
+      {
+        "name": "panel-left",
+        "sourceRect": {
+          "left": 226,
+          "top": 711,
+          "width": 300,
+          "height": 391,
+          "count": 56043
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-vilo/panel-left.png",
+        "sha256": "d2e55fe75439b816fdc7299632f9170795d6628d8fa6812236321a5f01eb3486",
+        "width": 74,
+        "height": 96,
+        "atlas": {
+          "x": 4,
+          "y": 268
+        }
+      },
+      {
+        "name": "panel-right",
+        "sourceRect": {
+          "left": 746,
+          "top": 711,
+          "width": 282,
+          "height": 391,
+          "count": 54472
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-vilo/panel-right.png",
+        "sha256": "4e5f6d79672c60afed95aabe18f1c636e965332c66d1a3ae45bbd8e1afae46e5",
+        "width": 69,
+        "height": 96,
+        "atlas": {
+          "x": 268,
+          "y": 268
+        }
+      }
+    ]
+  },
+  "adjustments": [
+    "选取已验证native骨架和分件；完整原始动作逐帧保留",
+    "原生附件材质tint适配暮界/章节配色",
+    "ImageGen头部与阶段装置绑定原生head/胸部/肩部骨骼",
+    "阶段骨骼动画独立编制；不替代原生身体动作",
+    "共享基础图集通过相对URL引用正式mini-hero目录",
+    "人形首领衣装适配"
+  ],
+  "weaponScale": 0.78,
+  "weaponCategory": "sword",
+  "renderFamily": "sword",
+  "calibration": {
+    "slot": "RIGHTHAND",
+    "pixel": [
+      27.5,
+      12
+    ],
+    "imageSize": [
+      55,
+      222
+    ]
+  },
+  "stage": "航冠的独立导航片展开与界桥连接运行；phase-end折回失能。同一主体用于剧情与战斗。"
+}

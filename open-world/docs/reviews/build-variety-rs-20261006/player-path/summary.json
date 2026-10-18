@@ -1,0 +1,5145 @@
+{
+  "ok": true,
+  "versions": {
+    "client": "0.11.1",
+    "protocol": 25,
+    "rules": "ow-42",
+    "assets": "world-art-20261005-v21-collision",
+    "db": 15
+  },
+  "scope": "compiled Chrome; real isolated PostgreSQL; level/wallet/weapon fixtures, actual activation and equip commands; actual authoritative casts",
+  "paths": [
+    {
+      "weapon": "sword",
+      "base": "standard-sword-t1-weapon",
+      "id": "frost_blade",
+      "rank": 1,
+      "requested": [
+        "frost_blade"
+      ],
+      "executed": [
+        "frost_blade"
+      ],
+      "frozen": {
+        "weapons": [
+          "sword"
+        ],
+        "id": "frost_blade",
+        "name": "霜刃",
+        "kind": "single",
+        "damage": 720,
+        "range": 3,
+        "radius": 0,
+        "cooldown": 45,
+        "cost": 10,
+        "windup": 5,
+        "duration": 0,
+        "description": "以霜刃斩击并迟缓敌人",
+        "mechanics": {
+          "damageType": "cold",
+          "targeting": "enemy",
+          "statuses": [
+            {
+              "kind": "slow",
+              "duration": 60,
+              "strength": 0.3,
+              "scope": "hit",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false
+            }
+          ]
+        },
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 45,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 45,
+          "encounterCooldownMultiplier": 1
+        },
+        "tags": [
+          "melee",
+          "cold",
+          "single"
+        ]
+      },
+      "events": [
+        {
+          "castId": 3,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "56459be4-3eab-4cd0-ad82-bbfc3b3a709f",
+          "vfxKey": "player/frost_blade",
+          "type": "cast_started",
+          "id": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "position": {
+            "x": 6,
+            "y": 6
+          },
+          "origin": {
+            "x": 6,
+            "y": 6
+          },
+          "target": {
+            "x": 7.8,
+            "y": 6
+          },
+          "skill": "frost_blade",
+          "windup": 5,
+          "radius": 0,
+          "tick": 481
+        },
+        {
+          "castId": 3,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "56459be4-3eab-4cd0-ad82-bbfc3b3a709f",
+          "vfxKey": "player/frost_blade",
+          "type": "cast_released",
+          "id": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "position": {
+            "x": 6,
+            "y": 6
+          },
+          "origin": {
+            "x": 6,
+            "y": 6
+          },
+          "target": {
+            "x": 7.8,
+            "y": 6
+          },
+          "skill": "frost_blade",
+          "radius": 0,
+          "duration": 0,
+          "tick": 486,
+          "part": 1
+        },
+        {
+          "castId": 3,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "56459be4-3eab-4cd0-ad82-bbfc3b3a709f",
+          "vfxKey": "player/frost_blade",
+          "type": "hit_resolved",
+          "id": "56459be4-3eab-4cd0-ad82-bbfc3b3a709f",
+          "position": {
+            "x": 7.8,
+            "y": 6
+          },
+          "amount": 720,
+          "skill": "frost_blade",
+          "tick": 486,
+          "category": "direct",
+          "damageType": "cold"
+        },
+        {
+          "type": "status_changed",
+          "id": "56459be4-3eab-4cd0-ad82-bbfc3b3a709f",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "56459be4-3eab-4cd0-ad82-bbfc3b3a709f",
+          "castId": 3,
+          "position": {
+            "x": 7.8,
+            "y": 6
+          },
+          "skill": "frost_blade",
+          "status": "slow",
+          "change": "applied",
+          "duration": 60,
+          "amount": 0.3,
+          "tick": 486,
+          "vfxKey": "player/frost_blade"
+        },
+        {
+          "type": "status_changed",
+          "id": "56459be4-3eab-4cd0-ad82-bbfc3b3a709f",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "56459be4-3eab-4cd0-ad82-bbfc3b3a709f",
+          "castId": 3,
+          "position": {
+            "x": 7.8,
+            "y": 6
+          },
+          "skill": "frost_blade",
+          "status": "slow",
+          "change": "expired",
+          "duration": 0,
+          "amount": 0.3,
+          "tick": 546,
+          "vfxKey": "player/frost_blade"
+        }
+      ],
+      "screenshot": true
+    },
+    {
+      "weapon": "hammer",
+      "base": "standard-hammer-t1-weapon",
+      "id": "magma_slam",
+      "rank": 1,
+      "requested": [
+        "magma_slam"
+      ],
+      "executed": [
+        "magma_slam"
+      ],
+      "frozen": {
+        "weapons": [
+          "hammer",
+          "axe"
+        ],
+        "id": "magma_slam",
+        "name": "熔岩重击",
+        "kind": "area",
+        "damage": 840,
+        "range": 0,
+        "radius": 4,
+        "cooldown": 110,
+        "cost": 20,
+        "windup": 12,
+        "duration": 0,
+        "description": "震击地面并施加燃烧",
+        "mechanics": {
+          "damageType": "fire",
+          "targeting": "enemy",
+          "statuses": [
+            {
+              "kind": "burn",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "fire",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 252
+            }
+          ]
+        },
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 110,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 110,
+          "encounterCooldownMultiplier": 1
+        },
+        "tags": [
+          "melee",
+          "fire",
+          "area",
+          "dot"
+        ]
+      },
+      "events": [
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "da066676-ed0a-4ef8-ab77-618422f50466",
+          "vfxKey": "player/magma_slam",
+          "type": "cast_started",
+          "id": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "position": {
+            "x": 6,
+            "y": 6
+          },
+          "origin": {
+            "x": 6,
+            "y": 6
+          },
+          "target": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "magma_slam",
+          "windup": 12,
+          "radius": 4,
+          "tick": 442
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "da066676-ed0a-4ef8-ab77-618422f50466",
+          "vfxKey": "player/magma_slam",
+          "type": "cast_released",
+          "id": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "position": {
+            "x": 6,
+            "y": 6
+          },
+          "origin": {
+            "x": 6,
+            "y": 6
+          },
+          "target": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "magma_slam",
+          "radius": 4,
+          "duration": 0,
+          "tick": 454,
+          "part": 1
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "da066676-ed0a-4ef8-ab77-618422f50466",
+          "vfxKey": "player/magma_slam",
+          "type": "hit_resolved",
+          "id": "da066676-ed0a-4ef8-ab77-618422f50466",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "amount": 840,
+          "skill": "magma_slam",
+          "tick": 454,
+          "category": "direct",
+          "damageType": "fire"
+        },
+        {
+          "type": "status_changed",
+          "id": "da066676-ed0a-4ef8-ab77-618422f50466",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "da066676-ed0a-4ef8-ab77-618422f50466",
+          "castId": 4,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "magma_slam",
+          "status": "burn",
+          "change": "applied",
+          "duration": 90,
+          "amount": 0,
+          "tick": 454,
+          "vfxKey": "player/magma_slam"
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "da066676-ed0a-4ef8-ab77-618422f50466",
+          "vfxKey": "player/magma_slam",
+          "type": "hit_resolved",
+          "id": "da066676-ed0a-4ef8-ab77-618422f50466",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "amount": 84,
+          "skill": "magma_slam",
+          "tick": 484,
+          "category": "periodic",
+          "damageType": "fire"
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "da066676-ed0a-4ef8-ab77-618422f50466",
+          "vfxKey": "player/magma_slam",
+          "type": "hit_resolved",
+          "id": "da066676-ed0a-4ef8-ab77-618422f50466",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "amount": 84,
+          "skill": "magma_slam",
+          "tick": 514,
+          "category": "periodic",
+          "damageType": "fire"
+        }
+      ],
+      "screenshot": true
+    },
+    {
+      "weapon": "axe",
+      "base": "standard-axe-t1-weapon",
+      "id": "venom_cleave",
+      "rank": 1,
+      "requested": [
+        "venom_cleave"
+      ],
+      "executed": [
+        "venom_cleave"
+      ],
+      "frozen": {
+        "weapons": [
+          "hammer",
+          "axe"
+        ],
+        "id": "venom_cleave",
+        "name": "腐蚀劈",
+        "kind": "area",
+        "damage": 762,
+        "range": 0,
+        "radius": 3.5,
+        "cooldown": 64,
+        "cost": 18,
+        "windup": 6,
+        "duration": 0,
+        "description": "劈击敌群，直接伤害与中毒各占一半",
+        "mechanics": {
+          "damageType": "poison",
+          "targeting": "enemy",
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 381
+            }
+          ]
+        },
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 64,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 64,
+          "encounterCooldownMultiplier": 1
+        },
+        "tags": [
+          "melee",
+          "poison",
+          "area",
+          "dot"
+        ]
+      },
+      "events": [
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "557abccc-0e61-44de-adec-36582c34bdec",
+          "vfxKey": "player/venom_cleave",
+          "type": "cast_started",
+          "id": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "position": {
+            "x": 6,
+            "y": 6
+          },
+          "origin": {
+            "x": 6,
+            "y": 6
+          },
+          "target": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "venom_cleave",
+          "windup": 6,
+          "radius": 3.5,
+          "tick": 388
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "557abccc-0e61-44de-adec-36582c34bdec",
+          "vfxKey": "player/venom_cleave",
+          "type": "cast_released",
+          "id": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "position": {
+            "x": 6,
+            "y": 6
+          },
+          "origin": {
+            "x": 6,
+            "y": 6
+          },
+          "target": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "venom_cleave",
+          "radius": 3.5,
+          "duration": 0,
+          "tick": 394,
+          "part": 1
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "557abccc-0e61-44de-adec-36582c34bdec",
+          "vfxKey": "player/venom_cleave",
+          "type": "hit_resolved",
+          "id": "557abccc-0e61-44de-adec-36582c34bdec",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "amount": 381,
+          "skill": "venom_cleave",
+          "tick": 394,
+          "category": "direct",
+          "damageType": "poison"
+        },
+        {
+          "type": "status_changed",
+          "id": "557abccc-0e61-44de-adec-36582c34bdec",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "557abccc-0e61-44de-adec-36582c34bdec",
+          "castId": 4,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "venom_cleave",
+          "status": "poison",
+          "change": "applied",
+          "duration": 90,
+          "amount": 0,
+          "tick": 394,
+          "vfxKey": "player/venom_cleave"
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "557abccc-0e61-44de-adec-36582c34bdec",
+          "vfxKey": "player/venom_cleave",
+          "type": "hit_resolved",
+          "id": "557abccc-0e61-44de-adec-36582c34bdec",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "amount": 127,
+          "skill": "venom_cleave",
+          "tick": 424,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "557abccc-0e61-44de-adec-36582c34bdec",
+          "vfxKey": "player/venom_cleave",
+          "type": "hit_resolved",
+          "id": "557abccc-0e61-44de-adec-36582c34bdec",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "amount": 127,
+          "skill": "venom_cleave",
+          "tick": 454,
+          "category": "periodic",
+          "damageType": "poison"
+        }
+      ],
+      "screenshot": true
+    },
+    {
+      "weapon": "bow",
+      "base": "bow",
+      "id": "fire_arrow",
+      "rank": 1,
+      "requested": [
+        "fire_arrow"
+      ],
+      "executed": [
+        "fire_arrow"
+      ],
+      "frozen": {
+        "weapons": [
+          "bow"
+        ],
+        "id": "fire_arrow",
+        "name": "火焰箭",
+        "kind": "projectile",
+        "damage": 627,
+        "range": 12,
+        "radius": 0.35,
+        "cooldown": 60,
+        "cost": 14,
+        "windup": 6,
+        "duration": 0,
+        "description": "射出火焰箭并施加燃烧",
+        "mechanics": {
+          "damageType": "fire",
+          "targeting": "enemy",
+          "projectile": {
+            "collisionRadius": 0.35,
+            "penetrations": 0,
+            "turnRate": 0,
+            "explosionRadius": 0
+          },
+          "statuses": [
+            {
+              "kind": "burn",
+              "duration": 90,
+              "strength": 0,
+              "scope": "hit",
+              "interval": 30,
+              "damageType": "fire",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 188
+            }
+          ]
+        },
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 60,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 60,
+          "encounterCooldownMultiplier": 1
+        },
+        "tags": [
+          "spell",
+          "fire",
+          "projectile",
+          "dot"
+        ]
+      },
+      "events": [
+        {
+          "castId": 3,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "725c3e54-b49e-47b1-a6b8-3f5b0e2c1047",
+          "vfxKey": "player/fire_arrow",
+          "type": "cast_started",
+          "id": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "position": {
+            "x": 6,
+            "y": 6
+          },
+          "origin": {
+            "x": 6,
+            "y": 6
+          },
+          "target": {
+            "x": 7.8,
+            "y": 6
+          },
+          "skill": "fire_arrow",
+          "windup": 6,
+          "radius": 0.35,
+          "tick": 383
+        },
+        {
+          "castId": 3,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "725c3e54-b49e-47b1-a6b8-3f5b0e2c1047",
+          "vfxKey": "player/fire_arrow",
+          "type": "cast_released",
+          "id": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "position": {
+            "x": 6,
+            "y": 6
+          },
+          "origin": {
+            "x": 6,
+            "y": 6
+          },
+          "target": {
+            "x": 7.8,
+            "y": 6
+          },
+          "skill": "fire_arrow",
+          "radius": 0.35,
+          "duration": 0,
+          "tick": 389,
+          "part": 1
+        },
+        {
+          "castId": 3,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "725c3e54-b49e-47b1-a6b8-3f5b0e2c1047",
+          "vfxKey": "player/fire_arrow",
+          "id": "725c3e54-b49e-47b1-a6b8-3f5b0e2c1047",
+          "position": {
+            "x": 7.8,
+            "y": 6
+          },
+          "direction": {
+            "x": 1,
+            "y": 0
+          },
+          "damage": 627,
+          "life": 38,
+          "enemy": false,
+          "pierce": true,
+          "skill": "fire_arrow",
+          "radius": 0.35,
+          "owner": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "origin": {
+            "x": 6,
+            "y": 6
+          },
+          "target": {
+            "x": 7.8,
+            "y": 6
+          },
+          "hit": {},
+          "resolvedSkill": {
+            "id": "fire_arrow",
+            "cost": 14,
+            "kind": "projectile",
+            "name": "火焰箭",
+            "tags": [
+              "spell",
+              "fire",
+              "projectile",
+              "dot"
+            ],
+            "range": 12,
+            "damage": 627,
+            "radius": 0.35,
+            "windup": 6,
+            "weapons": [
+              "bow"
+            ],
+            "category": "ranged",
+            "cooldown": 60,
+            "duration": 0,
+            "mechanics": {
+              "statuses": [
+                {
+                  "kind": "burn",
+                  "scope": "hit",
+                  "total": 188,
+                  "cleanse": true,
+                  "duration": 90,
+                  "interval": 30,
+                  "strength": 0,
+                  "damageType": "fire",
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              ],
+              "targeting": "enemy",
+              "damageType": "fire",
+              "projectile": {
+                "turnRate": 0,
+                "penetrations": 0,
+                "collisionRadius": 0.35,
+                "explosionRadius": 0
+              }
+            },
+            "resolution": {
+              "attackShare": 1,
+              "cooldownCap": 0.75,
+              "baseCooldown": 60,
+              "finalCooldown": 60,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "encounterCooldownMultiplier": 1
+            },
+            "description": "射出火焰箭并施加燃烧",
+            "unlockLevel": 6
+          },
+          "damageType": "fire",
+          "turnRate": 0,
+          "explosionRadius": 0,
+          "previous": {
+            "x": 6.5,
+            "y": 6
+          },
+          "projectileId": 3,
+          "contact": {
+            "x": 6.8999999999999995,
+            "y": 6
+          },
+          "type": "hit_resolved",
+          "amount": 627,
+          "tick": 390,
+          "category": "direct"
+        },
+        {
+          "type": "status_changed",
+          "id": "725c3e54-b49e-47b1-a6b8-3f5b0e2c1047",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "725c3e54-b49e-47b1-a6b8-3f5b0e2c1047",
+          "castId": 3,
+          "position": {
+            "x": 7.8,
+            "y": 6
+          },
+          "skill": "fire_arrow",
+          "status": "burn",
+          "change": "applied",
+          "duration": 90,
+          "amount": 0,
+          "tick": 390,
+          "vfxKey": "player/fire_arrow"
+        },
+        {
+          "castId": 3,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "725c3e54-b49e-47b1-a6b8-3f5b0e2c1047",
+          "vfxKey": "player/fire_arrow",
+          "type": "hit_resolved",
+          "id": "725c3e54-b49e-47b1-a6b8-3f5b0e2c1047",
+          "position": {
+            "x": 7.8,
+            "y": 6
+          },
+          "amount": 62,
+          "skill": "fire_arrow",
+          "tick": 420,
+          "category": "periodic",
+          "damageType": "fire"
+        },
+        {
+          "castId": 3,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "725c3e54-b49e-47b1-a6b8-3f5b0e2c1047",
+          "vfxKey": "player/fire_arrow",
+          "type": "hit_resolved",
+          "id": "725c3e54-b49e-47b1-a6b8-3f5b0e2c1047",
+          "position": {
+            "x": 7.8,
+            "y": 6
+          },
+          "amount": 62,
+          "skill": "fire_arrow",
+          "tick": 450,
+          "category": "periodic",
+          "damageType": "fire"
+        }
+      ],
+      "screenshot": true
+    },
+    {
+      "weapon": "staff",
+      "base": "standard-staff-t1-weapon",
+      "id": "miasma",
+      "rank": 1,
+      "requested": [
+        "miasma"
+      ],
+      "executed": [
+        "miasma"
+      ],
+      "frozen": {
+        "weapons": [
+          "staff"
+        ],
+        "id": "miasma",
+        "name": "瘴气",
+        "kind": "zone",
+        "damage": 85,
+        "range": 9,
+        "radius": 3.5,
+        "cooldown": 140,
+        "cost": 20,
+        "windup": 9,
+        "duration": 150,
+        "description": "留下五段瘴气，每段命中刷新额外中毒",
+        "mechanics": {
+          "damageType": "poison",
+          "targeting": "ground",
+          "zone": {
+            "mode": "periodic",
+            "hits": 5,
+            "interval": 30,
+            "firstDelay": 29,
+            "pullSpeed": 0,
+            "budget": "per_tick"
+          },
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "zone",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 128
+            }
+          ]
+        },
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 140,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 140,
+          "encounterCooldownMultiplier": 1
+        },
+        "tags": [
+          "spell",
+          "poison",
+          "area",
+          "dot"
+        ]
+      },
+      "events": [
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "vfxKey": "player/miasma",
+          "type": "cast_started",
+          "id": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "position": {
+            "x": 6,
+            "y": 6
+          },
+          "origin": {
+            "x": 6,
+            "y": 6
+          },
+          "target": {
+            "x": 7.779513888888889,
+            "y": 5.998263888888889
+          },
+          "skill": "miasma",
+          "windup": 9,
+          "radius": 3.5,
+          "tick": 409
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "vfxKey": "player/miasma",
+          "type": "cast_released",
+          "id": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "position": {
+            "x": 6,
+            "y": 6
+          },
+          "origin": {
+            "x": 6,
+            "y": 6
+          },
+          "target": {
+            "x": 7.779513888888889,
+            "y": 5.998263888888889
+          },
+          "skill": "miasma",
+          "radius": 3.5,
+          "duration": 150,
+          "tick": 418,
+          "part": 1
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "vfxKey": "player/miasma",
+          "id": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "position": {
+            "x": 7.779513888888889,
+            "y": 5.998263888888889
+          },
+          "radius": 3.5,
+          "damage": 85,
+          "life": 150,
+          "delay": 0,
+          "enemy": false,
+          "slow": false,
+          "skill": "miasma",
+          "started": 418,
+          "resolvedSkill": {
+            "id": "miasma",
+            "cost": 20,
+            "kind": "zone",
+            "name": "瘴气",
+            "tags": [
+              "spell",
+              "poison",
+              "area",
+              "dot"
+            ],
+            "range": 9,
+            "damage": 85,
+            "radius": 3.5,
+            "windup": 9,
+            "weapons": [
+              "staff"
+            ],
+            "category": "control",
+            "cooldown": 140,
+            "duration": 150,
+            "mechanics": {
+              "zone": {
+                "hits": 5,
+                "mode": "periodic",
+                "budget": "per_tick",
+                "interval": 30,
+                "pullSpeed": 0,
+                "firstDelay": 29
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "scope": "zone",
+                  "total": 128,
+                  "cleanse": true,
+                  "duration": 90,
+                  "interval": 30,
+                  "strength": 0,
+                  "damageType": "poison",
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              ],
+              "targeting": "ground",
+              "damageType": "poison"
+            },
+            "resolution": {
+              "attackShare": 1,
+              "cooldownCap": 0.75,
+              "baseCooldown": 140,
+              "finalCooldown": 140,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "encounterCooldownMultiplier": 1
+            },
+            "description": "留下五段瘴气，每段命中刷新额外中毒",
+            "unlockLevel": 13
+          },
+          "nextHit": 447,
+          "hitIndex": 0,
+          "damageType": "poison",
+          "visualActivated": true,
+          "type": "effect_activated",
+          "duration": 150,
+          "tick": 418
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "vfxKey": "player/miasma",
+          "id": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "radius": 3.5,
+          "damage": 85,
+          "life": 121,
+          "delay": 0,
+          "enemy": false,
+          "slow": false,
+          "skill": "miasma",
+          "started": 418,
+          "resolvedSkill": {
+            "id": "miasma",
+            "cost": 20,
+            "kind": "zone",
+            "name": "瘴气",
+            "tags": [
+              "spell",
+              "poison",
+              "area",
+              "dot"
+            ],
+            "range": 9,
+            "damage": 85,
+            "radius": 3.5,
+            "windup": 9,
+            "weapons": [
+              "staff"
+            ],
+            "category": "control",
+            "cooldown": 140,
+            "duration": 150,
+            "mechanics": {
+              "zone": {
+                "hits": 5,
+                "mode": "periodic",
+                "budget": "per_tick",
+                "interval": 30,
+                "pullSpeed": 0,
+                "firstDelay": 29
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "scope": "zone",
+                  "total": 128,
+                  "cleanse": true,
+                  "duration": 90,
+                  "interval": 30,
+                  "strength": 0,
+                  "damageType": "poison",
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              ],
+              "targeting": "ground",
+              "damageType": "poison"
+            },
+            "resolution": {
+              "attackShare": 1,
+              "cooldownCap": 0.75,
+              "baseCooldown": 140,
+              "finalCooldown": 140,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "encounterCooldownMultiplier": 1
+            },
+            "description": "留下五段瘴气，每段命中刷新额外中毒",
+            "unlockLevel": 13
+          },
+          "nextHit": 447,
+          "hitIndex": 0,
+          "damageType": "poison",
+          "visualActivated": true,
+          "type": "hit_resolved",
+          "amount": 85,
+          "tick": 447,
+          "category": "periodic"
+        },
+        {
+          "type": "status_changed",
+          "id": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "miasma",
+          "status": "poison",
+          "change": "applied",
+          "duration": 90,
+          "amount": 0,
+          "tick": 447,
+          "vfxKey": "player/miasma"
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "vfxKey": "player/miasma",
+          "type": "hit_resolved",
+          "id": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "amount": 42,
+          "skill": "miasma",
+          "tick": 477,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "vfxKey": "player/miasma",
+          "id": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "radius": 3.5,
+          "damage": 85,
+          "life": 91,
+          "delay": 0,
+          "enemy": false,
+          "slow": false,
+          "skill": "miasma",
+          "started": 418,
+          "resolvedSkill": {
+            "id": "miasma",
+            "cost": 20,
+            "kind": "zone",
+            "name": "瘴气",
+            "tags": [
+              "spell",
+              "poison",
+              "area",
+              "dot"
+            ],
+            "range": 9,
+            "damage": 85,
+            "radius": 3.5,
+            "windup": 9,
+            "weapons": [
+              "staff"
+            ],
+            "category": "control",
+            "cooldown": 140,
+            "duration": 150,
+            "mechanics": {
+              "zone": {
+                "hits": 5,
+                "mode": "periodic",
+                "budget": "per_tick",
+                "interval": 30,
+                "pullSpeed": 0,
+                "firstDelay": 29
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "scope": "zone",
+                  "total": 128,
+                  "cleanse": true,
+                  "duration": 90,
+                  "interval": 30,
+                  "strength": 0,
+                  "damageType": "poison",
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              ],
+              "targeting": "ground",
+              "damageType": "poison"
+            },
+            "resolution": {
+              "attackShare": 1,
+              "cooldownCap": 0.75,
+              "baseCooldown": 140,
+              "finalCooldown": 140,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "encounterCooldownMultiplier": 1
+            },
+            "description": "留下五段瘴气，每段命中刷新额外中毒",
+            "unlockLevel": 13
+          },
+          "nextHit": 477,
+          "hitIndex": 1,
+          "damageType": "poison",
+          "visualActivated": true,
+          "type": "hit_resolved",
+          "amount": 85,
+          "tick": 477,
+          "category": "periodic"
+        },
+        {
+          "type": "status_changed",
+          "id": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "miasma",
+          "status": "poison",
+          "change": "refreshed",
+          "duration": 90,
+          "amount": 0,
+          "tick": 477,
+          "vfxKey": "player/miasma"
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "vfxKey": "player/miasma",
+          "type": "hit_resolved",
+          "id": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "amount": 42,
+          "skill": "miasma",
+          "tick": 507,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "vfxKey": "player/miasma",
+          "id": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "radius": 3.5,
+          "damage": 85,
+          "life": 61,
+          "delay": 0,
+          "enemy": false,
+          "slow": false,
+          "skill": "miasma",
+          "started": 418,
+          "resolvedSkill": {
+            "id": "miasma",
+            "cost": 20,
+            "kind": "zone",
+            "name": "瘴气",
+            "tags": [
+              "spell",
+              "poison",
+              "area",
+              "dot"
+            ],
+            "range": 9,
+            "damage": 85,
+            "radius": 3.5,
+            "windup": 9,
+            "weapons": [
+              "staff"
+            ],
+            "category": "control",
+            "cooldown": 140,
+            "duration": 150,
+            "mechanics": {
+              "zone": {
+                "hits": 5,
+                "mode": "periodic",
+                "budget": "per_tick",
+                "interval": 30,
+                "pullSpeed": 0,
+                "firstDelay": 29
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "scope": "zone",
+                  "total": 128,
+                  "cleanse": true,
+                  "duration": 90,
+                  "interval": 30,
+                  "strength": 0,
+                  "damageType": "poison",
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              ],
+              "targeting": "ground",
+              "damageType": "poison"
+            },
+            "resolution": {
+              "attackShare": 1,
+              "cooldownCap": 0.75,
+              "baseCooldown": 140,
+              "finalCooldown": 140,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "encounterCooldownMultiplier": 1
+            },
+            "description": "留下五段瘴气，每段命中刷新额外中毒",
+            "unlockLevel": 13
+          },
+          "nextHit": 507,
+          "hitIndex": 2,
+          "damageType": "poison",
+          "visualActivated": true,
+          "type": "hit_resolved",
+          "amount": 85,
+          "tick": 507,
+          "category": "periodic"
+        },
+        {
+          "type": "status_changed",
+          "id": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "miasma",
+          "status": "poison",
+          "change": "refreshed",
+          "duration": 90,
+          "amount": 0,
+          "tick": 507,
+          "vfxKey": "player/miasma"
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "vfxKey": "player/miasma",
+          "type": "hit_resolved",
+          "id": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "amount": 44,
+          "skill": "miasma",
+          "tick": 537,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "vfxKey": "player/miasma",
+          "id": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "radius": 3.5,
+          "damage": 85,
+          "life": 31,
+          "delay": 0,
+          "enemy": false,
+          "slow": false,
+          "skill": "miasma",
+          "started": 418,
+          "resolvedSkill": {
+            "id": "miasma",
+            "cost": 20,
+            "kind": "zone",
+            "name": "瘴气",
+            "tags": [
+              "spell",
+              "poison",
+              "area",
+              "dot"
+            ],
+            "range": 9,
+            "damage": 85,
+            "radius": 3.5,
+            "windup": 9,
+            "weapons": [
+              "staff"
+            ],
+            "category": "control",
+            "cooldown": 140,
+            "duration": 150,
+            "mechanics": {
+              "zone": {
+                "hits": 5,
+                "mode": "periodic",
+                "budget": "per_tick",
+                "interval": 30,
+                "pullSpeed": 0,
+                "firstDelay": 29
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "scope": "zone",
+                  "total": 128,
+                  "cleanse": true,
+                  "duration": 90,
+                  "interval": 30,
+                  "strength": 0,
+                  "damageType": "poison",
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              ],
+              "targeting": "ground",
+              "damageType": "poison"
+            },
+            "resolution": {
+              "attackShare": 1,
+              "cooldownCap": 0.75,
+              "baseCooldown": 140,
+              "finalCooldown": 140,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "encounterCooldownMultiplier": 1
+            },
+            "description": "留下五段瘴气，每段命中刷新额外中毒",
+            "unlockLevel": 13
+          },
+          "nextHit": 537,
+          "hitIndex": 3,
+          "damageType": "poison",
+          "visualActivated": true,
+          "type": "hit_resolved",
+          "amount": 85,
+          "tick": 537,
+          "category": "periodic"
+        },
+        {
+          "type": "status_changed",
+          "id": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "miasma",
+          "status": "poison",
+          "change": "refreshed",
+          "duration": 90,
+          "amount": 0,
+          "tick": 537,
+          "vfxKey": "player/miasma"
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "vfxKey": "player/miasma",
+          "type": "hit_resolved",
+          "id": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "amount": 42,
+          "skill": "miasma",
+          "tick": 567,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "vfxKey": "player/miasma",
+          "id": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "radius": 3.5,
+          "damage": 85,
+          "life": 1,
+          "delay": 0,
+          "enemy": false,
+          "slow": false,
+          "skill": "miasma",
+          "started": 418,
+          "resolvedSkill": {
+            "id": "miasma",
+            "cost": 20,
+            "kind": "zone",
+            "name": "瘴气",
+            "tags": [
+              "spell",
+              "poison",
+              "area",
+              "dot"
+            ],
+            "range": 9,
+            "damage": 85,
+            "radius": 3.5,
+            "windup": 9,
+            "weapons": [
+              "staff"
+            ],
+            "category": "control",
+            "cooldown": 140,
+            "duration": 150,
+            "mechanics": {
+              "zone": {
+                "hits": 5,
+                "mode": "periodic",
+                "budget": "per_tick",
+                "interval": 30,
+                "pullSpeed": 0,
+                "firstDelay": 29
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "scope": "zone",
+                  "total": 128,
+                  "cleanse": true,
+                  "duration": 90,
+                  "interval": 30,
+                  "strength": 0,
+                  "damageType": "poison",
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              ],
+              "targeting": "ground",
+              "damageType": "poison"
+            },
+            "resolution": {
+              "attackShare": 1,
+              "cooldownCap": 0.75,
+              "baseCooldown": 140,
+              "finalCooldown": 140,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "encounterCooldownMultiplier": 1
+            },
+            "description": "留下五段瘴气，每段命中刷新额外中毒",
+            "unlockLevel": 13
+          },
+          "nextHit": 567,
+          "hitIndex": 4,
+          "damageType": "poison",
+          "visualActivated": true,
+          "type": "hit_resolved",
+          "amount": 85,
+          "tick": 567,
+          "category": "periodic"
+        },
+        {
+          "type": "status_changed",
+          "id": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "miasma",
+          "status": "poison",
+          "change": "refreshed",
+          "duration": 90,
+          "amount": 0,
+          "tick": 567,
+          "vfxKey": "player/miasma"
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "vfxKey": "player/miasma",
+          "type": "hit_resolved",
+          "id": "aa06237e-8153-403d-a5e9-70e1b1dde7cf",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "amount": 42,
+          "skill": "miasma",
+          "tick": 597,
+          "category": "periodic",
+          "damageType": "poison"
+        }
+      ],
+      "screenshot": true
+    },
+    {
+      "weapon": "hidden",
+      "base": "standard-hidden-t1-weapon",
+      "id": "toxic_bomb",
+      "rank": 1,
+      "requested": [
+        "toxic_bomb"
+      ],
+      "executed": [
+        "toxic_bomb"
+      ],
+      "frozen": {
+        "weapons": [
+          "hidden"
+        ],
+        "id": "toxic_bomb",
+        "name": "毒雾弹",
+        "kind": "zone",
+        "damage": 252,
+        "range": 9,
+        "radius": 3,
+        "cooldown": 120,
+        "cost": 18,
+        "windup": 8,
+        "duration": 120,
+        "description": "留下四段毒雾，每段命中刷新额外中毒",
+        "mechanics": {
+          "damageType": "poison",
+          "targeting": "ground",
+          "zone": {
+            "mode": "periodic",
+            "hits": 4,
+            "interval": 30,
+            "firstDelay": 29,
+            "pullSpeed": 0,
+            "budget": "per_tick"
+          },
+          "statuses": [
+            {
+              "kind": "poison",
+              "duration": 90,
+              "strength": 0,
+              "scope": "zone",
+              "interval": 30,
+              "damageType": "poison",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false,
+              "total": 168
+            }
+          ]
+        },
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 120,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 120,
+          "encounterCooldownMultiplier": 1
+        },
+        "tags": [
+          "spell",
+          "poison",
+          "area",
+          "dot"
+        ]
+      },
+      "events": [
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "vfxKey": "player/toxic_bomb",
+          "type": "cast_started",
+          "id": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "position": {
+            "x": 6,
+            "y": 6
+          },
+          "origin": {
+            "x": 6,
+            "y": 6
+          },
+          "target": {
+            "x": 7.779513888888889,
+            "y": 5.998263888888889
+          },
+          "skill": "toxic_bomb",
+          "windup": 8,
+          "radius": 3,
+          "tick": 344
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "vfxKey": "player/toxic_bomb",
+          "type": "cast_released",
+          "id": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "position": {
+            "x": 6,
+            "y": 6
+          },
+          "origin": {
+            "x": 6,
+            "y": 6
+          },
+          "target": {
+            "x": 7.779513888888889,
+            "y": 5.998263888888889
+          },
+          "skill": "toxic_bomb",
+          "radius": 3,
+          "duration": 120,
+          "tick": 352,
+          "part": 1
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "vfxKey": "player/toxic_bomb",
+          "id": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "position": {
+            "x": 7.779513888888889,
+            "y": 5.998263888888889
+          },
+          "radius": 3,
+          "damage": 252,
+          "life": 120,
+          "delay": 0,
+          "enemy": false,
+          "slow": false,
+          "skill": "toxic_bomb",
+          "started": 352,
+          "resolvedSkill": {
+            "id": "toxic_bomb",
+            "cost": 18,
+            "kind": "zone",
+            "name": "毒雾弹",
+            "tags": [
+              "spell",
+              "poison",
+              "area",
+              "dot"
+            ],
+            "range": 9,
+            "damage": 252,
+            "radius": 3,
+            "windup": 8,
+            "weapons": [
+              "hidden"
+            ],
+            "category": "ranged",
+            "cooldown": 120,
+            "duration": 120,
+            "mechanics": {
+              "zone": {
+                "hits": 4,
+                "mode": "periodic",
+                "budget": "per_tick",
+                "interval": 30,
+                "pullSpeed": 0,
+                "firstDelay": 29
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "scope": "zone",
+                  "total": 168,
+                  "cleanse": true,
+                  "duration": 90,
+                  "interval": 30,
+                  "strength": 0,
+                  "damageType": "poison",
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              ],
+              "targeting": "ground",
+              "damageType": "poison"
+            },
+            "resolution": {
+              "attackShare": 1,
+              "cooldownCap": 0.75,
+              "baseCooldown": 120,
+              "finalCooldown": 120,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "encounterCooldownMultiplier": 1
+            },
+            "description": "留下四段毒雾，每段命中刷新额外中毒",
+            "unlockLevel": 6
+          },
+          "nextHit": 381,
+          "hitIndex": 0,
+          "damageType": "poison",
+          "visualActivated": true,
+          "type": "effect_activated",
+          "duration": 120,
+          "tick": 352
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "vfxKey": "player/toxic_bomb",
+          "id": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "radius": 3,
+          "damage": 252,
+          "life": 91,
+          "delay": 0,
+          "enemy": false,
+          "slow": false,
+          "skill": "toxic_bomb",
+          "started": 352,
+          "resolvedSkill": {
+            "id": "toxic_bomb",
+            "cost": 18,
+            "kind": "zone",
+            "name": "毒雾弹",
+            "tags": [
+              "spell",
+              "poison",
+              "area",
+              "dot"
+            ],
+            "range": 9,
+            "damage": 252,
+            "radius": 3,
+            "windup": 8,
+            "weapons": [
+              "hidden"
+            ],
+            "category": "ranged",
+            "cooldown": 120,
+            "duration": 120,
+            "mechanics": {
+              "zone": {
+                "hits": 4,
+                "mode": "periodic",
+                "budget": "per_tick",
+                "interval": 30,
+                "pullSpeed": 0,
+                "firstDelay": 29
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "scope": "zone",
+                  "total": 168,
+                  "cleanse": true,
+                  "duration": 90,
+                  "interval": 30,
+                  "strength": 0,
+                  "damageType": "poison",
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              ],
+              "targeting": "ground",
+              "damageType": "poison"
+            },
+            "resolution": {
+              "attackShare": 1,
+              "cooldownCap": 0.75,
+              "baseCooldown": 120,
+              "finalCooldown": 120,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "encounterCooldownMultiplier": 1
+            },
+            "description": "留下四段毒雾，每段命中刷新额外中毒",
+            "unlockLevel": 6
+          },
+          "nextHit": 381,
+          "hitIndex": 0,
+          "damageType": "poison",
+          "visualActivated": true,
+          "type": "hit_resolved",
+          "amount": 252,
+          "tick": 381,
+          "category": "periodic"
+        },
+        {
+          "type": "status_changed",
+          "id": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "castId": 4,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "toxic_bomb",
+          "status": "poison",
+          "change": "applied",
+          "duration": 90,
+          "amount": 0,
+          "tick": 381,
+          "vfxKey": "player/toxic_bomb"
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "vfxKey": "player/toxic_bomb",
+          "type": "hit_resolved",
+          "id": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "amount": 56,
+          "skill": "toxic_bomb",
+          "tick": 411,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "vfxKey": "player/toxic_bomb",
+          "id": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "radius": 3,
+          "damage": 252,
+          "life": 61,
+          "delay": 0,
+          "enemy": false,
+          "slow": false,
+          "skill": "toxic_bomb",
+          "started": 352,
+          "resolvedSkill": {
+            "id": "toxic_bomb",
+            "cost": 18,
+            "kind": "zone",
+            "name": "毒雾弹",
+            "tags": [
+              "spell",
+              "poison",
+              "area",
+              "dot"
+            ],
+            "range": 9,
+            "damage": 252,
+            "radius": 3,
+            "windup": 8,
+            "weapons": [
+              "hidden"
+            ],
+            "category": "ranged",
+            "cooldown": 120,
+            "duration": 120,
+            "mechanics": {
+              "zone": {
+                "hits": 4,
+                "mode": "periodic",
+                "budget": "per_tick",
+                "interval": 30,
+                "pullSpeed": 0,
+                "firstDelay": 29
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "scope": "zone",
+                  "total": 168,
+                  "cleanse": true,
+                  "duration": 90,
+                  "interval": 30,
+                  "strength": 0,
+                  "damageType": "poison",
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              ],
+              "targeting": "ground",
+              "damageType": "poison"
+            },
+            "resolution": {
+              "attackShare": 1,
+              "cooldownCap": 0.75,
+              "baseCooldown": 120,
+              "finalCooldown": 120,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "encounterCooldownMultiplier": 1
+            },
+            "description": "留下四段毒雾，每段命中刷新额外中毒",
+            "unlockLevel": 6
+          },
+          "nextHit": 411,
+          "hitIndex": 1,
+          "damageType": "poison",
+          "visualActivated": true,
+          "type": "hit_resolved",
+          "amount": 252,
+          "tick": 411,
+          "category": "periodic"
+        },
+        {
+          "type": "status_changed",
+          "id": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "castId": 4,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "toxic_bomb",
+          "status": "poison",
+          "change": "refreshed",
+          "duration": 90,
+          "amount": 0,
+          "tick": 411,
+          "vfxKey": "player/toxic_bomb"
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "vfxKey": "player/toxic_bomb",
+          "type": "hit_resolved",
+          "id": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "amount": 56,
+          "skill": "toxic_bomb",
+          "tick": 441,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "vfxKey": "player/toxic_bomb",
+          "id": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "radius": 3,
+          "damage": 252,
+          "life": 31,
+          "delay": 0,
+          "enemy": false,
+          "slow": false,
+          "skill": "toxic_bomb",
+          "started": 352,
+          "resolvedSkill": {
+            "id": "toxic_bomb",
+            "cost": 18,
+            "kind": "zone",
+            "name": "毒雾弹",
+            "tags": [
+              "spell",
+              "poison",
+              "area",
+              "dot"
+            ],
+            "range": 9,
+            "damage": 252,
+            "radius": 3,
+            "windup": 8,
+            "weapons": [
+              "hidden"
+            ],
+            "category": "ranged",
+            "cooldown": 120,
+            "duration": 120,
+            "mechanics": {
+              "zone": {
+                "hits": 4,
+                "mode": "periodic",
+                "budget": "per_tick",
+                "interval": 30,
+                "pullSpeed": 0,
+                "firstDelay": 29
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "scope": "zone",
+                  "total": 168,
+                  "cleanse": true,
+                  "duration": 90,
+                  "interval": 30,
+                  "strength": 0,
+                  "damageType": "poison",
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              ],
+              "targeting": "ground",
+              "damageType": "poison"
+            },
+            "resolution": {
+              "attackShare": 1,
+              "cooldownCap": 0.75,
+              "baseCooldown": 120,
+              "finalCooldown": 120,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "encounterCooldownMultiplier": 1
+            },
+            "description": "留下四段毒雾，每段命中刷新额外中毒",
+            "unlockLevel": 6
+          },
+          "nextHit": 441,
+          "hitIndex": 2,
+          "damageType": "poison",
+          "visualActivated": true,
+          "type": "hit_resolved",
+          "amount": 252,
+          "tick": 441,
+          "category": "periodic"
+        },
+        {
+          "type": "status_changed",
+          "id": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "castId": 4,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "toxic_bomb",
+          "status": "poison",
+          "change": "refreshed",
+          "duration": 90,
+          "amount": 0,
+          "tick": 441,
+          "vfxKey": "player/toxic_bomb"
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "vfxKey": "player/toxic_bomb",
+          "type": "hit_resolved",
+          "id": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "amount": 56,
+          "skill": "toxic_bomb",
+          "tick": 471,
+          "category": "periodic",
+          "damageType": "poison"
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "vfxKey": "player/toxic_bomb",
+          "id": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "radius": 3,
+          "damage": 252,
+          "life": 1,
+          "delay": 0,
+          "enemy": false,
+          "slow": false,
+          "skill": "toxic_bomb",
+          "started": 352,
+          "resolvedSkill": {
+            "id": "toxic_bomb",
+            "cost": 18,
+            "kind": "zone",
+            "name": "毒雾弹",
+            "tags": [
+              "spell",
+              "poison",
+              "area",
+              "dot"
+            ],
+            "range": 9,
+            "damage": 252,
+            "radius": 3,
+            "windup": 8,
+            "weapons": [
+              "hidden"
+            ],
+            "category": "ranged",
+            "cooldown": 120,
+            "duration": 120,
+            "mechanics": {
+              "zone": {
+                "hits": 4,
+                "mode": "periodic",
+                "budget": "per_tick",
+                "interval": 30,
+                "pullSpeed": 0,
+                "firstDelay": 29
+              },
+              "statuses": [
+                {
+                  "kind": "poison",
+                  "scope": "zone",
+                  "total": 168,
+                  "cleanse": true,
+                  "duration": 90,
+                  "interval": 30,
+                  "strength": 0,
+                  "damageType": "poison",
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              ],
+              "targeting": "ground",
+              "damageType": "poison"
+            },
+            "resolution": {
+              "attackShare": 1,
+              "cooldownCap": 0.75,
+              "baseCooldown": 120,
+              "finalCooldown": 120,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "encounterCooldownMultiplier": 1
+            },
+            "description": "留下四段毒雾，每段命中刷新额外中毒",
+            "unlockLevel": 6
+          },
+          "nextHit": 471,
+          "hitIndex": 3,
+          "damageType": "poison",
+          "visualActivated": true,
+          "type": "hit_resolved",
+          "amount": 252,
+          "tick": 471,
+          "category": "periodic"
+        },
+        {
+          "type": "status_changed",
+          "id": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "castId": 4,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "toxic_bomb",
+          "status": "poison",
+          "change": "refreshed",
+          "duration": 90,
+          "amount": 0,
+          "tick": 471,
+          "vfxKey": "player/toxic_bomb"
+        },
+        {
+          "castId": 4,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "vfxKey": "player/toxic_bomb",
+          "type": "hit_resolved",
+          "id": "bd044247-c888-4249-a2f7-336b9e0b3654",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "amount": 56,
+          "skill": "toxic_bomb",
+          "tick": 501,
+          "category": "periodic",
+          "damageType": "poison"
+        }
+      ],
+      "screenshot": true
+    },
+    {
+      "weapon": "wand",
+      "base": "standard-wand-t1-weapon",
+      "id": "static_field",
+      "rank": 1,
+      "requested": [
+        "static_field"
+      ],
+      "executed": [
+        "static_field"
+      ],
+      "frozen": {
+        "weapons": [
+          "wand"
+        ],
+        "id": "static_field",
+        "name": "静电场",
+        "kind": "zone",
+        "damage": 127,
+        "range": 9,
+        "radius": 3.5,
+        "cooldown": 130,
+        "cost": 20,
+        "windup": 8,
+        "duration": 120,
+        "description": "四段静电伤害，区域内敌人持续感电",
+        "mechanics": {
+          "damageType": "lightning",
+          "targeting": "ground",
+          "zone": {
+            "mode": "periodic",
+            "hits": 4,
+            "interval": 30,
+            "firstDelay": 29,
+            "pullSpeed": 0,
+            "budget": "per_tick"
+          },
+          "statuses": [
+            {
+              "kind": "shock",
+              "duration": 2,
+              "strength": 0.12,
+              "scope": "zone",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false
+            }
+          ]
+        },
+        "resolution": {
+          "attackShare": 1,
+          "baseCooldown": 130,
+          "skillCooldownReduction": 0,
+          "statsCooldownReduction": 0,
+          "effectiveCooldownReduction": 0,
+          "cooldownCap": 0.75,
+          "finalCooldown": 130,
+          "encounterCooldownMultiplier": 1
+        },
+        "tags": [
+          "spell",
+          "lightning",
+          "area",
+          "dot"
+        ]
+      },
+      "events": [
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "vfxKey": "player/static_field",
+          "type": "cast_started",
+          "id": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "position": {
+            "x": 6,
+            "y": 6
+          },
+          "origin": {
+            "x": 6,
+            "y": 6
+          },
+          "target": {
+            "x": 7.779513888888889,
+            "y": 5.998263888888889
+          },
+          "skill": "static_field",
+          "windup": 8,
+          "radius": 3.5,
+          "tick": 403
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "vfxKey": "player/static_field",
+          "type": "cast_released",
+          "id": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "position": {
+            "x": 6,
+            "y": 6
+          },
+          "origin": {
+            "x": 6,
+            "y": 6
+          },
+          "target": {
+            "x": 7.779513888888889,
+            "y": 5.998263888888889
+          },
+          "skill": "static_field",
+          "radius": 3.5,
+          "duration": 120,
+          "tick": 411,
+          "part": 1
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "vfxKey": "player/static_field",
+          "id": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "position": {
+            "x": 7.779513888888889,
+            "y": 5.998263888888889
+          },
+          "radius": 3.5,
+          "damage": 127,
+          "life": 120,
+          "delay": 0,
+          "enemy": false,
+          "slow": false,
+          "skill": "static_field",
+          "started": 411,
+          "resolvedSkill": {
+            "id": "static_field",
+            "cost": 20,
+            "kind": "zone",
+            "name": "静电场",
+            "tags": [
+              "spell",
+              "lightning",
+              "area",
+              "dot"
+            ],
+            "range": 9,
+            "damage": 127,
+            "radius": 3.5,
+            "windup": 8,
+            "weapons": [
+              "wand"
+            ],
+            "category": "control",
+            "cooldown": 130,
+            "duration": 120,
+            "mechanics": {
+              "zone": {
+                "hits": 4,
+                "mode": "periodic",
+                "budget": "per_tick",
+                "interval": 30,
+                "pullSpeed": 0,
+                "firstDelay": 29
+              },
+              "statuses": [
+                {
+                  "kind": "shock",
+                  "scope": "zone",
+                  "cleanse": true,
+                  "duration": 2,
+                  "strength": 0.12,
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              ],
+              "targeting": "ground",
+              "damageType": "lightning"
+            },
+            "resolution": {
+              "attackShare": 1,
+              "cooldownCap": 0.75,
+              "baseCooldown": 130,
+              "finalCooldown": 130,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "encounterCooldownMultiplier": 1
+            },
+            "description": "四段静电伤害，区域内敌人持续感电",
+            "unlockLevel": 10
+          },
+          "nextHit": 440,
+          "hitIndex": 0,
+          "damageType": "lightning",
+          "visualActivated": true,
+          "type": "effect_activated",
+          "duration": 120,
+          "tick": 411
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "applied",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 411,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 412,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 413,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 414,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 415,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 416,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 417,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 418,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 419,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 420,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 421,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 422,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 423,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 424,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 425,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 426,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 427,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 428,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 429,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 430,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 431,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 432,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 433,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 434,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 435,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 436,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 437,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 438,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 439,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 440,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "vfxKey": "player/static_field",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "radius": 3.5,
+          "damage": 127,
+          "life": 91,
+          "delay": 0,
+          "enemy": false,
+          "slow": false,
+          "skill": "static_field",
+          "started": 411,
+          "resolvedSkill": {
+            "id": "static_field",
+            "cost": 20,
+            "kind": "zone",
+            "name": "静电场",
+            "tags": [
+              "spell",
+              "lightning",
+              "area",
+              "dot"
+            ],
+            "range": 9,
+            "damage": 127,
+            "radius": 3.5,
+            "windup": 8,
+            "weapons": [
+              "wand"
+            ],
+            "category": "control",
+            "cooldown": 130,
+            "duration": 120,
+            "mechanics": {
+              "zone": {
+                "hits": 4,
+                "mode": "periodic",
+                "budget": "per_tick",
+                "interval": 30,
+                "pullSpeed": 0,
+                "firstDelay": 29
+              },
+              "statuses": [
+                {
+                  "kind": "shock",
+                  "scope": "zone",
+                  "cleanse": true,
+                  "duration": 2,
+                  "strength": 0.12,
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              ],
+              "targeting": "ground",
+              "damageType": "lightning"
+            },
+            "resolution": {
+              "attackShare": 1,
+              "cooldownCap": 0.75,
+              "baseCooldown": 130,
+              "finalCooldown": 130,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "encounterCooldownMultiplier": 1
+            },
+            "description": "四段静电伤害，区域内敌人持续感电",
+            "unlockLevel": 10
+          },
+          "nextHit": 440,
+          "hitIndex": 0,
+          "damageType": "lightning",
+          "visualActivated": true,
+          "type": "hit_resolved",
+          "amount": 142,
+          "tick": 440,
+          "category": "periodic"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 3,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "innate-wand-shock",
+          "status": "shock",
+          "change": "applied",
+          "duration": 90,
+          "amount": 0.12,
+          "tick": 440,
+          "vfxKey": "combo/innate-wand-shock"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 441,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 442,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 443,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 444,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 445,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 446,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 447,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 448,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 449,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 450,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 451,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 452,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 453,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 454,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 455,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 456,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 457,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 458,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 459,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 460,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 461,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 462,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 463,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 464,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 465,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 466,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 467,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 468,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 469,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 470,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "vfxKey": "player/static_field",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "radius": 3.5,
+          "damage": 127,
+          "life": 61,
+          "delay": 0,
+          "enemy": false,
+          "slow": false,
+          "skill": "static_field",
+          "started": 411,
+          "resolvedSkill": {
+            "id": "static_field",
+            "cost": 20,
+            "kind": "zone",
+            "name": "静电场",
+            "tags": [
+              "spell",
+              "lightning",
+              "area",
+              "dot"
+            ],
+            "range": 9,
+            "damage": 127,
+            "radius": 3.5,
+            "windup": 8,
+            "weapons": [
+              "wand"
+            ],
+            "category": "control",
+            "cooldown": 130,
+            "duration": 120,
+            "mechanics": {
+              "zone": {
+                "hits": 4,
+                "mode": "periodic",
+                "budget": "per_tick",
+                "interval": 30,
+                "pullSpeed": 0,
+                "firstDelay": 29
+              },
+              "statuses": [
+                {
+                  "kind": "shock",
+                  "scope": "zone",
+                  "cleanse": true,
+                  "duration": 2,
+                  "strength": 0.12,
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              ],
+              "targeting": "ground",
+              "damageType": "lightning"
+            },
+            "resolution": {
+              "attackShare": 1,
+              "cooldownCap": 0.75,
+              "baseCooldown": 130,
+              "finalCooldown": 130,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "encounterCooldownMultiplier": 1
+            },
+            "description": "四段静电伤害，区域内敌人持续感电",
+            "unlockLevel": 10
+          },
+          "nextHit": 470,
+          "hitIndex": 1,
+          "damageType": "lightning",
+          "visualActivated": true,
+          "type": "hit_resolved",
+          "amount": 142,
+          "tick": 470,
+          "category": "periodic"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 3,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "innate-wand-shock",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 90,
+          "amount": 0.12,
+          "tick": 470,
+          "vfxKey": "combo/innate-wand-shock"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 471,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 472,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 473,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 474,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 475,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 476,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 477,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 478,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 479,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 480,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 481,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 482,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 483,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 484,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 485,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 486,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 487,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 488,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 489,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 490,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 491,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 492,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 493,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 494,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 495,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 496,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 497,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 498,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 499,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 500,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "vfxKey": "player/static_field",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "radius": 3.5,
+          "damage": 127,
+          "life": 31,
+          "delay": 0,
+          "enemy": false,
+          "slow": false,
+          "skill": "static_field",
+          "started": 411,
+          "resolvedSkill": {
+            "id": "static_field",
+            "cost": 20,
+            "kind": "zone",
+            "name": "静电场",
+            "tags": [
+              "spell",
+              "lightning",
+              "area",
+              "dot"
+            ],
+            "range": 9,
+            "damage": 127,
+            "radius": 3.5,
+            "windup": 8,
+            "weapons": [
+              "wand"
+            ],
+            "category": "control",
+            "cooldown": 130,
+            "duration": 120,
+            "mechanics": {
+              "zone": {
+                "hits": 4,
+                "mode": "periodic",
+                "budget": "per_tick",
+                "interval": 30,
+                "pullSpeed": 0,
+                "firstDelay": 29
+              },
+              "statuses": [
+                {
+                  "kind": "shock",
+                  "scope": "zone",
+                  "cleanse": true,
+                  "duration": 2,
+                  "strength": 0.12,
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              ],
+              "targeting": "ground",
+              "damageType": "lightning"
+            },
+            "resolution": {
+              "attackShare": 1,
+              "cooldownCap": 0.75,
+              "baseCooldown": 130,
+              "finalCooldown": 130,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "encounterCooldownMultiplier": 1
+            },
+            "description": "四段静电伤害，区域内敌人持续感电",
+            "unlockLevel": 10
+          },
+          "nextHit": 500,
+          "hitIndex": 2,
+          "damageType": "lightning",
+          "visualActivated": true,
+          "type": "hit_resolved",
+          "amount": 142,
+          "tick": 500,
+          "category": "periodic"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 3,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "innate-wand-shock",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 90,
+          "amount": 0.12,
+          "tick": 500,
+          "vfxKey": "combo/innate-wand-shock"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 501,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 502,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 503,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 504,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 505,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 506,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 507,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 508,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 509,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 510,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 511,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 512,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 513,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 514,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 515,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 516,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 517,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 518,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 519,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 520,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 521,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 522,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 523,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 524,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 525,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 526,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 527,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 528,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 529,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 2,
+          "amount": 0.12,
+          "tick": 530,
+          "vfxKey": "player/static_field"
+        },
+        {
+          "castId": 2,
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "vfxKey": "player/static_field",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "radius": 3.5,
+          "damage": 127,
+          "life": 1,
+          "delay": 0,
+          "enemy": false,
+          "slow": false,
+          "skill": "static_field",
+          "started": 411,
+          "resolvedSkill": {
+            "id": "static_field",
+            "cost": 20,
+            "kind": "zone",
+            "name": "静电场",
+            "tags": [
+              "spell",
+              "lightning",
+              "area",
+              "dot"
+            ],
+            "range": 9,
+            "damage": 127,
+            "radius": 3.5,
+            "windup": 8,
+            "weapons": [
+              "wand"
+            ],
+            "category": "control",
+            "cooldown": 130,
+            "duration": 120,
+            "mechanics": {
+              "zone": {
+                "hits": 4,
+                "mode": "periodic",
+                "budget": "per_tick",
+                "interval": 30,
+                "pullSpeed": 0,
+                "firstDelay": 29
+              },
+              "statuses": [
+                {
+                  "kind": "shock",
+                  "scope": "zone",
+                  "cleanse": true,
+                  "duration": 2,
+                  "strength": 0.12,
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              ],
+              "targeting": "ground",
+              "damageType": "lightning"
+            },
+            "resolution": {
+              "attackShare": 1,
+              "cooldownCap": 0.75,
+              "baseCooldown": 130,
+              "finalCooldown": 130,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "encounterCooldownMultiplier": 1
+            },
+            "description": "四段静电伤害，区域内敌人持续感电",
+            "unlockLevel": 10
+          },
+          "nextHit": 530,
+          "hitIndex": 3,
+          "damageType": "lightning",
+          "visualActivated": true,
+          "type": "hit_resolved",
+          "amount": 142,
+          "tick": 530,
+          "category": "periodic"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 3,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "innate-wand-shock",
+          "status": "shock",
+          "change": "refreshed",
+          "duration": 90,
+          "amount": 0.12,
+          "tick": 530,
+          "vfxKey": "combo/innate-wand-shock"
+        },
+        {
+          "type": "status_changed",
+          "id": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "sourceId": "698ea956-bbb3-4cbb-9b8a-b88e4ab8ae45",
+          "targetId": "409f9d66-6887-4ad5-af0a-e1f945c5e7d4",
+          "castId": 2,
+          "position": {
+            "x": 7.2399999999999975,
+            "y": 6
+          },
+          "skill": "static_field",
+          "status": "shock",
+          "change": "expired",
+          "duration": 0,
+          "amount": 0.12,
+          "tick": 532,
+          "vfxKey": "player/static_field"
+        }
+      ],
+      "screenshot": true
+    }
+  ],
+  "errors": [],
+  "assetsReadyBeforeLogin": true,
+  "activationGuard": {
+    "realRestoreHeldUntilKeyboardCheck": true,
+    "menuDisabled": true,
+    "keyboardBlockedWhileBusy": true,
+    "panelStableAfterReady": true
+  },
+  "originalGearUnchanged": true,
+  "cleanup": {
+    "temporary": true,
+    "stopped": true,
+    "bytes_before": 891648975,
+    "bytes_after": 0,
+    "bytes_removed": 891648975
+  },
+  "fullLog": {
+    "file": "result.json.gz",
+    "sha256": "d6304395bcd85553392574ca17f9ff894bb235b3da3a5707ddf882a5c98a4765",
+    "uncompressedBytes": 442507,
+    "compressedBytes": 19492
+  }
+}

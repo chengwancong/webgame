@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>技能升级 · 完整效果示意</title>
+<link rel="stylesheet" href="/src/ui/tokens.css"><link rel="stylesheet" href="/src/ui/controls.css">
+<style>
+@font-face{font-family:WorldSans;src:url('/art/NotoSansSC.ttf') format('truetype');font-weight:100 900;font-display:swap}
+*{box-sizing:border-box}body{margin:0;background:var(--color-background);color:var(--color-text-primary);font:var(--font-weight-regular) var(--font-size-body)/var(--font-line-body) var(--font-family);font-synthesis:none}
+main{max-width:calc(var(--size-slot)*15);margin:auto;padding:var(--space-6)}
+.board-head{margin-bottom:var(--space-5)}h1{margin:0 0 var(--space-1);font-size:var(--font-size-h1);line-height:var(--font-line-heading)}.board-head p{margin:0;color:var(--color-text-secondary);font-size:var(--font-size-caption)}
+.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-5) var(--space-6)}
+.option-title{display:flex;align-items:baseline;gap:var(--space-2);margin:0 0 var(--space-2);font-size:var(--font-size-h3);font-weight:var(--font-weight-semibold)}.option-title .letter{color:var(--color-highlight)}.option-title small{margin-left:auto;font-size:var(--font-size-caption);font-weight:var(--font-weight-regular);color:var(--color-text-secondary)}
+.preview-stage{width:100%;max-width:382px;margin:auto;padding:var(--space-4);border:var(--border-width) solid var(--color-border);border-radius:var(--radius-panel);background:var(--color-panel-inset)}
+.skill-heading{display:flex;align-items:center;gap:var(--space-3);padding-bottom:var(--space-3);margin-bottom:var(--space-3);border-bottom:var(--border-width) solid var(--color-border-subtle)}.skill-heading img{width:var(--size-icon-slot);height:var(--size-icon-slot);border:var(--border-width) solid var(--color-border);border-radius:var(--radius-slot)}.skill-heading b{display:block;font-size:var(--font-size-h3)}.skill-heading small{color:var(--color-text-secondary);font-size:var(--font-size-caption)}
+.upgrade-layout{min-height:0;margin-bottom:var(--space-3)}
+.upgrade-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-2);margin:0 0 var(--space-2);font-size:var(--font-size-section-compact);font-weight:var(--font-weight-semibold)}.upgrade-head .rank{font-size:var(--font-size-caption);font-weight:var(--font-weight-regular);color:var(--color-text-secondary)}
+.num{font-variant-numeric:tabular-nums}.positive{color:var(--color-success)}.muted{color:var(--color-text-secondary)}.delta{display:inline-flex;align-items:center;padding:var(--space-1) var(--space-2);border-radius:var(--radius-tag);font-size:var(--font-size-caption);font-weight:var(--font-weight-semibold);line-height:var(--font-line-heading);background:color-mix(in srgb,var(--color-success) 10%,transparent);color:var(--color-success);white-space:nowrap}
+.compact-row{display:flex;align-items:center;gap:var(--space-2);padding:var(--space-2) 0;border-bottom:var(--border-width) solid var(--color-border-subtle)}.compact-row .attribute{margin-right:auto;color:var(--color-text-secondary)}.compact-row .pair{display:flex;align-items:baseline;gap:var(--space-2);white-space:nowrap}.compact-row strong{font-size:var(--font-size-h2)}
+.comparison-table{width:100%;border-collapse:collapse;table-layout:fixed}.comparison-table th{text-align:left;font-size:var(--font-size-micro);font-weight:var(--font-weight-regular);color:var(--color-text-secondary);padding:0 0 var(--space-1)}.comparison-table td{padding:var(--space-1) 0 var(--space-2);border-bottom:var(--border-width) solid var(--color-border-subtle)}.comparison-table th:first-child{width:36%}.comparison-table th:not(:first-child),.comparison-table td:not(:first-child){text-align:right}.comparison-table td:first-child{font-size:var(--font-size-caption);color:var(--color-text-secondary)}.comparison-table strong{font-size:var(--font-size-h2)}.comparison-table .gain{font-size:var(--font-size-caption);margin-left:var(--space-1)}
+.outcome{display:flex;align-items:baseline;gap:var(--space-2);padding:var(--space-1) 0}.outcome .attribute{color:var(--color-text-secondary)}.outcome strong{font-size:var(--font-size-item-name);font-weight:var(--font-weight-bold);line-height:var(--font-line-heading)}.outcome-meta{display:flex;align-items:center;gap:var(--space-2);margin-top:var(--space-1);font-size:var(--font-size-caption);color:var(--color-text-secondary)}.outcome-meta .gain{color:var(--color-success);padding-left:var(--space-2);border-left:var(--border-width) solid var(--color-border-subtle)}
+.progression{display:flex;align-items:center;gap:var(--space-2)}.rank-cell{display:flex;align-items:center;gap:var(--space-2);padding:var(--space-2);border:var(--border-width) solid var(--color-border-subtle);border-radius:var(--radius-well);background:var(--color-panel-raised)}.rank-cell small{font-size:var(--font-size-caption);color:var(--color-text-secondary)}.rank-cell strong{font-size:var(--font-size-h2);line-height:var(--font-line-heading)}.rank-cell.next{background:color-mix(in srgb,var(--color-success) 7%,var(--color-panel-inset));border-color:color-mix(in srgb,var(--color-success) 40%,var(--color-border-subtle))}.progression-label{color:var(--color-text-secondary);font-size:var(--font-size-caption);margin:0 0 var(--space-1)}
+.preview-stage .ui-cost{padding:var(--space-2);margin-bottom:var(--space-3)}.preview-stage .ui-cost dl{gap:var(--space-1)}.preview-stage .ui-cost h3{margin-bottom:var(--space-1)}.preview-stage .ui-cost__row{gap:var(--space-2)}.preview-stage .ui-cost dd{grid-template-columns:max-content max-content;gap:var(--space-2)}.preview-stage .ui-cost__state{display:none}.preview-stage .ui-button{width:100%}
+@media(max-width:700px){main{padding:var(--space-4)}.options{grid-template-columns:1fr}.option-title{max-width:382px;margin-inline:auto}}
+.single main{padding:var(--space-5);max-width:calc(var(--size-slot)*7)}.single .options{grid-template-columns:1fr}.single .option-title{display:none}.single .board-head h1{font-size:var(--font-size-h2)}.single .board-head{margin-bottom:var(--space-4)}
+
+.samples{display:flex;gap:var(--space-2);flex-wrap:wrap;margin-bottom:var(--space-5)}.samples a{display:inline-flex;align-items:center;min-height:var(--size-control);padding:var(--space-2) var(--space-3);border:var(--border-width) solid var(--color-border);border-radius:var(--radius-control);color:var(--color-text-secondary);font-size:var(--font-size-caption);text-decoration:none}.samples a[aria-current=page]{color:var(--color-primary-text);background:var(--color-primary);border-color:var(--color-primary-border)}.single .samples{display:none}
+.effect-block h3,.semantic-group h3{display:flex;justify-content:space-between;gap:var(--space-2);align-items:baseline;font-size:var(--font-size-section-compact);font-weight:var(--font-weight-semibold);margin:0 0 var(--space-2)}.effect-block h3 small{font-size:var(--font-size-caption);font-weight:var(--font-weight-regular);color:var(--color-text-secondary)}.effect-copy{font-size:var(--font-size-body);line-height:var(--font-line-body);margin:0;color:var(--color-text-primary);overflow-wrap:anywhere}.effect-copy+.effect-copy{margin-top:var(--space-1)}.effect-copy strong{font-weight:var(--font-weight-semibold)}.effect-copy .formula{white-space:nowrap}.effect-copy .changed{color:var(--color-success)}.effect-copy .removed{text-decoration:line-through;color:var(--color-text-secondary)}.effect-block+.effect-block{margin-top:var(--space-3);padding-top:var(--space-3);border-top:var(--border-width) solid var(--color-border-subtle)}.effect-block.next h3{color:var(--color-success)}
+.boxed .effect-block{padding:var(--space-3);border:var(--border-width) solid var(--color-border-subtle);border-radius:var(--radius-well);background:var(--color-panel-raised)}.boxed .effect-block.next{background:color-mix(in srgb,var(--color-success) 5%,var(--color-panel-inset));border-color:color-mix(in srgb,var(--color-success) 35%,var(--color-border-subtle))}.change-summary{font-size:var(--font-size-caption);color:var(--color-text-secondary);line-height:var(--font-line-body);margin:var(--space-2) 0 0}.change-summary b{font-weight:var(--font-weight-semibold);color:var(--color-success)}
+.semantic-group+.semantic-group{margin-top:var(--space-3);padding-top:var(--space-3);border-top:var(--border-width) solid var(--color-border-subtle)}.semantic-group h3{margin-bottom:var(--space-1)}.semantic-line{display:grid;grid-template-columns:var(--space-12) minmax(0,1fr);align-items:baseline;gap:var(--space-2)}.semantic-line+.semantic-line{margin-top:var(--space-1)}.semantic-line>span{font-size:var(--font-size-caption);color:var(--color-text-secondary)}.unchanged{font-size:var(--font-size-micro);font-weight:var(--font-weight-regular);color:var(--color-text-secondary)}
+.complete-copy{white-space:pre-wrap}.effect-block .effect-number.is-changed{color:var(--color-highlight);font-weight:var(--font-weight-semibold)}.effect-block.next .effect-number.is-changed{color:var(--color-success)}
+</style>
+</head>
+<body><main>
+<header class="board-head"><h1>技能升级 · 完整效果对比</h1><p>按完整技能描述比较：触发条件、复合伤害、附加效果。参考与扩展内容仅用于布局示意。</p></header>
+<nav class="samples" aria-label="内容样例" id="samples"></nav><div class="options" id="options"></div>
+</main>
+<script type="module">
+import {buttonHtml,resourceCostHtml,currencyIconHtml} from '/src/ui-components.ts';
+import {skillArt} from '/src/ui-assets.ts';
+import {highlightEffectNumbers} from '/src/ui/skill-effects.ts';
+const params=new URLSearchParams(location.search);
+const sample=params.get('sample')??'reference';
+const extended=sample==='extended',replacement=sample==='replacement';
+const currentTrigger='每普攻 <strong class="num">6</strong> 次';
+const nextTrigger=extended?'每普攻 <strong class="num changed">5</strong> 次':currentTrigger;
+const currentDamage='对当前目标造成 <strong class="formula num">52.8% + 110</strong> 伤害。';
+const nextDamage='对当前目标造成 <strong class="formula num changed">52.93% + 154</strong> 伤害。';
+const condition='目标兵力低于自身时，伤害翻倍。';
+const added='并使目标减速 <strong class="num changed">15%</strong>，持续 <strong class="num changed">2 秒</strong>。';
+const replacementEffect='命中后获得相当于本次伤害 <strong class="num changed">20%</strong> 的护盾。';
+const currentExtra=replacement?'<span class="removed">'+condition+'</span>':condition;
+const nextExtra=replacement?replacementEffect:condition+(extended?added:'');
+const completeCurrent='每普攻6次，对当前目标造成52.8% +110伤害。\n目标兵力低于自身时，伤害翻倍。';
+const completeNext=`每普攻${extended?'5':'6'}次，对当前目标造成52.93% +154伤害。\n${replacement?'命中后获得相当于本次伤害20%的护盾。':'目标兵力低于自身时，伤害翻倍。'+(extended?'并使目标减速15%，持续2秒。':'')}`;
+const completeComparison=highlightEffectNumbers(completeCurrent,completeNext);
+const currentCopy=`<p class="effect-copy complete-copy">${completeComparison.before}</p>`;
+const nextCopy=`<p class="effect-copy complete-copy">${completeComparison.after}</p>`;
+const blocks=`<section class="effect-block"><h3>当前效果<small>Lv.1</small></h3>${currentCopy}</section><section class="effect-block next"><h3>升级后效果<small>Lv.2</small></h3>${nextCopy}</section>`;
+const summary=`伤害系数与固定伤害提升${extended?'；触发次数 <b>6 → 5</b>；新增减速。':replacement?'；移除伤害翻倍，新增护盾。':'；触发与附加条件保持不变。'}`;
+const semantic=`<div class="upgrade-head">效果对比<span class="rank num">Lv.1 → Lv.2</span></div><section class="semantic-group"><h3>触发条件${extended?'':'<small class="unchanged">不变</small>'}</h3>${extended?`<div class="semantic-line"><span>当前</span><p class="effect-copy">${currentTrigger}。</p></div><div class="semantic-line"><span>升级后</span><p class="effect-copy">${nextTrigger}。</p></div>`:`<p class="effect-copy">${currentTrigger}。</p>`}</section><section class="semantic-group"><h3>伤害效果</h3><div class="semantic-line"><span>当前</span><p class="effect-copy">${currentDamage}</p></div><div class="semantic-line"><span>升级后</span><p class="effect-copy">${nextDamage}</p></div></section><section class="semantic-group"><h3>附加效果${extended||replacement?'':'<small class="unchanged">不变</small>'}</h3>${extended||replacement?`<div class="semantic-line"><span>当前</span><p class="effect-copy">${currentExtra}</p></div><div class="semantic-line"><span>升级后</span><p class="effect-copy">${nextExtra}</p></div>`:`<p class="effect-copy">${condition}</p>`}</section>`;
+const variants=[
+ {id:'A',name:'完整上下对照',note:'两个等级各自保留完整效果',body:blocks},
+ {id:'B',name:'完整效果与变化摘要',note:'先读全文，再快速确认改动',body:`<div class="boxed">${blocks}</div><p class="change-summary">本次变化：${summary}</p>`},
+ {id:'C',name:'按机制分组',note:'条件、伤害与附加效果分别比较',body:semantic},
+];
+document.querySelector('#samples').innerHTML=[['reference','参考描述'],['extended','触发变化与新增效果'],['replacement','移除与替换效果']].map(([id,label])=>`<a href="?sample=${id}" ${id===sample?'aria-current="page"':''}>${label}</a>`).join('');
+const costSample=params.get('cost')??'enough';
+const cost=resourceCostHtml([{id:'gold',label:'金币',amount:60,owned:costSample==='short'?0:318,availability:costSample==='short'?'short':'enough',iconHtml:currencyIconHtml('gold')}],'升级消耗',{compact:true,display:'requirements'});
+const selected=variants.find(v=>v.id===(params.get('option')??'A'));
+if(selected){document.body.classList.add('single');document.querySelector('h1').textContent=`${selected.id} · ${selected.name}`;document.querySelector('.board-head p').textContent=selected.note+' · '+(extended?'扩展示例':replacement?'替换示例':'参考描述')+(costSample==='enough'?'':' · 资源不足示例');}
+document.querySelector('#options').innerHTML=(selected?[selected]:variants).map(v=>`<article data-option="${v.id}"><h2 class="option-title"><span class="letter">${v.id}</span>${v.name}<small>${v.note}</small></h2><section class="preview-stage"><header class="skill-heading"><img src="${skillArt('cut')}" alt="布局示意图标"><div><b>复杂技能示例</b><small>触发条件 · 复合伤害 · 附加效果</small></div></header><section class="upgrade-layout" aria-label="${v.name}升级示意">${v.body}</section>${cost}${buttonHtml('升级',{variant:'secondary',attributes:{'aria-label':v.name+'升级按钮示意'}})}</section></article>`).join('');
+</script>
+</body></html>

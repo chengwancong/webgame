@@ -1,0 +1,6 @@
+import {combatKeyProgressHtml} from './combat-review-view.ts';
+import {stageKeyPreviewHtml} from './stage-key-preview.ts';
+import type {StageKeyPreview} from '../../../packages/contracts/stage-keys.ts';
+import type {StageKeyProgress} from '../../../packages/contracts/stage-keys.ts';
+import {sectionTitleHtml,statRowHtml,meterHtml,buttonHtml,statusBadgeHtml,esc} from './ui-components.ts';
+export function stageKeyHtml(p:StageKeyProgress,busy=false,preview?:StageKeyPreview,message=''){return `<section class="stage-key-progress" aria-label="钥匙进度">${sectionTitleHtml('钥匙进度')}${statusBadgeHtml(p.obtained?'已取得':p.materials>=p.required?'可制作':'收集中',p.obtained?'success':'neutral')}${combatKeyProgressHtml(p)}<div class="stage-key-choices">${p.choices.map(c=>`<article><strong>${esc(c.name)}</strong><p class="ui-caption">${esc(c.description)}</p>${buttonHtml('对比预览',{action:'stage-key-preview',id:c.id,variant:'secondary',size:'compact',disabled:busy||p.obtained})}${buttonHtml(c.owned?'已取得':'制作',{action:'stage-key-craft',id:c.id,variant:'secondary',size:'compact',disabled:busy||!c.craftable,attributes:{title:c.owned?'已取得':p.obtained?'这套钥匙已经到手':'返回港口锻造台，用当前材料制作'}})}</article>`).join('')}</div>${message?`<p role='status' data-key-preview-status class='ui-caption'>${esc(message)}</p>`:''}${preview?stageKeyPreviewHtml(preview):''}</section>`;}

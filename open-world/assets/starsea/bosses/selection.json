@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "version": "starsea-20261003-bosses-v1",
+  "designVersion": "starsea-20261003-d1",
+  "nativeSource": "assets/mini-hero/navy/runtime",
+  "nativeVersion": "4.2.43",
+  "fps": 60,
+  "bosses": [
+    {
+      "id": "ss-boss-port-vanguard", "name": "暮界先锋·卡珀", "chapter": 1,
+      "body": "BODY/knight_epic1", "weapon": "RIGHTHAND/Sword_TwoHand_Epic1", "weaponScale": 0.68,
+      "bodyTint": "dbd5efff", "clothTint": "c6a8d8ff", "family": "sword",
+      "sourceImage": "source/ss-boss-port-vanguard/accessories.png",
+      "generatedPath": "C:/Users/ccc/.codex/generated_images/01a10242-100e-7ba1-959e-b0dce8a0854d/exec-e22641c3-cad1-4b33-90ee-983f733532f0.png",
+      "module": {"bone": "armL1", "x": 0, "y": 0, "rotation": 68.68, "size": 29, "panelWidth": 12, "offset": 11},
+      "stage": "护肩核心低亮→展开→高亮→折回；角色轮廓与足点保持不变。",
+      "actions": {"idle":"Wait2","move":"Run2","attack":"Attack_TwoHand1","hurt":"Damage1","death":"Die"},
+      "skills": [
+        {"id":"ss-fx-b01-lance","motion":"Attack_TwoHand2","impactTime":0.43333333333333335,"mount":"weapon"},
+        {"id":"ss-fx-b01-stomp","motion":"Guard2","impactTime":0.3333333333333333,"mount":"ground","limit":"原生双手格挡作为震甲蓄势，震地命中由真实执行事件驱动。"},
+        {"id":"ss-fx-b01-charge","motion":"Run2","mount":"feet","loop":true,"limit":"共用原生双手持械奔跑；冲锋位移来自执行器，不新增虚构突进帧。"}
+      ]
+    },
+    {
+      "id": "ss-boss-fog-quartermaster", "name": "军需官·格铎", "chapter": 2,
+      "body": "BODY/wizard_epic2", "weapon": "RIGHTHAND/Staff_Rare2", "weaponScale": 0.78,
+      "bodyTint": "dad4eeff", "clothTint": "d0bfecff", "family": "magic",
+      "sourceImage": "source/ss-boss-fog-quartermaster/accessories.png",
+      "generatedPath": "C:/Users/ccc/.codex/generated_images/01a10242-100e-7ba1-959e-b0dce8a0854d/exec-d3b71ee3-9eed-45d8-ac4d-58cc491d960b.png",
+      "module": {"bone": "spine2", "x": 22, "y": -36, "rotation": -92.91, "size": 32, "panelWidth": 17, "offset": 12, "behind": true},
+      "stage": "背部引潮装置的两片独立铜夹展开，核心运行后折回。",
+      "actions": {"idle":"Wait1","move":"Run1","attack":"Spell1","hurt":"Damage1","death":"Die"},
+      "skills": [
+        {"id":"ss-fx-b02-bolt","motion":"Spell1","impactTime":0.3333333333333333,"mount":"hand"},
+        {"id":"ss-fx-b02-zone","motion":"Spell2","impactTime":0.4666666666666667,"mount":"ground"},
+        {"id":"ss-fx-b02-summon","motion":"Cast1","impactTime":0.6666666666666666,"mount":"ground","limit":"原生施法蓄势复用；150tick仪式时长由战斗时钟映射，不宣称新增召唤机制。"}
+      ]
+    },
+    {
+      "id": "ss-boss-core-extractor", "name": "岛心采能机·掘星者", "chapter": 3,
+      "body": "BODY/warrior_epic2", "weapon": "custom-hammer", "weaponScale": 1,
+      "bodyTint": "c6d0d4ff", "clothTint": "ccaa85ff", "family": "hammer",
+      "sourceImage": "source/ss-boss-core-extractor/accessories.png", "grid": [2,3],
+      "generatedPath": "C:/Users/ccc/.codex/generated_images/01a10242-100e-7ba1-959e-b0dce8a0854d/exec-99d81a37-3be7-4e27-b834-dbefc7dff4ff.png",
+      "module": {"bone": "spine2", "x": 10, "y": 0, "rotation": -92.91, "size": 31, "panelWidth": 14, "offset": 13},
+      "stage": "炉心独立散热片张开、核心增亮，排气阀作为独立真实骨骼部件运动；不更换死亡姿态。",
+      "adaptation": "拟人机械适配：完整原生铠甲rig+密闭机械面罩+独立炉心+重锤。",
+      "actions": {"idle":"Wait2","move":"Run2","attack":"Attack_TwoHand1","hurt":"Damage2","death":"Die"},
+      "skills": [
+        {"id":"ss-fx-b03-beam","motion":"Cast1","impactTime":0.6666666666666666,"mount":"weapon"},
+        {"id":"ss-fx-b03-flame","motion":"Spell1","impactTime":0.3333333333333333,"mount":"weapon"},
+        {"id":"ss-fx-b03-stomp","motion":"Attack_TwoHand2","impactTime":0.43333333333333335,"mount":"ground"}
+      ]
+    },
+    {
+      "id": "ss-boss-ice-patrol", "name": "冻舰巡守·霜镜卫", "chapter": 4,
+      "body": "BODY/knight_rare1", "weapon": "RIGHTHAND/Staff_Epic2", "weaponScale": 0.85,
+      "bodyTint": "cadcefff", "clothTint": "aaccefff", "family": "magic",
+      "sourceImage": "source/ss-boss-ice-patrol/accessories.png",
+      "generatedPath": "C:/Users/ccc/.codex/generated_images/01a10242-100e-7ba1-959e-b0dce8a0854d/exec-023593bd-ca37-4783-aa16-15b57a57c4fe.png",
+      "module": {"bone": "spine2", "x": 12, "y": 0, "rotation": -92.91, "size": 30, "panelWidth": 16, "offset": 12},
+      "stage": "圆冰晶核心外的两片裂冰甲打开，露出核心后闭合失能。",
+      "adaptation": "拟人机械适配：蓝银原生分件甲+密闭巡守面罩+枪杖；未采用女王长裙。",
+      "actions": {"idle":"Wait1","move":"Run1","attack":"Attack_OneHand1","hurt":"Damage1","death":"Die"},
+      "skills": [
+        {"id":"ss-fx-b04-lance","motion":"Spell1","impactTime":0.3333333333333333,"mount":"weapon"},
+        {"id":"ss-fx-b04-blizzard","motion":"Cast1","impactTime":0.6666666666666666,"mount":"ground"},
+        {"id":"ss-fx-b04-burst","motion":"Guard2","impactTime":0.3333333333333333,"mount":"ground","limit":"原生防守蓄势与独立开裂甲壳表现；冰爆判定由执行器驱动。"}
+      ]
+    },
+    {
+      "id": "ss-boss-rift-marshal", "name": "裂隙督军·乌洛", "chapter": 5,
+      "body": "BODY/knight_epic1", "weapon": "RIGHTHAND/Staff_Legendary2", "weaponScale": 0.85,
+      "bodyTint": "bcb2d4ff", "clothTint": "ab89ceff", "family": "magic",
+      "weaponSocketFraction": [0.5,0.22],
+      "sourceImage": "source/ss-boss-rift-marshal/accessories.png",
+      "generatedPath": "C:/Users/ccc/.codex/generated_images/01a10242-100e-7ba1-959e-b0dce8a0854d/exec-bee7d8ad-db41-45bb-a640-22a1e40c9c4b.png",
+      "module": {"bone": "spine2", "x": 23, "y": -37, "rotation": -92.91, "size": 33, "panelWidth": 21, "offset": 13, "behind": true},
+      "stage": "背部裂潮装置两片开合与核心旋动，独立法术层由vfx制作。",
+      "actions": {"idle":"Wait1","move":"Run1","attack":"Spell2","hurt":"Damage2","death":"Die"},
+      "skills": [
+        {"id":"ss-fx-b05-bolt","motion":"Spell1","impactTime":0.3333333333333333,"mount":"hand"},
+        {"id":"ss-fx-b05-zone","motion":"Spell2","impactTime":0.4666666666666667,"mount":"ground"},
+        {"id":"ss-fx-b05-ritual","motion":"Cast2","impactTime":0.6666666666666666,"mount":"ground"}
+      ]
+    },
+    {
+      "id": "ss-boss-vilo", "name": "暮界提督·维洛", "chapter": 6,
+      "body": "BODY/knight_epic2", "weapon": "RIGHTHAND/Sword_TwoHand_Common3", "weaponScale": 0.78,
+      "bodyTint": "e4e0eaff", "clothTint": "dcafe2ff", "family": "sword",
+      "sourceImage": "source/ss-boss-vilo/accessories.png",
+      "generatedPath": "C:/Users/ccc/.codex/generated_images/01a10242-100e-7ba1-959e-b0dce8a0854d/exec-e10affdc-e210-4fa5-a44e-4e5236c6636f.png",
+      "module": {"bone": "head", "x": 58, "y": -20, "rotation": -90, "size": 19, "panelWidth": 18, "offset": 7},
+      "badge": {"bone": "spine2", "x": 12, "y": 0, "rotation": -92.91, "size": 21},
+      "stage": "航冠的独立导航片展开与界桥连接运行；phase-end折回失能。同一主体用于剧情与战斗。",
+      "narrativeShared": true,
+      "actions": {"idle":"Wait2","move":"Run2","attack":"Attack_TwoHand1","hurt":"Damage2","death":"Die"},
+      "skills": [
+        {"id":"ss-fx-b06-beam","motion":"Attack_TwoHand2","impactTime":0.43333333333333335,"mount":"weapon"},
+        {"id":"ss-fx-b06-rain","motion":"Cast1","impactTime":0.6666666666666666,"mount":"ground"},
+        {"id":"ss-fx-b06-mark","motion":"Cast2","impactTime":0.6666666666666666,"mount":"ground"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+- generic "游戏世界"
+- region "角色状态":
+  - button "打开人物":
+    - img "角色外观"
+    - generic "正式复验旅人"
+    - generic: Lv. 3
+  - meter "生命":
+    - generic: 234 / 234
+  - meter "灵力":
+    - generic: 100 / 100
+- button "展开区域地图":
+  - generic "风栖岛"
+- heading "风栖岛" [level=1]
+- text: 群岛
+- generic "操作模式":
+  - button "半自动 ▾":
+    - generic: 半自动 ▾
+- toolbar "技能快捷栏":
+  - button "斩击" [disabled]:
+    - img "斩击"
+    - generic: "1"
+    - generic: 暂停
+  - button "护身印" [disabled]:
+    - img "护身印"
+    - generic: "2"
+    - generic: 暂停
+  - button "旋风斩" [disabled]:
+    - img "旋风斩"
+    - generic: "3"
+    - generic: 暂停
+- status
+- generic "金币":
+  - generic: "141"
+- toolbar "系统入口":
+  - button "背包，装备 9/60，待领取 2 件":
+    - generic: 行囊
+    - generic "待领取装备 2 件": "2"
+  - button "技能" [expanded]:
+    - generic: 技能
+  - button "养成":
+    - generic: 养成
+  - button "外观":
+    - generic: 外观
+  - button "任务":
+    - generic: 任务
+  - button "设置":
+    - generic: 设置
+- generic: 获得 20 金币 · 464 经验
+- generic: 获得 7 金币 · 88 经验
+- generic: 获得 14 金币 · 176 经验
+- dialog "技能":
+  - banner:
+    - heading "技能" [level=2]
+    - button "关闭":
+      - generic: 关闭
+  - tablist "技能分类":
+    - tab "武技 2/50" [selected]:
+      - generic: 武技
+      - generic: 2/50
+    - tab "法术 1/23":
+      - generic: 法术
+      - generic: 1/23
+    - tab "辅助 1/10":
+      - generic: 辅助
+      - generic: 1/10
+    - tab "全部 4/83":
+      - generic: 全部
+      - generic: 4/83
+  - generic: 跨分类搜索
+  - searchbox "跨分类搜索": 寒霜阵
+  - generic: 技能可用筛选
+  - combobox "技能可用筛选":
+    - option "全部" [selected]
+    - option "已激活"
+    - option "可激活"
+  - paragraph: 跨分类结果 1 个
+  - tabpanel "武技 2/50":
+    - button "查看寒霜阵，已激活，等级 1/5，持续伤害并减速" [active] [pressed]:
+      - generic: 寒霜阵
+      - meter "寒霜阵等级 1/5"
+      - generic: 法术 · 冰霜 · 范围 · 持续 · 控制
+      - generic: 持续伤害并减速
+  - complementary "技能详情":
+    - heading "寒霜阵" [level=3]
+    - meter "寒霜阵等级 1/5"
+    - paragraph: 法术 · 冰霜 · 范围 · 持续 · 控制 · 任意主手 · 主手亲和武技，本技能无加成
+    - paragraph: 持续伤害并减速
+    - term: 伤害
+    - definition: "24"
+    - term: 冷却
+    - definition: 5秒
+    - term: 距离
+    - definition: 9格
+    - term: 灵力
+    - definition: "18"
+    - generic "详细数值"
+    - heading "升级到 Lv.2" [level=3]:
+      - generic: 升级到 Lv.2
+    - list:
+      - generic: 伤害强度
+      - strong:
+        - generic "24 到 26":
+          - generic: "24"
+          - generic: "26"
+      - generic: 减速
+      - strong:
+        - generic "55% 到 57%":
+          - generic: 55%
+          - generic: 57%
+    - region "升级消耗":
+      - heading "升级消耗" [level=3]:
+        - generic: 升级消耗
+      - term:
+        - text: 金币
+      - definition:
+        - generic: "60"
+        - generic: 持有 141
+        - generic: 数量足够
+    - status: 激活成功，可以装配使用。
+    - button "升级":
+      - generic: 升级
+    - button "装配":
+      - generic: 装配
+  - heading "技能装配 3/4" [level=3]:
+    - generic: 技能装配
+    - generic: 3/4
+  - paragraph:
+    - generic: 剑势流
+  - button "查看斩击，装配顺序 1":
+    - generic: "1"
+  - generic: 斩击
+  - button "查看护身印，装配顺序 2":
+    - generic: "2"
+  - generic: 护身印
+  - button "查看旋风斩，装配顺序 3":
+    - generic: "3"
+  - generic: 旋风斩
+  - img "第 4 个技能位未装配":
+- status: 已追踪：港口登记
+- complementary "星潮海任务":
+  - generic: 任务
+  - generic: 回拾星港，找港务长·澄对话
+  - button "→":
+    - generic: →

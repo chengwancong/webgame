@@ -1,0 +1,31 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+ ❯ tests/build-variety-r7.database.test.ts (4 tests | 1 failed) 16649ms
+   ✓ real private offers, same-tier reroll, selection replay, no free heal and durable reconnect use only frozen entry data  874ms
+   ✓ per-dungeon one-round and reroll overrides freeze in real commands instead of the global three-round policy  362ms
+   × real next command keeps the same selected build and accumulated rule counters across stages 662ms
+   ✓ controlled world-IV catalogue adds a fourth offer only after real boss damage crosses half health  14602ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/build-variety-r7.database.test.ts > real next command keeps the same selected build and accumulated rule counters across stages
+AssertionError: expected 409 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 409
+
+ ❯ tests/build-variety-r7.database.test.ts:22:247
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  03:48:34
+   Duration  18.27s (transform 815ms, setup 0ms, import 1.50s, tests 16.65s, environment 0ms)
+

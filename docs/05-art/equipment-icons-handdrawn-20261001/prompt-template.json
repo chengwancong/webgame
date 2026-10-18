@@ -1,0 +1,294 @@
+{
+  "schemaVersion": 1,
+  "status": "ready",
+  "createdAt": "2026-10-01",
+  "purpose": "One transparent hand-drawn equipment icon per built-in image generation request. This file is an art prompt template, not game content.",
+  "confirmed": {
+    "slots": [
+      "weapon",
+      "clothing",
+      "helmet",
+      "boots",
+      "necklace",
+      "ring"
+    ],
+    "series": [
+      "standard",
+      "omega",
+      "primal"
+    ],
+    "tiers": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "directionCount": 6,
+    "directions": [
+      "sword",
+      "hammer",
+      "axe",
+      "staff",
+      "hidden",
+      "wand"
+    ],
+    "setCount": 54,
+    "iconCount": 324
+  },
+  "pending": [],
+  "references": [
+    {
+      "path": "../skill-icon-directions-20261001/02-hand-drawn-signs.png",
+      "role": "Approved hand-drawn shape, stroke, palette and material reference. Ignore its panels, captions, grid and backdrop."
+    },
+    {
+      "path": "../../reviews/open-world/skill-icons-handdrawn-20261001/all-skills.png",
+      "role": "Final production density and small-size readability reference. Ignore its grid and text."
+    }
+  ],
+  "execution": {
+    "mode": "built-in-image_gen",
+    "oneAssetPerCall": true,
+    "transparent_background": true,
+    "keepGeneratedAlpha": true,
+    "finalCanvas": {
+      "width": 256,
+      "height": 256,
+      "format": "PNG",
+      "colorMode": "RGBA"
+    },
+    "sourceAndPromptMustBeSaved": true,
+    "destination": "Use the parent production manifest path for the stable asset ID; this template does not assign filenames."
+  },
+  "requiredAssetFields": [
+    "assetId",
+    "series",
+    "directionId",
+    "directionLabel",
+    "tier",
+    "visualStage",
+    "slot",
+    "objectDescription",
+    "setSignature",
+    "subjectPalette",
+    "materialRecipe",
+    "destinationPath"
+  ],
+  "styleInvariants": [
+    "Match the approved hand-drawn game icons: rounded readable silhouette, soft dark navy contour, broad clean painted shapes, about three values of shading, restrained hand-painted facets.",
+    "The object has simple hand-painted volume, warm cream edge highlights and a small number of controlled material accents.",
+    "One whole equipment object, centered and isolated on genuine transparency, with consistent visual weight in a square inventory slot.",
+    "Use theme structure in the object itself, not a separate background emblem.",
+    "No text, labels, numbers, badge, quality frame, UI panel, border, tile, background, watermark, figure, hand, mannequin, scene, particle cloud, strong bloom, white flare or photoreal metal.",
+    "Readable at 32 and 48 pixels; preserve major silhouette instead of adding fine engraving."
+  ],
+  "seriesRecipes": {
+    "standard": {
+      "label": "常规",
+      "shape": "Practical rounded surfaces, curved fittings, simple straps and buckles, clear cloth folds, modest metal trim.",
+      "motif": "One broad curved or leaf-shaped fitting carried through guard, shoulder trim, brim, boot cuff, pendant setting and ring setting.",
+      "materials": "Warm gray steel, warm leather or cloth, apricot gold trim, one controlled direction-color accent."
+    },
+    "omega": {
+      "label": "方阵",
+      "shape": "Orderly modules made of rounded square plates, stepped joints and two or three legible segmented structures, still compact and friendly.",
+      "motif": "Broken square ring or inset square core physically built into the item, never a square background badge.",
+      "materials": "Blue-gray plate, warm gold connection points, direction-color cloth or core."
+    },
+    "primal": {
+      "label": "原初",
+      "shape": "Complete usable primordial relic equipment: large curved roots, smooth ivory shell or mineral casing embrace the main structure, organic grown joints and broad curved contour. Not broken ruins.",
+      "motif": "One bold natural vein, spiral knot or mineral shell, physically forming the equipment fittings instead of vines pasted on ordinary gear.",
+      "materials": "Warm ivory, deep wood, muted antique gold, one controlled direction-color crystal."
+    }
+  },
+  "visualStages": {
+    "basic": {
+      "label": "基础",
+      "shape": "One clear body layer and one theme fitting; simplest recognizable silhouette.",
+      "detailBudget": "One dominant motif and at most one main inset."
+    },
+    "developed": {
+      "label": "进阶",
+      "shape": "Preserve the base object, add one second structural layer or a paired side feature, enlarge the defining inset.",
+      "detailBudget": "Two large structural levels and at most two subordinate ornament groups."
+    },
+    "complete": {
+      "label": "完整",
+      "shape": "Complete the theme silhouette with a distinctive paired feature and a finished larger fitting; increase structural identity instead of microdetail.",
+      "detailBudget": "Three large structural levels, no dense jewels or floating fragments."
+    }
+  },
+  "tierToVisualStage": {
+    "T1": "basic",
+    "T2": "developed",
+    "T3": "complete"
+  },
+  "slotComposition": {
+    "weapon": {
+      "label": "武器",
+      "view": "One full weapon, diagonal from grip at lower left to functional end at upper right; same orientation across the family.",
+      "occupancy": "Longest edge 80 to 86 percent of canvas; do not clip the tip or thicken a narrow blade artificially.",
+      "readability": "Separate grip and blade, bow, or staff head clearly."
+    },
+    "clothing": {
+      "label": "衣服",
+      "view": "Whole garment from collar and shoulders to hem, front view with gentle volume; no body or mannequin.",
+      "occupancy": "Height 76 to 82 percent, width 66 to 78 percent of canvas.",
+      "readability": "Collar, shoulder silhouette, waist and hem remain distinct."
+    },
+    "helmet": {
+      "label": "头盔",
+      "view": "Complete helmet in a mild three-quarter view facing right, without a head.",
+      "occupancy": "Longest edge 76 to 82 percent of canvas.",
+      "readability": "Crown, brim or cheek guards, and face opening remain distinct."
+    },
+    "boots": {
+      "label": "鞋子",
+      "view": "One compact pair of boots pointing right, front boot fully visible and rear cuff and toe readable.",
+      "occupancy": "Longest edge 76 to 82 percent of canvas.",
+      "readability": "Shaft, instep, sole and toe recognizable; no glove-like silhouette."
+    },
+    "necklace": {
+      "label": "项链",
+      "view": "Front view of complete chain loop and a single hanging pendant, centered.",
+      "occupancy": "Height 78 to 84 percent, width 64 to 76 percent of canvas; pendant roughly one third of full height.",
+      "readability": "Clearly a necklace, not a freestanding emblem or finger ring; use broad readable chain shapes."
+    },
+    "ring": {
+      "label": "戒指",
+      "view": "Single finger ring in mild three-quarter view with setting toward the upper right; whole inner opening visible.",
+      "occupancy": "Longest edge 72 to 80 percent of canvas.",
+      "readability": "Band and main setting remain distinct; inner opening stays about four pixels across at 32 pixel display."
+    }
+  },
+  "template": [
+    "Use case: stylized-concept.",
+    "Asset type: one production inventory equipment icon for Abyss Walker.",
+    "Input images: Image 1 is the approved hand-drawn style reference; copy its painted contour, material simplification and shape language only. Any further image is a same-family reference, not an edit target unless stated.",
+    "Scene/backdrop: genuine transparent background, isolated object with no tile or cast-shadow ground.",
+    "Subject: {{objectDescription}}. Slot: {{slotLabel}}. Equipment series: {{seriesLabel}}. Direction: {{directionLabel}}. Visual structural stage: {{visualStageLabel}}.",
+    "Set identity: {{setSignature}}. Preserve this same palette, material, fitting shape and motif across this set's six items.",
+    "Series structure: {{seriesShape}}. Series motif: {{seriesMotif}}.",
+    "Structural stage: {{stageShape}}. Detail budget: {{stageDetailBudget}}.",
+    "Direction-specific structural progression: {{directionStage}}. Apply the same progression to each slot fitting, not a miniature weapon pasted onto the equipment.",
+    "Style/medium: rounded modern cartoon fantasy equipment, hand-painted navy contours, broad clean color shapes, restrained painterly facets, simple three-value volume, soft cream highlights; closely match the approved final skill icon rendering.",
+    "Color palette: {{subjectPalette}}. Materials: {{materialRecipe}}.",
+    "Composition/framing: {{slotView}} {{slotOccupancy}} Keep a clear transparent safety margin and stable visual center.",
+    "Small-size readability: {{slotReadability}} Legible at 32 and 48 pixels.",
+    "Text: none.",
+    "Avoid: text, numbers, quality frame, tier badge, background plate, UI panel, watermark, people, hands, mannequin, scene, multiple unrelated objects, cut-off tips, clutter, dense engraving, gritty realism, sharp white glare, strong bloom and floating particle clouds."
+  ],
+  "validation": {
+    "backgrounds": [
+      "#0B1F3B",
+      "#061B2C",
+      "#F7E6C8"
+    ],
+    "displaySizes": [
+      32,
+      48,
+      64,
+      256
+    ],
+    "checks": [
+      "complete object and true alpha",
+      "correct slot silhouette",
+      "same-set shared materials and motif",
+      "same-direction stages visibly different in structure",
+      "standard, omega and primal visibly different in silhouette",
+      "no text or UI baked into art",
+      "stable scale and visual center",
+      "no white fringe or stray pixels",
+      "source and final path persisted",
+      "generation prompt recorded"
+    ]
+  },
+  "directions": [
+    {
+      "status": "confirmed",
+      "id": "sword",
+      "label": "剑",
+      "weapon": "One complete straight sword with a clear blade, crossguard and grip",
+      "shape": "long central ridge and paired short slanted facets",
+      "motif": "paired beveled guards and slender inset ridge",
+      "accent": "steel gray, cyan blue and apricot gold"
+    },
+    {
+      "status": "confirmed",
+      "id": "hammer",
+      "label": "锤",
+      "weapon": "One complete war hammer with a broad rounded head and clear handle",
+      "shape": "wide rounded block and thick central strap",
+      "motif": "rounded block fitting with a central compression band",
+      "accent": "warm iron gray, amber gold and brown leather"
+    },
+    {
+      "status": "confirmed",
+      "id": "axe",
+      "label": "斧",
+      "weapon": "One complete battle axe with a large crescent blade, short modest axe back and a clear handle",
+      "shape": "large crescent edge and forked leaf blade",
+      "motif": "crescent trim and one forked leaf fitting",
+      "accent": "warm gray steel, coral copper red and deep brown"
+    },
+    {
+      "status": "confirmed",
+      "id": "staff",
+      "label": "法杖",
+      "weapon": "One long staff with a shaft much longer than the head, a single main crystal and an open supporting cradle",
+      "shape": "elongated crystal and two open cradle wings",
+      "motif": "vertical crystal and open twin-wing holder",
+      "accent": "deep wood, pale cyan blue and warm ivory"
+    },
+    {
+      "status": "confirmed",
+      "id": "hidden",
+      "label": "暗器",
+      "weapon": "One compact three-lobed thrown blade with a central grip ring and distinct outer blades",
+      "shape": "three rotating blade lobes and a small circular opening",
+      "motif": "three-lobed fitting and offset curved edge",
+      "accent": "blue gray, violet and silver cream"
+    },
+    {
+      "status": "confirmed",
+      "id": "wand",
+      "label": "魔杖",
+      "weapon": "One short handheld wand with a thick grip and large rounded bud head, visibly shorter than a long staff",
+      "shape": "spiraling bud and curved closed petals",
+      "motif": "rounded budding knot and converging curves",
+      "accent": "deep wood, leaf green and warm gold"
+    }
+  ],
+  "directionStages": {
+    "sword": {
+      "T1": "Simple central ridge and short guard",
+      "T2": "Double guard layer and paired shoulder facets",
+      "T3": "Complete paired guard wings and finished central ridge fitting"
+    },
+    "hammer": {
+      "T1": "Single broad block and narrow connection",
+      "T2": "Two-layer corners and wider center strap",
+      "T3": "Complete paired cheeks and clear matching reinforced fasteners"
+    },
+    "axe": {
+      "T1": "Single crescent blade and one curved trim",
+      "T2": "Inner leaf-blade layer and forked connection",
+      "T3": "Complete broad crescent with a distinct paired forked leaf fitting, without a mass of spikes"
+    },
+    "staff": {
+      "T1": "Single crystal and short open cradle",
+      "T2": "Larger main crystal and two visibly separated cradle wings",
+      "T3": "Complete three-level cradle and elongated crystal structure, preserving long-staff proportion"
+    },
+    "hidden": {
+      "T1": "Three simple lobes and small center hole",
+      "T2": "Second curved rim on each lobe and thicker central ring",
+      "T3": "Complete three-lobed layered structure and three clear joints, retaining visible center hole"
+    },
+    "wand": {
+      "T1": "Single bud and short grip",
+      "T2": "Bud opens into paired curved petals, one extra grip band",
+      "T3": "Complete spiral bud and one clear embracing petal pair, retaining short-handheld proportion"
+    }
+  }
+}

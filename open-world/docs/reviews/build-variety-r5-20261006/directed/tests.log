@@ -1,0 +1,53 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+ ✓ tests/build-variety-r5.test.ts (24 tests) 140ms
+ ❯ tests/equipment-runtime.database.test.ts (7 tests | 2 failed) 2808ms
+   ✓ saved old labels and pending loot show current names without changing rolls, wallet or historical rows 276ms
+   ✓ a frozen travel pool shows current names without changing its frozen templates or displayed numbers 82ms
+   ✓ the current island campaign crafts all six slots and reinforces them beyond the legacy cap  1484ms
+   × all 324 items can be earned by real crafting commands, equipped, quoted, reinforced once and restored 212ms
+   × real six-piece loadouts coexist with a retained old core and activate current 2/4 bonuses 264ms
+   ✓ later-stage equip and unopened crafting gates fail without charging or changing the build 110ms
+   ✓ confirmed field combat awards a new-stage item, its claim replays once and private pools stay private 128ms
+ ✓ tests/equipment-runtime.test.ts (8 tests) 660ms
+   ✓ every set activates 2/4/6 distinct pieces and only worn pieces contribute to live attributes  373ms
+ ✓ tests/build-variety-r1.test.ts (55 tests) 129ms
+ ✓ tests/build-variety-atom-parts.test.ts (6 tests) 11ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/equipment-runtime.database.test.ts > all 324 items can be earned by real crafting commands, equipped, quoted, reinforced once and restored
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/equipment-runtime.database.test.ts:91:203
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/equipment-runtime.database.test.ts > real six-piece loadouts coexist with a retained old core and activate current 2/4 bonuses
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/equipment-runtime.database.test.ts:106:214
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  2 failed | 98 passed (100)
+   Start at  22:10:06
+   Duration  8.66s (transform 1.26s, setup 0ms, import 4.12s, tests 3.75s, environment 1ms)
+

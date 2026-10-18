@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "id": "ss-boss-rift-marshal-phase-active",
+  "runtime": {
+    "json": "/art/starsea/bosses/ss-boss-rift-marshal/Character.json",
+    "atlas": "/art/starsea/bosses/ss-boss-rift-marshal/Character.atlas",
+    "pma": true
+  },
+  "skinNames": [
+    "BODY/ss-boss-rift-marshal",
+    "HEAD/ss-boss-rift-marshal",
+    "SS/ss-boss-rift-marshal"
+  ],
+  "acceptedBodySets": [
+    "ss-boss-rift-marshal"
+  ],
+  "nativeFacing": "left",
+  "referenceHeight": 198.83340213748824,
+  "ground": [
+    -0.25,
+    0
+  ],
+  "fps": 60,
+  "previewBounds": {
+    "minX": -212.3180365281612,
+    "maxX": 147.7742876868407,
+    "minY": -83.2405880893007,
+    "maxY": 283.9250507759229
+  },
+  "weapons": {
+    "ss-boss-rift-marshal": {
+      "family": "magic",
+      "skinNames": [
+        "RIGHTHAND/ss-boss-rift-marshal"
+      ],
+      "actions": {
+        "idle": {
+          "name": "SS_idle_active",
+          "loop": true,
+          "sourceAnimation": "Wait1"
+        },
+        "move": {
+          "name": "SS_move_active",
+          "loop": true,
+          "sourceAnimation": "Run1"
+        },
+        "attack": {
+          "name": "SS_attack_active",
+          "loop": false,
+          "sourceAnimation": "Spell2",
+          "impactTime": 0.4666666666666667
+        },
+        "hurt": {
+          "name": "SS_hurt_active",
+          "loop": false,
+          "sourceAnimation": "Damage2"
+        },
+        "death": {
+          "name": "SS_death",
+          "loop": false,
+          "sourceAnimation": "Die"
+        },
+        "skill": {
+          "name": "SS_skill3_active",
+          "sourceAnimation": "Cast2",
+          "impactTime": 0.6666666666666666,
+          "loop": false,
+          "mount": "ground",
+          "mechanism": {
+            "id": "ss-fx-b05-ritual",
+            "name": "督军接界仪式",
+            "rule": "ritual",
+            "kind": "summon",
+            "windupTicks": 150,
+            "delayTicks": 0,
+            "mount": "ground",
+            "visual": "装置与地面环分层，蓄力中断消散有独立片段",
+            "owner": "monster_vfx",
+            "mechanismStatus": "existing-rule-reference; new actor binding not implemented",
+            "chapter": [
+              5
+            ]
+          },
+          "limitations": "合法共用原生动作；战斗时序由实际前摇/恢复映射。",
+          "profile": "/art/starsea/bosses/ss-boss-rift-marshal/profile-skill3.json"
+        },
+        "projectile": {
+          "name": "SS_skill3_active",
+          "sourceAnimation": "Cast2",
+          "impactTime": 0.6666666666666666,
+          "loop": false,
+          "mount": "ground",
+          "mechanism": {
+            "id": "ss-fx-b05-ritual",
+            "name": "督军接界仪式",
+            "rule": "ritual",
+            "kind": "summon",
+            "windupTicks": 150,
+            "delayTicks": 0,
+            "mount": "ground",
+            "visual": "装置与地面环分层，蓄力中断消散有独立片段",
+            "owner": "monster_vfx",
+            "mechanismStatus": "existing-rule-reference; new actor binding not implemented",
+            "chapter": [
+              5
+            ]
+          },
+          "limitations": "合法共用原生动作；战斗时序由实际前摇/恢复映射。",
+          "profile": "/art/starsea/bosses/ss-boss-rift-marshal/profile-skill3.json"
+        }
+      },
+      "sockets": {
+        "weapon": {
+          "slot": "RIGHTHAND",
+          "pixel": [
+            35.5,
+            50.38
+          ],
+          "imageSize": [
+            71,
+            229
+          ]
+        },
+        "muzzle": {
+          "slot": "RIGHTHAND",
+          "pixel": [
+            35.5,
+            50.38
+          ],
+          "imageSize": [
+            71,
+            229
+          ]
+        }
+      },
+      "muzzlePolicy": "weapon-tip"
+    }
+  },
+  "renderAppearance": {
+    "rig": "modular-hero",
+    "family": "magic",
+    "styleProfile": "v2-soft",
+    "revision": 1,
+    "parts": {
+      "head": {
+        "setId": "ss-boss-rift-marshal"
+      },
+      "body": {
+        "setId": "ss-boss-rift-marshal"
+      },
+      "hands": {
+        "setId": "ss-boss-rift-marshal"
+      },
+      "legs": {
+        "setId": "ss-boss-rift-marshal"
+      },
+      "feet": {
+        "setId": "ss-boss-rift-marshal"
+      },
+      "back": {
+        "setId": "ss-boss-rift-marshal"
+      },
+      "weapon": {
+        "setId": "ss-boss-rift-marshal"
+      }
+    }
+  },
+  "sourceNativeVersion": "4.2.43",
+  "actionSelection": {
+    "priority": [
+      "death",
+      "living-phase-transition",
+      "selected-living-action"
+    ],
+    "deathAction": "SS_death",
+    "deathCancelsPhaseTransition": true,
+    "phaseActive": "modifier for living actions only",
+    "deathCleanupTime": 0.65
+  }
+}

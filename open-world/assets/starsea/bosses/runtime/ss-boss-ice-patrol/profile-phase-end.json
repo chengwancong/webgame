@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "id": "ss-boss-ice-patrol-phase-end",
+  "runtime": {
+    "json": "/art/starsea/bosses/ss-boss-ice-patrol/Character.json",
+    "atlas": "/art/starsea/bosses/ss-boss-ice-patrol/Character.atlas",
+    "pma": true
+  },
+  "skinNames": [
+    "BODY/ss-boss-ice-patrol",
+    "HEAD/ss-boss-ice-patrol",
+    "SS/ss-boss-ice-patrol"
+  ],
+  "acceptedBodySets": [
+    "ss-boss-ice-patrol"
+  ],
+  "nativeFacing": "left",
+  "referenceHeight": 192.35067507907945,
+  "ground": [
+    -0.25,
+    0
+  ],
+  "fps": 60,
+  "previewBounds": {
+    "minX": -174.3452798750324,
+    "maxX": 136.81497876274358,
+    "minY": -81.5630845200358,
+    "maxY": 284.23541651672645
+  },
+  "weapons": {
+    "ss-boss-ice-patrol": {
+      "family": "magic",
+      "skinNames": [
+        "RIGHTHAND/ss-boss-ice-patrol"
+      ],
+      "actions": {
+        "idle": {
+          "name": "SS_phaseEnd",
+          "loop": false
+        },
+        "move": {
+          "name": "SS_move",
+          "loop": true,
+          "sourceAnimation": "Run1"
+        },
+        "attack": {
+          "name": "SS_attack",
+          "loop": false,
+          "sourceAnimation": "Attack_OneHand1",
+          "impactTime": 0.35
+        },
+        "hurt": {
+          "name": "SS_hurt",
+          "loop": false,
+          "sourceAnimation": "Damage1"
+        },
+        "death": {
+          "name": "SS_death",
+          "loop": false,
+          "sourceAnimation": "Die"
+        },
+        "skill": {
+          "name": "SS_phaseEnd",
+          "loop": false
+        },
+        "projectile": {
+          "name": "SS_skill1",
+          "sourceAnimation": "Spell1",
+          "impactTime": 0.3333333333333333,
+          "loop": false,
+          "mount": "weapon",
+          "mechanism": {
+            "id": "ss-fx-b04-lance",
+            "name": "巡守冰枪",
+            "rule": "ice_lance",
+            "kind": "projectile",
+            "windupTicks": 20,
+            "delayTicks": 0,
+            "mount": "weapon",
+            "visual": "蓝白枪状实体、铸件冰屑",
+            "owner": "monster_vfx",
+            "mechanismStatus": "existing-rule-reference; new actor binding not implemented",
+            "chapter": [
+              4
+            ]
+          },
+          "limitations": "合法共用原生动作；战斗时序由实际前摇/恢复映射。"
+        }
+      },
+      "sockets": {
+        "weapon": {
+          "slot": "RIGHTHAND",
+          "pixel": [
+            27,
+            12
+          ],
+          "imageSize": [
+            54,
+            242
+          ]
+        },
+        "muzzle": {
+          "slot": "RIGHTHAND",
+          "pixel": [
+            27,
+            12
+          ],
+          "imageSize": [
+            54,
+            242
+          ]
+        }
+      },
+      "muzzlePolicy": "weapon-tip"
+    }
+  },
+  "renderAppearance": {
+    "rig": "modular-hero",
+    "family": "magic",
+    "styleProfile": "v2-soft",
+    "revision": 1,
+    "parts": {
+      "head": {
+        "setId": "ss-boss-ice-patrol"
+      },
+      "body": {
+        "setId": "ss-boss-ice-patrol"
+      },
+      "hands": {
+        "setId": "ss-boss-ice-patrol"
+      },
+      "legs": {
+        "setId": "ss-boss-ice-patrol"
+      },
+      "feet": {
+        "setId": "ss-boss-ice-patrol"
+      },
+      "back": {
+        "setId": "ss-boss-ice-patrol"
+      },
+      "weapon": {
+        "setId": "ss-boss-ice-patrol"
+      }
+    }
+  },
+  "sourceNativeVersion": "4.2.43",
+  "actionSelection": {
+    "priority": [
+      "death",
+      "living-phase-transition",
+      "selected-living-action"
+    ],
+    "deathAction": "SS_death",
+    "deathCancelsPhaseTransition": true,
+    "phaseActive": "modifier for living actions only",
+    "deathCleanupTime": 0.65
+  }
+}

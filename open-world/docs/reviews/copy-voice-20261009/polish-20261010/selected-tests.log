@@ -1,0 +1,121 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world/.qa/run-9d48Sq/selected-source
+
+ ❯ tests/stage-keys.database.test.ts (0 test)
+ ✓ tests/build-variety-damage-breakdown.test.ts (10 tests) 22ms
+ ❯ tests/gear-ui.test.ts (0 test)
+ ❯ tests/skills-ui-system.test.ts (0 test)
+ ❯ tests/copy-voice-surfaces.test.ts (0 test)
+ ❯ tests/copy-voice-polish.test.ts (0 test)
+stderr | tests/copy-voice.test.ts > lists over-length buttons, HUD lines and toasts
+文案超长告警 2 条
+apps/web/src/components/BagPanel.ts:47 button 9/6 生效中，暂不可使用
+apps/web/src/components/BagPanel.ts:47 button 8/6 重新读取使用条件
+
+ ❯ tests/copy-voice.test.ts (4 tests | 2 failed) 15ms
+   ✓ scanner sees the main player-facing surfaces 4ms
+   ✓ allowlist only registers proper nouns with a reason 0ms
+   × player-visible copy contains no banned words 8ms
+   × lists over-length buttons, HUD lines and toasts 3ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/copy-voice-polish.test.ts [ tests/copy-voice-polish.test.ts ]
+ FAIL  tests/copy-voice-surfaces.test.ts [ tests/copy-voice-surfaces.test.ts ]
+ FAIL  tests/gear-ui.test.ts [ tests/gear-ui.test.ts ]
+ FAIL  tests/skills-ui-system.test.ts [ tests/skills-ui-system.test.ts ]
+ FAIL  tests/stage-keys.database.test.ts [ tests/stage-keys.database.test.ts ]
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "reinforcement"
+    ],
+    "path": [],
+    "message": "Unrecognized key: \"reinforcement\""
+  }
+]
+ ❯ packages/rules/affix-generator.ts:12:414
+
+ ❯ packages/rules/main-stats.ts:4:1
+ ❯ packages/rules/deep-progression.ts:5:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/copy-voice.test.ts > player-visible copy contains no banned words
+AssertionError: apps/web/src/skills-panel.ts:33 [配置] 该分类尚未配置技能。
+apps/web/src/components/BagPanel.ts:28 [配置] 用途未配置
+apps/web/src/components/BagPanel.ts:38 [配置] 用途未配置
+apps/web/src/progression-panel.ts:98 [T1/T2/T3] 例如：长青、法杖、原初 T3
+apps/web/src/ui/auth-panels.ts:2 [客户端] 刷新客户端: expected [ …(5) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "apps/web/src/skills-panel.ts:33 [配置] 该分类尚未配置技能。",
++   "apps/web/src/components/BagPanel.ts:28 [配置] 用途未配置",
++   "apps/web/src/components/BagPanel.ts:38 [配置] 用途未配置",
++   "apps/web/src/progression-panel.ts:98 [T1/T2/T3] 例如：长青、法杖、原初 T3",
++   "apps/web/src/ui/auth-panels.ts:2 [客户端] 刷新客户端",
++ ]
+
+ ❯ tests/copy-voice.test.ts:18:45
+     16| it('player-visible copy contains no banned words',()=>{
+     17|  const lines=result.bannedHits.map(e=>`${e.file}:${e.line} [${e.words.…
+     18|  expect(lines,lines.slice(0,80).join('\n')).toEqual([]);
+       |                                             ^
+     19| });
+     20| it('lists over-length buttons, HUD lines and toasts',()=>{
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/copy-voice.test.ts > lists over-length buttons, HUD lines and toasts
+AssertionError: expected [ { source: 'client', …(7) }, …(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "chars": 9,
++     "file": "apps/web/src/components/BagPanel.ts",
++     "group": "通用界面",
++     "kind": "button",
++     "limit": 6,
++     "line": 47,
++     "source": "client",
++     "text": "生效中，暂不可使用",
++   },
++   {
++     "chars": 8,
++     "file": "apps/web/src/components/BagPanel.ts",
++     "group": "通用界面",
++     "kind": "button",
++     "limit": 6,
++     "line": 47,
++     "source": "client",
++     "text": "重新读取使用条件",
++   },
++ ]
+
+ ❯ tests/copy-voice.test.ts:22:27
+     20| it('lists over-length buttons, HUD lines and toasts',()=>{
+     21|  if(result.overLimit.length)console.warn('文案超长告警 '+result.overLimit.le…
+     22|  expect(result.overLimit).toEqual([]);
+       |                           ^
+     23| });
+     24|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+
+ Test Files  6 failed | 1 passed (7)
+      Tests  2 failed | 12 passed (14)
+   Start at  22:23:03
+   Duration  2.69s (transform 3.51s, setup 0ms, import 3.76s, tests 37ms, environment 1ms)

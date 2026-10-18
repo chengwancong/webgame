@@ -1,0 +1,138 @@
+- generic "游戏世界"
+- region "角色状态":
+  - button "打开人物":
+    - img "角色外观"
+    - generic "自然日程驾驶器"
+    - generic: Lv. 50
+  - meter "生命":
+    - generic: 4039 / 4039
+  - meter "灵力":
+    - generic: 100 / 100
+- button "展开区域地图":
+  - generic "拾星港"
+- heading "拾星港" [level=1]
+- text: 群岛的主港，每次远航都从这里出发
+- status
+- generic "金币":
+  - generic: "38116"
+- toolbar "系统入口":
+  - button "背包，装备 46/60，待领取 2 件":
+    - generic: 行囊
+    - generic "待领取装备 2 件": "2"
+  - button "技能":
+    - generic: 技能
+  - button "养成":
+    - generic: 养成
+  - button "外观":
+    - generic: 外观
+  - button "任务":
+    - generic: 任务
+  - button "设置" [expanded]:
+    - generic: 设置
+- generic: 获得 6 金币 · 10 经验
+- generic: 获得 6 金币 · 10 经验
+- generic: 获得 6 金币 · 10 经验
+- dialog "游戏设置":
+  - banner:
+    - heading "游戏设置" [level=2]
+    - button "关闭":
+      - generic: 关闭
+  - heading "声音与显示" [level=3]:
+    - generic: 声音与显示
+  - generic: 音效音量
+  - status: 22%
+  - slider "音效音量" [active]: "0.2"
+  - generic: 减少镜头与动画效果
+  - checkbox "减少镜头与动画效果"
+  - heading "自动战斗" [level=3]:
+    - generic: 自动战斗
+  - generic: 活动半径（格）
+  - spinbutton "活动半径（格）": "12"
+  - paragraph: 可设置 3–20 格。
+  - generic: 优先目标
+  - combobox "优先目标":
+    - option "最近敌人" [selected]
+    - option "优先远程"
+  - generic: 主动接战精英
+  - checkbox "主动接战精英" [checked]
+  - generic: 自动释放装配技能
+  - generic: 按当前装配顺序释放。
+  - checkbox "自动释放装配技能 按当前装配顺序释放。" [checked]
+  - paragraph: 野外全自动以当前位置为中心；单人首领场的全自动／半自动会主动接近首领。移动输入可切回半自动；背包满、倒下或连接异常时会停止。
+  - generic: 靠近自动拾取装备
+  - generic: 所有战斗模式生效；背包满时保留掉落。关闭后可点图标或按交互键批量拾取。
+  - checkbox "靠近自动拾取装备 所有战斗模式生效；背包满时保留掉落。关闭后可点图标或按交互键批量拾取。" [checked]
+  - generic: 自动拾取最低品质
+  - combobox "自动拾取最低品质":
+    - option "普通及以上" [selected]
+    - option "魔法及以上"
+    - option "稀有及以上"
+    - option "仅传奇"
+  - generic: 武器只拾取当前主手类型
+  - checkbox "武器只拾取当前主手类型"
+  - generic: 拾取武器
+  - checkbox "拾取武器" [checked]
+  - generic: 拾取衣服
+  - checkbox "拾取衣服" [checked]
+  - generic: 拾取头盔
+  - checkbox "拾取头盔" [checked]
+  - generic: 拾取鞋子
+  - checkbox "拾取鞋子" [checked]
+  - generic: 拾取项链
+  - checkbox "拾取项链" [checked]
+  - generic: 拾取戒指
+  - checkbox "拾取戒指" [checked]
+  - generic: 拾取核心
+  - checkbox "拾取核心" [checked]
+  - paragraph: 被过滤的装备保留在地面，可手动拾取；过滤不会分解装备。
+  - paragraph: 低生命时仍会继续战斗。
+  - heading "按键设置" [level=3]:
+    - generic: 按键设置
+  - generic: 点击修改
+  - generic: 向上移动
+  - button "向上移动，W":
+    - generic: W
+  - generic: 向下移动
+  - button "向下移动，S":
+    - generic: S
+  - generic: 向左移动
+  - button "向左移动，A":
+    - generic: A
+  - generic: 向右移动
+  - button "向右移动，D":
+    - generic: D
+  - generic: 交互
+  - button "交互，E":
+    - generic: E
+  - generic: 暂停／继续
+  - button "暂停／继续，空格":
+    - generic: 空格
+  - generic: 背包
+  - button "背包，B":
+    - generic: B
+  - generic: 技能面板
+  - button "技能面板，K":
+    - generic: K
+  - generic: 技能 1
+  - button "技能 1，1":
+    - generic: "1"
+  - generic: 技能 2
+  - button "技能 2，2":
+    - generic: "2"
+  - generic: 技能 3
+  - button "技能 3，3":
+    - generic: "3"
+  - generic: 技能 4
+  - button "技能 4，4":
+    - generic: "4"
+  - status: 修改后自动保存到当前设备。
+  - contentinfo:
+    - generic: 切到后台时战斗暂停，无离线收益。
+    - button "退出账号":
+      - generic: 退出账号
+- status: 拾星港
+- complementary "星潮海任务":
+  - generic: 阶段
+  - generic: 裂星潮 5/6，下一岛：龙眠岛
+  - button "→":
+    - generic: →

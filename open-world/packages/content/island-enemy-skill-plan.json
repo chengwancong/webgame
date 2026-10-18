@@ -1,0 +1,1126 @@
+{
+  "version": 1,
+  "source": "skill-audio-vfx-handoff §3/§4",
+  "islands": [
+    {
+      "key": "wind",
+      "name": "风栖",
+      "theme": "海风、船坞、钩索、鸟群",
+      "region": "ss-map-wind",
+      "chapter": 1,
+      "targetTtd": {
+        "normal": 40,
+        "elite": 20,
+        "rare": 30,
+        "boss": 70
+      },
+      "monsters": [
+        {
+          "id": "island_wind_skitter",
+          "name": "疾风扑击",
+          "kind": "melee",
+          "motif": "streak",
+          "effect": "dash",
+          "damageType": "physical",
+          "color": "steel",
+          "windup": 24,
+          "cooldown": 360,
+          "radius": 2.5,
+          "duration": 1,
+          "delay": 0,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_wind_hook",
+          "name": "缆钩缠足",
+          "kind": "projectile",
+          "motif": "spear",
+          "effect": "root",
+          "damageType": "physical",
+          "color": "steel",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 3,
+          "duration": 1,
+          "delay": 0,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_wind_gust",
+          "name": "甲板风压",
+          "kind": "zone",
+          "motif": "sweep",
+          "effect": "slow",
+          "damageType": "physical",
+          "color": "steel",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 3.5,
+          "duration": 60,
+          "delay": 24,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_wind_gale",
+          "name": "桅杆裂风",
+          "kind": "projectile",
+          "motif": "forks",
+          "effect": "slow",
+          "damageType": "physical",
+          "color": "steel",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 2.5,
+          "duration": 1,
+          "delay": 0,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_wind_talon",
+          "name": "群鸟俯掠",
+          "kind": "zone",
+          "motif": "landing",
+          "effect": "blind",
+          "damageType": "physical",
+          "color": "steel",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 3,
+          "duration": 60,
+          "delay": 24,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_wind_anchor",
+          "name": "落锚锁链",
+          "kind": "zone",
+          "motif": "rune",
+          "effect": "root",
+          "damageType": "physical",
+          "color": "steel",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 3.5,
+          "duration": 60,
+          "delay": 24,
+          "threatShare": 0.12
+        }
+      ],
+      "bosses": [
+        {
+          "id": "island_wind_boss_squall",
+          "name": "船坞飑线",
+          "kind": "projectile",
+          "motif": "forked-arrow",
+          "effect": "slow",
+          "damageType": "physical",
+          "color": "steel",
+          "windup": 45,
+          "cooldown": 210,
+          "radius": 3,
+          "duration": 1,
+          "delay": 0,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        },
+        {
+          "id": "island_wind_boss_anchor",
+          "name": "重锚落点",
+          "kind": "trap",
+          "motif": "crater",
+          "effect": "root",
+          "damageType": "physical",
+          "color": "steel",
+          "windup": 60,
+          "cooldown": 240,
+          "radius": 3.5,
+          "duration": 1,
+          "delay": 45,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        },
+        {
+          "id": "island_wind_boss_flock",
+          "name": "群鸟盘旋",
+          "kind": "zone",
+          "motif": "wings",
+          "effect": "blind",
+          "damageType": "physical",
+          "color": "steel",
+          "windup": 45,
+          "cooldown": 270,
+          "radius": 4,
+          "duration": 60,
+          "delay": 0,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        },
+        {
+          "id": "island_wind_boss_deck",
+          "name": "甲板裂压",
+          "kind": "zone",
+          "motif": "staff-fissure",
+          "effect": "slow",
+          "damageType": "physical",
+          "color": "steel",
+          "windup": 60,
+          "cooldown": 210,
+          "radius": 3,
+          "duration": 60,
+          "delay": 0,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        },
+        {
+          "id": "island_wind_boss_gale",
+          "name": "桅顶狂风",
+          "kind": "projectile",
+          "motif": "spear",
+          "effect": "slow",
+          "damageType": "physical",
+          "color": "steel",
+          "windup": 45,
+          "cooldown": 240,
+          "radius": 3.5,
+          "duration": 1,
+          "delay": 0,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        }
+      ],
+      "bindings": {
+        "ow-mon-wind-1": {
+          "skillIds": [
+            "island_wind_skitter"
+          ]
+        },
+        "ow-elite-wind": {
+          "skillIds": [
+            "island_wind_gust",
+            "island_wind_gale"
+          ]
+        },
+        "ow-mon-wind-2": {
+          "skillIds": [
+            "island_wind_hook"
+          ]
+        },
+        "ow-rare-wind-1": {
+          "skillIds": [
+            "island_wind_talon",
+            "island_wind_hook"
+          ]
+        },
+        "ow-rare-wind-2": {
+          "skillIds": [
+            "island_wind_anchor",
+            "island_wind_gust"
+          ]
+        },
+        "ow-boss-wind-1": {
+          "profile": "ow-boss-wind-1",
+          "signature": "island_wind_boss_squall",
+          "skillIds": [
+            "island_wind_boss_squall",
+            "island_wind_boss_anchor",
+            "island_wind_boss_deck"
+          ],
+          "phases": [
+            {
+              "hp": 1,
+              "phase": 1
+            },
+            {
+              "hp": 0.55,
+              "phase": 2
+            }
+          ]
+        },
+        "ow-boss-wind-2": {
+          "profile": "ow-boss-wind-2",
+          "signature": "island_wind_boss_anchor",
+          "skillIds": [
+            "island_wind_boss_anchor",
+            "island_wind_boss_flock",
+            "island_wind_boss_gale"
+          ],
+          "phases": [
+            {
+              "hp": 1,
+              "phase": 1
+            },
+            {
+              "hp": 0.55,
+              "phase": 2
+            }
+          ]
+        },
+        "ow-boss-wind-3": {
+          "profile": "ow-boss-wind-3",
+          "signature": "island_wind_boss_flock",
+          "skillIds": [
+            "island_wind_boss_flock",
+            "island_wind_boss_deck",
+            "island_wind_boss_squall"
+          ],
+          "phases": [
+            {
+              "hp": 1,
+              "phase": 1
+            },
+            {
+              "hp": 0.55,
+              "phase": 2
+            }
+          ]
+        }
+      },
+      "masterAdditional": "island_wind_boss_squall"
+    },
+    {
+      "key": "mist",
+      "name": "雾隐",
+      "theme": "迷雾、苔藓、藤蔓、花粉、军需盾阵",
+      "region": "ss-map-mist",
+      "chapter": 2,
+      "targetTtd": {
+        "normal": 40,
+        "elite": 20,
+        "rare": 30,
+        "boss": 70
+      },
+      "monsters": [
+        {
+          "id": "island_mist_pollen",
+          "name": "轻扬花粉",
+          "kind": "melee",
+          "motif": "buds",
+          "effect": "slow",
+          "damageType": "poison",
+          "color": "nature",
+          "windup": 24,
+          "cooldown": 360,
+          "radius": 2.5,
+          "duration": 1,
+          "delay": 0,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_mist_vine",
+          "name": "藤索缠足",
+          "kind": "projectile",
+          "motif": "vines",
+          "effect": "root",
+          "damageType": "poison",
+          "color": "nature",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 3,
+          "duration": 1,
+          "delay": 0,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_mist_fog",
+          "name": "迷雾障眼",
+          "kind": "zone",
+          "motif": "miasma-cloud",
+          "effect": "blind",
+          "damageType": "poison",
+          "color": "nature",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 3.5,
+          "duration": 60,
+          "delay": 24,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_mist_guard",
+          "name": "苔盾护阵",
+          "kind": "buff",
+          "motif": "buckler",
+          "effect": "buff",
+          "damageType": "poison",
+          "color": "nature",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 2.5,
+          "duration": 1,
+          "delay": 0,
+          "threatShare": 0
+        },
+        {
+          "id": "island_mist_snare",
+          "name": "军需藤网",
+          "kind": "zone",
+          "motif": "lattice",
+          "effect": "root",
+          "damageType": "poison",
+          "color": "nature",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 3,
+          "duration": 60,
+          "delay": 24,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_mist_bloom",
+          "name": "孢花炸散",
+          "kind": "zone",
+          "motif": "toxic-cloud",
+          "effect": "slow",
+          "damageType": "poison",
+          "color": "nature",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 3.5,
+          "duration": 60,
+          "delay": 24,
+          "threatShare": 0.12
+        }
+      ],
+      "bosses": [
+        {
+          "id": "island_mist_boss_fog",
+          "name": "迷途雾幕",
+          "kind": "zone",
+          "motif": "miasma-cloud",
+          "effect": "blind",
+          "damageType": "poison",
+          "color": "nature",
+          "windup": 45,
+          "cooldown": 210,
+          "radius": 3,
+          "duration": 60,
+          "delay": 0,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        },
+        {
+          "id": "island_mist_boss_vine",
+          "name": "藤墙束缚",
+          "kind": "trap",
+          "motif": "vines",
+          "effect": "root",
+          "damageType": "poison",
+          "color": "nature",
+          "windup": 60,
+          "cooldown": 240,
+          "radius": 3.5,
+          "duration": 1,
+          "delay": 45,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        },
+        {
+          "id": "island_mist_boss_pollen",
+          "name": "花粉流雨",
+          "kind": "projectile",
+          "motif": "needle-triple",
+          "effect": "slow",
+          "damageType": "poison",
+          "color": "nature",
+          "windup": 45,
+          "cooldown": 270,
+          "radius": 4,
+          "duration": 1,
+          "delay": 0,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        },
+        {
+          "id": "island_mist_boss_moss",
+          "name": "苔巢扩散",
+          "kind": "zone",
+          "motif": "buds",
+          "effect": "slow",
+          "damageType": "poison",
+          "color": "nature",
+          "windup": 60,
+          "cooldown": 210,
+          "radius": 3,
+          "duration": 60,
+          "delay": 0,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        },
+        {
+          "id": "island_mist_boss_mark",
+          "name": "孢印落点",
+          "kind": "trap",
+          "motif": "rune",
+          "effect": "root",
+          "damageType": "poison",
+          "color": "nature",
+          "windup": 45,
+          "cooldown": 240,
+          "radius": 3.5,
+          "duration": 1,
+          "delay": 45,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        }
+      ],
+      "bindings": {
+        "ow-mon-mist-1": {
+          "skillIds": [
+            "island_mist_pollen"
+          ]
+        },
+        "ow-elite-mist": {
+          "skillIds": [
+            "island_mist_fog",
+            "island_mist_guard"
+          ]
+        },
+        "ow-mon-mist-2": {
+          "skillIds": [
+            "island_mist_vine"
+          ]
+        },
+        "ow-rare-mist-1": {
+          "skillIds": [
+            "island_mist_snare",
+            "island_mist_vine"
+          ]
+        },
+        "ow-rare-mist-2": {
+          "skillIds": [
+            "island_mist_bloom",
+            "island_mist_fog"
+          ]
+        },
+        "ow-boss-mist-1": {
+          "profile": "ow-boss-mist-1",
+          "signature": "island_mist_boss_fog",
+          "skillIds": [
+            "island_mist_boss_fog",
+            "island_mist_boss_vine",
+            "island_mist_boss_moss"
+          ],
+          "phases": [
+            {
+              "hp": 1,
+              "phase": 1
+            },
+            {
+              "hp": 0.55,
+              "phase": 2
+            }
+          ]
+        },
+        "ow-boss-mist-2": {
+          "profile": "ow-boss-mist-2",
+          "signature": "island_mist_boss_vine",
+          "skillIds": [
+            "island_mist_boss_vine",
+            "island_mist_boss_pollen",
+            "island_mist_boss_mark"
+          ],
+          "phases": [
+            {
+              "hp": 1,
+              "phase": 1
+            },
+            {
+              "hp": 0.55,
+              "phase": 2
+            }
+          ]
+        },
+        "ow-boss-mist-3": {
+          "profile": "ow-boss-mist-3",
+          "signature": "island_mist_boss_pollen",
+          "skillIds": [
+            "island_mist_boss_pollen",
+            "island_mist_boss_moss",
+            "island_mist_boss_fog"
+          ],
+          "phases": [
+            {
+              "hp": 1,
+              "phase": 1
+            },
+            {
+              "hp": 0.55,
+              "phase": 2
+            }
+          ]
+        }
+      },
+      "masterAdditional": "island_mist_boss_fog"
+    },
+    {
+      "key": "forge",
+      "name": "锻炉",
+      "theme": "熔炉、熔渣、矿车、采能机、过热爆炸",
+      "region": "ss-map-forge",
+      "chapter": 3,
+      "targetTtd": {
+        "normal": 40,
+        "elite": 20,
+        "rare": 30,
+        "boss": 70
+      },
+      "monsters": [
+        {
+          "id": "island_forge_spark",
+          "name": "炉火飞星",
+          "kind": "projectile",
+          "motif": "ember-arrow",
+          "effect": "burn",
+          "damageType": "fire",
+          "color": "fire",
+          "windup": 36,
+          "cooldown": 360,
+          "radius": 2.5,
+          "duration": 1,
+          "delay": 0,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_forge_slag",
+          "name": "熔渣倾泻",
+          "kind": "zone",
+          "motif": "magma-crater",
+          "effect": "slow",
+          "damageType": "fire",
+          "color": "fire",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 3,
+          "duration": 60,
+          "delay": 24,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_forge_breath",
+          "name": "炉口喷焰",
+          "kind": "zone",
+          "motif": "flames",
+          "effect": "burn",
+          "damageType": "fire",
+          "color": "fire",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 3.5,
+          "duration": 60,
+          "delay": 24,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_forge_cart",
+          "name": "矿工冲撞",
+          "kind": "melee",
+          "motif": "streak",
+          "effect": "dash",
+          "damageType": "fire",
+          "color": "fire",
+          "windup": 24,
+          "cooldown": 240,
+          "radius": 2.5,
+          "duration": 1,
+          "delay": 0,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_forge_overheat",
+          "name": "过热裂爆",
+          "kind": "zone",
+          "motif": "orb",
+          "effect": "burn",
+          "damageType": "fire",
+          "color": "fire",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 3,
+          "duration": 60,
+          "delay": 24,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_forge_melt",
+          "name": "采能熔蚀",
+          "kind": "projectile",
+          "motif": "corroded-cross",
+          "effect": "armor_down",
+          "damageType": "fire",
+          "color": "fire",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 3.5,
+          "duration": 1,
+          "delay": 0,
+          "threatShare": 0.12
+        }
+      ],
+      "bosses": [
+        {
+          "id": "island_forge_boss_vent",
+          "name": "炉膛喷射",
+          "kind": "zone",
+          "motif": "flames",
+          "effect": "burn",
+          "damageType": "fire",
+          "color": "fire",
+          "windup": 45,
+          "cooldown": 210,
+          "radius": 3,
+          "duration": 60,
+          "delay": 0,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        },
+        {
+          "id": "island_forge_boss_cart",
+          "name": "失控矿车",
+          "kind": "projectile",
+          "motif": "heavy-cross",
+          "effect": "stun",
+          "damageType": "fire",
+          "color": "fire",
+          "windup": 60,
+          "cooldown": 240,
+          "radius": 3.5,
+          "duration": 1,
+          "delay": 0,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        },
+        {
+          "id": "island_forge_boss_slag",
+          "name": "熔渣坑阵",
+          "kind": "trap",
+          "motif": "magma-crater",
+          "effect": "slow",
+          "damageType": "fire",
+          "color": "fire",
+          "windup": 45,
+          "cooldown": 270,
+          "radius": 4,
+          "duration": 1,
+          "delay": 45,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        },
+        {
+          "id": "island_forge_boss_overheat",
+          "name": "过热核心",
+          "kind": "trap",
+          "motif": "orb",
+          "effect": "burn",
+          "damageType": "fire",
+          "color": "fire",
+          "windup": 60,
+          "cooldown": 210,
+          "radius": 3,
+          "duration": 1,
+          "delay": 45,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        },
+        {
+          "id": "island_forge_boss_extract",
+          "name": "采能脉冲",
+          "kind": "zone",
+          "motif": "static-lattice",
+          "effect": "armor_down",
+          "damageType": "fire",
+          "color": "fire",
+          "windup": 45,
+          "cooldown": 240,
+          "radius": 3.5,
+          "duration": 60,
+          "delay": 0,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        }
+      ],
+      "bindings": {
+        "ow-mon-forge-1": {
+          "skillIds": [
+            "island_forge_spark"
+          ]
+        },
+        "ow-elite-forge": {
+          "skillIds": [
+            "island_forge_breath",
+            "island_forge_cart"
+          ]
+        },
+        "ow-mon-forge-2": {
+          "skillIds": [
+            "island_forge_slag"
+          ]
+        },
+        "ow-rare-forge-1": {
+          "skillIds": [
+            "island_forge_overheat",
+            "island_forge_slag"
+          ]
+        },
+        "ow-rare-forge-2": {
+          "skillIds": [
+            "island_forge_melt",
+            "island_forge_breath"
+          ]
+        },
+        "ow-boss-forge-1": {
+          "profile": "ow-boss-forge-1",
+          "signature": "island_forge_boss_vent",
+          "skillIds": [
+            "island_forge_boss_vent",
+            "island_forge_boss_cart",
+            "island_forge_boss_overheat"
+          ],
+          "phases": [
+            {
+              "hp": 1,
+              "phase": 1
+            },
+            {
+              "hp": 0.55,
+              "phase": 2
+            }
+          ]
+        },
+        "ow-boss-forge-2": {
+          "profile": "ow-boss-forge-2",
+          "signature": "island_forge_boss_cart",
+          "skillIds": [
+            "island_forge_boss_cart",
+            "island_forge_boss_slag",
+            "island_forge_boss_extract"
+          ],
+          "phases": [
+            {
+              "hp": 1,
+              "phase": 1
+            },
+            {
+              "hp": 0.55,
+              "phase": 2
+            }
+          ]
+        },
+        "ow-boss-forge-3": {
+          "profile": "ow-boss-forge-3",
+          "signature": "island_forge_boss_slag",
+          "skillIds": [
+            "island_forge_boss_slag",
+            "island_forge_boss_overheat",
+            "island_forge_boss_vent"
+          ],
+          "phases": [
+            {
+              "hp": 1,
+              "phase": 1
+            },
+            {
+              "hp": 0.55,
+              "phase": 2
+            }
+          ]
+        }
+      },
+      "masterAdditional": "island_forge_boss_vent"
+    },
+    {
+      "key": "frost",
+      "name": "霜岛",
+      "theme": "冰棱、冻潮、霜镜、封舱",
+      "region": "ss-map-frost",
+      "chapter": 4,
+      "targetTtd": {
+        "normal": 40,
+        "elite": 20,
+        "rare": 30,
+        "boss": 70
+      },
+      "monsters": [
+        {
+          "id": "island_frost_bite",
+          "name": "霜牙轻咬",
+          "kind": "melee",
+          "motif": "fangs",
+          "effect": "slow",
+          "damageType": "cold",
+          "color": "ice",
+          "windup": 24,
+          "cooldown": 360,
+          "radius": 2.5,
+          "duration": 1,
+          "delay": 0,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_frost_arrow",
+          "name": "碎镜冰箭",
+          "kind": "projectile",
+          "motif": "crystal",
+          "effect": "slow",
+          "damageType": "cold",
+          "color": "ice",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 3,
+          "duration": 1,
+          "delay": 0,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_frost_stomp",
+          "name": "寒潮踏地",
+          "kind": "zone",
+          "motif": "frozen-fissure",
+          "effect": "slow",
+          "damageType": "cold",
+          "color": "ice",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 3.5,
+          "duration": 60,
+          "delay": 24,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_frost_spike",
+          "name": "冰棱锁足",
+          "kind": "zone",
+          "motif": "spikes",
+          "effect": "root",
+          "damageType": "cold",
+          "color": "ice",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 2.5,
+          "duration": 60,
+          "delay": 24,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_frost_veil",
+          "name": "冻雾漫舱",
+          "kind": "zone",
+          "motif": "miasma-cloud",
+          "effect": "blind",
+          "damageType": "cold",
+          "color": "ice",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 3,
+          "duration": 60,
+          "delay": 24,
+          "threatShare": 0.12
+        },
+        {
+          "id": "island_frost_shard",
+          "name": "霜镜穿射",
+          "kind": "projectile",
+          "motif": "spear",
+          "effect": "slow",
+          "damageType": "cold",
+          "color": "ice",
+          "windup": 36,
+          "cooldown": 240,
+          "radius": 3.5,
+          "duration": 1,
+          "delay": 0,
+          "threatShare": 0.12
+        }
+      ],
+      "bosses": [
+        {
+          "id": "island_frost_boss_mirror",
+          "name": "霜镜贯刺",
+          "kind": "projectile",
+          "motif": "crystal",
+          "effect": "slow",
+          "damageType": "cold",
+          "color": "ice",
+          "windup": 45,
+          "cooldown": 210,
+          "radius": 3,
+          "duration": 1,
+          "delay": 0,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        },
+        {
+          "id": "island_frost_boss_tide",
+          "name": "冻潮旋环",
+          "kind": "zone",
+          "motif": "ice-ring",
+          "effect": "slow",
+          "damageType": "cold",
+          "color": "ice",
+          "windup": 60,
+          "cooldown": 240,
+          "radius": 3.5,
+          "duration": 60,
+          "delay": 0,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        },
+        {
+          "id": "island_frost_boss_prison",
+          "name": "封舱冰阵",
+          "kind": "trap",
+          "motif": "lattice",
+          "effect": "root",
+          "damageType": "cold",
+          "color": "ice",
+          "windup": 45,
+          "cooldown": 270,
+          "radius": 4,
+          "duration": 1,
+          "delay": 45,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        },
+        {
+          "id": "island_frost_boss_fissure",
+          "name": "冰壳碎裂",
+          "kind": "trap",
+          "motif": "frozen-fissure",
+          "effect": "slow",
+          "damageType": "cold",
+          "color": "ice",
+          "windup": 60,
+          "cooldown": 210,
+          "radius": 3,
+          "duration": 1,
+          "delay": 45,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        },
+        {
+          "id": "island_frost_boss_veil",
+          "name": "白霜帷幕",
+          "kind": "zone",
+          "motif": "miasma-cloud",
+          "effect": "blind",
+          "damageType": "cold",
+          "color": "ice",
+          "windup": 45,
+          "cooldown": 240,
+          "radius": 3.5,
+          "duration": 60,
+          "delay": 0,
+          "warning": "ground",
+          "phase": 1,
+          "threatShare": 0.2
+        }
+      ],
+      "bindings": {
+        "ow-mon-frost-1": {
+          "skillIds": [
+            "island_frost_bite"
+          ]
+        },
+        "ow-elite-frost": {
+          "skillIds": [
+            "island_frost_stomp",
+            "island_frost_spike"
+          ]
+        },
+        "ow-mon-frost-2": {
+          "skillIds": [
+            "island_frost_arrow"
+          ]
+        },
+        "ow-rare-frost-1": {
+          "skillIds": [
+            "island_frost_veil",
+            "island_frost_arrow"
+          ]
+        },
+        "ow-rare-frost-2": {
+          "skillIds": [
+            "island_frost_shard",
+            "island_frost_stomp"
+          ]
+        },
+        "ow-boss-frost-1": {
+          "profile": "ow-boss-frost-1",
+          "signature": "island_frost_boss_mirror",
+          "skillIds": [
+            "island_frost_boss_mirror",
+            "island_frost_boss_tide",
+            "island_frost_boss_fissure"
+          ],
+          "phases": [
+            {
+              "hp": 1,
+              "phase": 1
+            },
+            {
+              "hp": 0.55,
+              "phase": 2
+            }
+          ]
+        },
+        "ow-boss-frost-2": {
+          "profile": "ow-boss-frost-2",
+          "signature": "island_frost_boss_tide",
+          "skillIds": [
+            "island_frost_boss_tide",
+            "island_frost_boss_prison",
+            "island_frost_boss_veil"
+          ],
+          "phases": [
+            {
+              "hp": 1,
+              "phase": 1
+            },
+            {
+              "hp": 0.55,
+              "phase": 2
+            }
+          ]
+        },
+        "ow-boss-frost-3": {
+          "profile": "ow-boss-frost-3",
+          "signature": "island_frost_boss_prison",
+          "skillIds": [
+            "island_frost_boss_prison",
+            "island_frost_boss_fissure",
+            "island_frost_boss_mirror"
+          ],
+          "phases": [
+            {
+              "hp": 1,
+              "phase": 1
+            },
+            {
+              "hp": 0.55,
+              "phase": 2
+            }
+          ]
+        }
+      },
+      "masterAdditional": "island_frost_boss_mirror"
+    }
+  ]
+}

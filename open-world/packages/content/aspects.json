@@ -1,0 +1,5144 @@
+[
+  {
+    "id": "aspect-tf-whirl",
+    "name": "风暴回旋",
+    "description": "攻击变为原来的150%。旋风的伤害变为原来的200%。旋风分为4段，每段间隔0.5秒，跟随你移动，移动不会打断。旋风可用剑、锤、斧释放。你周围4格内敌人至少3个且范围技能：伤害增加15%。旋风技能，命中时：施加破甲 3秒，强度20%。旋风技能，施放时：减伤增加45%，持续2秒，最多1层。进入战斗至少3秒且你周围12格内敌人不超过1个，旋风、重击、裂地：伤害增加10%。你周围12格内敌人至少3个，旋风、重击、裂地：伤害增加10%。进入战斗不足3秒，旋风、重击、裂地，施放时：伤害增加150%，持续3秒，最多1层。旋风、重击、裂地，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。旋风、重击、裂地，施放时：闪避增加20%，持续3秒，最多1层。",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 16,
+    "weapons": [
+      "sword",
+      "hammer",
+      "axe"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tf-whirl-crowd-area",
+          "name": "风暴回旋 · 群敌增伤",
+          "description": "你周围4格内敌人至少3个且范围技能：伤害增加15%。",
+          "source": "aspect-tf-whirl",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "crowd",
+              "op": "gte",
+              "value": 3,
+              "radius": 4
+            },
+            {
+              "kind": "skill",
+              "tags": [
+                "area"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.15,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-tf-whirl-whirl-armor",
+          "name": "风暴回旋 · 旋风破甲",
+          "description": "旋风技能，命中时：施加破甲 3秒，强度20%。",
+          "source": "aspect-tf-whirl",
+          "tier": 1,
+          "trigger": "hit",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "skill",
+              "skills": [
+                "whirl"
+              ]
+            }
+          ],
+          "action": {
+            "type": "status",
+            "ref": "hit",
+            "status": "armor_down",
+            "duration": 90,
+            "strength": 0.2,
+            "ratio": 0
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-tf-whirl-whirl-guard",
+          "name": "风暴回旋 · 旋风护体",
+          "description": "旋风技能，施放时：减伤增加45%，持续2秒，最多1层。",
+          "source": "aspect-tf-whirl",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "skill",
+              "skills": [
+                "whirl"
+              ]
+            }
+          ],
+          "action": {
+            "type": "buff",
+            "duration": 60,
+            "maxStacks": 1,
+            "mods": {
+              "damageReduction": 0.45
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-tf-whirl-spine-single",
+          "name": "风暴回旋 · 节拍强化",
+          "description": "进入战斗至少3秒且你周围12格内敌人不超过1个，旋风、重击、裂地：伤害增加10%。",
+          "source": "aspect-tf-whirl",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "whirl",
+              "ground_slam",
+              "cleave"
+            ]
+          },
+          "when": [
+            {
+              "kind": "combat_time",
+              "op": "gte",
+              "value": 3
+            },
+            {
+              "kind": "crowd",
+              "op": "lte",
+              "value": 1,
+              "radius": 12
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.1,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        },
+        {
+          "id": "aspect-tf-whirl-spine-clear",
+          "name": "风暴回旋 · 节拍强化",
+          "description": "你周围12格内敌人至少3个，旋风、重击、裂地：伤害增加10%。",
+          "source": "aspect-tf-whirl",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "whirl",
+              "ground_slam",
+              "cleave"
+            ]
+          },
+          "when": [
+            {
+              "kind": "crowd",
+              "op": "gte",
+              "value": 3,
+              "radius": 12
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.1,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        },
+        {
+          "id": "aspect-tf-whirl-spine-elite",
+          "name": "风暴回旋 · 节拍强化",
+          "description": "进入战斗不足3秒，旋风、重击、裂地，施放时：伤害增加150%，持续3秒，最多1层。",
+          "source": "aspect-tf-whirl",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "whirl",
+              "ground_slam",
+              "cleave"
+            ]
+          },
+          "when": [
+            {
+              "kind": "combat_time",
+              "op": "lt",
+              "value": 3
+            }
+          ],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "damageMult": 1.5
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        },
+        {
+          "id": "aspect-tf-whirl-spine-survival",
+          "name": "风暴回旋 · 节拍强化",
+          "description": "旋风、重击、裂地，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。",
+          "source": "aspect-tf-whirl",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "whirl",
+              "ground_slam",
+              "cleave"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "shield",
+            "ratio": 0.2,
+            "ref": "maxHp",
+            "duration": 90
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        },
+        {
+          "id": "aspect-tf-whirl-spine-safety",
+          "name": "风暴回旋 · 节拍强化",
+          "description": "旋风、重击、裂地，施放时：闪避增加20%，持续3秒，最多1层。",
+          "source": "aspect-tf-whirl",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "whirl",
+              "ground_slam",
+              "cleave"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "dodge": 0.2
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [
+        {
+          "skills": [
+            "whirl"
+          ],
+          "ops": [
+            {
+              "path": "damage",
+              "op": "mul",
+              "value": 2
+            },
+            {
+              "path": "mechanics.schedule",
+              "op": "set",
+              "value": {
+                "hits": 4,
+                "interval": 15,
+                "followCaster": true,
+                "interruptOnMove": false
+              }
+            },
+            {
+              "path": "weapons",
+              "op": "set",
+              "value": [
+                "sword",
+                "hammer",
+                "axe"
+              ]
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "statMultipliers": {
+        "attack": 1.5
+      },
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-fury",
+    "name": "千刃风暴",
+    "description": "每段命中时 50% 向最近另一敌人射出剑气（40%）",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 18,
+    "weapons": [
+      "sword"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tf-fury:1",
+          "name": "千刃风暴",
+          "description": "每段命中时 50% 向最近另一敌人射出剑气（40%）",
+          "source": "aspect-tf-fury",
+          "tier": 1,
+          "trigger": "hit",
+          "chance": 0.5,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "blade_fury"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "shards",
+            "count": 1,
+            "ratio": 0.4,
+            "range": 6,
+            "damageType": "physical",
+            "ref": "hit"
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-rush",
+    "name": "裂空",
+    "description": "路径上所有敌人受到 60% 伤害并流血 3 秒",
+    "slots": [
+      "boots"
+    ],
+    "requiredLevel": 20,
+    "weapons": [
+      "sword"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [],
+      "patches": [
+        {
+          "skills": [
+            "rush"
+          ],
+          "ops": [
+            {
+              "path": "mechanics.dash.pathHit",
+              "op": "set",
+              "value": 0.6
+            },
+            {
+              "path": "mechanics.statuses",
+              "op": "append",
+              "value": [
+                {
+                  "kind": "bleed",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "cleanse": true,
+                  "interval": 30,
+                  "total": 11,
+                  "damageType": "physical"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "skills": [
+            "leap_strike"
+          ],
+          "ops": [
+            {
+              "path": "mechanics.dash.pathHit",
+              "op": "set",
+              "value": 0.6
+            },
+            {
+              "path": "mechanics.statuses",
+              "op": "append",
+              "value": [
+                {
+                  "kind": "bleed",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "cleanse": true,
+                  "interval": 30,
+                  "total": 14,
+                  "damageType": "physical"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-execute",
+    "name": "处刑",
+    "description": "击杀时重置斩杀冷却",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 24,
+    "weapons": [
+      "sword"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tf-execute:2",
+          "name": "处刑",
+          "description": "击杀时重置斩杀冷却",
+          "source": "aspect-tf-execute",
+          "tier": 1,
+          "trigger": "kill",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "execute"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "cooldown",
+            "mode": "current",
+            "reset": true
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-cleave",
+    "name": "地裂",
+    "description": "裂地的伤害变为原来的130%。裂地分为3段，每段间隔0.3秒，固定在释放位置，移动不会打断。",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 16,
+    "weapons": [
+      "hammer",
+      "axe"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [],
+      "patches": [
+        {
+          "skills": [
+            "cleave"
+          ],
+          "ops": [
+            {
+              "path": "damage",
+              "op": "mul",
+              "value": 1.3
+            },
+            {
+              "path": "mechanics.schedule",
+              "op": "set",
+              "value": {
+                "hits": 3,
+                "interval": 9,
+                "followCaster": false,
+                "interruptOnMove": false,
+                "advance": 1.5
+              }
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-slam",
+    "name": "余震回响",
+    "description": "0.6 秒后原地再震一次（70%），并眩晕 0.5 秒",
+    "slots": [
+      "armor"
+    ],
+    "requiredLevel": 18,
+    "weapons": [
+      "hammer",
+      "axe"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tf-slam:3",
+          "name": "余震回响",
+          "description": "0.6 秒后原地再震一次（70%），并眩晕 0.5 秒",
+          "source": "aspect-tf-slam",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "ground_slam"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "echo",
+            "ratio": 0.7,
+            "delay": 18,
+            "skill": "same"
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [
+        {
+          "skills": [
+            "ground_slam"
+          ],
+          "ops": [
+            {
+              "path": "mechanics.statuses",
+              "op": "append",
+              "value": [
+                {
+                  "kind": "stun",
+                  "duration": 15,
+                  "strength": 1,
+                  "scope": "hit",
+                  "cleanse": true
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-rage",
+    "name": "无尽血怒",
+    "description": "血怒期间每次击杀延长 1 秒，最多 +5 秒",
+    "slots": [
+      "helmet"
+    ],
+    "requiredLevel": 22,
+    "weapons": [
+      "hammer",
+      "axe"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tf-rage:4",
+          "name": "无尽血怒",
+          "description": "血怒期间每次击杀延长 1 秒，最多 +5 秒",
+          "source": "aspect-tf-rage",
+          "tier": 1,
+          "trigger": "kill",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "self_state",
+              "state": "buff",
+              "id": "blood_rage"
+            }
+          ],
+          "action": {
+            "type": "extend",
+            "maxMode": "bonus",
+            "statuses": [
+              "attack_up"
+            ],
+            "buff": "blood_rage",
+            "duration": 30,
+            "max": 150
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-warcry",
+    "name": "战吼引力",
+    "description": "把 6 格内敌人拉到身边，并施加易伤 15%（4 秒）",
+    "slots": [
+      "accessory"
+    ],
+    "requiredLevel": 26,
+    "weapons": [
+      "hammer",
+      "axe"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [],
+      "patches": [
+        {
+          "skills": [
+            "war_cry"
+          ],
+          "ops": [
+            {
+              "path": "pull",
+              "op": "set",
+              "value": 6
+            },
+            {
+              "path": "radius",
+              "op": "set",
+              "value": 6
+            },
+            {
+              "path": "mechanics.statuses",
+              "op": "append",
+              "value": [
+                {
+                  "kind": "vulnerable",
+                  "duration": 120,
+                  "strength": 0.15,
+                  "scope": "hit",
+                  "cleanse": true
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-bolt",
+    "name": "回旋箭",
+    "description": "到达终点后返回，返回途中可再次命中",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 16,
+    "weapons": [
+      "bow"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [],
+      "patches": [
+        {
+          "skills": [
+            "bolt"
+          ],
+          "ops": [
+            {
+              "path": "mechanics.projectile.returns",
+              "op": "set",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-rain",
+    "name": "随行箭雨",
+    "description": "箭雨区域跟随角色移动",
+    "slots": [
+      "boots"
+    ],
+    "requiredLevel": 20,
+    "weapons": [
+      "bow"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [],
+      "patches": [
+        {
+          "skills": [
+            "rain_of_arrows"
+          ],
+          "ops": [
+            {
+              "path": "mechanics.zone.followCaster",
+              "op": "set",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-explosive",
+    "name": "连环爆破",
+    "description": "爆炸点燃目标；被爆炸击杀的敌人再爆一次（受击杀连锁 2 层限制）",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 22,
+    "weapons": [
+      "bow"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tf-explosive:5",
+          "name": "连环爆破",
+          "description": "爆炸点燃目标；被爆炸击杀的敌人再爆一次（受击杀连锁 2 层限制）",
+          "source": "aspect-tf-explosive",
+          "tier": 1,
+          "trigger": "kill",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "explosive_shot"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "nova",
+            "ratio": 1,
+            "radius": 2,
+            "damageType": "fire",
+            "ref": "hit",
+            "at": "target"
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/ember"
+        }
+      ],
+      "patches": [
+        {
+          "skills": [
+            "explosive_shot"
+          ],
+          "ops": [
+            {
+              "path": "mechanics.statuses",
+              "op": "append",
+              "value": [
+                {
+                  "kind": "burn",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "cleanse": true,
+                  "interval": 30,
+                  "total": 12,
+                  "damageType": "fire"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-snipe",
+    "name": "远狙",
+    "description": "对 ≥ 6 格的目标伤害 ×1.6；狙击击杀返还 50% 冷却",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 26,
+    "weapons": [
+      "bow"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tf-snipe:6",
+          "name": "远狙",
+          "description": "对 ≥ 6 格的目标伤害 ×1.6；狙击击杀返还 50% 冷却",
+          "source": "aspect-tf-snipe",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "snipe"
+            ]
+          },
+          "when": [
+            {
+              "kind": "distance",
+              "op": "gte",
+              "value": 6
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.6,
+            "against": []
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        },
+        {
+          "id": "aspect-tf-snipe:7",
+          "name": "远狙",
+          "description": "对 ≥ 6 格的目标伤害 ×1.6；狙击击杀返还 50% 冷却",
+          "source": "aspect-tf-snipe",
+          "tier": 1,
+          "trigger": "kill",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "snipe"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "cooldown",
+            "fraction": 0.5,
+            "mode": "current"
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-fireball",
+    "name": "分裂火球",
+    "description": "火球术发射3枚投射物。火球术投射物夹角0.35弧度。火球术的伤害变为原来的95%。",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 16,
+    "weapons": [
+      "staff"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [],
+      "patches": [
+        {
+          "skills": [
+            "fireball"
+          ],
+          "ops": [
+            {
+              "path": "projectiles",
+              "op": "set",
+              "value": 3
+            },
+            {
+              "path": "projectileSpread",
+              "op": "set",
+              "value": 0.35
+            },
+            {
+              "path": "damage",
+              "op": "mul",
+              "value": 0.95
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-chain",
+    "name": "回弹雷链",
+    "description": "传导目标 3 → 6",
+    "slots": [
+      "accessory"
+    ],
+    "requiredLevel": 18,
+    "weapons": [
+      "staff"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [],
+      "patches": [
+        {
+          "skills": [
+            "chain"
+          ],
+          "ops": [
+            {
+              "path": "mechanics.chain.count",
+              "op": "set",
+              "value": 6
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-meteor",
+    "name": "焚天",
+    "description": "陨石术，施放时：形成3.5格领域，持续6秒，每1秒造成50%的火焰伤害。",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 22,
+    "weapons": [
+      "staff"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tf-meteor:8",
+          "name": "焚天 · 节拍强化",
+          "description": "陨石术，施放时：形成3.5格领域，持续6秒，每1秒造成50%的火焰伤害。",
+          "source": "aspect-tf-meteor",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "meteor"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "field",
+            "ratio": 0.5,
+            "damageType": "fire",
+            "radius": 3.5,
+            "duration": 180,
+            "interval": 30,
+            "at": "target"
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/ember"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-nova",
+    "name": "冰封",
+    "description": "半径 +30%，命中冻结 1 秒（首领改迟缓）",
+    "slots": [
+      "armor"
+    ],
+    "requiredLevel": 26,
+    "weapons": [
+      "staff"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [],
+      "patches": [
+        {
+          "skills": [
+            "nova"
+          ],
+          "ops": [
+            {
+              "path": "radius",
+              "op": "mul",
+              "value": 1.3
+            },
+            {
+              "path": "mechanics.statuses",
+              "op": "append",
+              "value": [
+                {
+                  "kind": "freeze",
+                  "duration": 30,
+                  "strength": 1,
+                  "scope": "hit",
+                  "cleanse": true
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-knife",
+    "name": "环刃",
+    "description": "攻击变为原来的140%。飞刀、扇刃环绕3秒，轨道半径1.5格，每0.5秒可接触一次，每秒转动4.2弧度。飞刀、扇刃以你为中心。飞刀、扇刃接触半径1格。飞刀、扇刃的命中及持续伤害变为原来的5%。目标处于流血且你周围4格内敌人至少3个：伤害增加55%。你周围4格内敌人至少3个：闪避增加20%，最多1层。进入战斗至少3秒且你周围12格内敌人不超过1个，飞刀、扇刃、乱刃：伤害增加15%。你周围12格内敌人至少3个，飞刀、扇刃、乱刃：伤害增加105%。进入战斗不足3秒，飞刀、扇刃、乱刃，施放时：伤害增加115%，持续3秒，最多1层。飞刀、扇刃、乱刃，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。飞刀、扇刃、乱刃，施放时：闪避增加20%，持续3秒，最多1层。",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 16,
+    "weapons": [
+      "hidden"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tf-knife-bleeding-hit",
+          "name": "环刃 · 群敌流血追击",
+          "description": "目标处于流血且你周围4格内敌人至少3个：伤害增加55%。",
+          "source": "aspect-tf-knife",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_status",
+              "statuses": [
+                "bleed"
+              ]
+            },
+            {
+              "kind": "crowd",
+              "op": "gte",
+              "value": 3,
+              "radius": 4
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.55,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-tf-knife-crowd-evasion",
+          "name": "环刃 · 群敌闪避",
+          "description": "你周围4格内敌人至少3个：闪避增加20%，最多1层。",
+          "source": "aspect-tf-knife",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "crowd",
+              "op": "gte",
+              "value": 3,
+              "radius": 4
+            }
+          ],
+          "action": {
+            "type": "buff",
+            "duration": 30,
+            "maxStacks": 1,
+            "mods": {
+              "dodge": 0.2
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-tf-knife-spine-single",
+          "name": "环刃 · 节拍强化",
+          "description": "进入战斗至少3秒且你周围12格内敌人不超过1个，飞刀、扇刃、乱刃：伤害增加15%。",
+          "source": "aspect-tf-knife",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "throwing_knife",
+              "fan_of_knives",
+              "blade_flurry"
+            ]
+          },
+          "when": [
+            {
+              "kind": "combat_time",
+              "op": "gte",
+              "value": 3
+            },
+            {
+              "kind": "crowd",
+              "op": "lte",
+              "value": 1,
+              "radius": 12
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.15,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/throwing_knife"
+        },
+        {
+          "id": "aspect-tf-knife-spine-clear",
+          "name": "环刃 · 节拍强化",
+          "description": "你周围12格内敌人至少3个，飞刀、扇刃、乱刃：伤害增加105%。",
+          "source": "aspect-tf-knife",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "throwing_knife",
+              "fan_of_knives",
+              "blade_flurry"
+            ]
+          },
+          "when": [
+            {
+              "kind": "crowd",
+              "op": "gte",
+              "value": 3,
+              "radius": 12
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 1.05,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/throwing_knife"
+        },
+        {
+          "id": "aspect-tf-knife-spine-elite",
+          "name": "环刃 · 节拍强化",
+          "description": "进入战斗不足3秒，飞刀、扇刃、乱刃，施放时：伤害增加115%，持续3秒，最多1层。",
+          "source": "aspect-tf-knife",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "throwing_knife",
+              "fan_of_knives",
+              "blade_flurry"
+            ]
+          },
+          "when": [
+            {
+              "kind": "combat_time",
+              "op": "lt",
+              "value": 3
+            }
+          ],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "damageMult": 1.15
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/throwing_knife"
+        },
+        {
+          "id": "aspect-tf-knife-spine-survival",
+          "name": "环刃 · 节拍强化",
+          "description": "飞刀、扇刃、乱刃，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。",
+          "source": "aspect-tf-knife",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "throwing_knife",
+              "fan_of_knives",
+              "blade_flurry"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "shield",
+            "ratio": 0.2,
+            "ref": "maxHp",
+            "duration": 90
+          },
+          "scale": [],
+          "vfxKey": "player/throwing_knife"
+        },
+        {
+          "id": "aspect-tf-knife-spine-safety",
+          "name": "环刃 · 节拍强化",
+          "description": "飞刀、扇刃、乱刃，施放时：闪避增加20%，持续3秒，最多1层。",
+          "source": "aspect-tf-knife",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "throwing_knife",
+              "fan_of_knives",
+              "blade_flurry"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "dodge": 0.2
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/throwing_knife"
+        }
+      ],
+      "patches": [
+        {
+          "scalePeriodicBudget": true,
+          "skills": [
+            "throwing_knife",
+            "fan_of_knives"
+          ],
+          "ops": [
+            {
+              "path": "mechanics.projectile.orbit",
+              "op": "set",
+              "value": {
+                "duration": 90,
+                "radius": 1.5,
+                "interval": 15,
+                "speed": 0.14
+              }
+            },
+            {
+              "path": "mechanics.targeting",
+              "op": "set",
+              "value": "self"
+            },
+            {
+              "path": "mechanics.projectile.collisionRadius",
+              "op": "set",
+              "value": 1
+            },
+            {
+              "path": "damage",
+              "op": "mul",
+              "value": 0.05
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "statMultipliers": {
+        "attack": 1.4
+      },
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-needle",
+    "name": "毒雾针",
+    "description": "命中处留下毒云 3 秒",
+    "slots": [
+      "ring"
+    ],
+    "requiredLevel": 18,
+    "weapons": [
+      "hidden"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tf-needle:9",
+          "name": "毒雾针",
+          "description": "命中处留下毒云 3 秒",
+          "source": "aspect-tf-needle",
+          "tier": 1,
+          "trigger": "hit",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "venom_needle"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "field",
+            "ratio": 0.3,
+            "damageType": "poison",
+            "radius": 3,
+            "duration": 90,
+            "interval": 30,
+            "at": "target"
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/miasma"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-shadow",
+    "name": "影杀",
+    "description": "攻击变为原来的86%。影袭，位移后：伤害增加45%，作用于下一次施法，持续2秒，最多1层，消耗后0.5秒重放60%伤害。",
+    "slots": [
+      "boots"
+    ],
+    "requiredLevel": 22,
+    "weapons": [
+      "hidden"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tf-shadow:10",
+          "name": "影杀 · 节拍强化",
+          "description": "影袭，位移后：伤害增加45%，作用于下一次施法，持续2秒，最多1层，消耗后0.5秒重放60%伤害。",
+          "source": "aspect-tf-shadow",
+          "tier": 1,
+          "trigger": "dash",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "shadow_step"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 60,
+            "maxStacks": 1,
+            "mods": {
+              "damageMult": 0.45
+            },
+            "consume": "nextCast",
+            "echoOnConsume": {
+              "ratio": 0.6,
+              "delay": 15
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "statMultipliers": {
+        "attack": 0.86
+      },
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-lotus",
+    "name": "莲华结算",
+    "description": "结束时受击敌人身上的中毒、流血立刻结算剩余的 50%",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 26,
+    "weapons": [
+      "hidden"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tf-lotus:11",
+          "name": "莲华结算",
+          "description": "结束时受击敌人身上的中毒、流血立刻结算剩余的 50%",
+          "source": "aspect-tf-lotus",
+          "tier": 1,
+          "trigger": "hit",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "lastPart": true,
+            "skills": [
+              "death_lotus"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "detonate",
+            "statuses": [
+              "poison",
+              "bleed"
+            ],
+            "ratio": 0.5,
+            "remove": false
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-missile",
+    "name": "奥术追踪",
+    "description": "飞弹 +2；命中 30% 几率再分裂 1 枚（40%）",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 16,
+    "weapons": [
+      "wand"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tf-missile:12",
+          "name": "奥术追踪",
+          "description": "飞弹 +2；命中 30% 几率再分裂 1 枚（40%）",
+          "source": "aspect-tf-missile",
+          "tier": 1,
+          "trigger": "hit",
+          "chance": 0.3,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "arcane_missile"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "shards",
+            "count": 1,
+            "ratio": 0.4,
+            "range": 6,
+            "damageType": "arcane",
+            "ref": "hit"
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/arcane_missile"
+        }
+      ],
+      "patches": [
+        {
+          "skills": [
+            "arcane_missile"
+          ],
+          "ops": [
+            {
+              "path": "projectiles",
+              "op": "add",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-well",
+    "name": "坍缩",
+    "description": "攻击变为原来的55%。重力陷阱，领域结束时：对目标周围3格敌人造成本次命中伤害265%的奥术伤害。",
+    "slots": [
+      "accessory"
+    ],
+    "requiredLevel": 18,
+    "weapons": [
+      "wand"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tf-well:13",
+          "name": "坍缩 · 破盾爆发",
+          "description": "重力陷阱，领域结束时：对目标周围3格敌人造成本次命中伤害265%的奥术伤害。",
+          "source": "aspect-tf-well",
+          "tier": 1,
+          "trigger": "zone_end",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "gravity_well"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "nova",
+            "ratio": 2.65,
+            "radius": 3,
+            "damageType": "arcane",
+            "ref": "hit",
+            "at": "target",
+            "perCrowd": 0.1,
+            "crowdCap": 10,
+            "radiusRef": "skill"
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/arcane_missile"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "statMultipliers": {
+        "attack": 0.55
+      },
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-timestop",
+    "name": "停滞破绽",
+    "description": "受影响的敌人同时获得易伤 25%，持续与停滞相同",
+    "slots": [
+      "helmet"
+    ],
+    "requiredLevel": 24,
+    "weapons": [
+      "wand"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [],
+      "patches": [
+        {
+          "skills": [
+            "time_stop"
+          ],
+          "ops": [
+            {
+              "path": "mechanics.statuses",
+              "op": "append",
+              "value": [
+                {
+                  "kind": "vulnerable",
+                  "duration": 30,
+                  "strength": 0.25,
+                  "scope": "hit",
+                  "cleanse": true
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tf-petrify",
+    "name": "石化碎裂",
+    "description": "对石化敌人伤害 ×1.6；石化敌人死亡时碎裂（80%，半径 3）",
+    "slots": [
+      "ring"
+    ],
+    "requiredLevel": 26,
+    "weapons": [
+      "wand"
+    ],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tf-petrify:14",
+          "name": "石化碎裂",
+          "description": "对石化敌人伤害 ×1.6；石化敌人死亡时碎裂（80%，半径 3）",
+          "source": "aspect-tf-petrify",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_status",
+              "statuses": [
+                "petrify"
+              ],
+              "minStacks": 1
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.6,
+            "against": []
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        },
+        {
+          "id": "aspect-tf-petrify:15",
+          "name": "石化碎裂",
+          "description": "对石化敌人伤害 ×1.6；石化敌人死亡时碎裂（80%，半径 3）",
+          "source": "aspect-tf-petrify",
+          "tier": 1,
+          "trigger": "kill",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_status",
+              "statuses": [
+                "petrify"
+              ],
+              "minStacks": 1
+            }
+          ],
+          "action": {
+            "type": "nova",
+            "ratio": 0.8,
+            "radius": 3,
+            "damageType": "physical",
+            "ref": "hit",
+            "at": "target"
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-st-ember",
+    "name": "余烬之心",
+    "description": "燃烧可以暴击，使用你暴击率的50%。攻击变为原来的150%。引爆触发间隔1秒。燃烧：伤害增加30%。目标处于燃烧，直接命中：伤害增加15%。目标处于燃烧，击杀时：把你施加的燃烧扩散给3格内最多3个敌人。目标处于燃烧，直接命中，命中时：护盾取现有值与最大生命10%的较高值，至少持续3秒（触发间隔3秒）。进入战斗至少3秒且你周围12格内敌人不超过1个，火球术、陨石术、燎原：伤害增加15%。你周围12格内敌人至少3个，火球术、陨石术、燎原：伤害增加10%。进入战斗不足3秒，火球术、陨石术、燎原，施放时：伤害增加140%，持续3秒，最多1层。火球术、陨石术、燎原，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。火球术、陨石术、燎原，施放时：闪避增加20%，持续3秒，最多1层。",
+    "slots": [
+      "accessory"
+    ],
+    "requiredLevel": 16,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-st-ember-burn",
+          "name": "余烬之心 · 燃烧强化",
+          "description": "燃烧：伤害增加30%。",
+          "source": "aspect-st-ember",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "statusKinds": [
+              "burn"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.3,
+            "against": []
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/ember"
+        },
+        {
+          "id": "aspect-st-ember-burning-hit",
+          "name": "余烬之心 · 燃烧追击",
+          "description": "目标处于燃烧，直接命中：伤害增加15%。",
+          "source": "aspect-st-ember",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "categories": [
+              "direct"
+            ]
+          },
+          "when": [
+            {
+              "kind": "target_status",
+              "statuses": [
+                "burn"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.15,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-st-ember-spread",
+          "name": "余烬之心 · 余火扩散",
+          "description": "目标处于燃烧，击杀时：把你施加的燃烧扩散给3格内最多3个敌人。",
+          "source": "aspect-st-ember",
+          "tier": 1,
+          "trigger": "kill",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_status",
+              "statuses": [
+                "burn"
+              ]
+            }
+          ],
+          "action": {
+            "type": "spread",
+            "statuses": [
+              "burn"
+            ],
+            "radius": 3,
+            "count": 3
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-st-ember-ember-shield",
+          "name": "余烬之心 · 余烬护盾",
+          "description": "目标处于燃烧，直接命中，命中时：护盾取现有值与最大生命10%的较高值，至少持续3秒（触发间隔3秒）。",
+          "source": "aspect-st-ember",
+          "tier": 1,
+          "trigger": "hit",
+          "chance": 1,
+          "icd": 90,
+          "filter": {
+            "categories": [
+              "direct"
+            ]
+          },
+          "when": [
+            {
+              "kind": "target_status",
+              "statuses": [
+                "burn"
+              ]
+            }
+          ],
+          "action": {
+            "type": "shield",
+            "ratio": 0.1,
+            "ref": "maxHp",
+            "duration": 90
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-st-ember-spine-single",
+          "name": "余烬之心 · 节拍强化",
+          "description": "进入战斗至少3秒且你周围12格内敌人不超过1个，火球术、陨石术、燎原：伤害增加15%。",
+          "source": "aspect-st-ember",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "fireball",
+              "meteor",
+              "ember"
+            ]
+          },
+          "when": [
+            {
+              "kind": "combat_time",
+              "op": "gte",
+              "value": 3
+            },
+            {
+              "kind": "crowd",
+              "op": "lte",
+              "value": 1,
+              "radius": 12
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.15,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/fireball"
+        },
+        {
+          "id": "aspect-st-ember-spine-clear",
+          "name": "余烬之心 · 节拍强化",
+          "description": "你周围12格内敌人至少3个，火球术、陨石术、燎原：伤害增加10%。",
+          "source": "aspect-st-ember",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "fireball",
+              "meteor",
+              "ember"
+            ]
+          },
+          "when": [
+            {
+              "kind": "crowd",
+              "op": "gte",
+              "value": 3,
+              "radius": 12
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.1,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/fireball"
+        },
+        {
+          "id": "aspect-st-ember-spine-elite",
+          "name": "余烬之心 · 节拍强化",
+          "description": "进入战斗不足3秒，火球术、陨石术、燎原，施放时：伤害增加140%，持续3秒，最多1层。",
+          "source": "aspect-st-ember",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "fireball",
+              "meteor",
+              "ember"
+            ]
+          },
+          "when": [
+            {
+              "kind": "combat_time",
+              "op": "lt",
+              "value": 3
+            }
+          ],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "damageMult": 1.4
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/fireball"
+        },
+        {
+          "id": "aspect-st-ember-spine-survival",
+          "name": "余烬之心 · 节拍强化",
+          "description": "火球术、陨石术、燎原，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。",
+          "source": "aspect-st-ember",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "fireball",
+              "meteor",
+              "ember"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "shield",
+            "ratio": 0.2,
+            "ref": "maxHp",
+            "duration": 90
+          },
+          "scale": [],
+          "vfxKey": "player/fireball"
+        },
+        {
+          "id": "aspect-st-ember-spine-safety",
+          "name": "余烬之心 · 节拍强化",
+          "description": "火球术、陨石术、燎原，施放时：闪避增加20%，持续3秒，最多1层。",
+          "source": "aspect-st-ember",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "fireball",
+              "meteor",
+              "ember"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "dodge": 0.2
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/fireball"
+        }
+      ],
+      "patches": [],
+      "overrides": [
+        {
+          "target": "atom-detonate",
+          "set": {
+            "icd": 30
+          }
+        }
+      ],
+      "conditional": [],
+      "flags": {
+        "dotCrit": true
+      },
+      "flagFilter": {
+        "statusKinds": [
+          "burn"
+        ]
+      },
+      "conversions": [],
+      "statMultipliers": {
+        "attack": 1.5
+      },
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-st-pyre",
+    "name": "焚身",
+    "description": "燃烧最多 3 层；燃烧目标死亡时蔓延到最近 2 个敌人",
+    "slots": [
+      "ring"
+    ],
+    "requiredLevel": 20,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-st-pyre:16",
+          "name": "焚身",
+          "description": "燃烧最多 3 层；燃烧目标死亡时蔓延到最近 2 个敌人",
+          "source": "aspect-st-pyre",
+          "tier": 1,
+          "trigger": "kill",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_status",
+              "statuses": [
+                "burn"
+              ],
+              "minStacks": 1
+            }
+          ],
+          "action": {
+            "type": "spread",
+            "statuses": [
+              "burn"
+            ],
+            "radius": 3,
+            "count": 2
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "statusOverrides": {
+        "burn": {
+          "maxStacks": 3,
+          "stackMode": "refresh"
+        }
+      },
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-st-permafrost",
+    "name": "永冻",
+    "description": "攻击变为原来的50%。寒蚀冰冻持续1秒。碎冰范围变为原来的150%。目标处于冰冻或减速：伤害增加55%。受击时：对你周围3格敌人造成攻击30%的冰霜伤害，施加冰冻 1秒（触发间隔2秒）。进入战斗至少3秒且你周围12格内敌人不超过1个，寒霜阵、冰环、冰霜箭：伤害增加150%。你周围12格内敌人至少3个，寒霜阵、冰环、冰霜箭：伤害增加10%。进入战斗不足3秒，寒霜阵、冰环、冰霜箭，施放时：伤害增加10%，持续3秒，最多1层。寒霜阵、冰环、冰霜箭，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。寒霜阵、冰环、冰霜箭，施放时：闪避增加20%，持续3秒，最多1层。",
+    "slots": [
+      "armor"
+    ],
+    "requiredLevel": 18,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-st-permafrost-cold-hit",
+          "name": "永冻 · 寒冷追击",
+          "description": "目标处于冰冻或减速：伤害增加55%。",
+          "source": "aspect-st-permafrost",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_status",
+              "statuses": [
+                "freeze",
+                "slow"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.55,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-st-permafrost-frost-guard",
+          "name": "永冻 · 寒霜反击",
+          "description": "受击时：对你周围3格敌人造成攻击30%的冰霜伤害，施加冰冻 1秒（触发间隔2秒）。",
+          "source": "aspect-st-permafrost",
+          "tier": 1,
+          "trigger": "hurt",
+          "chance": 1,
+          "icd": 60,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "nova",
+            "ratio": 0.3,
+            "radius": 3,
+            "damageType": "cold",
+            "ref": "attack",
+            "at": "self",
+            "status": {
+              "kind": "freeze",
+              "duration": 30,
+              "strength": 0,
+              "scope": "hit",
+              "cleanse": true,
+              "breakOnDamage": false,
+              "removeWithSource": false
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-st-permafrost-spine-single",
+          "name": "永冻 · 节拍强化",
+          "description": "进入战斗至少3秒且你周围12格内敌人不超过1个，寒霜阵、冰环、冰霜箭：伤害增加150%。",
+          "source": "aspect-st-permafrost",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "frost",
+              "nova",
+              "frost_bolt"
+            ]
+          },
+          "when": [
+            {
+              "kind": "combat_time",
+              "op": "gte",
+              "value": 3
+            },
+            {
+              "kind": "crowd",
+              "op": "lte",
+              "value": 1,
+              "radius": 12
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 1.5,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/frost"
+        },
+        {
+          "id": "aspect-st-permafrost-spine-clear",
+          "name": "永冻 · 节拍强化",
+          "description": "你周围12格内敌人至少3个，寒霜阵、冰环、冰霜箭：伤害增加10%。",
+          "source": "aspect-st-permafrost",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "frost",
+              "nova",
+              "frost_bolt"
+            ]
+          },
+          "when": [
+            {
+              "kind": "crowd",
+              "op": "gte",
+              "value": 3,
+              "radius": 12
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.1,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/frost"
+        },
+        {
+          "id": "aspect-st-permafrost-spine-elite",
+          "name": "永冻 · 节拍强化",
+          "description": "进入战斗不足3秒，寒霜阵、冰环、冰霜箭，施放时：伤害增加10%，持续3秒，最多1层。",
+          "source": "aspect-st-permafrost",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "frost",
+              "nova",
+              "frost_bolt"
+            ]
+          },
+          "when": [
+            {
+              "kind": "combat_time",
+              "op": "lt",
+              "value": 3
+            }
+          ],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "damageMult": 0.1
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/frost"
+        },
+        {
+          "id": "aspect-st-permafrost-spine-survival",
+          "name": "永冻 · 节拍强化",
+          "description": "寒霜阵、冰环、冰霜箭，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。",
+          "source": "aspect-st-permafrost",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "frost",
+              "nova",
+              "frost_bolt"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "shield",
+            "ratio": 0.2,
+            "ref": "maxHp",
+            "duration": 90
+          },
+          "scale": [],
+          "vfxKey": "player/frost"
+        },
+        {
+          "id": "aspect-st-permafrost-spine-safety",
+          "name": "永冻 · 节拍强化",
+          "description": "寒霜阵、冰环、冰霜箭，施放时：闪避增加20%，持续3秒，最多1层。",
+          "source": "aspect-st-permafrost",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "frost",
+              "nova",
+              "frost_bolt"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "dodge": 0.2
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/frost"
+        }
+      ],
+      "patches": [],
+      "overrides": [
+        {
+          "target": "atom-chill",
+          "set": {
+            "action.onStacks.duration": 30
+          }
+        },
+        {
+          "target": "atom-shatter",
+          "mul": {
+            "action.radius": 1.5
+          }
+        }
+      ],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "statMultipliers": {
+        "attack": 0.5
+      },
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-st-glacier",
+    "name": "冰川",
+    "description": "冰霜伤害对迟缓目标 ×1.3；迟缓叠 2 次即冻结",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 22,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-st-glacier:17",
+          "name": "冰川",
+          "description": "冰霜伤害对迟缓目标 ×1.3；迟缓叠 2 次即冻结",
+          "source": "aspect-st-glacier",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "damageTypes": [
+              "cold"
+            ]
+          },
+          "when": [
+            {
+              "kind": "target_status",
+              "statuses": [
+                "slow"
+              ],
+              "minStacks": 1
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.3,
+            "against": []
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "statusOverrides": {
+        "slow": {
+          "maxStacks": 2,
+          "stackMode": "refresh",
+          "onStacks": {
+            "at": 2,
+            "convert": "freeze",
+            "duration": 45,
+            "consume": 2
+          }
+        }
+      },
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-st-storm",
+    "name": "雷暴",
+    "description": "攻击变为原来的135%。感电最多3层，各层独立计时。",
+    "slots": [
+      "accessory"
+    ],
+    "requiredLevel": 18,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "statusOverrides": {
+        "shock": {
+          "maxStacks": 3,
+          "stackMode": "independent"
+        }
+      },
+      "conversions": [],
+      "statMultipliers": {
+        "attack": 1.35
+      },
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-st-smite",
+    "name": "雷殛",
+    "description": "闪电伤害命中 3 层感电目标时召落雷（120%），冷却 0.5 秒",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 24,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-st-smite:18",
+          "name": "雷殛",
+          "description": "闪电伤害命中 3 层感电目标时召落雷（120%），冷却 0.5 秒",
+          "source": "aspect-st-smite",
+          "tier": 1,
+          "trigger": "hit",
+          "chance": 1,
+          "icd": 15,
+          "filter": {
+            "damageTypes": [
+              "lightning"
+            ]
+          },
+          "when": [
+            {
+              "kind": "target_status",
+              "statuses": [
+                "shock"
+              ],
+              "minStacks": 3
+            }
+          ],
+          "action": {
+            "type": "nova",
+            "ratio": 1.2,
+            "radius": 2,
+            "damageType": "lightning",
+            "ref": "hit",
+            "at": "target"
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/chain"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-st-corrode",
+    "name": "腐蚀",
+    "description": "中毒最多 5 层；叠满时结算剩余毒伤的 150% 并清空",
+    "slots": [
+      "ring"
+    ],
+    "requiredLevel": 20,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-st-corrode:19",
+          "name": "腐蚀",
+          "description": "中毒最多 5 层；叠满时结算剩余毒伤的 150% 并清空",
+          "source": "aspect-st-corrode",
+          "tier": 1,
+          "trigger": "status_apply",
+          "chance": 1,
+          "icd": 0,
+          "status": "poison",
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_status",
+              "statuses": [
+                "poison"
+              ],
+              "minStacks": 5
+            }
+          ],
+          "action": {
+            "type": "detonate",
+            "statuses": [
+              "poison"
+            ],
+            "ratio": 1.5,
+            "remove": true
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "statusOverrides": {
+        "poison": {
+          "maxStacks": 5,
+          "stackMode": "independent"
+        }
+      },
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-st-plague",
+    "name": "瘟疫",
+    "description": "命中中毒目标时 20% 传染相邻 1 个敌人",
+    "slots": [
+      "helmet"
+    ],
+    "requiredLevel": 24,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-st-plague:20",
+          "name": "瘟疫",
+          "description": "命中中毒目标时 20% 传染相邻 1 个敌人",
+          "source": "aspect-st-plague",
+          "tier": 1,
+          "trigger": "hit",
+          "chance": 0.2,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_status",
+              "statuses": [
+                "poison"
+              ],
+              "minStacks": 1
+            }
+          ],
+          "action": {
+            "type": "spread",
+            "statuses": [
+              "poison"
+            ],
+            "radius": 3,
+            "count": 1
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-st-hemorrhage",
+    "name": "血崩",
+    "description": "暴击流血目标时，立即结算其剩余流血的 50%；攻击×0.31",
+    "slots": [
+      "boots"
+    ],
+    "requiredLevel": 18,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-st-hemorrhage:21",
+          "name": "血崩",
+          "description": "暴击流血目标时，立即结算其剩余流血的 50%",
+          "source": "aspect-st-hemorrhage",
+          "tier": 1,
+          "trigger": "crit",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_status",
+              "statuses": [
+                "bleed"
+              ],
+              "minStacks": 1
+            }
+          ],
+          "action": {
+            "type": "detonate",
+            "statuses": [
+              "bleed"
+            ],
+            "ratio": 0.5,
+            "remove": false
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "statMultipliers": {
+        "attack": 0.31
+      },
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-st-ritual",
+    "name": "血祭",
+    "description": "击杀流血目标时 50% 几率对 3 格内敌人施加流血",
+    "slots": [
+      "accessory"
+    ],
+    "requiredLevel": 22,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-st-ritual:22",
+          "name": "血祭",
+          "description": "击杀流血目标时 50% 几率对 3 格内敌人施加流血",
+          "source": "aspect-st-ritual",
+          "tier": 1,
+          "trigger": "kill",
+          "chance": 0.5,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_status",
+              "statuses": [
+                "bleed"
+              ],
+              "minStacks": 1
+            }
+          ],
+          "action": {
+            "type": "spread",
+            "statuses": [
+              "bleed"
+            ],
+            "radius": 3,
+            "count": 6
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-st-sunder",
+    "name": "碎甲",
+    "description": "施加破甲时同时施加易伤 15%",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 20,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-st-sunder:23",
+          "name": "碎甲",
+          "description": "施加破甲时同时施加易伤 15%",
+          "source": "aspect-st-sunder",
+          "tier": 1,
+          "trigger": "status_apply",
+          "chance": 1,
+          "icd": 0,
+          "status": "armor_down",
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "status",
+            "ref": "hit",
+            "status": "vulnerable",
+            "duration": 90,
+            "strength": 0.15,
+            "ratio": 0
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-st-insight",
+    "name": "弱点洞察",
+    "description": "暴击易伤目标时，易伤延长 1 秒（最多 6 秒）",
+    "slots": [
+      "ring"
+    ],
+    "requiredLevel": 26,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-st-insight:24",
+          "name": "弱点洞察",
+          "description": "暴击易伤目标时，易伤延长 1 秒（最多 6 秒）",
+          "source": "aspect-st-insight",
+          "tier": 1,
+          "trigger": "crit",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_status",
+              "statuses": [
+                "vulnerable"
+              ],
+              "minStacks": 1
+            }
+          ],
+          "action": {
+            "type": "extend",
+            "statuses": [
+              "vulnerable"
+            ],
+            "duration": 30,
+            "max": 180
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tr-starfall",
+    "name": "星落",
+    "description": "每第 5 次暴击召星落（200%，半径 3）",
+    "slots": [
+      "accessory"
+    ],
+    "requiredLevel": 22,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tr-starfall:25",
+          "name": "星落",
+          "description": "每第 5 次暴击召星落（200%，半径 3）",
+          "source": "aspect-tr-starfall",
+          "tier": 1,
+          "trigger": "nth",
+          "chance": 1,
+          "icd": 0,
+          "every": 5,
+          "count": "crit",
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "nova",
+            "ratio": 2,
+            "radius": 3,
+            "damageType": "physical",
+            "ref": "hit",
+            "at": "target"
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tr-headhunter",
+    "name": "猎首",
+    "description": "攻击变为原来的75%。击杀精英或首领时：所有技能冷却全部重置。目标生命至少90%：伤害增加70%。进入战斗不足3秒：暴击伤害增加20%，最多1层。击杀精英或首领时：护盾取现有值与最大生命10%的较高值，至少持续3秒。击杀时：当前冷却最长的技能返还剩余冷却55%。进入战斗至少3秒且你周围12格内敌人不超过1个，斩杀、双重打击、跳斩：伤害增加10%。你周围12格内敌人至少3个，斩杀、双重打击、跳斩：伤害增加150%。进入战斗不足3秒，斩杀、双重打击、跳斩，施放时：伤害增加20%，持续3秒，最多1层。斩杀、双重打击、跳斩，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。斩杀、双重打击、跳斩，施放时：闪避增加20%，持续3秒，最多1层。",
+    "slots": [
+      "helmet"
+    ],
+    "requiredLevel": 24,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tr-headhunter:26",
+          "name": "猎首 · 猎杀恢复",
+          "description": "击杀精英或首领时：所有技能冷却全部重置。",
+          "source": "aspect-tr-headhunter",
+          "tier": 1,
+          "trigger": "kill_elite",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "cooldown",
+            "mode": "all",
+            "reset": true
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        },
+        {
+          "id": "aspect-tr-headhunter-healthy-hit",
+          "name": "猎首 · 高生命追击",
+          "description": "目标生命至少90%：伤害增加70%。",
+          "source": "aspect-tr-headhunter",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_hp",
+              "op": "gte",
+              "value": 0.9
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.7,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-tr-headhunter-opening-critical",
+          "name": "猎首 · 先手暴伤",
+          "description": "进入战斗不足3秒：暴击伤害增加20%，最多1层。",
+          "source": "aspect-tr-headhunter",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "combat_time",
+              "op": "lt",
+              "value": 3
+            }
+          ],
+          "action": {
+            "type": "buff",
+            "duration": 30,
+            "maxStacks": 1,
+            "mods": {
+              "critMultiplier": 0.2
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-tr-headhunter-elite-shield",
+          "name": "猎首 · 猎杀护盾",
+          "description": "击杀精英或首领时：护盾取现有值与最大生命10%的较高值，至少持续3秒。",
+          "source": "aspect-tr-headhunter",
+          "tier": 1,
+          "trigger": "kill_elite",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "shield",
+            "ratio": 0.1,
+            "ref": "maxHp",
+            "duration": 90
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-tr-headhunter-kill-refund",
+          "name": "猎首 · 连杀恢复",
+          "description": "击杀时：当前冷却最长的技能返还剩余冷却55%。",
+          "source": "aspect-tr-headhunter",
+          "tier": 1,
+          "trigger": "kill",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "refund",
+            "fraction": 0.55,
+            "mode": "longest"
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-tr-headhunter-spine-single",
+          "name": "猎首 · 节拍强化",
+          "description": "进入战斗至少3秒且你周围12格内敌人不超过1个，斩杀、双重打击、跳斩：伤害增加10%。",
+          "source": "aspect-tr-headhunter",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "execute",
+              "dual_strike",
+              "leap_strike"
+            ]
+          },
+          "when": [
+            {
+              "kind": "combat_time",
+              "op": "gte",
+              "value": 3
+            },
+            {
+              "kind": "crowd",
+              "op": "lte",
+              "value": 1,
+              "radius": 12
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.1,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/execute"
+        },
+        {
+          "id": "aspect-tr-headhunter-spine-clear",
+          "name": "猎首 · 节拍强化",
+          "description": "你周围12格内敌人至少3个，斩杀、双重打击、跳斩：伤害增加150%。",
+          "source": "aspect-tr-headhunter",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "execute",
+              "dual_strike",
+              "leap_strike"
+            ]
+          },
+          "when": [
+            {
+              "kind": "crowd",
+              "op": "gte",
+              "value": 3,
+              "radius": 12
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 1.5,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/execute"
+        },
+        {
+          "id": "aspect-tr-headhunter-spine-elite",
+          "name": "猎首 · 节拍强化",
+          "description": "进入战斗不足3秒，斩杀、双重打击、跳斩，施放时：伤害增加20%，持续3秒，最多1层。",
+          "source": "aspect-tr-headhunter",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "execute",
+              "dual_strike",
+              "leap_strike"
+            ]
+          },
+          "when": [
+            {
+              "kind": "combat_time",
+              "op": "lt",
+              "value": 3
+            }
+          ],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "damageMult": 0.2
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/execute"
+        },
+        {
+          "id": "aspect-tr-headhunter-spine-survival",
+          "name": "猎首 · 节拍强化",
+          "description": "斩杀、双重打击、跳斩，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。",
+          "source": "aspect-tr-headhunter",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "execute",
+              "dual_strike",
+              "leap_strike"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "shield",
+            "ratio": 0.2,
+            "ref": "maxHp",
+            "duration": 90
+          },
+          "scale": [],
+          "vfxKey": "player/execute"
+        },
+        {
+          "id": "aspect-tr-headhunter-spine-safety",
+          "name": "猎首 · 节拍强化",
+          "description": "斩杀、双重打击、跳斩，施放时：闪避增加20%，持续3秒，最多1层。",
+          "source": "aspect-tr-headhunter",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "execute",
+              "dual_strike",
+              "leap_strike"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "dodge": 0.2
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/execute"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "statMultipliers": {
+        "attack": 0.75
+      },
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tr-riposte",
+    "name": "反击之魂",
+    "description": "受击时 20% 几率以第 1 技能槽反击一次（60%），冷却 2 秒",
+    "slots": [
+      "armor"
+    ],
+    "requiredLevel": 18,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tr-riposte:27",
+          "name": "反击之魂",
+          "description": "受击时 20% 几率以第 1 技能槽反击一次（60%），冷却 2 秒",
+          "source": "aspect-tr-riposte",
+          "tier": 1,
+          "trigger": "hurt",
+          "chance": 0.2,
+          "icd": 60,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "echo",
+            "ratio": 0.6,
+            "delay": 1,
+            "skill": "slot1"
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tr-spree",
+    "name": "连环杀",
+    "description": "3 秒内击杀 ≥ 5 个敌人：下一个技能 ×1.5",
+    "slots": [
+      "ring"
+    ],
+    "requiredLevel": 16,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tr-spree:28",
+          "name": "连环杀",
+          "description": "3 秒内击杀 ≥ 5 个敌人：下一个技能 ×1.5",
+          "source": "aspect-tr-spree",
+          "tier": 1,
+          "trigger": "kill",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "self_state",
+              "state": "kills",
+              "value": 5
+            }
+          ],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "damageMult": 0.5
+            },
+            "consume": "nextCast"
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tr-opening",
+    "name": "开场",
+    "description": "进入战斗后 3 秒内伤害 ×1.4",
+    "slots": [
+      "helmet"
+    ],
+    "requiredLevel": 16,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tr-opening:29",
+          "name": "开场",
+          "description": "进入战斗后 3 秒内伤害 ×1.4",
+          "source": "aspect-tr-opening",
+          "tier": 1,
+          "trigger": "combat_start",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "damageMult": 0.4
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tr-tempo",
+    "name": "节拍",
+    "description": "攻击变为原来的150%。进入战斗立即就绪，之后每6秒：伤害增加30%，必定暴击，作用于下一次施法，持续6秒，最多1层。节拍强化就绪时，进入战斗立即就绪，之后每6秒：冷却恢复速度增加15%，持续3秒，最多1层。每累计消耗50点能量时：护盾取现有值与最大生命10%的较高值，至少持续3秒。进入战斗至少3秒且你周围12格内敌人不超过1个，奥术飞弹、重力陷阱、静电场、闪现：伤害增加50%。你周围12格内敌人至少3个，奥术飞弹、重力陷阱、静电场、闪现：伤害增加150%。进入战斗不足3秒，奥术飞弹、重力陷阱、静电场、闪现，施放时：伤害增加35%，持续3秒，最多1层。奥术飞弹、重力陷阱、静电场、闪现，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。奥术飞弹、重力陷阱、静电场、闪现，施放时：闪避增加20%，持续3秒，最多1层。",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 20,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tr-tempo:30",
+          "name": "节拍 · 节拍强化",
+          "description": "进入战斗立即就绪，之后每6秒：伤害增加30%，必定暴击，作用于下一次施法，持续6秒，最多1层。",
+          "source": "aspect-tr-tempo",
+          "tier": 1,
+          "trigger": "interval",
+          "chance": 1,
+          "icd": 0,
+          "every": 180,
+          "startReady": true,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 180,
+            "maxStacks": 1,
+            "mods": {
+              "damageMult": 0.3
+            },
+            "consume": "nextCast",
+            "flags": {
+              "forceCrit": true
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        },
+        {
+          "id": "aspect-tr-tempo-tempo-recovery",
+          "name": "节拍 · 节拍恢复",
+          "description": "节拍强化就绪时，进入战斗立即就绪，之后每6秒：冷却恢复速度增加15%，持续3秒，最多1层。",
+          "source": "aspect-tr-tempo",
+          "tier": 1,
+          "trigger": "interval",
+          "chance": 1,
+          "icd": 0,
+          "every": 180,
+          "startReady": true,
+          "filter": {},
+          "when": [
+            {
+              "kind": "self_state",
+              "state": "buff",
+              "id": "aspect-tr-tempo:30"
+            }
+          ],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "cooldownRecovery": 0.15
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-tr-tempo-mana-shield",
+          "name": "节拍 · 耗蓝护盾",
+          "description": "每累计消耗50点能量时：护盾取现有值与最大生命10%的较高值，至少持续3秒。",
+          "source": "aspect-tr-tempo",
+          "tier": 1,
+          "trigger": "mana_spent",
+          "chance": 1,
+          "icd": 0,
+          "every": 50,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "shield",
+            "ratio": 0.1,
+            "ref": "maxHp",
+            "duration": 90
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-tr-tempo-spine-single",
+          "name": "节拍 · 节拍强化",
+          "description": "进入战斗至少3秒且你周围12格内敌人不超过1个，奥术飞弹、重力陷阱、静电场、闪现：伤害增加50%。",
+          "source": "aspect-tr-tempo",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "arcane_missile",
+              "gravity_well",
+              "static_field",
+              "blink"
+            ]
+          },
+          "when": [
+            {
+              "kind": "combat_time",
+              "op": "gte",
+              "value": 3
+            },
+            {
+              "kind": "crowd",
+              "op": "lte",
+              "value": 1,
+              "radius": 12
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.5,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/arcane_missile"
+        },
+        {
+          "id": "aspect-tr-tempo-spine-clear",
+          "name": "节拍 · 节拍强化",
+          "description": "你周围12格内敌人至少3个，奥术飞弹、重力陷阱、静电场、闪现：伤害增加150%。",
+          "source": "aspect-tr-tempo",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "arcane_missile",
+              "gravity_well",
+              "static_field",
+              "blink"
+            ]
+          },
+          "when": [
+            {
+              "kind": "crowd",
+              "op": "gte",
+              "value": 3,
+              "radius": 12
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 1.5,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/arcane_missile"
+        },
+        {
+          "id": "aspect-tr-tempo-spine-elite",
+          "name": "节拍 · 节拍强化",
+          "description": "进入战斗不足3秒，奥术飞弹、重力陷阱、静电场、闪现，施放时：伤害增加35%，持续3秒，最多1层。",
+          "source": "aspect-tr-tempo",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "arcane_missile",
+              "gravity_well",
+              "static_field",
+              "blink"
+            ]
+          },
+          "when": [
+            {
+              "kind": "combat_time",
+              "op": "lt",
+              "value": 3
+            }
+          ],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "damageMult": 0.35
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/arcane_missile"
+        },
+        {
+          "id": "aspect-tr-tempo-spine-survival",
+          "name": "节拍 · 节拍强化",
+          "description": "奥术飞弹、重力陷阱、静电场、闪现，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。",
+          "source": "aspect-tr-tempo",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "arcane_missile",
+              "gravity_well",
+              "static_field",
+              "blink"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "shield",
+            "ratio": 0.2,
+            "ref": "maxHp",
+            "duration": 90
+          },
+          "scale": [],
+          "vfxKey": "player/arcane_missile"
+        },
+        {
+          "id": "aspect-tr-tempo-spine-safety",
+          "name": "节拍 · 节拍强化",
+          "description": "奥术飞弹、重力陷阱、静电场、闪现，施放时：闪避增加20%，持续3秒，最多1层。",
+          "source": "aspect-tr-tempo",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "arcane_missile",
+              "gravity_well",
+              "static_field",
+              "blink"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "dodge": 0.2
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/arcane_missile"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "statMultipliers": {
+        "attack": 1.5
+      },
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tr-evasion",
+    "name": "闪避反击",
+    "description": "闪避成功后以第 1 技能槽反击（80%）",
+    "slots": [
+      "boots"
+    ],
+    "requiredLevel": 20,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tr-evasion:31",
+          "name": "闪避反击",
+          "description": "闪避成功后以第 1 技能槽反击（80%）",
+          "source": "aspect-tr-evasion",
+          "tier": 1,
+          "trigger": "dodge",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "echo",
+            "ratio": 0.8,
+            "delay": 1,
+            "skill": "slot1"
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tr-thunderstep",
+    "name": "雷霆步",
+    "description": "每移动 8 格，脚下落雷（100%，半径 2）",
+    "slots": [
+      "boots"
+    ],
+    "requiredLevel": 22,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tr-thunderstep:32",
+          "name": "雷霆步",
+          "description": "每移动 8 格，脚下落雷（100%，半径 2）",
+          "source": "aspect-tr-thunderstep",
+          "tier": 1,
+          "trigger": "moved",
+          "chance": 1,
+          "icd": 0,
+          "every": 8,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "nova",
+            "ratio": 1,
+            "radius": 2,
+            "damageType": "lightning",
+            "ref": "hit",
+            "at": "self"
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/chain"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tr-guillotine",
+    "name": "断头台",
+    "description": "对生命 < 35% 的敌人 ×1.3；击杀时回复 2% 能量；攻击×0.58",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 18,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tr-guillotine:33",
+          "name": "断头台",
+          "description": "对生命 < 35% 的敌人 ×1.3；击杀时回复 2% 能量",
+          "source": "aspect-tr-guillotine",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_hp",
+              "op": "lt",
+              "value": 0.35
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.3,
+            "against": []
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        },
+        {
+          "id": "aspect-tr-guillotine:34",
+          "name": "断头台",
+          "description": "对生命 < 35% 的敌人 ×1.3；击杀时回复 2% 能量",
+          "source": "aspect-tr-guillotine",
+          "tier": 1,
+          "trigger": "kill",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "mana",
+            "ratio": 0.02,
+            "ref": "maxMana"
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "statMultipliers": {
+        "attack": 0.58
+      },
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-tr-melee",
+    "name": "群战",
+    "description": "周围 4 格每有 1 个敌人，伤害 +4%（最多 +40%）",
+    "slots": [
+      "armor"
+    ],
+    "requiredLevel": 16,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-tr-melee:35",
+          "name": "群战",
+          "description": "周围 4 格每有 1 个敌人，伤害 +4%（最多 +40%）",
+          "source": "aspect-tr-melee",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "amplify",
+            "ratio": 0,
+            "against": [],
+            "perCrowd": 0.04,
+            "crowdCap": 10
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-df-rebound",
+    "name": "反震",
+    "description": "格挡时反弹被格挡伤害的 300%",
+    "slots": [
+      "armor"
+    ],
+    "requiredLevel": 18,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-df-rebound:36",
+          "name": "反震",
+          "description": "格挡时反弹被格挡伤害的 300%",
+          "source": "aspect-df-rebound",
+          "tier": 1,
+          "trigger": "block",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "nova",
+            "ratio": 3,
+            "radius": 0.1,
+            "damageType": "physical",
+            "ref": "hit",
+            "at": "target",
+            "maxTargets": 1
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-df-burst",
+    "name": "爆盾",
+    "description": "攻击变为原来的95%。护盾破裂时：对你周围3格敌人造成本次护盾的历史最高值50%的物理伤害。格挡时：对攻击者造成格挡抵消的护甲减免前伤害50%的物理伤害。持盾时：受到伤害减少20%。格挡时：护盾取现有值与最大生命10%的较高值，至少持续3秒（触发间隔3秒）。进入战斗至少3秒且你周围12格内敌人不超过1个，重击、狂暴、护身印：伤害增加140%。你周围12格内敌人至少3个，重击、狂暴、护身印：伤害增加10%。进入战斗不足3秒，重击、狂暴、护身印，施放时：伤害增加150%，持续3秒，最多1层。重击、狂暴、护身印，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。重击、狂暴、护身印，施放时：闪避增加20%，持续3秒，最多1层。",
+    "slots": [
+      "helmet"
+    ],
+    "requiredLevel": 20,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-df-burst:37",
+          "name": "爆盾 · 破盾爆发",
+          "description": "护盾破裂时：对你周围3格敌人造成本次护盾的历史最高值50%的物理伤害。",
+          "source": "aspect-df-burst",
+          "tier": 1,
+          "trigger": "shield_break",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "nova",
+            "ratio": 0.5,
+            "radius": 3,
+            "damageType": "physical",
+            "ref": "shield",
+            "at": "self"
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        },
+        {
+          "id": "aspect-df-burst-block-counter",
+          "name": "爆盾 · 格挡反击",
+          "description": "格挡时：对攻击者造成格挡抵消的护甲减免前伤害50%的物理伤害。",
+          "source": "aspect-df-burst",
+          "tier": 1,
+          "trigger": "block",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "nova",
+            "ratio": 0.5,
+            "radius": 0,
+            "damageType": "physical",
+            "ref": "hit",
+            "at": "target",
+            "maxTargets": 1
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-df-burst-shield-guard",
+          "name": "爆盾 · 护盾减伤",
+          "description": "持盾时：受到伤害减少20%。",
+          "source": "aspect-df-burst",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "self_state",
+              "state": "shield"
+            }
+          ],
+          "action": {
+            "type": "reduce",
+            "ratio": 0.2
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-df-burst-block-shield",
+          "name": "爆盾 · 格挡护盾",
+          "description": "格挡时：护盾取现有值与最大生命10%的较高值，至少持续3秒（触发间隔3秒）。",
+          "source": "aspect-df-burst",
+          "tier": 1,
+          "trigger": "block",
+          "chance": 1,
+          "icd": 90,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "shield",
+            "ratio": 0.1,
+            "ref": "maxHp",
+            "duration": 90
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-df-burst-spine-single",
+          "name": "爆盾 · 节拍强化",
+          "description": "进入战斗至少3秒且你周围12格内敌人不超过1个，重击、狂暴、护身印：伤害增加140%。",
+          "source": "aspect-df-burst",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "ground_slam",
+              "rampage",
+              "ward"
+            ]
+          },
+          "when": [
+            {
+              "kind": "combat_time",
+              "op": "gte",
+              "value": 3
+            },
+            {
+              "kind": "crowd",
+              "op": "lte",
+              "value": 1,
+              "radius": 12
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 1.4,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ground_slam"
+        },
+        {
+          "id": "aspect-df-burst-spine-clear",
+          "name": "爆盾 · 节拍强化",
+          "description": "你周围12格内敌人至少3个，重击、狂暴、护身印：伤害增加10%。",
+          "source": "aspect-df-burst",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "ground_slam",
+              "rampage",
+              "ward"
+            ]
+          },
+          "when": [
+            {
+              "kind": "crowd",
+              "op": "gte",
+              "value": 3,
+              "radius": 12
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.1,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/ground_slam"
+        },
+        {
+          "id": "aspect-df-burst-spine-elite",
+          "name": "爆盾 · 节拍强化",
+          "description": "进入战斗不足3秒，重击、狂暴、护身印，施放时：伤害增加150%，持续3秒，最多1层。",
+          "source": "aspect-df-burst",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "ground_slam",
+              "rampage",
+              "ward"
+            ]
+          },
+          "when": [
+            {
+              "kind": "combat_time",
+              "op": "lt",
+              "value": 3
+            }
+          ],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "damageMult": 1.5
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/ground_slam"
+        },
+        {
+          "id": "aspect-df-burst-spine-survival",
+          "name": "爆盾 · 节拍强化",
+          "description": "重击、狂暴、护身印，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。",
+          "source": "aspect-df-burst",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "ground_slam",
+              "rampage",
+              "ward"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "shield",
+            "ratio": 0.2,
+            "ref": "maxHp",
+            "duration": 90
+          },
+          "scale": [],
+          "vfxKey": "player/ground_slam"
+        },
+        {
+          "id": "aspect-df-burst-spine-safety",
+          "name": "爆盾 · 节拍强化",
+          "description": "重击、狂暴、护身印，施放时：闪避增加20%，持续3秒，最多1层。",
+          "source": "aspect-df-burst",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "ground_slam",
+              "rampage",
+              "ward"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "dodge": 0.2
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/ground_slam"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "statMultipliers": {
+        "attack": 0.95
+      },
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-df-bedrock",
+    "name": "磐石",
+    "description": "生命 > 90% 时受到伤害 −20%",
+    "slots": [
+      "armor"
+    ],
+    "requiredLevel": 16,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-df-bedrock:38",
+          "name": "磐石",
+          "description": "生命 > 90% 时受到伤害 −20%",
+          "source": "aspect-df-bedrock",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "self_hp",
+              "op": "gt",
+              "value": 0.9
+            }
+          ],
+          "action": {
+            "type": "reduce",
+            "ratio": 0.2
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-df-undying",
+    "name": "不屈",
+    "description": "受到致命伤害时保留 1 点生命并无敌 1.5 秒，冷却 90 秒",
+    "slots": [
+      "accessory"
+    ],
+    "requiredLevel": 26,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-df-undying:39",
+          "name": "不屈",
+          "description": "受到致命伤害时保留 1 点生命并无敌 1.5 秒，冷却 90 秒",
+          "source": "aspect-df-undying",
+          "tier": 1,
+          "trigger": "lethal",
+          "chance": 1,
+          "icd": 2700,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 45,
+            "maxStacks": 1,
+            "mods": {},
+            "flags": {
+              "immortal": true,
+              "surviveAtOne": true
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-df-thornmail",
+    "name": "荆甲",
+    "description": "荆棘伤害可以暴击，并施加破甲 3 秒",
+    "slots": [
+      "armor"
+    ],
+    "requiredLevel": 22,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [],
+      "patches": [],
+      "overrides": [
+        {
+          "target": "atom-thorns",
+          "set": {
+            "action.crit": true,
+            "action.status": {
+              "kind": "armor_down",
+              "duration": 90,
+              "strength": 0.2,
+              "scope": "hit",
+              "cleanse": true
+            }
+          }
+        }
+      ],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-df-cycle",
+    "name": "守护循环",
+    "description": "获得护盾时回复 5% 生命，冷却 2 秒",
+    "slots": [
+      "ring"
+    ],
+    "requiredLevel": 18,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-df-cycle:40",
+          "name": "守护循环",
+          "description": "获得护盾时回复 5% 生命，冷却 2 秒",
+          "source": "aspect-df-cycle",
+          "tier": 1,
+          "trigger": "shield_gain",
+          "chance": 1,
+          "icd": 60,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "heal",
+            "ratio": 0.05,
+            "ref": "maxHp"
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-df-scythe",
+    "name": "吸血之镰",
+    "description": "对精英、首领时生命偷取 ×2",
+    "slots": [
+      "weapon"
+    ],
+    "requiredLevel": 20,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [],
+      "patches": [],
+      "overrides": [],
+      "conditional": [
+        {
+          "id": "aspect-df-scythe",
+          "pool": "stat",
+          "stat": "lifestealMultiplier",
+          "value": 2,
+          "when": {
+            "kind": "target_rank",
+            "ranks": [
+              "elite",
+              "boss"
+            ]
+          }
+        }
+      ],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-df-hold",
+    "name": "坚守",
+    "description": "站定至少1秒时：伤害减免每秒增加25%，最多25%。",
+    "slots": [
+      "boots"
+    ],
+    "requiredLevel": 16,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [],
+      "patches": [],
+      "overrides": [],
+      "conditional": [
+        {
+          "id": "aspect-df-hold",
+          "pool": "stat",
+          "stat": "damageReduction",
+          "value": 0.25,
+          "when": {
+            "kind": "self_state",
+            "state": "still",
+            "value": 1
+          },
+          "perStillSecond": true,
+          "max": 0.25
+        }
+      ],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-mv-tailwind",
+    "name": "追风之力",
+    "description": "攻击变为原来的50%。移速加成的35%转为伤害加成，永久与临时移速分别计算。位移后：伤害增加15%，必定暴击，作用于下一次直接命中，持续3秒，最多1层。移动时：闪避增加15%，最多1层。位移后：对你周围2格敌人造成攻击145%的物理伤害。进入战斗至少3秒且你周围12格内敌人不超过1个，影袭、影刃、乱刃：伤害增加10%。你周围12格内敌人至少3个，影袭、影刃、乱刃：伤害增加150%。进入战斗不足3秒，影袭、影刃、乱刃，施放时：伤害增加10%，持续3秒，最多1层。影袭、影刃、乱刃，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。影袭、影刃、乱刃，施放时：闪避增加20%，持续3秒，最多1层。",
+    "slots": [
+      "boots"
+    ],
+    "requiredLevel": 18,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-mv-tailwind-dash-strike",
+          "name": "追风之力 · 位移强化",
+          "description": "位移后：伤害增加15%，必定暴击，作用于下一次直接命中，持续3秒，最多1层。",
+          "source": "aspect-mv-tailwind",
+          "tier": 1,
+          "trigger": "dash",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "damageMult": 0.15
+            },
+            "consume": "nextHit",
+            "flags": {
+              "forceCrit": true
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-mv-tailwind-moving-evasion",
+          "name": "追风之力 · 移动闪避",
+          "description": "移动时：闪避增加15%，最多1层。",
+          "source": "aspect-mv-tailwind",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "self_state",
+              "state": "moving",
+              "value": 0
+            }
+          ],
+          "action": {
+            "type": "buff",
+            "duration": 30,
+            "maxStacks": 1,
+            "mods": {
+              "dodge": 0.15
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-mv-tailwind-dash-nova",
+          "name": "追风之力 · 落点冲击",
+          "description": "位移后：对你周围2格敌人造成攻击145%的物理伤害。",
+          "source": "aspect-mv-tailwind",
+          "tier": 1,
+          "trigger": "dash",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "nova",
+            "ratio": 1.45,
+            "radius": 2,
+            "damageType": "physical",
+            "ref": "attack",
+            "at": "self"
+          },
+          "scale": [],
+          "vfxKey": "player/ward"
+        },
+        {
+          "id": "aspect-mv-tailwind-spine-single",
+          "name": "追风之力 · 节拍强化",
+          "description": "进入战斗至少3秒且你周围12格内敌人不超过1个，影袭、影刃、乱刃：伤害增加10%。",
+          "source": "aspect-mv-tailwind",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "shadow_step",
+              "shadow_blade",
+              "blade_flurry"
+            ]
+          },
+          "when": [
+            {
+              "kind": "combat_time",
+              "op": "gte",
+              "value": 3
+            },
+            {
+              "kind": "crowd",
+              "op": "lte",
+              "value": 1,
+              "radius": 12
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.1,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/shadow_step"
+        },
+        {
+          "id": "aspect-mv-tailwind-spine-clear",
+          "name": "追风之力 · 节拍强化",
+          "description": "你周围12格内敌人至少3个，影袭、影刃、乱刃：伤害增加150%。",
+          "source": "aspect-mv-tailwind",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "shadow_step",
+              "shadow_blade",
+              "blade_flurry"
+            ]
+          },
+          "when": [
+            {
+              "kind": "crowd",
+              "op": "gte",
+              "value": 3,
+              "radius": 12
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 1.5,
+            "against": []
+          },
+          "scale": [],
+          "vfxKey": "player/shadow_step"
+        },
+        {
+          "id": "aspect-mv-tailwind-spine-elite",
+          "name": "追风之力 · 节拍强化",
+          "description": "进入战斗不足3秒，影袭、影刃、乱刃，施放时：伤害增加10%，持续3秒，最多1层。",
+          "source": "aspect-mv-tailwind",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "shadow_step",
+              "shadow_blade",
+              "blade_flurry"
+            ]
+          },
+          "when": [
+            {
+              "kind": "combat_time",
+              "op": "lt",
+              "value": 3
+            }
+          ],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "damageMult": 0.1
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/shadow_step"
+        },
+        {
+          "id": "aspect-mv-tailwind-spine-survival",
+          "name": "追风之力 · 节拍强化",
+          "description": "影袭、影刃、乱刃，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。",
+          "source": "aspect-mv-tailwind",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "shadow_step",
+              "shadow_blade",
+              "blade_flurry"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "shield",
+            "ratio": 0.2,
+            "ref": "maxHp",
+            "duration": 90
+          },
+          "scale": [],
+          "vfxKey": "player/shadow_step"
+        },
+        {
+          "id": "aspect-mv-tailwind-spine-safety",
+          "name": "追风之力 · 节拍强化",
+          "description": "影袭、影刃、乱刃，施放时：闪避增加20%，持续3秒，最多1层。",
+          "source": "aspect-mv-tailwind",
+          "tier": 1,
+          "trigger": "cast",
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "skills": [
+              "shadow_step",
+              "shadow_blade",
+              "blade_flurry"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "dodge": 0.2
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/shadow_step"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [
+        {
+          "fromStat": "speedBonus",
+          "toStat": "damageAdd",
+          "ratio": 0.35
+        }
+      ],
+      "statMultipliers": {
+        "attack": 0.5
+      },
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-mv-double",
+    "name": "双重位移",
+    "description": "位移技能 2 次充能",
+    "slots": [
+      "boots"
+    ],
+    "requiredLevel": 22,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [],
+      "patches": [
+        {
+          "tags": [
+            "dash"
+          ],
+          "ops": [
+            {
+              "path": "charges",
+              "op": "set",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-rs-surge",
+    "name": "能量狂涌",
+    "description": "能量不足以施放时，下一个技能免费且 ×2，冷却 10 秒",
+    "slots": [
+      "accessory"
+    ],
+    "requiredLevel": 20,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-rs-surge:41",
+          "name": "能量狂涌",
+          "description": "能量不足以施放时，下一个技能免费且 ×2，冷却 10 秒",
+          "source": "aspect-rs-surge",
+          "tier": 1,
+          "trigger": "mana_empty",
+          "chance": 1,
+          "icd": 300,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 300,
+            "maxStacks": 1,
+            "mods": {
+              "damageMult": 1
+            },
+            "consume": "nextCast",
+            "flags": {
+              "freeCost": true
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-rs-circuit",
+    "name": "能量回路",
+    "description": "每消耗 100 能量，所有技能冷却 −1 秒",
+    "slots": [
+      "ring"
+    ],
+    "requiredLevel": 18,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-rs-circuit:42",
+          "name": "能量回路",
+          "description": "每消耗 100 能量，所有技能冷却 −1 秒",
+          "source": "aspect-rs-circuit",
+          "tier": 1,
+          "trigger": "mana_spent",
+          "chance": 1,
+          "icd": 0,
+          "every": 100,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "cooldown",
+            "mode": "all",
+            "ticks": 30
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-mv-afterimage",
+    "name": "疾风残影",
+    "description": "位移后 3 秒内移速 +30%、闪避 +15%",
+    "slots": [
+      "boots"
+    ],
+    "requiredLevel": 16,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [
+        {
+          "id": "aspect-mv-afterimage:43",
+          "name": "疾风残影",
+          "description": "位移后 3 秒内移速 +30%、闪避 +15%",
+          "source": "aspect-mv-afterimage",
+          "tier": 1,
+          "trigger": "dash",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 90,
+            "maxStacks": 1,
+            "mods": {
+              "speedPercent": 0.3,
+              "dodge": 0.15
+            }
+          },
+          "scale": [],
+          "vfxKey": "player/whirl"
+        }
+      ],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [],
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  },
+  {
+    "id": "aspect-rs-perpetual",
+    "name": "永动",
+    "description": "冷却缩减超过 30% 的部分按 1:1 转为类型池伤害加成；攻击×0.33",
+    "slots": [
+      "ring"
+    ],
+    "requiredLevel": 26,
+    "weapons": [],
+    "parts": {
+      "stats": [],
+      "zones": [],
+      "atoms": [],
+      "rules": [],
+      "patches": [],
+      "overrides": [],
+      "conditional": [],
+      "flagFilter": {},
+      "conversions": [
+        {
+          "fromStat": "cdr",
+          "toStat": "damageAdd",
+          "ratio": 1,
+          "threshold": 0.3
+        }
+      ],
+      "statMultipliers": {
+        "attack": 0.33
+      },
+      "slotPatches": []
+    },
+    "version": 1,
+    "legacy": false,
+    "dropEnabled": true
+  }
+]

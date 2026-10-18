@@ -1,0 +1,20 @@
+#!/bin/sh
+# Picks a Python 3.12 interpreter for tools/bootstrap.py, which enforces the
+# version again and creates .venv. Override with ABYSS_PYTHON=/path/to/python.
+set -e
+cd "$(dirname "$0")/.."
+
+if [ -n "$ABYSS_PYTHON" ]; then
+    exec "$ABYSS_PYTHON" tools/bootstrap.py
+fi
+
+if command -v python3.12 >/dev/null 2>&1; then
+    exec python3.12 tools/bootstrap.py
+fi
+
+if python3 -c 'import sys; sys.exit(0 if sys.version_info[:2] == (3, 12) else 1)' 2>/dev/null; then
+    exec python3 tools/bootstrap.py
+fi
+
+echo "Python 3.12.x is required. Install it or run: ABYSS_PYTHON=/path/to/python3.12 make setup" >&2
+exit 1

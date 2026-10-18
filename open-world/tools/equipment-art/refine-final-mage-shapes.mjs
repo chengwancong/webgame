@@ -1,0 +1,13 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import {existsSync} from 'node:fs';
+import {join,resolve} from 'node:path';
+const root=resolve(import.meta.dirname,'../..'),art=join(root,'assets/equipment-remake-20261003'),file=join(art,'production.json'),plan=JSON.parse(await readFile(file,'utf8'));
+const shapes={
+ 'staff:3:armor':'one FULL-LENGTH ceremonial mage robe with a VERY WIDE TRIANGULAR SHOULDER MANTLE consisting of THREE broad stepped cape layers. Upper cape width nearly equals robe full height; collar mantle dominates the outer silhouette. Long narrow sleeves are tucked under the mantle, not hanging giant bell sleeves. One long central rhombus panel and two side robe panels below. Clearly a wide layered cape over a robe, not the basic narrow three-panel travel robe or T2 bell-sleeve robe. Preserve the series materials and simple large planes.',
+ 'staff:2:boots':'one compact overlapping pair of LOW POINTED MAGE SLIPPERS, narrow gently pointed toes and broad rolled cloth/stone/bone ankle collars, exactly two large diagonal straps. Shoe shafts are LOW, no tall calf shaft, no upright greave or tall basic/full boot cuff. Standard ivory/cyan cloth and brown leather; omega sage matte stone parts; primal ivory bone/rootwood and tan wraps. Complete wearable pair.',
+ 'hidden:2:boots':'one pair of LOW ANKLE STEALTH WRAP SHOES, slightly split/offset toe caps and TWO thick diagonal crossing wraps over each shoe, one low offset heel cuff. No tall shaft and no upright metal greave. Clearly low supple stealth shoes with the requested series construction.',
+ 'wand:2:boots':'one pair of LOW ROUND BUBBLE-TOE ankle boots, TWO broad overlapping rounded petal cuffs folded outward around the low ankle, one large curved strap on each foot. Short round foot, no tall shaft, no sharp point or knight greave. Clearly low double-petal woodland shoes with the requested series construction.'
+};
+const rejected=[];
+for(const item of plan.items){const s=shapes[`${item.direction}:${item.tier}:${item.slot}`];if(!s)continue;item.prompt='EXACT PRIMARY MAGE CLOTHING/FOOTWEAR SHAPE: '+s+'\n'+item.prompt;const p=join(art,'records',item.id+'.json');if(existsSync(p)){const r=JSON.parse(await readFile(p,'utf8'));r.status='rejected-mage-stage-contour-repeats';r.reviewNote='Main contour remains too close to adjacent stage. Rebuild explicit wide stepped mantle / low slipper shape from concise request.';await writeFile(p,JSON.stringify(r,null,2));rejected.push(item.id);}}
+plan.designRevision=12;await writeFile(file,JSON.stringify(plan,null,2));console.log(JSON.stringify({designRevision:12,rejected}));

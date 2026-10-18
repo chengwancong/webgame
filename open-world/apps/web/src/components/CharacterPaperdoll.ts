@@ -1,0 +1,15 @@
+import type {Snapshot} from '../../../../packages/contracts/index.ts';
+import {art} from '../ui-assets.ts';
+import {pipsHtml,type SlotMark,sectionTitleHtml,esc,itemSlot,buttonHtml,statusBadgeHtml} from '../ui-components.ts';
+import {gearQuality} from './gear-metadata.ts';
+import {equipmentPartLabels,runtimeSlotForPart,type EquipmentPart,type GearSlotFilter} from '../equipment-slots.ts';
+const parts:EquipmentPart[]=['helmet','armor','weapon','necklace','ring','boots'];
+export function CharacterPaperdoll(snapshot:Snapshot,filter:GearSlotFilter,figureURL?:string){
+ let count=0;
+ const slots=parts.map((part,index)=>{const slot=runtimeSlotForPart(part),item=snapshot.gear.find(gear=>slot&&gear.id===snapshot.equipment[slot]&&gear.slot===slot),available=slot?snapshot.gear.filter(gear=>gear.slot===slot&&!Object.values(snapshot.equipment).includes(gear.id)).length:0;if(item)count++;
+  return itemSlot({action:'filter-slot',id:part,equipmentPart:part,label:`${equipmentPartLabels[part]}，${item?item.name+'，已装备':'未装备'}，查看候选装备`,pressed:filter===part,attributes:{'aria-expanded':filter===part},className:`character-slot ui-node ${item?'quality-'+gearQuality(item):''} ${index<3?'left':'right'} row-${index%3}${item?'':' empty'}`,equipmentTip:item?{id:item.id,revision:snapshot.revision}:undefined,state:item?'learned':undefined,title:`${equipmentPartLabels[part]}，${item?item.name:'未装备'}，候选 ${available} 件`,marks:[...(available?[{corner:'tr',kind:'count',value:available,label:`${available} 件候选装备`} as SlotMark]:item?[{corner:'tr',kind:'check',label:'已装备'} as SlotMark]:[]),...(item?.rank?[{corner:'bl',kind:'rank',value:'+'+item.rank,label:'强化 '+item.rank} as SlotMark]:[]),...(item?.locked?[{corner:'tl',kind:'lock',label:'已锁定'} as SlotMark]:[])],extra:`<span class="character-slot-art"><img src="${art(item?'gear-'+item.base:'gear-standard-sword-t1-'+part)}" alt="" draggable="false"></span><span class="character-slot-copy"><small>${equipmentPartLabels[part]}</small>${item?`<b class="ui-equipment-name">${esc(item.name)}</b>`:''}</span>`});
+ }).join('');
+ const core=snapshot.gear.find(gear=>gear.id===snapshot.equipment.core&&gear.slot==='core');
+ const coreButton=buttonHtml('旧核心 · '+(core?.name??'未装备'),{action:'filter-slot',id:'core',size:'compact',className:'legacy-core-entry',iconHtml:core?`<img src="${art('gear-'+core.base)}" alt="">`:undefined,attributes:{'aria-expanded':filter==='core','aria-label':'旧核心，'+(core?.name??'未装备')+'，管理',...(core?{'data-equipment-tip':core.id,'data-equipment-revision':snapshot.revision}:{})}});
+ return `<header class="character-paper-heading">${sectionTitleHtml('当前穿戴')}${pipsHtml({value:count,max:6,label:'当前穿戴部位',size:'md'})}</header><div class="character-doll" role="group" aria-label="人物装备六部位" title="悬停查看已穿戴装备，点击部位更换；Esc 收起换装或关闭人物。"><div class="character-identity"><h3>${esc(snapshot.name)}</h3><p>Lv. ${snapshot.level}</p></div><div class="character-ground" aria-hidden="true"></div><img class="doll-hero" src="${esc(figureURL||art('portrait-hero'))}" alt="当前角色外观">${slots}</div><footer class="character-paper-footer">${coreButton}</footer>`;
+}

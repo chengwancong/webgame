@@ -1,0 +1,50 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+ ❯ tests/build-variety-r7.database.test.ts (4 tests | 1 failed | 3 skipped) 6179ms
+   ↓ real private offers, same-tier reroll, selection replay, no free heal and durable reconnect use only frozen entry data
+   ↓ per-dungeon one-round and reroll overrides freeze in real commands instead of the global three-round policy
+   ↓ real next command keeps the same selected build and accumulated rule counters across stages
+   × controlled world-IV catalogue adds a fourth offer only after real boss damage crosses half health 5975ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/build-variety-r7.database.test.ts > controlled world-IV catalogue adds a fourth offer only after real boss damage crosses half health
+AssertionError: expected [ Array(3) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "description": "获得野火（1.6档）：击杀燃烧目标：燃烧蔓延至附近 3 个",
++     "id": "aug-g-wildfire",
++     "name": "野火",
++     "tier": "gold",
++   },
++   {
++     "description": "获得狂骨（1.6档）：每损失10%生命，伤害乘区额外 +6.4%，最多9层",
++     "id": "aug-g-bone",
++     "name": "狂骨",
++     "tier": "gold",
++   },
++   {
++     "description": "获得时砂（1.6档）：施放当前冷却最长的技能：重置其他技能冷却，效果冷却20秒",
++     "id": "aug-g-time-sand",
++     "name": "时砂",
++     "tier": "gold",
++   },
++ ]
+
+ ❯ tests/build-variety-r7.database.test.ts:36:115
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 skipped (4)
+   Start at  03:50:40
+   Duration  7.80s (transform 821ms, setup 0ms, import 1.51s, tests 6.18s, environment 0ms)
+

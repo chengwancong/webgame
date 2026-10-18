@@ -1,0 +1,6 @@
+import {hudIcon} from '../hud-icons.ts';
+import {escapeHtml} from './primitives.ts';
+export type CurrencyKind='gold'|'material'|'xp';
+const labels={gold:'金币',material:'强化石',xp:'经验'};
+export function currencyIconHtml(kind:CurrencyKind){return `<span class="ui-currency-symbol ui-currency-symbol--${kind}" aria-hidden="true">${kind==='gold'?hudIcon('coin'):kind==='material'?'<svg viewBox="0 0 32 32"><path d="m16 2 12 13-4 14-8-3-8 3-4-14z" fill="currentColor"/><path d="m16 2-5 16 5 8 5-8z" fill="var(--color-text-primary)" opacity=".55"/></svg>':'<svg viewBox="0 0 32 32"><path d="m16 2 4 10 11 4-11 4-4 11-4-11L1 16l11-4z" fill="currentColor"/></svg>'}</span>`;}
+export function resourceAmountHtml(kind:CurrencyKind,value:number|string|null,options:{label?:string;compact?:boolean;emphasis?:boolean}={}){const label=options.label??labels[kind],amount=value===null||typeof value==='number'&&!Number.isFinite(value)?'—':typeof value==='number'?new Intl.NumberFormat('zh-CN',{maximumFractionDigits:20}).format(value):value;return `<span class="ui-resource${options.compact?' ui-resource--compact':''}${options.emphasis?' ui-resource--value':''}" data-resource="${kind}" aria-label="${escapeHtml(label+' '+amount)}">${currencyIconHtml(kind)}<span><b class="ui-number">${escapeHtml(amount)}</b><small>${escapeHtml(label)}</small></span></span>`;}

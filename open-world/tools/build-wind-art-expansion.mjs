@@ -1,0 +1,35 @@
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {resolve,join,relative} from 'node:path';
+import {createHash} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+import sharp from 'sharp';
+import {windExpansionVersion,windZones,windCombatActors,windRegionalNpcs,windBannerBases,windExtraSprites} from '../assets/open-world/wind-expansion-spec.mjs';
+const root=resolve(import.meta.dirname,'..'),pub=join(root,'apps/web/public/art/open-world'),hash=bytes=>createHash('sha256').update(bytes).digest('hex'),rel=path=>relative(root,path).replaceAll('\\','/');
+const read=async path=>JSON.parse(await readFile(join(root,path),'utf8'));
+const json=async(path,value)=>{await mkdir(resolve(path,'..'),{recursive:true});await writeFile(path,JSON.stringify(value,null,2)+'\n');};
+async function file(path){const bytes=await readFile(path),m=path.endsWith('.png')?await sharp(bytes).metadata():{};return {path:rel(path),sha256:hash(bytes),bytes:bytes.length,width:m.width,height:m.height,alpha:m.hasAlpha};}
+/** Called after the original wind import. Rebuilds remain independent of the
+ * five-island package and do not rely on another island's runtime asset IDs. */
+export async function extendWindArt(manifest){
+ manifest.assets=manifest.assets.filter(a=>a.expansion!==windExpansionVersion);
+ for(const a of manifest.assets)a.island??=['mask','map-symbol','travel-effect'].includes(a.category)?'shared':'wind';
+ const append=asset=>manifest.assets.push({...asset,island:'wind',expansion:windExpansionVersion,accepted:false,status:'imported-awaiting-visual-review'});
+ const combat=[...(await read('assets/starsea/monsters/manifest.json')).assets,...(await read('assets/starsea/bosses/manifest.json')).assets];
+ for(const def of windCombatActors){const base=combat.find(a=>a.id===def.base);if(!base)throw Error('Wind expansion actor missing '+def.base);const runtime=structuredClone(base.runtime);runtime.displayHeight=def.displayHeight;runtime.material=def.material;if(runtime.scale)runtime.scale*=def.displayHeight/base.runtime.displayHeight;
+  append({...def,kind:'actor',group:base.group,source:{mode:'registered-actor-material-and-scale-adaptation',assetId:base.id,path:base.source.path,sha256:base.source.sha256,nativeVersion:base.source.nativeVersion,adjustments:['Complete registered actions, sockets and phase profiles retained.','Declared material and display height only.']},files:base.files,runtime,actions:base.actions,states:base.states,phaseComponents:base.phaseComponents});
+ }
+ const npcLibrary=await read('assets/starsea/npc/manifest.json');
+ for(const def of windRegionalNpcs){const base=npcLibrary.assets.find(a=>a.id==='ss-npc-'+def.kit);if(!base)throw Error('Wind profession kit missing '+def.kit);const profile=await read('apps/web/public'+base.runtime.profile),selected=[...def.skins,'STARSEA/'+def.kit],rig=await read('apps/web/public'+profile.runtime.json),skins=new Set(rig.skins.map(s=>s.name));for(const skin of selected)if(!skins.has(skin))throw Error('Missing native regional skin '+skin);
+  profile.id=def.id;profile.skinNames=selected;delete profile.slotTints;const profileURL='/art/open-world/actors/'+def.id+'/profile.json',out=join(root,'apps/web/public'+profileURL);await json(out,profile);
+  const dependencies=[profile.runtime.json,profile.runtime.atlas,...Object.values(profile.runtime.images??{})].filter(p=>typeof p==='string');const files=[await file(out),...base.files];for(const path of dependencies){const checked=await file(join(root,'apps/web/public'+path));if(!files.some(f=>f.path===checked.path))files.push(checked);}
+  append({...def,kind:'actor',group:'npc',source:{mode:'native-skin-and-profession-kit',assetId:base.id,selectedSkins:selected,nativeVersion:rig.skeleton.spine,...await file(join(root,'apps/web/public'+profile.runtime.json))},files,runtime:{...structuredClone(base.runtime),profile:profileURL,displayHeight:100,material:def.material},actions:base.actions,states:base.states});
+ }
+ for(const def of windExtraSprites){const base=manifest.assets.find(a=>a.id===def.base);if(!base?.runtime.file)throw Error('Wind sprite source missing '+def.base);const fileURL='/art/open-world/sprites/'+def.id+'.png',out=join(root,'apps/web/public'+fileURL);await mkdir(resolve(out,'..'),{recursive:true});await writeFile(out,await readFile(join(root,'apps/web/public'+base.runtime.file)));const meta=await sharp(out).metadata();append({...def,kind:'sprite',source:{mode:'registered-material-adaptation',assetId:base.id,...await file(join(root,'apps/web/public'+base.runtime.file))},files:[await file(out)],runtime:{...structuredClone(base.runtime),file:fileURL,width:meta.width,height:meta.height,displayWidth:def.displayWidth,displayHeight:def.displayWidth*meta.height/meta.width,material:def.material}});}
+ for(const [i,zone]of windZones.entries()){const base=manifest.assets.find(a=>a.id===windBannerBases[i]);if(!base?.runtime.file)throw Error('Wind zone symbol source missing '+zone);const fileURL=`/art/open-world/symbols/zone-wind-${i+1}.png`,out=join(root,'apps/web/public'+fileURL);await mkdir(resolve(out,'..'),{recursive:true});await sharp(join(root,'apps/web/public'+base.runtime.file)).resize(112,112,{fit:'contain',background:{r:0,g:0,b:0,alpha:0}}).extend({top:8,bottom:8,left:8,right:8,background:{r:0,g:0,b:0,alpha:0}}).png().toFile(out);append({id:`ow-zone-wind-${i+1}`,name:zone+'横幅图标',zone,kind:'sprite',category:'zone-banner',source:{mode:'registered-landmark-thumbnail',assetId:base.id,...await file(join(root,'apps/web/public'+base.runtime.file))},files:[await file(out)],runtime:{kind:'sprite',file:fileURL,width:128,height:128,displayWidth:48,displayHeight:48,anchor:[.5,.5],states:['default']}});}
+ const extras=manifest.assets.filter(a=>a.expansion===windExpansionVersion),digest=hash(Buffer.from(JSON.stringify(extras.map(({accepted,status,...asset})=>asset))));
+ manifest.expansion={version:windExpansionVersion,digest,newOriginalImages:0,actorVariants:windCombatActors.length,regionalNpcs:windRegionalNpcs.length,banners:windZones.length,extraEntrance:true,bossGate:true,reviewed:false};
+ try{const review=await read('assets/open-world/wind-expansion-review.json');if(review.digest===digest&&review.filesPassed&&review.browserPassed){manifest.expansion.reviewed=true;for(const asset of extras){asset.accepted=true;asset.status='resource-reviewed';}}}catch(error){if(error.code!=='ENOENT')throw error;}
+ manifest.counts={...manifest.counts,imported:manifest.assets.length,nativeActors:manifest.assets.filter(a=>a.kind==='actor').length,actorVariants:windCombatActors.length,regionalNpcs:windRegionalNpcs.length};
+ return manifest;
+}
+if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){const manifest=await extendWindArt(await read('assets/open-world/manifest.json'));for(const path of ['assets/open-world/manifest.json','apps/web/public/art/open-world/manifest.json','packages/asset-manifest/open-world.v1.json'])await json(join(root,path),manifest);console.log(JSON.stringify({imported:manifest.assets.length,expansion:manifest.expansion}));}

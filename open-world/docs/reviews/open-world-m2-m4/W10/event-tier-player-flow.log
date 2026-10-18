@@ -1,0 +1,35 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+ ✓ tests/stage-keys.database.test.ts (5 tests) 23616ms
+   ✓ settles a real dungeon chest and elite sources with frozen private rules, then crafts one actual item with matching idempotent receipts and no cross-stage material  4359ms
+   ✓ a real layer4 boss victory opens5 and a newly started layer5 freezes the declared relative difficulty  4451ms
+   ✓ changing the private probability for a newly created instance grants an actual key on an actual elite kill  4173ms
+   ✓ returns persisted diagnostics from actual damage and the real timeout; reconnect returns the same result  1783ms
+   ✓ real endgame material sources craft canonical cores or capped glyph overflow, with identical replay and persisted power after reconnect  8580ms
+ ✓ tests/authored-dungeon-entry.database.test.ts (1 test) 5942ms
+   ✓ a player enters every authored island dungeon through the real catalogue and create/leave commands without copying island access into legacy progression  5723ms
+ ❯ tests/field-activities.database.test.ts (7 tests | 1 failed) 2055ms
+   ✓ opens a chest once per character with actual private 2–4 item rewards and command replay without duplicate ledger or rewards  310ms
+   ✓ defend executes all real waves, persists the exact checkpoint across app restart, completes and awards only once  465ms
+   ✓ waves executes all real waves, persists the exact checkpoint across app restart, completes and awards only once 220ms
+   ✓ horde executes all real waves, persists the exact checkpoint across app restart, completes and awards only once  348ms
+   ✓ rare elites freeze 2–3 affixes, issue 3–5 items, obey private cooldown, rotate authored positions and keep changed loot isolated from an existing run 236ms
+   ✓ uses declared cooldown and radius changes, fails on actual movement outside the area and rejects a locked event before instance creation 215ms
+   × new higher-tier events consume changed configuration, retained events freeze difficulty and currency, and actual World success claims once 57ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/field-activities.database.test.ts > new higher-tier events consume changed configuration, retained events freeze difficulty and currency, and actual World success claims once
+TypeError: Cannot set properties of undefined (setting 'worldTier')
+ ❯ configure tests/field-activities.database.test.ts:67:142
+
+ ❯ tests/field-activities.database.test.ts:68:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 12 passed (13)
+   Start at  03:58:42
+   Duration  35.22s (transform 1.13s, setup 0ms, import 3.27s, tests 31.61s, environment 0ms)

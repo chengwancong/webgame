@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>关卡与怪物配置工具 - 深渊行者</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+      color: #e0e6f0;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid #2a3f5f;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #ffd088, #ffb65c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    
+    .subtitle {
+      color: #8a9fb5;
+      font-size: 1.1rem;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #2a3f5f;
+    }
+    
+    .tab {
+      padding: 1rem 2rem;
+      background: none;
+      border: none;
+      color: #8a9fb5;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+    
+    .tab:hover {
+      color: #b8d4e8;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .tab.active {
+      color: #ffd088;
+      border-bottom-color: #ffb65c;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .chapter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 2rem;
+    }
+    
+    .chapter-card {
+      background: linear-gradient(135deg, #1a2f45 0%, #0f1d2e 100%);
+      border: 2px solid #2a4a6f;
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: all 0.3s;
+    }
+    
+    .chapter-card:hover {
+      border-color: #4a7a9f;
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(74, 122, 159, 0.3);
+    }
+    
+    .chapter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #2a4a6f;
+    }
+    
+    .chapter-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ffe8b8;
+    }
+    
+    .chapter-level {
+      background: linear-gradient(135deg, #ffd088, #ffb65c);
+      color: #2a1a0f;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    
+    .monster-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .monster-item {
+      background: rgba(10, 20, 30, 0.6);
+      border: 1px solid #3a5a7f;
+      border-radius: 10px;
+      padding: 1rem;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 1rem;
+      align-items: center;
+      transition: all 0.2s;
+    }
+    
+    .monster-item:hover {
+      background: rgba(20, 40, 60, 0.8);
+      border-color: #5a8aaf;
+    }
+    
+    .monster-item.elite {
+      border-color: #ffd088;
+      background: rgba(255, 208, 136, 0.1);
+    }
+    
+    .monster-item.boss {
+      border: 3px solid #ff6b6b;
+      background: rgba(255, 107, 107, 0.15);
+    }
+    
+    .monster-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #2a5a7f, #1a4a68);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      border: 2px solid #4a7a9f;
+    }
+    
+    .monster-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    
+    .monster-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #ffe8b8;
+    }
+    
+    .monster-type {
+      font-size: 0.85rem;
+      color: #8a9fb5;
+    }
+    
+    .monster-stats {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .stat-hp { color: #4caf50; }
+    .stat-atk { color: #ff6b6b; }
+    
+    .boss-card {
+      background: linear-gradient(135deg, #2a1a1a 0%, #1a0a0a 100%);
+      border: 3px solid #ff6b6b;
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .boss-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .boss-name {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #ff6b6b;
+      text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+    }
+    
+    .boss-hp {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #4caf50;
+    }
+    
+    .phase-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .phase {
+      background: rgba(10, 20, 30, 0.8);
+      border: 2px solid #4a3a5f;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    
+    .phase-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #ffd088;
+      margin-bottom: 1rem;
+    }
+    
+    .skill-grid {
+      display: grid;
+      gap: 0.75rem;
+    }
+    
+    .skill {
+      background: rgba(20, 40, 60, 0.5);
+      border-left: 4px solid #5da3d5;
+      padding: 0.75rem;
+      border-radius: 6px;
+    }
+    
+    .skill.core {
+      border-left-color: #ffb65c;
+      background: rgba(255, 182, 92, 0.1);
+    }
+    
+    .skill.ultimate {
+      border-left-color: #ff6b6b;
+      background: rgba(255, 107, 107, 0.15);
+    }
+    
+    .skill-name {
+      font-weight: 700;
+      color: #ffe8b8;
+      margin-bottom: 0.25rem;
+    }
+    
+    .skill-desc {
+      font-size: 0.9rem;
+      color: #b8d4e8;
+      line-height: 1.5;
+    }
+    
+    .map-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 2rem;
+    }
+    
+    .map-card {
+      background: linear-gradient(135deg, #1a2f45 0%, #0f1d2e 100%);
+      border: 2px solid #2a4a6f;
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+    
+    .map-preview {
+      width: 100%;
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #2a5a7f, #1a4a68);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .map-info {
+      display: grid;
+      gap: 0.5rem;
+    }
+    
+    .map-stat {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
+    }
+    
+    .map-label {
+      color: #8a9fb5;
+    }
+    
+    .map-value {
+      color: #ffe8b8;
+      font-weight: 600;
+    }
+    
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    
+    .summary-card {
+      background: linear-gradient(135deg, #1a2f45 0%, #0f1d2e 100%);
+      border: 2px solid #2a4a6f;
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    
+    .summary-value {
+      font-size: 2.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #ffd088, #ffb65c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    
+    .summary-label {
+      color: #8a9fb5;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🐉 关卡与怪物配置工具</h1>
+      <p class="subtitle">深渊行者 - 第4-6章完整配置</p>
+    </header>
+    
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('overview')">📊 总览</button>
+      <button class="tab" onclick="switchTab('monsters')">👹 怪物</button>
+      <button class="tab" onclick="switchTab('bosses')">👑 BOSS</button>
+      <button class="tab" onclick="switchTab('maps')">🗺️ 地图</button>
+    </div>
+    
+    <!-- 总览标签 -->
+    <div id="overview" class="tab-content active">
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-value">3</div>
+          <div class="summary-label">新增章节</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-value">11</div>
+          <div class="summary-label">新增怪物种类</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-value">3</div>
+          <div class="summary-label">新增BOSS</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-value">6</div>
+          <div class="summary-label">新增地图</div>
+        </div>
+      </div>
+      
+      <h2 style="margin-bottom: 1.5rem; color: #ffe8b8;">章节概览</h2>
+      <div class="chapter-grid">
+        <div class="chapter-card">
+          <div class="chapter-header">
+            <h3 class="chapter-title">❄️ 第4章：冰封雪域</h3>
+            <span class="chapter-level">Lv16-20</span>
+          </div>
+          <div style="color: #b8d4e8; margin-bottom: 1rem;">
+            <strong>主题：</strong>冰雪、寒冷<br>
+            <strong>核心机制：</strong>减速效果、AOE预警圈<br>
+            <strong>地图尺寸：</strong>64×64<br>
+            <strong>怪物数量：</strong>20个（16普通 + 3精英 + 1BOSS）
+          </div>
+          <div style="background: rgba(255, 208, 136, 0.1); border: 1px solid #ffd088; border-radius: 8px; padding: 0.75rem;">
+            <strong style="color: #ffd088;">BOSS：</strong>冰霜女王·艾莎 (8000 HP)
+          </div>
+        </div>
+        
+        <div class="chapter-card">
+          <div class="chapter-header">
+            <h3 class="chapter-title">🌑 第5章：暗影深渊</h3>
+            <span class="chapter-level">Lv21-25</span>
+          </div>
+          <div style="color: #b8d4e8; margin-bottom: 1rem;">
+            <strong>主题：</strong>黑暗、死灵<br>
+            <strong>核心机制：</strong>打断施法、虚空区域、分散站位<br>
+            <strong>地图尺寸：</strong>64×64<br>
+            <strong>怪物数量：</strong>20个（16普通 + 3精英 + 1BOSS）
+          </div>
+          <div style="background: rgba(255, 208, 136, 0.1); border: 1px solid #ffd088; border-radius: 8px; padding: 0.75rem;">
+            <strong style="color: #ffd088;">BOSS：</strong>深渊之主·莫格斯 (15000 HP)
+          </div>
+        </div>
+        
+        <div class="chapter-card">
+          <div class="chapter-header">
+            <h3 class="chapter-title">🔥 第6章：龙骨荒漠</h3>
+            <span class="chapter-level">Lv26-30</span>
+          </div>
+          <div style="color: #b8d4e8; margin-bottom: 1rem;">
+            <strong>主题：</strong>龙族遗迹、火焰<br>
+            <strong>核心机制：</strong>掩体躲避、多阶段战斗<br>
+            <strong>地图尺寸：</strong>72×72（最大！）<br>
+            <strong>怪物数量：</strong>20个（16普通 + 4精英 + 1BOSS）
+          </div>
+          <div style="background: rgba(255, 107, 107, 0.15); border: 1px solid #ff6b6b; border-radius: 8px; padding: 0.75rem;">
+            <strong style="color: #ff6b6b;">BOSS：</strong>远古龙王·巴哈姆特 (30000 HP) ⚠️
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 怪物标签 -->
+    <div id="monsters" class="tab-content">
+      <h2 style="margin-bottom: 1.5rem; color: #ffe8b8;">❄️ 第4章：冰封雪域</h2>
+      <div class="monster-list">
+        <div class="monster-item">
+          <div class="monster-icon">🐺</div>
+          <div class="monster-info">
+            <div class="monster-name">冰霜狼</div>
+            <div class="monster-type">近战 · Lv16-17</div>
+            <div class="monster-stats">
+              <span class="stat stat-hp">❤️ 180 (+25/级)</span>
+              <span class="stat stat-atk">⚔️ 22 (+3.5/级)</span>
+            </div>
+          </div>
+          <div style="color: #5da3d5; font-size: 0.85rem;">冰冻撕咬</div>
+        </div>
+        
+        <div class="monster-item">
+          <div class="monster-icon">🏹</div>
+          <div class="monster-info">
+            <div class="monster-name">雪地游侠</div>
+            <div class="monster-type">远程 · Lv17-18</div>
+            <div class="monster-stats">
+              <span class="stat stat-hp">❤️ 160 (+22/级)</span>
+              <span class="stat stat-atk">⚔️ 26 (+4/级)</span>
+            </div>
+          </div>
+          <div style="color: #5da3d5; font-size: 0.85rem;">寒冰箭</div>
+        </div>
+        
+        <div class="monster-item">
+          <div class="monster-icon">❄️</div>
+          <div class="monster-info">
+            <div class="monster-name">冰元素</div>
+            <div class="monster-type">萨满 · Lv18-19</div>
+            <div class="monster-stats">
+              <span class="stat stat-hp">❤️ 150 (+20/级)</span>
+              <span class="stat stat-atk">⚔️ 30 (+4.5/级)</span>
+            </div>
+          </div>
+          <div style="color: #5da3d5; font-size: 0.85rem;">冰锥术</div>
+        </div>
+        
+        <div class="monster-item elite">
+          <div class="monster-icon">👹</div>
+          <div class="monster-info">
+            <div class="monster-name">霜巨人 ⭐</div>
+            <div class="monster-type">守卫 · Lv19-20 · 精英</div>
+            <div class="monster-stats">
+              <span class="stat stat-hp">❤️ 320 (+45/级)</span>
+              <span class="stat stat-atk">⚔️ 35 (+5/级)</span>
+            </div>
+          </div>
+          <div style="color: #ffb65c; font-size: 0.85rem; font-weight: 700;">冰霜践踏 (AOE眩晕)</div>
+        </div>
+      </div>
+      
+      <h2 style="margin: 2rem 0 1.5rem; color: #ffe8b8;">🌑 第5章：暗影深渊</h2>
+      <div class="monster-list">
+        <div class="monster-item">
+          <div class="monster-icon">🗡️</div>
+          <div class="monster-info">
+            <div class="monster-name">暗影潜行者</div>
+            <div class="monster-type">刺客 · Lv21-22</div>
+            <div class="monster-stats">
+              <span class="stat stat-hp">❤️ 220 (+28/级)</span>
+              <span class="stat stat-atk">⚔️ 32 (+4.5/级)</span>
+            </div>
+          </div>
+          <div style="color: #5da3d5; font-size: 0.85rem;">背刺</div>
+        </div>
+        
+        <div class="monster-item">
+          <div class="monster-icon">💀</div>
+          <div class="monster-info">
+            <div class="monster-name">骸骨法师</div>
+            <div class="monster-type">萨满 · Lv22-23</div>
+            <div class="monster-stats">
+              <span class="stat stat-hp">❤️ 200 (+25/级)</span>
+              <span class="stat stat-atk">⚔️ 38 (+5/级)</span>
+            </div>
+          </div>
+          <div style="color: #5da3d5; font-size: 0.85rem;">白骨之矛</div>
+        </div>
+        
+        <div class="monster-item">
+          <div class="monster-icon">🧟</div>
+          <div class="monster-info">
+            <div class="monster-name">憎恶缝合怪</div>
+            <div class="monster-type">守卫 · Lv23-24</div>
+            <div class="monster-stats">
+              <span class="stat stat-hp">❤️ 450 (+55/级)</span>
+              <span class="stat stat-atk">⚔️ 40 (+5.5/级)</span>
+            </div>
+          </div>
+          <div style="color: #ff6b6b; font-size: 0.85rem; font-weight: 700;">死亡爆炸 (被动)</div>
+        </div>
+        
+        <div class="monster-item elite">
+          <div class="monster-icon">👤</div>
+          <div class="monster-info">
+            <div class="monster-name">暗影领主 ⭐</div>
+            <div class="monster-type">召唤师 · Lv24-25 · 精英</div>
+            <div class="monster-stats">
+              <span class="stat stat-hp">❤️ 420 (+52/级)</span>
+              <span class="stat stat-atk">⚔️ 45 (+6/级)</span>
+            </div>
+          </div>
+          <div style="color: #ffb65c; font-size: 0.85rem; font-weight: 700;">召唤亡灵</div>
+        </div>
+      </div>
+      
+      <h2 style="margin: 2rem 0 1.5rem; color: #ffe8b8;">🔥 第6章：龙骨荒漠</h2>
+      <div class="monster-list">
+        <div class="monster-item">
+          <div class="monster-icon">🦎</div>
+          <div class="monster-info">
+            <div class="monster-name">幼龙</div>
+            <div class="monster-type">冲锋 · Lv26-27</div>
+            <div class="monster-stats">
+              <span class="stat stat-hp">❤️ 280 (+35/级)</span>
+              <span class="stat stat-atk">⚔️ 42 (+5.5/级)</span>
+            </div>
+          </div>
+          <div style="color: #ff6b6b; font-size: 0.85rem;">火焰吐息</div>
+        </div>
+        
+        <div class="monster-item">
+          <div class="monster-icon">🛡️</div>
+          <div class="monster-info">
+            <div class="monster-name">龙人守卫</div>
+            <div class="monster-type">守卫 · Lv27-28</div>
+            <div class="monster-stats">
+              <span class="stat stat-hp">❤️ 350 (+42/级)</span>
+              <span class="stat stat-atk">⚔️ 48 (+6/级)</span>
+            </div>
+          </div>
+          <div style="color: #5da3d5; font-size: 0.85rem;">盾击</div>
+        </div>
+        
+        <div class="monster-item elite">
+          <div class="monster-icon">🔮</div>
+          <div class="monster-info">
+            <div class="monster-name">龙祭司 ⭐</div>
+            <div class="monster-type">萨满 · Lv28-29 · 精英</div>
+            <div class="monster-stats">
+              <span class="stat stat-hp">❤️ 320 (+38/级)</span>
+              <span class="stat stat-atk">⚔️ 55 (+7/级)</span>
+            </div>
+          </div>
+          <div style="color: #ffb65c; font-size: 0.85rem; font-weight: 700;">龙之祝福 (团队增益)</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- BOSS标签 -->
+    <div id="bosses" class="tab-content">
+      <div class="boss-card">
+        <div class="boss-header">
+          <h2 class="boss-name">❄️ 冰霜女王·艾莎</h2>
+          <span class="boss-hp">❤️ 8,000 HP</span>
+        </div>
+        
+        <div class="phase-list">
+          <div class="phase">
+            <div class="phase-title">形态1 (100%-70% HP)</div>
+            <div class="skill-grid">
+              <div class="skill">
+                <div class="skill-name">冰枪突刺</div>
+                <div class="skill-desc">发射快速冰枪，穿透路径上所有敌人。120伤害，12格射程，4秒CD</div>
+              </div>
+              <div class="skill core">
+                <div class="skill-name">⚠️ 暴风雪（核心技能）</div>
+                <div class="skill-desc">召唤持续5秒的暴风雪，6格范围内每秒60伤害+减速70%。地面红圈预警3秒。8秒CD</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="phase">
+            <div class="phase-title">形态2 (70%-40% HP)</div>
+            <div class="skill-grid">
+              <div class="skill">
+                <div class="skill-name">寒冰牢笼</div>
+                <div class="skill-desc">锁定玩家，1秒后升起冰墙禁锢3秒，被困期间无法移动和攻击。6秒CD</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="phase">
+            <div class="phase-title">形态3 (40%-0% HP)</div>
+            <div class="skill-grid">
+              <div class="skill ultimate">
+                <div class="skill-name">☠️ 冰刺爆发</div>
+                <div class="skill-desc">全屏AOE，2秒蓄力后以女王为中心8格爆发冰刺，一击必杀级伤害150。10秒CD</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="boss-card">
+        <div class="boss-header">
+          <h2 class="boss-name">🌑 深渊之主·莫格斯</h2>
+          <span class="boss-hp">❤️ 15,000 HP</span>
+        </div>
+        
+        <div class="phase-list">
+          <div class="phase">
+            <div class="phase-title">形态1 (100%-70% HP)</div>
+            <div class="skill-grid">
+              <div class="skill">
+                <div class="skill-name">虚空弹</div>
+                <div class="skill-desc">发射快速虚空能量弹。80伤害，12格射程，3秒CD</div>
+              </div>
+              <div class="skill core">
+                <div class="skill-name">⚠️ 黑暗仪式（核心机制·可打断）</div>
+                <div class="skill-desc">施法5秒召唤6个强力亡灵，蓄力期间可打断！屏幕显示蓄力条。8秒CD</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="phase">
+            <div class="phase-title">形态2 (70%-40% HP)</div>
+            <div class="skill-grid">
+              <div class="skill">
+                <div class="skill-name">虚空领域</div>
+                <div class="skill-desc">在地面生成虚空区域，4格范围每秒40伤害，持续6秒。6秒CD</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="phase">
+            <div class="phase-title">形态3 (40%-0% HP)</div>
+            <div class="skill-grid">
+              <div class="skill ultimate">
+                <div class="skill-name">☠️ 死亡印记（一击必杀）</div>
+                <div class="skill-desc">标记玩家，5秒后爆炸秒杀3格范围。头顶显示倒计时5→1，必须远离队友！8秒CD</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="boss-card" style="border-color: #ff3333;">
+        <div class="boss-header">
+          <h2 class="boss-name">🐉 远古龙王·巴哈姆特</h2>
+          <span class="boss-hp">❤️ 30,000 HP</span>
+        </div>
+        
+        <div class="phase-list">
+          <div class="phase">
+            <div class="phase-title">形态1：地面阶段 (100%-80% HP)</div>
+            <div class="skill-grid">
+              <div class="skill">
+                <div class="skill-name">龙爪横扫</div>
+                <div class="skill-desc">前方扇形横扫。100伤害，4格范围，3秒CD</div>
+              </div>
+              <div class="skill">
+                <div class="skill-name">烈焰吐息</div>
+                <div class="skill-desc">喷射龙炎，锥形8格，120伤害+燃烧2秒。5秒CD</div>
+              </div>
+              <div class="skill">
+                <div class="skill-name">尾击重踏</div>
+                <div class="skill-desc">后方5格AOE+3秒眩晕，地面红圈预警2秒。6秒CD</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="phase">
+            <div class="phase-title">形态2：飞行阶段 (80%-60% HP)</div>
+            <div class="skill-grid">
+              <div class="skill">
+                <div class="skill-name">俯冲轰炸</div>
+                <div class="skill-desc">龙王飞向空中，俯冲轰炸目标区域，地面显示阴影预警2秒。200伤害，6格范围，8秒CD</div>
+              </div>
+              <div class="skill core">
+                <div class="skill-name">⚠️ 火焰雨</div>
+                <div class="skill-desc">召唤火焰雨，12格超大范围，持续5秒。地面30+个红圈预警3秒。10秒CD</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="phase">
+            <div class="phase-title">形态3：狂怒阶段 (60%-30% HP)</div>
+            <div class="skill-grid">
+              <div class="skill">
+                <div class="skill-name">召唤幼龙</div>
+                <div class="skill-desc">召唤4只幼龙助战。12秒CD</div>
+              </div>
+              <div class="skill core">
+                <div class="skill-name">⚠️ 龙王咆哮（掩体技能）</div>
+                <div class="skill-desc">全屏300伤害，2秒蓄力后释放，必须躲在掩体后！屏幕剧烈震动。10秒CD</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="phase">
+            <div class="phase-title">形态4：灭世阶段 (30%-0% HP) ☠️☠️☠️</div>
+            <div class="skill-grid">
+              <div class="skill ultimate">
+                <div class="skill-name">☠️☠️☠️ 毁灭吐息（终极技·必杀）</div>
+                <div class="skill-desc">蓄力5秒，屏幕中央倒计时5→1。释放横扫龙息光束3秒，命中必死！必须躲在掩体后方。20秒CD</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div style="background: rgba(255, 107, 107, 0.2); border: 2px solid #ff6b6b; border-radius: 12px; padding: 1rem; margin-top: 1.5rem;">
+          <strong style="color: #ff6b6b; font-size: 1.1rem;">⚠️ 掩体系统说明：</strong><br>
+          <span style="color: #e0e6f0;">地图4个角落各有1个掩体岩石。躲在掩体后方可以完全免疫龙吼和毁灭吐息。掩体无法被破坏。</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 地图标签 -->
+    <div id="maps" class="tab-content">
+      <h2 style="margin-bottom: 1.5rem; color: #ffe8b8;">地图配置</h2>
+      <div class="map-grid">
+        <div class="map-card">
+          <h3 style="color: #ffe8b8; margin-bottom: 1rem;">❄️ 冰封雪域</h3>
+          <div class="map-preview"></div>
+          <div class="map-info">
+            <div class="map-stat">
+              <span class="map-label">地图ID：</span>
+              <span class="map-value">tundra</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">尺寸：</span>
+              <span class="map-value">64 × 64</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">怪物数量：</span>
+              <span class="map-value">20个</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">障碍物：</span>
+              <span class="map-value">9组</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="map-card">
+          <h3 style="color: #ffe8b8; margin-bottom: 1rem;">❄️ 冰霜王座 (BOSS房)</h3>
+          <div class="map-preview"></div>
+          <div class="map-info">
+            <div class="map-stat">
+              <span class="map-label">地图ID：</span>
+              <span class="map-value">tundra-boss</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">尺寸：</span>
+              <span class="map-value">48 × 48</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">BOSS：</span>
+              <span class="map-value" style="color: #ff6b6b;">冰霜女王</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">障碍物：</span>
+              <span class="map-value">5组</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="map-card">
+          <h3 style="color: #ffe8b8; margin-bottom: 1rem;">🌑 暗影深渊</h3>
+          <div class="map-preview"></div>
+          <div class="map-info">
+            <div class="map-stat">
+              <span class="map-label">地图ID：</span>
+              <span class="map-value">abyss</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">尺寸：</span>
+              <span class="map-value">64 × 64</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">怪物数量：</span>
+              <span class="map-value">20个</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">特殊机制：</span>
+              <span class="map-value" style="color: #ffd088;">4个光明祭坛</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="map-card">
+          <h3 style="color: #ffe8b8; margin-bottom: 1rem;">🌑 深渊祭坛 (BOSS房)</h3>
+          <div class="map-preview"></div>
+          <div class="map-info">
+            <div class="map-stat">
+              <span class="map-label">地图ID：</span>
+              <span class="map-value">abyss-boss</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">尺寸：</span>
+              <span class="map-value">48 × 48</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">BOSS：</span>
+              <span class="map-value" style="color: #ff6b6b;">深渊之主</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">光明祭坛：</span>
+              <span class="map-value" style="color: #ffd088;">4个</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="map-card">
+          <h3 style="color: #ffe8b8; margin-bottom: 1rem;">🔥 龙骨荒漠</h3>
+          <div class="map-preview"></div>
+          <div class="map-info">
+            <div class="map-stat">
+              <span class="map-label">地图ID：</span>
+              <span class="map-value">dragonbone</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">尺寸：</span>
+              <span class="map-value" style="color: #ffd088;">72 × 72 (最大！)</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">怪物数量：</span>
+              <span class="map-value">20个</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">地标：</span>
+              <span class="map-value">3个龙骨地标</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="map-card">
+          <h3 style="color: #ffe8b8; margin-bottom: 1rem;">🔥 龙王陵墓 (BOSS房)</h3>
+          <div class="map-preview"></div>
+          <div class="map-info">
+            <div class="map-stat">
+              <span class="map-label">地图ID：</span>
+              <span class="map-value">dragonbone-boss</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">尺寸：</span>
+              <span class="map-value" style="color: #ffd088;">64 × 64 (超大！)</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">BOSS：</span>
+              <span class="map-value" style="color: #ff3333;">远古龙王 ⚠️</span>
+            </div>
+            <div class="map-stat">
+              <span class="map-label">掩体：</span>
+              <span class="map-value" style="color: #4caf50;">4个（关键！）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function switchTab(tabName) {
+      // 隐藏所有内容
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // 移除所有标签的激活状态
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // 显示选中的内容
+      document.getElementById(tabName).classList.add('active');
+      
+      // 激活对应的标签
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>

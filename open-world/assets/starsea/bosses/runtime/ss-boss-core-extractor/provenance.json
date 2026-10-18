@@ -1,0 +1,173 @@
+{
+  "id": "ss-boss-core-extractor",
+  "native": {
+    "path": "assets/mini-hero/navy/runtime",
+    "version": "4.2.43",
+    "sha256": "92ef889c590476c0eacdbc0f77f1206e35a1c77329867331fbc731a17fa5205a",
+    "skins": [
+      "BODY/warrior_epic2",
+      "custom-hammer"
+    ],
+    "animations": {
+      "SS_idle": "Wait2",
+      "SS_move": "Run2",
+      "SS_attack": "Attack_TwoHand1",
+      "SS_hurt": "Damage2",
+      "SS_death": "Die",
+      "SS_skill1": "Cast1",
+      "SS_skill2": "Spell1",
+      "SS_skill3": "Attack_TwoHand2",
+      "SS_idle_active": "Wait2",
+      "SS_move_active": "Run2",
+      "SS_attack_active": "Attack_TwoHand1",
+      "SS_hurt_active": "Damage2",
+      "SS_death_active": "Die",
+      "SS_skill1_active": "Cast1",
+      "SS_skill2_active": "Spell1",
+      "SS_skill3_active": "Attack_TwoHand2",
+      "SS_phaseEnter": "Wait2",
+      "SS_phaseEnd": "Wait2"
+    }
+  },
+  "imagegen": {
+    "source": "assets/starsea/bosses/source/ss-boss-core-extractor/accessories.png",
+    "sha256": "7be5d398fa87a83242b72d2fae86c744b250eb41f618fd6af06da3555731d3ee",
+    "cacheOrigin": "C:/Users/ccc/.codex/generated_images/01a10242-100e-7ba1-959e-b0dce8a0854d/exec-99d81a37-3be7-4e27-b834-dbefc7dff4ff.png",
+    "prompts": "assets/starsea/bosses/source/generation-prompts.md",
+    "tool": "built-in image_gen",
+    "transparent": true,
+    "parts": [
+      {
+        "name": "head",
+        "sourceRect": {
+          "left": 160,
+          "top": 17,
+          "width": 401,
+          "height": 383,
+          "count": 108810
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-core-extractor/head.png",
+        "sha256": "92da6aa29e237466fbdf5a810a30a9573611c01fb28ca23dd70fd299edd1bd33",
+        "width": 256,
+        "height": 245,
+        "atlas": {
+          "x": 4,
+          "y": 4
+        }
+      },
+      {
+        "name": "core",
+        "sourceRect": {
+          "left": 734,
+          "top": 41,
+          "width": 360,
+          "height": 347,
+          "count": 81875
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-core-extractor/core.png",
+        "sha256": "9bf695f18186403745b9ee4b7c8c44b6bc21440d3080aa811e78d9942102a88b",
+        "width": 128,
+        "height": 123,
+        "atlas": {
+          "x": 268,
+          "y": 4
+        }
+      },
+      {
+        "name": "panel-left",
+        "sourceRect": {
+          "left": 212,
+          "top": 413,
+          "width": 255,
+          "height": 304,
+          "count": 53751
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-core-extractor/panel-left.png",
+        "sha256": "d6c848111eab1cd63acdbfdb1ce5ee338980d75c61753e7e028d7684bd6280a0",
+        "width": 81,
+        "height": 96,
+        "atlas": {
+          "x": 4,
+          "y": 268
+        }
+      },
+      {
+        "name": "panel-right",
+        "sourceRect": {
+          "left": 770,
+          "top": 413,
+          "width": 253,
+          "height": 306,
+          "count": 53852
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-core-extractor/panel-right.png",
+        "sha256": "794a655bf29a22f817b5621b929a45a15993ef4e89e83026a9c2e03f30dfcec1",
+        "width": 79,
+        "height": 96,
+        "atlas": {
+          "x": 268,
+          "y": 268
+        }
+      },
+      {
+        "name": "hammer",
+        "sourceRect": {
+          "left": 167,
+          "top": 729,
+          "width": 381,
+          "height": 509,
+          "count": 71857
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-core-extractor/hammer.png",
+        "sha256": "2c1737eb80112ed2b58e906eafbc80273af785e8d37f6865b1479361bd37d009",
+        "width": 165,
+        "height": 220,
+        "atlas": {
+          "x": 4,
+          "y": 532
+        }
+      },
+      {
+        "name": "exhaust",
+        "sourceRect": {
+          "left": 748,
+          "top": 780,
+          "width": 346,
+          "height": 409,
+          "count": 79430
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-core-extractor/exhaust.png",
+        "sha256": "68cbcecf56e33a38d8c72c017b4d796a15abb0bc6a222711f15db0e8739ed701",
+        "width": 85,
+        "height": 100,
+        "atlas": {
+          "x": 268,
+          "y": 532
+        }
+      }
+    ]
+  },
+  "adjustments": [
+    "选取已验证native骨架和分件；完整原始动作逐帧保留",
+    "原生附件材质tint适配暮界/章节配色",
+    "ImageGen头部与阶段装置绑定原生head/胸部/肩部骨骼",
+    "阶段骨骼动画独立编制；不替代原生身体动作",
+    "共享基础图集通过相对URL引用正式mini-hero目录",
+    "拟人机械适配：完整原生铠甲rig+密闭机械面罩+独立炉心+重锤。"
+  ],
+  "weaponScale": 1,
+  "weaponCategory": "hammer",
+  "renderFamily": "axe",
+  "calibration": {
+    "slot": "RIGHTHAND",
+    "pixel": [
+      82.5,
+      30.800000000000004
+    ],
+    "imageSize": [
+      165,
+      220
+    ]
+  },
+  "stage": "炉心独立散热片张开、核心增亮，排气阀作为独立真实骨骼部件运动；不更换死亡姿态。"
+}

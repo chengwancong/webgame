@@ -1,0 +1,3610 @@
+{
+ "version": 1,
+ "generator": "tools/prologue-build.ts",
+ "grantLevel": 40,
+ "map": "ss-map-wind",
+ "waves": [
+  10,
+  15,
+  20
+ ],
+ "waveCadence": {
+  "groupSize": 5,
+  "everySeconds": 1.6,
+  "spawnRadius": 11
+ },
+ "burst": {
+  "kills": 20,
+  "bossShare": 0.35,
+  "bossUnlock": 0.3
+ },
+ "mob": {
+  "template": "ss-mon-wind-hound",
+  "level": 1
+ },
+ "boss": {
+  "template": "ss-boss-port-vanguard",
+  "name": "星潮巨兽",
+  "level": 1,
+  "targetSeconds": 22.5
+ },
+ "families": {
+  "sword": {
+   "blurb": "刃光绕身旋转，卷走身边的一切。",
+   "echo": "剑刃风暴",
+   "weaponTemplate": "standard-sword-t1-weapon",
+   "starterSkills": [
+    "cut"
+   ],
+   "grantedSkills": [
+    "whirl",
+    "blade_fury",
+    "vortex_blade",
+    "leap_strike"
+   ],
+   "bossDifficulty": {
+    "hp": 46784.012,
+    "attack": 22.925
+   },
+   "measured": {
+    "singleDps": 5145825,
+    "probeBossSeconds": 20.7,
+    "bossSeconds": 22.7,
+    "bossSecondsHold": 15.7,
+    "openingSeconds": 42.4,
+    "lowestHeroHp": 0.98,
+    "echoBossShare": 0.35
+   },
+   "granted": {
+    "stats": {
+     "weapon": "sword",
+     "hp": 4585,
+     "attack": 3161,
+     "armor": 269,
+     "speed": 9,
+     "mana": 131,
+     "regen": 12,
+     "effects": [],
+     "igniteChance": 0.066195,
+     "zones": [
+      {
+       "id": "mastery",
+       "label": "等级精通",
+       "kind": "add",
+       "value": 1.17
+      },
+      {
+       "id": "weapon-affinity",
+       "label": "主手加成 · 武技",
+       "kind": "mult",
+       "value": 1.14,
+       "tags": [
+        "martial"
+       ]
+      },
+      {
+       "id": "affix-projectile",
+       "label": "投射物伤害",
+       "kind": "add",
+       "value": 0.108,
+       "tags": [
+        "projectile"
+       ]
+      },
+      {
+       "id": "affix-shadow",
+       "label": "暗影伤害",
+       "kind": "add",
+       "value": 0.093,
+       "tags": [
+        "shadow"
+       ]
+      },
+      {
+       "id": "affix-poison",
+       "label": "毒素伤害",
+       "kind": "add",
+       "value": 0.107,
+       "tags": [
+        "poison"
+       ]
+      },
+      {
+       "id": "affix-spell",
+       "label": "法术伤害",
+       "kind": "add",
+       "value": 0.103,
+       "tags": [
+        "spell"
+       ]
+      },
+      {
+       "id": "affix-dot",
+       "label": "持续伤害",
+       "kind": "add",
+       "value": 0.107,
+       "tags": [
+        "dot"
+       ]
+      },
+      {
+       "id": "affix-lightning",
+       "label": "闪电伤害",
+       "kind": "add",
+       "value": 0.103,
+       "tags": [
+        "lightning"
+       ]
+      },
+      {
+       "id": "affix-ranged",
+       "label": "远程伤害",
+       "kind": "add",
+       "value": 0.107,
+       "tags": [
+        "ranged"
+       ]
+      },
+      {
+       "id": "affix-area",
+       "label": "范围伤害",
+       "kind": "add",
+       "value": 0.159,
+       "tags": [
+        "area"
+       ]
+      },
+      {
+       "id": "affix-arcane",
+       "label": "奥术伤害",
+       "kind": "add",
+       "value": 0.104,
+       "tags": [
+        "arcane"
+       ]
+      },
+      {
+       "id": "affix-physical",
+       "label": "物理伤害",
+       "kind": "add",
+       "value": 0.112,
+       "tags": [
+        "physical"
+       ]
+      },
+      {
+       "id": "affix-melee",
+       "label": "近战伤害",
+       "kind": "add",
+       "value": 0.097,
+       "tags": [
+        "melee"
+       ]
+      },
+      {
+       "id": "affix-fire",
+       "label": "火焰伤害",
+       "kind": "add",
+       "value": 0.108,
+       "tags": [
+        "fire"
+       ]
+      },
+      {
+       "id": "affix-cold",
+       "label": "冰霜伤害",
+       "kind": "add",
+       "value": 0.109,
+       "tags": [
+        "cold"
+       ]
+      },
+      {
+       "id": "talent-martial-mastery",
+       "label": "天赋 · 武技精通",
+       "kind": "mult",
+       "value": 1.12,
+       "tags": [
+        "martial"
+       ]
+      },
+      {
+       "id": "island-1",
+       "label": "风栖之力",
+       "kind": "mult",
+       "value": 1.3
+      },
+      {
+       "id": "island-2",
+       "label": "雾铃之力",
+       "kind": "mult",
+       "value": 1.35
+      },
+      {
+       "id": "island-3",
+       "label": "赤炉之力",
+       "kind": "mult",
+       "value": 1.4
+      },
+      {
+       "id": "island-4",
+       "label": "霜镜之力",
+       "kind": "mult",
+       "value": 1.45
+      },
+      {
+       "id": "island-5",
+       "label": "沉星之力",
+       "kind": "mult",
+       "value": 1.5
+      },
+      {
+       "id": "island-6",
+       "label": "龙眠之力",
+       "kind": "mult",
+       "value": 1.6
+      },
+      {
+       "id": "hardmode",
+       "label": "裂星潮",
+       "kind": "mult",
+       "value": 2
+      },
+      {
+       "id": "star-cores",
+       "label": "星核 ×7",
+       "kind": "mult",
+       "value": 1.772
+      },
+      {
+       "id": "hardmode-sources",
+       "label": "裂星潮共鸣",
+       "kind": "mult",
+       "value": 1.0253151205244289
+      }
+     ],
+     "vsLow": 0.28010999999999997,
+     "shockChance": 0.047335000000000016,
+     "cooldownOnKill": 0.018555000000000006,
+     "critChance": 0.25064,
+     "vsNear": 0.031309999999999984,
+     "chillChance": 0.05694500000000002,
+     "vsElite": 0.028479999999999964,
+     "poisonChance": 0.06522500000000003,
+     "bleedChance": 0.06500999999999998,
+     "vsBoss": 0.05548,
+     "critMultiplier": 1.74569,
+     "vsControlled": 0.086595,
+     "statusDuration": 0.04681500000000003,
+     "vsFar": 0.05321000000000004,
+     "cdr": 0.022865,
+     "lifesteal": 0.07081999999999997,
+     "vsHealthy": 0.01460499999999999,
+     "penetration": 0.14843,
+     "vulnerableBonus": 0.014390000000000003,
+     "lifeOnKill": 0.005646999999999994,
+     "blockChance": 0.11600999999999999,
+     "healingReceived": 0.04195000000000003,
+     "shadowResist": 0.09066499999999994,
+     "damageReduction": 0.14090999999999998,
+     "coldResist": 0.08429999999999996,
+     "allResist": 0.13789999999999997,
+     "lightningResist": 0.09116499999999994,
+     "arcaneResist": 0.09090999999999995,
+     "areaSize": 0.03734500000000002,
+     "fireResist": 0.08847999999999995,
+     "poisonResist": 0.08911999999999995,
+     "dodge": 0.07837000000000001,
+     "thorns": 1.4980700000000002,
+     "castSpeed": 0.028220000000000016,
+     "manaOnKill": 2.3739999999999997,
+     "executeBonus": 1,
+     "executeThreshold": 0.2,
+     "hpPercent": 0.307142,
+     "attackPercent": 0.614284,
+     "conditional": [
+      {
+       "id": "stat-vsElite",
+       "pool": "cond",
+       "value": 0.028479999999999964,
+       "when": {
+        "kind": "target_rank",
+        "ranks": [
+         "elite",
+         "boss"
+        ]
+       }
+      },
+      {
+       "id": "stat-vsBoss",
+       "pool": "cond",
+       "value": 0.05548,
+       "when": {
+        "kind": "target_rank",
+        "ranks": [
+         "boss"
+        ]
+       }
+      },
+      {
+       "id": "stat-vsControlled",
+       "pool": "cond",
+       "value": 0.086595,
+       "when": {
+        "kind": "target_status",
+        "statuses": [
+         "stun",
+         "root",
+         "petrify",
+         "slow",
+         "fear",
+         "time_stop",
+         "freeze"
+        ]
+       }
+      },
+      {
+       "id": "stat-vsNear",
+       "pool": "cond",
+       "value": 0.031309999999999984,
+       "when": {
+        "kind": "distance",
+        "op": "lte",
+        "value": 3
+       }
+      },
+      {
+       "id": "stat-vsFar",
+       "pool": "cond",
+       "value": 0.05321000000000004,
+       "when": {
+        "kind": "distance",
+        "op": "gte",
+        "value": 6
+       }
+      },
+      {
+       "id": "stat-vsHealthy",
+       "pool": "cond",
+       "value": 0.01460499999999999,
+       "when": {
+        "kind": "target_hp",
+        "op": "gt",
+        "value": 0.8
+       }
+      },
+      {
+       "id": "stat-vsLow",
+       "pool": "cond",
+       "value": 0.28010999999999997,
+       "when": {
+        "kind": "target_hp",
+        "op": "lt",
+        "value": 0.35
+       }
+      }
+     ],
+     "rules": [
+      {
+       "id": "innate-sword-qi",
+       "name": "剑气",
+       "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+       "source": "剑势流 · 固有",
+       "tier": 1,
+       "trigger": "nth",
+       "chance": 1,
+       "icd": 0,
+       "every": 3,
+       "count": "hit",
+       "filter": {
+        "weapons": [
+         "sword"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "nova",
+        "ratio": 0.35,
+        "radius": 2.2,
+        "damageType": "physical",
+        "ref": "hit",
+        "at": "target",
+        "vfx": "combo/sword-qi"
+       },
+       "scale": [
+        "action.ratio"
+       ],
+       "vfxKey": "combo/sword-qi"
+      },
+      {
+       "id": "atom-bleed",
+       "name": "割裂",
+       "description": "暴击：施加4秒流血（本次命中伤害的40%）",
+       "source": "set-sword-standard",
+       "tier": 1.5,
+       "trigger": "crit",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "status",
+        "ref": "hit",
+        "status": "bleed",
+        "duration": 120,
+        "strength": 0,
+        "ratio": 0.6000000000000001
+       },
+       "scale": [
+        "action.ratio"
+       ],
+       "vfxKey": "player/execute"
+      },
+      {
+       "id": "atom-bloodthirst",
+       "name": "嗜血",
+       "description": "被动 · 目标流血时，伤害提高 25%",
+       "source": "set-sword-standard",
+       "tier": 1.5,
+       "trigger": "passive",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [
+        {
+         "kind": "target_status",
+         "statuses": [
+          "bleed"
+         ]
+        }
+       ],
+       "action": {
+        "type": "amplify",
+        "ratio": 0.375,
+        "against": []
+       },
+       "scale": [
+        "action.ratio"
+       ],
+       "vfxKey": "player/execute"
+      },
+      {
+       "id": "aspect-tf-whirl-crowd-area",
+       "name": "风暴回旋 · 群敌增伤",
+       "description": "你周围4格内敌人至少3个且范围技能：伤害增加15%。",
+       "source": "aspect-tf-whirl",
+       "tier": 1.2,
+       "trigger": "passive",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [
+        {
+         "kind": "crowd",
+         "op": "gte",
+         "value": 3,
+         "radius": 4
+        },
+        {
+         "kind": "skill",
+         "tags": [
+          "area"
+         ]
+        }
+       ],
+       "action": {
+        "type": "amplify",
+        "ratio": 0.15,
+        "against": []
+       },
+       "scale": [],
+       "vfxKey": "player/ward"
+      },
+      {
+       "id": "aspect-tf-whirl-whirl-armor",
+       "name": "风暴回旋 · 旋风破甲",
+       "description": "旋风技能，命中时：施加破甲 3秒，强度20%。",
+       "source": "aspect-tf-whirl",
+       "tier": 1.2,
+       "trigger": "hit",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [
+        {
+         "kind": "skill",
+         "skills": [
+          "whirl"
+         ]
+        }
+       ],
+       "action": {
+        "type": "status",
+        "ref": "hit",
+        "status": "armor_down",
+        "duration": 90,
+        "strength": 0.2,
+        "ratio": 0
+       },
+       "scale": [],
+       "vfxKey": "player/ward"
+      },
+      {
+       "id": "aspect-tf-whirl-whirl-guard",
+       "name": "风暴回旋 · 旋风护体",
+       "description": "旋风技能，施放时：减伤增加45%，持续2秒，最多1层。",
+       "source": "aspect-tf-whirl",
+       "tier": 1.2,
+       "trigger": "cast",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [
+        {
+         "kind": "skill",
+         "skills": [
+          "whirl"
+         ]
+        }
+       ],
+       "action": {
+        "type": "buff",
+        "duration": 60,
+        "maxStacks": 1,
+        "mods": {
+         "damageReduction": 0.45
+        }
+       },
+       "scale": [],
+       "vfxKey": "player/ward"
+      },
+      {
+       "id": "aspect-tf-whirl-spine-single",
+       "name": "风暴回旋 · 节拍强化",
+       "description": "进入战斗至少3秒且你周围12格内敌人不超过1个，旋风、重击、裂地：伤害增加10%。",
+       "source": "aspect-tf-whirl",
+       "tier": 1.2,
+       "trigger": "passive",
+       "chance": 1,
+       "icd": 0,
+       "filter": {
+        "skills": [
+         "whirl",
+         "ground_slam",
+         "cleave"
+        ]
+       },
+       "when": [
+        {
+         "kind": "combat_time",
+         "op": "gte",
+         "value": 3
+        },
+        {
+         "kind": "crowd",
+         "op": "lte",
+         "value": 1,
+         "radius": 12
+        }
+       ],
+       "action": {
+        "type": "amplify",
+        "ratio": 0.1,
+        "against": []
+       },
+       "scale": [],
+       "vfxKey": "player/whirl"
+      },
+      {
+       "id": "aspect-tf-whirl-spine-clear",
+       "name": "风暴回旋 · 节拍强化",
+       "description": "你周围12格内敌人至少3个，旋风、重击、裂地：伤害增加10%。",
+       "source": "aspect-tf-whirl",
+       "tier": 1.2,
+       "trigger": "passive",
+       "chance": 1,
+       "icd": 0,
+       "filter": {
+        "skills": [
+         "whirl",
+         "ground_slam",
+         "cleave"
+        ]
+       },
+       "when": [
+        {
+         "kind": "crowd",
+         "op": "gte",
+         "value": 3,
+         "radius": 12
+        }
+       ],
+       "action": {
+        "type": "amplify",
+        "ratio": 0.1,
+        "against": []
+       },
+       "scale": [],
+       "vfxKey": "player/whirl"
+      },
+      {
+       "id": "aspect-tf-whirl-spine-elite",
+       "name": "风暴回旋 · 节拍强化",
+       "description": "进入战斗不足3秒，旋风、重击、裂地，施放时：伤害增加150%，持续3秒，最多1层。",
+       "source": "aspect-tf-whirl",
+       "tier": 1.2,
+       "trigger": "cast",
+       "chance": 1,
+       "icd": 0,
+       "filter": {
+        "skills": [
+         "whirl",
+         "ground_slam",
+         "cleave"
+        ]
+       },
+       "when": [
+        {
+         "kind": "combat_time",
+         "op": "lt",
+         "value": 3
+        }
+       ],
+       "action": {
+        "type": "buff",
+        "duration": 90,
+        "maxStacks": 1,
+        "mods": {
+         "damageMult": 1.5
+        }
+       },
+       "scale": [],
+       "vfxKey": "player/whirl"
+      },
+      {
+       "id": "aspect-tf-whirl-spine-survival",
+       "name": "风暴回旋 · 节拍强化",
+       "description": "旋风、重击、裂地，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。",
+       "source": "aspect-tf-whirl",
+       "tier": 1.2,
+       "trigger": "cast",
+       "chance": 1,
+       "icd": 0,
+       "filter": {
+        "skills": [
+         "whirl",
+         "ground_slam",
+         "cleave"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "shield",
+        "ratio": 0.2,
+        "ref": "maxHp",
+        "duration": 90
+       },
+       "scale": [],
+       "vfxKey": "player/whirl"
+      },
+      {
+       "id": "aspect-tf-whirl-spine-safety",
+       "name": "风暴回旋 · 节拍强化",
+       "description": "旋风、重击、裂地，施放时：闪避增加20%，持续3秒，最多1层。",
+       "source": "aspect-tf-whirl",
+       "tier": 1.2,
+       "trigger": "cast",
+       "chance": 1,
+       "icd": 0,
+       "filter": {
+        "skills": [
+         "whirl",
+         "ground_slam",
+         "cleave"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "buff",
+        "duration": 90,
+        "maxStacks": 1,
+        "mods": {
+         "dodge": 0.2
+        }
+       },
+       "scale": [],
+       "vfxKey": "player/whirl"
+      },
+      {
+       "id": "aspect-tr-riposte:27",
+       "name": "反击之魂",
+       "description": "受击时 20% 几率以第 1 技能槽反击一次（60%），冷却 2 秒",
+       "source": "aspect-tr-riposte",
+       "tier": 1.2,
+       "trigger": "hurt",
+       "chance": 0.2,
+       "icd": 60,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "echo",
+        "ratio": 0.72,
+        "delay": 1,
+        "skill": "slot1"
+       },
+       "scale": [
+        "action.ratio"
+       ],
+       "vfxKey": "player/whirl"
+      },
+      {
+       "id": "aspect-tr-opening:29",
+       "name": "开场",
+       "description": "进入战斗后 3 秒内伤害 ×1.4",
+       "source": "aspect-tr-opening",
+       "tier": 1.2,
+       "trigger": "combat_start",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "buff",
+        "duration": 90,
+        "maxStacks": 1,
+        "mods": {
+         "damageMult": 0.4
+        }
+       },
+       "scale": [],
+       "vfxKey": "player/whirl"
+      },
+      {
+       "id": "stat-igniteChance",
+       "name": "点燃几率",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hit",
+       "chance": 0.066195,
+       "icd": 0,
+       "filter": {
+        "categories": [
+         "direct"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "status",
+        "ref": "dealt",
+        "status": "burn",
+        "duration": 90,
+        "strength": 0,
+        "ratio": 0.3
+       },
+       "scale": [],
+       "vfxKey": "player/ember"
+      },
+      {
+       "id": "stat-chillChance",
+       "name": "冰缓几率",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hit",
+       "chance": 0.05694500000000002,
+       "icd": 0,
+       "filter": {
+        "categories": [
+         "direct"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "status",
+        "ref": "dealt",
+        "status": "slow",
+        "duration": 60,
+        "strength": 0.3,
+        "ratio": 0
+       },
+       "scale": [],
+       "vfxKey": "player/frost"
+      },
+      {
+       "id": "stat-shockChance",
+       "name": "感电几率",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hit",
+       "chance": 0.047335000000000016,
+       "icd": 0,
+       "filter": {
+        "categories": [
+         "direct"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "status",
+        "ref": "dealt",
+        "status": "shock",
+        "duration": 90,
+        "strength": 0.12,
+        "ratio": 0
+       },
+       "scale": [],
+       "vfxKey": "player/chain"
+      },
+      {
+       "id": "stat-poisonChance",
+       "name": "中毒几率",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hit",
+       "chance": 0.06522500000000003,
+       "icd": 0,
+       "filter": {
+        "categories": [
+         "direct"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "status",
+        "ref": "dealt",
+        "status": "poison",
+        "duration": 90,
+        "strength": 0,
+        "ratio": 0.3
+       },
+       "scale": [],
+       "vfxKey": "player/poison_arrow"
+      },
+      {
+       "id": "stat-bleedChance",
+       "name": "流血几率",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hit",
+       "chance": 0.06500999999999998,
+       "icd": 0,
+       "filter": {
+        "categories": [
+         "direct"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "status",
+        "ref": "dealt",
+        "status": "bleed",
+        "duration": 90,
+        "strength": 0,
+        "ratio": 0.3
+       },
+       "scale": [],
+       "vfxKey": "player/execute"
+      },
+      {
+       "id": "stat-manaOnKill",
+       "name": "击杀回复能量",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "kill",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "mana",
+        "ratio": 0,
+        "ref": "maxMana",
+        "flat": 2.3739999999999997
+       },
+       "scale": [],
+       "vfxKey": "player/mend"
+      },
+      {
+       "id": "stat-lifeOnKill",
+       "name": "击杀回复生命",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "kill",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "heal",
+        "ratio": 0.005646999999999994,
+        "ref": "maxHp"
+       },
+       "scale": [],
+       "vfxKey": "player/mend"
+      },
+      {
+       "id": "stat-cooldownOnKill",
+       "name": "击杀减少冷却",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "kill",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "cooldown",
+        "mode": "all",
+        "ticks": 1
+       },
+       "scale": [],
+       "vfxKey": "player/mend"
+      },
+      {
+       "id": "stat-thorns",
+       "name": "荆棘",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hurt",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "nova",
+        "ratio": 1.4980700000000002,
+        "radius": 0,
+        "damageType": "physical",
+        "ref": "armor",
+        "at": "target",
+        "maxTargets": 1
+       },
+       "scale": [],
+       "vfxKey": "player/counter_strike"
+      }
+     ],
+     "damageAdd": 1.17,
+     "damageMult": 31.07,
+     "combos": [
+      {
+       "id": "innate-sword-qi",
+       "name": "剑气",
+       "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+       "source": "剑势流 · 固有",
+       "weapons": [
+        "sword"
+       ],
+       "trigger": "nth",
+       "chance": 1,
+       "cooldown": 0,
+       "every": 3,
+       "action": {
+        "type": "nova",
+        "radius": 2.2,
+        "ratio": 0.35,
+        "damageType": "physical",
+        "vfx": "combo/sword-qi"
+       }
+      }
+     ]
+    },
+    "skills": [
+     {
+      "weapons": [
+       "sword",
+       "hammer",
+       "axe"
+      ],
+      "id": "whirl",
+      "name": "旋风斩",
+      "kind": "area",
+      "damage": 2243276,
+      "range": 0,
+      "radius": 4.6680525,
+      "cooldown": 70,
+      "cost": 15,
+      "windup": 7,
+      "duration": 0,
+      "description": "清剿身边敌群；基础伤害 ×0.62",
+      "mechanics": {
+       "damageType": "physical",
+       "targeting": "enemy",
+       "schedule": {
+        "hits": 4,
+        "interval": 15,
+        "followCaster": true,
+        "interruptOnMove": false
+       },
+       "statuses": []
+      },
+      "resolution": {
+       "attackShare": 1,
+       "baseCooldown": 75,
+       "skillCooldownReduction": 0.04,
+       "statsCooldownReduction": 0.022865,
+       "effectiveCooldownReduction": 0.06195040000000007,
+       "cooldownCap": 0.75,
+       "finalCooldown": 70
+      },
+      "tags": [
+       "martial",
+       "melee",
+       "physical",
+       "area"
+      ]
+     },
+     {
+      "weapons": [
+       "sword"
+      ],
+      "id": "blade_fury",
+      "name": "刀刃风暴",
+      "kind": "area",
+      "damage": 5989749,
+      "range": 0,
+      "radius": 4.14938,
+      "cooldown": 113,
+      "cost": 22,
+      "windup": 5,
+      "duration": 90,
+      "description": "持续旋转攻击周围；基础伤害 ×6.07",
+      "mechanics": {
+       "damageType": "physical",
+       "targeting": "enemy",
+       "schedule": {
+        "hits": 3,
+        "interval": 30,
+        "followCaster": true,
+        "interruptOnMove": false
+       },
+       "statuses": []
+      },
+      "resolution": {
+       "attackShare": 1,
+       "baseCooldown": 120,
+       "skillCooldownReduction": 0.04,
+       "statsCooldownReduction": 0.022865,
+       "effectiveCooldownReduction": 0.06195040000000007,
+       "cooldownCap": 0.75,
+       "finalCooldown": 113
+      },
+      "tags": [
+       "martial",
+       "melee",
+       "physical",
+       "area"
+      ]
+     },
+     {
+      "weapons": [
+       "sword"
+      ],
+      "id": "vortex_blade",
+      "name": "漩涡之刃",
+      "kind": "area",
+      "damage": 1149927,
+      "range": 0,
+      "radius": 4.6680525,
+      "cooldown": 80,
+      "cost": 24,
+      "windup": 9,
+      "duration": 0,
+      "description": "制造吸引敌人的漩涡；基础伤害 ×0.46",
+      "pull": 2,
+      "mechanics": {
+       "damageType": "physical",
+       "targeting": "enemy",
+       "statuses": []
+      },
+      "resolution": {
+       "attackShare": 1,
+       "baseCooldown": 85,
+       "skillCooldownReduction": 0.04,
+       "statsCooldownReduction": 0.022865,
+       "effectiveCooldownReduction": 0.06195040000000007,
+       "cooldownCap": 0.75,
+       "finalCooldown": 80
+      },
+      "tags": [
+       "martial",
+       "melee",
+       "physical",
+       "area"
+      ]
+     },
+     {
+      "weapons": [
+       "sword"
+      ],
+      "id": "leap_strike",
+      "name": "跳斩",
+      "kind": "dash",
+      "damage": 2959872,
+      "range": 8,
+      "radius": 2.5933625,
+      "cooldown": 89,
+      "cost": 16,
+      "windup": 4,
+      "duration": 0,
+      "description": "跳跃至目标位置并攻击",
+      "mechanics": {
+       "damageType": "physical",
+       "targeting": "enemy",
+       "statuses": []
+      },
+      "resolution": {
+       "attackShare": 1,
+       "baseCooldown": 95,
+       "skillCooldownReduction": 0.04,
+       "statsCooldownReduction": 0.022865,
+       "effectiveCooldownReduction": 0.06195040000000007,
+       "cooldownCap": 0.75,
+       "finalCooldown": 89
+      },
+      "tags": [
+       "martial",
+       "melee",
+       "physical",
+       "dash"
+      ]
+     }
+    ]
+   },
+   "burst": {
+    "weapons": [
+     "sword"
+    ],
+    "id": "echo_sword",
+    "name": "回响·剑刃风暴",
+    "kind": "area",
+    "damage": 14746438,
+    "range": 0,
+    "radius": 9,
+    "cooldown": 9000,
+    "cost": 0,
+    "windup": 4,
+    "duration": 60,
+    "description": "刻片回响爆发（开场受控授予）",
+    "mechanics": {
+     "damageType": "physical",
+     "targeting": "enemy",
+     "schedule": {
+      "hits": 5,
+      "interval": 12,
+      "followCaster": true,
+      "interruptOnMove": false
+     },
+     "statuses": []
+    },
+    "tags": [
+     "martial",
+     "melee",
+     "physical",
+     "area"
+    ]
+   }
+  },
+  "staff": {
+   "blurb": "星辰法阵落下星雨，砸穿成片的敌人。",
+   "echo": "星辰法阵",
+   "weaponTemplate": "standard-staff-t1-weapon",
+   "starterSkills": [
+    "staff_strike"
+   ],
+   "grantedSkills": [
+    "meteor",
+    "nova",
+    "chain",
+    "barrage"
+   ],
+   "bossDifficulty": {
+    "hp": 11738.539,
+    "attack": 22.925
+   },
+   "measured": {
+    "singleDps": 1334797,
+    "probeBossSeconds": 21.4,
+    "bossSeconds": 22.7,
+    "bossSecondsHold": 18.5,
+    "openingSeconds": 44.3,
+    "lowestHeroHp": 0.99,
+    "echoBossShare": 0.35
+   },
+   "granted": {
+    "stats": {
+     "weapon": "staff",
+     "hp": 4585,
+     "attack": 990,
+     "armor": 269,
+     "speed": 9,
+     "mana": 131,
+     "regen": 12,
+     "effects": [],
+     "igniteChance": 0.066195,
+     "zones": [
+      {
+       "id": "mastery",
+       "label": "等级精通",
+       "kind": "add",
+       "value": 1.17
+      },
+      {
+       "id": "weapon-affinity",
+       "label": "主手加成 · 法术",
+       "kind": "mult",
+       "value": 1.14,
+       "tags": [
+        "spell"
+       ]
+      },
+      {
+       "id": "affix-projectile",
+       "label": "投射物伤害",
+       "kind": "add",
+       "value": 0.108,
+       "tags": [
+        "projectile"
+       ]
+      },
+      {
+       "id": "affix-shadow",
+       "label": "暗影伤害",
+       "kind": "add",
+       "value": 0.093,
+       "tags": [
+        "shadow"
+       ]
+      },
+      {
+       "id": "affix-poison",
+       "label": "毒素伤害",
+       "kind": "add",
+       "value": 0.107,
+       "tags": [
+        "poison"
+       ]
+      },
+      {
+       "id": "affix-spell",
+       "label": "法术伤害",
+       "kind": "add",
+       "value": 0.103,
+       "tags": [
+        "spell"
+       ]
+      },
+      {
+       "id": "affix-dot",
+       "label": "持续伤害",
+       "kind": "add",
+       "value": 0.107,
+       "tags": [
+        "dot"
+       ]
+      },
+      {
+       "id": "affix-lightning",
+       "label": "闪电伤害",
+       "kind": "add",
+       "value": 0.103,
+       "tags": [
+        "lightning"
+       ]
+      },
+      {
+       "id": "affix-ranged",
+       "label": "远程伤害",
+       "kind": "add",
+       "value": 0.107,
+       "tags": [
+        "ranged"
+       ]
+      },
+      {
+       "id": "affix-area",
+       "label": "范围伤害",
+       "kind": "add",
+       "value": 0.159,
+       "tags": [
+        "area"
+       ]
+      },
+      {
+       "id": "affix-arcane",
+       "label": "奥术伤害",
+       "kind": "add",
+       "value": 0.104,
+       "tags": [
+        "arcane"
+       ]
+      },
+      {
+       "id": "affix-physical",
+       "label": "物理伤害",
+       "kind": "add",
+       "value": 0.112,
+       "tags": [
+        "physical"
+       ]
+      },
+      {
+       "id": "affix-melee",
+       "label": "近战伤害",
+       "kind": "add",
+       "value": 0.097,
+       "tags": [
+        "melee"
+       ]
+      },
+      {
+       "id": "affix-fire",
+       "label": "火焰伤害",
+       "kind": "add",
+       "value": 0.333,
+       "tags": [
+        "fire"
+       ]
+      },
+      {
+       "id": "affix-cold",
+       "label": "冰霜伤害",
+       "kind": "add",
+       "value": 0.109,
+       "tags": [
+        "cold"
+       ]
+      },
+      {
+       "id": "talent-spell-mastery",
+       "label": "天赋 · 法术精通",
+       "kind": "mult",
+       "value": 1.12,
+       "tags": [
+        "spell"
+       ]
+      },
+      {
+       "id": "island-1",
+       "label": "风栖之力",
+       "kind": "mult",
+       "value": 1.3
+      },
+      {
+       "id": "island-2",
+       "label": "雾铃之力",
+       "kind": "mult",
+       "value": 1.35
+      },
+      {
+       "id": "island-3",
+       "label": "赤炉之力",
+       "kind": "mult",
+       "value": 1.4
+      },
+      {
+       "id": "island-4",
+       "label": "霜镜之力",
+       "kind": "mult",
+       "value": 1.45
+      },
+      {
+       "id": "island-5",
+       "label": "沉星之力",
+       "kind": "mult",
+       "value": 1.5
+      },
+      {
+       "id": "island-6",
+       "label": "龙眠之力",
+       "kind": "mult",
+       "value": 1.6
+      },
+      {
+       "id": "hardmode",
+       "label": "裂星潮",
+       "kind": "mult",
+       "value": 2
+      },
+      {
+       "id": "star-cores",
+       "label": "星核 ×7",
+       "kind": "mult",
+       "value": 1.772
+      },
+      {
+       "id": "hardmode-sources",
+       "label": "裂星潮共鸣",
+       "kind": "mult",
+       "value": 1.0253151205244289
+      }
+     ],
+     "vsLow": 0.28010999999999997,
+     "shockChance": 0.047335000000000016,
+     "cooldownOnKill": 0.018555000000000006,
+     "critChance": 0.13063999999999998,
+     "vsNear": 0.031309999999999984,
+     "chillChance": 0.05694500000000002,
+     "vsElite": 0.028479999999999964,
+     "poisonChance": 0.06522500000000003,
+     "bleedChance": 0.06500999999999998,
+     "vsBoss": 0.05548,
+     "critMultiplier": 1.74569,
+     "vsControlled": 0.086595,
+     "statusDuration": 0.04681500000000003,
+     "vsFar": 0.05321000000000004,
+     "cdr": 0.022865,
+     "lifesteal": 0.07081999999999997,
+     "vsHealthy": 0.01460499999999999,
+     "penetration": 0.14843,
+     "vulnerableBonus": 0.014390000000000003,
+     "lifeOnKill": 0.005646999999999994,
+     "blockChance": 0.11600999999999999,
+     "healingReceived": 0.04195000000000003,
+     "shadowResist": 0.09066499999999994,
+     "damageReduction": 0.14090999999999998,
+     "coldResist": 0.08429999999999996,
+     "allResist": 0.13789999999999997,
+     "lightningResist": 0.09116499999999994,
+     "arcaneResist": 0.09090999999999995,
+     "areaSize": 0.03734500000000002,
+     "fireResist": 0.08847999999999995,
+     "poisonResist": 0.08911999999999995,
+     "dodge": 0.07837000000000001,
+     "thorns": 1.4980700000000002,
+     "castSpeed": 0.028220000000000016,
+     "manaOnKill": 2.3739999999999997,
+     "executeBonus": 1,
+     "executeThreshold": 0.2,
+     "hpPercent": 0.307142,
+     "attackPercent": 0.614284,
+     "conditional": [
+      {
+       "id": "stat-vsElite",
+       "pool": "cond",
+       "value": 0.028479999999999964,
+       "when": {
+        "kind": "target_rank",
+        "ranks": [
+         "elite",
+         "boss"
+        ]
+       }
+      },
+      {
+       "id": "stat-vsBoss",
+       "pool": "cond",
+       "value": 0.05548,
+       "when": {
+        "kind": "target_rank",
+        "ranks": [
+         "boss"
+        ]
+       }
+      },
+      {
+       "id": "stat-vsControlled",
+       "pool": "cond",
+       "value": 0.086595,
+       "when": {
+        "kind": "target_status",
+        "statuses": [
+         "stun",
+         "root",
+         "petrify",
+         "slow",
+         "fear",
+         "time_stop",
+         "freeze"
+        ]
+       }
+      },
+      {
+       "id": "stat-vsNear",
+       "pool": "cond",
+       "value": 0.031309999999999984,
+       "when": {
+        "kind": "distance",
+        "op": "lte",
+        "value": 3
+       }
+      },
+      {
+       "id": "stat-vsFar",
+       "pool": "cond",
+       "value": 0.05321000000000004,
+       "when": {
+        "kind": "distance",
+        "op": "gte",
+        "value": 6
+       }
+      },
+      {
+       "id": "stat-vsHealthy",
+       "pool": "cond",
+       "value": 0.01460499999999999,
+       "when": {
+        "kind": "target_hp",
+        "op": "gt",
+        "value": 0.8
+       }
+      },
+      {
+       "id": "stat-vsLow",
+       "pool": "cond",
+       "value": 0.28010999999999997,
+       "when": {
+        "kind": "target_hp",
+        "op": "lt",
+        "value": 0.35
+       }
+      }
+     ],
+     "rules": [
+      {
+       "id": "innate-staff-ignite",
+       "name": "引燃",
+       "description": "火焰技能命中时点燃目标 3 秒（共 30% 伤害）",
+       "source": "元素流 · 固有",
+       "tier": 1,
+       "trigger": "hit",
+       "chance": 1,
+       "icd": 0,
+       "filter": {
+        "weapons": [
+         "staff"
+        ],
+        "damageTypes": [
+         "fire"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "status",
+        "ref": "hit",
+        "status": "burn",
+        "duration": 90,
+        "strength": 0,
+        "ratio": 0.3
+       },
+       "scale": [
+        "action.ratio"
+       ],
+       "vfxKey": "combo/innate-staff-ignite"
+      },
+      {
+       "id": "innate-staff-shatter",
+       "name": "碎冰",
+       "description": "冰霜伤害击中燃烧或迟缓中的敌人时碎冰爆发（60% 伤害，半径 2.5，1 秒冷却）",
+       "source": "元素流 · 固有",
+       "tier": 1,
+       "trigger": "hit",
+       "chance": 1,
+       "icd": 30,
+       "filter": {
+        "weapons": [
+         "staff"
+        ],
+        "damageTypes": [
+         "cold"
+        ]
+       },
+       "when": [
+        {
+         "kind": "target_status",
+         "statuses": [
+          "burn",
+          "slow"
+         ]
+        }
+       ],
+       "action": {
+        "type": "nova",
+        "ratio": 0.6,
+        "radius": 2.5,
+        "damageType": "cold",
+        "ref": "hit",
+        "at": "target",
+        "vfx": "combo/shatter"
+       },
+       "scale": [
+        "action.ratio"
+       ],
+       "vfxKey": "combo/shatter"
+      },
+      {
+       "id": "atom-flame-stack",
+       "name": "叠焰",
+       "description": "被动：燃烧最多叠 3 层",
+       "source": "set-staff-standard",
+       "tier": 1.5,
+       "trigger": "passive",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "buff",
+        "duration": 90,
+        "maxStacks": 1,
+        "mods": {},
+        "statusOverrides": {
+         "burn": {
+          "maxStacks": 3,
+          "stackMode": "refresh"
+         }
+        }
+       },
+       "scale": [],
+       "vfxKey": "player/ember"
+      },
+      {
+       "id": "atom-detonate",
+       "name": "引爆",
+       "description": "火焰命中燃烧满层目标：引爆剩余燃烧，范围 2.5",
+       "source": "set-staff-standard",
+       "tier": 1.5,
+       "trigger": "hit",
+       "chance": 1,
+       "icd": 0,
+       "filter": {
+        "damageTypes": [
+         "fire"
+        ]
+       },
+       "when": [
+        {
+         "kind": "target_status",
+         "statuses": [
+          "burn"
+         ],
+         "minStacks": 3
+        }
+       ],
+       "action": {
+        "type": "detonate",
+        "statuses": [
+         "burn"
+        ],
+        "ratio": 1.5,
+        "remove": true,
+        "radius": 2.5
+       },
+       "scale": [
+        "action.ratio"
+       ],
+       "vfxKey": "player/fireball"
+      },
+      {
+       "id": "aspect-st-permafrost-cold-hit",
+       "name": "永冻 · 寒冷追击",
+       "description": "目标处于冰冻或减速：伤害增加55%。",
+       "source": "aspect-st-permafrost",
+       "tier": 1.2,
+       "trigger": "passive",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [
+        {
+         "kind": "target_status",
+         "statuses": [
+          "freeze",
+          "slow"
+         ]
+        }
+       ],
+       "action": {
+        "type": "amplify",
+        "ratio": 0.55,
+        "against": []
+       },
+       "scale": [],
+       "vfxKey": "player/ward"
+      },
+      {
+       "id": "aspect-st-permafrost-frost-guard",
+       "name": "永冻 · 寒霜反击",
+       "description": "受击时：对你周围3格敌人造成攻击30%的冰霜伤害，施加冰冻 1秒（触发间隔2秒）。",
+       "source": "aspect-st-permafrost",
+       "tier": 1.2,
+       "trigger": "hurt",
+       "chance": 1,
+       "icd": 60,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "nova",
+        "ratio": 0.3,
+        "radius": 3,
+        "damageType": "cold",
+        "ref": "attack",
+        "at": "self",
+        "status": {
+         "kind": "freeze",
+         "duration": 30,
+         "strength": 0,
+         "scope": "hit",
+         "cleanse": true,
+         "breakOnDamage": false,
+         "removeWithSource": false
+        }
+       },
+       "scale": [],
+       "vfxKey": "player/ward"
+      },
+      {
+       "id": "aspect-st-permafrost-spine-single",
+       "name": "永冻 · 节拍强化",
+       "description": "进入战斗至少3秒且你周围12格内敌人不超过1个，寒霜阵、冰环、冰霜箭：伤害增加150%。",
+       "source": "aspect-st-permafrost",
+       "tier": 1.2,
+       "trigger": "passive",
+       "chance": 1,
+       "icd": 0,
+       "filter": {
+        "skills": [
+         "frost",
+         "nova",
+         "frost_bolt"
+        ]
+       },
+       "when": [
+        {
+         "kind": "combat_time",
+         "op": "gte",
+         "value": 3
+        },
+        {
+         "kind": "crowd",
+         "op": "lte",
+         "value": 1,
+         "radius": 12
+        }
+       ],
+       "action": {
+        "type": "amplify",
+        "ratio": 1.5,
+        "against": []
+       },
+       "scale": [],
+       "vfxKey": "player/frost"
+      },
+      {
+       "id": "aspect-st-permafrost-spine-clear",
+       "name": "永冻 · 节拍强化",
+       "description": "你周围12格内敌人至少3个，寒霜阵、冰环、冰霜箭：伤害增加10%。",
+       "source": "aspect-st-permafrost",
+       "tier": 1.2,
+       "trigger": "passive",
+       "chance": 1,
+       "icd": 0,
+       "filter": {
+        "skills": [
+         "frost",
+         "nova",
+         "frost_bolt"
+        ]
+       },
+       "when": [
+        {
+         "kind": "crowd",
+         "op": "gte",
+         "value": 3,
+         "radius": 12
+        }
+       ],
+       "action": {
+        "type": "amplify",
+        "ratio": 0.1,
+        "against": []
+       },
+       "scale": [],
+       "vfxKey": "player/frost"
+      },
+      {
+       "id": "aspect-st-permafrost-spine-elite",
+       "name": "永冻 · 节拍强化",
+       "description": "进入战斗不足3秒，寒霜阵、冰环、冰霜箭，施放时：伤害增加10%，持续3秒，最多1层。",
+       "source": "aspect-st-permafrost",
+       "tier": 1.2,
+       "trigger": "cast",
+       "chance": 1,
+       "icd": 0,
+       "filter": {
+        "skills": [
+         "frost",
+         "nova",
+         "frost_bolt"
+        ]
+       },
+       "when": [
+        {
+         "kind": "combat_time",
+         "op": "lt",
+         "value": 3
+        }
+       ],
+       "action": {
+        "type": "buff",
+        "duration": 90,
+        "maxStacks": 1,
+        "mods": {
+         "damageMult": 0.1
+        }
+       },
+       "scale": [],
+       "vfxKey": "player/frost"
+      },
+      {
+       "id": "aspect-st-permafrost-spine-survival",
+       "name": "永冻 · 节拍强化",
+       "description": "寒霜阵、冰环、冰霜箭，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。",
+       "source": "aspect-st-permafrost",
+       "tier": 1.2,
+       "trigger": "cast",
+       "chance": 1,
+       "icd": 0,
+       "filter": {
+        "skills": [
+         "frost",
+         "nova",
+         "frost_bolt"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "shield",
+        "ratio": 0.2,
+        "ref": "maxHp",
+        "duration": 90
+       },
+       "scale": [],
+       "vfxKey": "player/frost"
+      },
+      {
+       "id": "aspect-st-permafrost-spine-safety",
+       "name": "永冻 · 节拍强化",
+       "description": "寒霜阵、冰环、冰霜箭，施放时：闪避增加20%，持续3秒，最多1层。",
+       "source": "aspect-st-permafrost",
+       "tier": 1.2,
+       "trigger": "cast",
+       "chance": 1,
+       "icd": 0,
+       "filter": {
+        "skills": [
+         "frost",
+         "nova",
+         "frost_bolt"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "buff",
+        "duration": 90,
+        "maxStacks": 1,
+        "mods": {
+         "dodge": 0.2
+        }
+       },
+       "scale": [],
+       "vfxKey": "player/frost"
+      },
+      {
+       "id": "aspect-tr-opening:29",
+       "name": "开场",
+       "description": "进入战斗后 3 秒内伤害 ×1.4",
+       "source": "aspect-tr-opening",
+       "tier": 1.2,
+       "trigger": "combat_start",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "buff",
+        "duration": 90,
+        "maxStacks": 1,
+        "mods": {
+         "damageMult": 0.4
+        }
+       },
+       "scale": [],
+       "vfxKey": "player/whirl"
+      },
+      {
+       "id": "stat-igniteChance",
+       "name": "点燃几率",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hit",
+       "chance": 0.066195,
+       "icd": 0,
+       "filter": {
+        "categories": [
+         "direct"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "status",
+        "ref": "dealt",
+        "status": "burn",
+        "duration": 90,
+        "strength": 0,
+        "ratio": 0.3
+       },
+       "scale": [],
+       "vfxKey": "player/ember"
+      },
+      {
+       "id": "stat-chillChance",
+       "name": "冰缓几率",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hit",
+       "chance": 0.05694500000000002,
+       "icd": 0,
+       "filter": {
+        "categories": [
+         "direct"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "status",
+        "ref": "dealt",
+        "status": "slow",
+        "duration": 60,
+        "strength": 0.3,
+        "ratio": 0
+       },
+       "scale": [],
+       "vfxKey": "player/frost"
+      },
+      {
+       "id": "stat-shockChance",
+       "name": "感电几率",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hit",
+       "chance": 0.047335000000000016,
+       "icd": 0,
+       "filter": {
+        "categories": [
+         "direct"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "status",
+        "ref": "dealt",
+        "status": "shock",
+        "duration": 90,
+        "strength": 0.12,
+        "ratio": 0
+       },
+       "scale": [],
+       "vfxKey": "player/chain"
+      },
+      {
+       "id": "stat-poisonChance",
+       "name": "中毒几率",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hit",
+       "chance": 0.06522500000000003,
+       "icd": 0,
+       "filter": {
+        "categories": [
+         "direct"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "status",
+        "ref": "dealt",
+        "status": "poison",
+        "duration": 90,
+        "strength": 0,
+        "ratio": 0.3
+       },
+       "scale": [],
+       "vfxKey": "player/poison_arrow"
+      },
+      {
+       "id": "stat-bleedChance",
+       "name": "流血几率",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hit",
+       "chance": 0.06500999999999998,
+       "icd": 0,
+       "filter": {
+        "categories": [
+         "direct"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "status",
+        "ref": "dealt",
+        "status": "bleed",
+        "duration": 90,
+        "strength": 0,
+        "ratio": 0.3
+       },
+       "scale": [],
+       "vfxKey": "player/execute"
+      },
+      {
+       "id": "stat-manaOnKill",
+       "name": "击杀回复能量",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "kill",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "mana",
+        "ratio": 0,
+        "ref": "maxMana",
+        "flat": 2.3739999999999997
+       },
+       "scale": [],
+       "vfxKey": "player/mend"
+      },
+      {
+       "id": "stat-lifeOnKill",
+       "name": "击杀回复生命",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "kill",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "heal",
+        "ratio": 0.005646999999999994,
+        "ref": "maxHp"
+       },
+       "scale": [],
+       "vfxKey": "player/mend"
+      },
+      {
+       "id": "stat-cooldownOnKill",
+       "name": "击杀减少冷却",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "kill",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "cooldown",
+        "mode": "all",
+        "ticks": 1
+       },
+       "scale": [],
+       "vfxKey": "player/mend"
+      },
+      {
+       "id": "stat-thorns",
+       "name": "荆棘",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hurt",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "nova",
+        "ratio": 1.4980700000000002,
+        "radius": 0,
+        "damageType": "physical",
+        "ref": "armor",
+        "at": "target",
+        "maxTargets": 1
+       },
+       "scale": [],
+       "vfxKey": "player/counter_strike"
+      }
+     ],
+     "damageAdd": 1.17,
+     "damageMult": 31.07,
+     "combos": [
+      {
+       "id": "innate-staff-ignite",
+       "name": "引燃",
+       "description": "火焰技能命中时点燃目标 3 秒（共 30% 伤害）",
+       "source": "元素流 · 固有",
+       "weapons": [
+        "staff"
+       ],
+       "trigger": "hit",
+       "chance": 1,
+       "cooldown": 0,
+       "damageTypes": [
+        "fire"
+       ],
+       "action": {
+        "type": "status",
+        "status": "burn",
+        "duration": 90,
+        "strength": 0,
+        "ratio": 0.3
+       }
+      },
+      {
+       "id": "innate-staff-shatter",
+       "name": "碎冰",
+       "description": "冰霜伤害击中燃烧或迟缓中的敌人时碎冰爆发（60% 伤害，半径 2.5，1 秒冷却）",
+       "source": "元素流 · 固有",
+       "weapons": [
+        "staff"
+       ],
+       "trigger": "hit",
+       "chance": 1,
+       "cooldown": 30,
+       "damageTypes": [
+        "cold"
+       ],
+       "targetStatus": [
+        "burn",
+        "slow"
+       ],
+       "action": {
+        "type": "nova",
+        "radius": 2.5,
+        "ratio": 0.6,
+        "damageType": "cold",
+        "vfx": "combo/shatter"
+       }
+      }
+     ]
+    },
+    "skills": [
+     {
+      "weapons": [],
+      "id": "meteor",
+      "name": "陨石术",
+      "kind": "zone",
+      "damage": 548557,
+      "range": 12,
+      "radius": 3.6307074999999998,
+      "cooldown": 169,
+      "cost": 35,
+      "windup": 24,
+      "duration": 0,
+      "description": "召唤陨石砸击地面；基础伤害 ×0.36",
+      "mechanics": {
+       "damageType": "fire",
+       "targeting": "ground",
+       "zone": {
+        "mode": "burst",
+        "hits": 1,
+        "interval": 30,
+        "firstDelay": 0,
+        "pullSpeed": 0,
+        "budget": "per_tick"
+       },
+       "statuses": [
+        {
+         "kind": "burn",
+         "duration": 90,
+         "strength": 0,
+         "scope": "hit",
+         "interval": 30,
+         "damageType": "fire",
+         "cleanse": true,
+         "breakOnDamage": false,
+         "removeWithSource": false,
+         "total": 457131
+        }
+       ]
+      },
+      "resolution": {
+       "attackShare": 1,
+       "baseCooldown": 180,
+       "skillCooldownReduction": 0.04,
+       "statsCooldownReduction": 0.022865,
+       "effectiveCooldownReduction": 0.06195040000000007,
+       "cooldownCap": 0.75,
+       "finalCooldown": 169
+      },
+      "tags": [
+       "spell",
+       "fire",
+       "area",
+       "dot"
+      ]
+     },
+     {
+      "weapons": [],
+      "id": "nova",
+      "name": "冰环",
+      "kind": "area",
+      "damage": 704634,
+      "range": 0,
+      "radius": 5.186725,
+      "cooldown": 141,
+      "cost": 22,
+      "windup": 8,
+      "duration": 45,
+      "description": "范围伤害与短暂减速；基础伤害 ×0.98",
+      "mechanics": {
+       "damageType": "cold",
+       "targeting": "enemy",
+       "statuses": [
+        {
+         "kind": "slow",
+         "duration": 45,
+         "strength": 0.63,
+         "scope": "hit",
+         "cleanse": true,
+         "breakOnDamage": false,
+         "removeWithSource": false
+        }
+       ]
+      },
+      "resolution": {
+       "attackShare": 1,
+       "baseCooldown": 150,
+       "skillCooldownReduction": 0.04,
+       "statsCooldownReduction": 0.022865,
+       "effectiveCooldownReduction": 0.06195040000000007,
+       "cooldownCap": 0.75,
+       "finalCooldown": 141
+      },
+      "tags": [
+       "spell",
+       "cold",
+       "area"
+      ]
+     },
+     {
+      "weapons": [],
+      "id": "chain",
+      "name": "雷链",
+      "kind": "chain",
+      "damage": 1087066,
+      "range": 10,
+      "radius": 5.186725,
+      "cooldown": 89,
+      "cost": 16,
+      "windup": 6,
+      "duration": 0,
+      "description": "依次跳跃三个目标；基础伤害 ×1.99",
+      "mechanics": {
+       "damageType": "lightning",
+       "targeting": "enemy",
+       "statuses": [
+        {
+         "kind": "shock",
+         "duration": 90,
+         "strength": 0.12,
+         "scope": "hit",
+         "cleanse": true,
+         "breakOnDamage": false,
+         "removeWithSource": false
+        }
+       ]
+      },
+      "resolution": {
+       "attackShare": 1,
+       "baseCooldown": 95,
+       "skillCooldownReduction": 0.04,
+       "statsCooldownReduction": 0.022865,
+       "effectiveCooldownReduction": 0.06195040000000007,
+       "cooldownCap": 0.75,
+       "finalCooldown": 89
+      },
+      "tags": [
+       "spell",
+       "lightning",
+       "chain"
+      ]
+     },
+     {
+      "weapons": [],
+      "id": "barrage",
+      "name": "弹幕",
+      "kind": "zone",
+      "damage": 280454,
+      "range": 10,
+      "radius": 5.186725,
+      "cooldown": 84,
+      "cost": 25,
+      "windup": 10,
+      "duration": 60,
+      "description": "持续的远程打击",
+      "mechanics": {
+       "damageType": "arcane",
+       "targeting": "ground",
+       "zone": {
+        "mode": "periodic",
+        "hits": 2,
+        "interval": 30,
+        "firstDelay": 29,
+        "pullSpeed": 0,
+        "budget": "per_tick"
+       },
+       "statuses": []
+      },
+      "resolution": {
+       "attackShare": 1,
+       "baseCooldown": 90,
+       "skillCooldownReduction": 0.04,
+       "statsCooldownReduction": 0.022865,
+       "effectiveCooldownReduction": 0.06195040000000007,
+       "cooldownCap": 0.75,
+       "finalCooldown": 84
+      },
+      "tags": [
+       "spell",
+       "arcane",
+       "area",
+       "dot"
+      ]
+     }
+    ]
+   },
+   "burst": {
+    "weapons": [],
+    "id": "echo_staff",
+    "name": "回响·星辰法阵",
+    "kind": "zone",
+    "damage": 1153669,
+    "range": 14,
+    "radius": 8,
+    "cooldown": 9000,
+    "cost": 0,
+    "windup": 10,
+    "duration": 60,
+    "description": "刻片回响爆发（开场受控授予）",
+    "mechanics": {
+     "damageType": "fire",
+     "targeting": "ground",
+     "zone": {
+      "mode": "periodic",
+      "hits": 4,
+      "interval": 12,
+      "firstDelay": 0,
+      "pullSpeed": 0,
+      "budget": "per_tick"
+     },
+     "statuses": [
+      {
+       "kind": "burn",
+       "duration": 90,
+       "strength": 0,
+       "scope": "hit",
+       "interval": 30,
+       "damageType": "fire",
+       "cleanse": true,
+       "breakOnDamage": false,
+       "removeWithSource": false,
+       "total": 961391
+      }
+     ]
+    },
+    "tags": [
+     "spell",
+     "fire",
+     "area",
+     "dot"
+    ]
+   }
+  },
+  "hidden": {
+   "blurb": "飞刃向四面八方齐射，穿透一整排敌人。",
+   "echo": "飞刃之雨",
+   "weaponTemplate": "standard-hidden-t1-weapon",
+   "starterSkills": [
+    "throwing_knife"
+   ],
+   "grantedSkills": [
+    "fan_of_knives",
+    "death_lotus",
+    "night_veil",
+    "explosive_kunai"
+   ],
+   "bossDifficulty": {
+    "hp": 40595.735,
+    "attack": 22.925
+   },
+   "measured": {
+    "singleDps": 5694710,
+    "probeBossSeconds": 26.4,
+    "bossSeconds": 23.1,
+    "bossSecondsHold": 23.3,
+    "openingSeconds": 41.9,
+    "lowestHeroHp": 1,
+    "echoBossShare": 0.35
+   },
+   "granted": {
+    "stats": {
+     "weapon": "hidden",
+     "hp": 4585,
+     "attack": 2771,
+     "armor": 269,
+     "speed": 9,
+     "mana": 131,
+     "regen": 12,
+     "effects": [],
+     "igniteChance": 0.066195,
+     "zones": [
+      {
+       "id": "mastery",
+       "label": "等级精通",
+       "kind": "add",
+       "value": 1.17
+      },
+      {
+       "id": "weapon-affinity",
+       "label": "主手加成 · 武技",
+       "kind": "mult",
+       "value": 1.14,
+       "tags": [
+        "martial"
+       ]
+      },
+      {
+       "id": "affix-projectile",
+       "label": "投射物伤害",
+       "kind": "add",
+       "value": 0.108,
+       "tags": [
+        "projectile"
+       ]
+      },
+      {
+       "id": "affix-shadow",
+       "label": "暗影伤害",
+       "kind": "add",
+       "value": 0.093,
+       "tags": [
+        "shadow"
+       ]
+      },
+      {
+       "id": "affix-poison",
+       "label": "毒素伤害",
+       "kind": "add",
+       "value": 0.332,
+       "tags": [
+        "poison"
+       ]
+      },
+      {
+       "id": "affix-spell",
+       "label": "法术伤害",
+       "kind": "add",
+       "value": 0.103,
+       "tags": [
+        "spell"
+       ]
+      },
+      {
+       "id": "affix-dot",
+       "label": "持续伤害",
+       "kind": "add",
+       "value": 0.107,
+       "tags": [
+        "dot"
+       ]
+      },
+      {
+       "id": "affix-lightning",
+       "label": "闪电伤害",
+       "kind": "add",
+       "value": 0.103,
+       "tags": [
+        "lightning"
+       ]
+      },
+      {
+       "id": "affix-ranged",
+       "label": "远程伤害",
+       "kind": "add",
+       "value": 0.107,
+       "tags": [
+        "ranged"
+       ]
+      },
+      {
+       "id": "affix-area",
+       "label": "范围伤害",
+       "kind": "add",
+       "value": 0.159,
+       "tags": [
+        "area"
+       ]
+      },
+      {
+       "id": "affix-arcane",
+       "label": "奥术伤害",
+       "kind": "add",
+       "value": 0.104,
+       "tags": [
+        "arcane"
+       ]
+      },
+      {
+       "id": "affix-physical",
+       "label": "物理伤害",
+       "kind": "add",
+       "value": 0.112,
+       "tags": [
+        "physical"
+       ]
+      },
+      {
+       "id": "affix-melee",
+       "label": "近战伤害",
+       "kind": "add",
+       "value": 0.097,
+       "tags": [
+        "melee"
+       ]
+      },
+      {
+       "id": "affix-fire",
+       "label": "火焰伤害",
+       "kind": "add",
+       "value": 0.108,
+       "tags": [
+        "fire"
+       ]
+      },
+      {
+       "id": "affix-cold",
+       "label": "冰霜伤害",
+       "kind": "add",
+       "value": 0.109,
+       "tags": [
+        "cold"
+       ]
+      },
+      {
+       "id": "talent-martial-mastery",
+       "label": "天赋 · 武技精通",
+       "kind": "mult",
+       "value": 1.12,
+       "tags": [
+        "martial"
+       ]
+      },
+      {
+       "id": "island-1",
+       "label": "风栖之力",
+       "kind": "mult",
+       "value": 1.3
+      },
+      {
+       "id": "island-2",
+       "label": "雾铃之力",
+       "kind": "mult",
+       "value": 1.35
+      },
+      {
+       "id": "island-3",
+       "label": "赤炉之力",
+       "kind": "mult",
+       "value": 1.4
+      },
+      {
+       "id": "island-4",
+       "label": "霜镜之力",
+       "kind": "mult",
+       "value": 1.45
+      },
+      {
+       "id": "island-5",
+       "label": "沉星之力",
+       "kind": "mult",
+       "value": 1.5
+      },
+      {
+       "id": "island-6",
+       "label": "龙眠之力",
+       "kind": "mult",
+       "value": 1.6
+      },
+      {
+       "id": "hardmode",
+       "label": "裂星潮",
+       "kind": "mult",
+       "value": 2
+      },
+      {
+       "id": "star-cores",
+       "label": "星核 ×7",
+       "kind": "mult",
+       "value": 1.772
+      },
+      {
+       "id": "hardmode-sources",
+       "label": "裂星潮共鸣",
+       "kind": "mult",
+       "value": 1.0253151205244289
+      }
+     ],
+     "vsLow": 0.28010999999999997,
+     "shockChance": 0.047335000000000016,
+     "cooldownOnKill": 0.018555000000000006,
+     "critChance": 0.172045,
+     "vsNear": 0.031309999999999984,
+     "chillChance": 0.05694500000000002,
+     "vsElite": 0.028479999999999964,
+     "poisonChance": 0.06522500000000003,
+     "bleedChance": 0.06500999999999998,
+     "vsBoss": 0.05548,
+     "critMultiplier": 1.74569,
+     "vsControlled": 0.086595,
+     "statusDuration": 0.04681500000000003,
+     "vsFar": 0.05321000000000004,
+     "cdr": 0.022865,
+     "lifesteal": 0.07081999999999997,
+     "vsHealthy": 0.01460499999999999,
+     "penetration": 0.14843,
+     "vulnerableBonus": 0.014390000000000003,
+     "lifeOnKill": 0.005646999999999994,
+     "blockChance": 0.11600999999999999,
+     "healingReceived": 0.04195000000000003,
+     "shadowResist": 0.09066499999999994,
+     "damageReduction": 0.14090999999999998,
+     "coldResist": 0.08429999999999996,
+     "allResist": 0.13789999999999997,
+     "lightningResist": 0.09116499999999994,
+     "arcaneResist": 0.09090999999999995,
+     "areaSize": 0.03734500000000002,
+     "fireResist": 0.08847999999999995,
+     "poisonResist": 0.08911999999999995,
+     "dodge": 0.07837000000000001,
+     "thorns": 1.4980700000000002,
+     "castSpeed": 0.028220000000000016,
+     "manaOnKill": 2.3739999999999997,
+     "executeBonus": 1,
+     "executeThreshold": 0.2,
+     "hpPercent": 0.307142,
+     "attackPercent": 0.614284,
+     "conditional": [
+      {
+       "id": "stat-vsElite",
+       "pool": "cond",
+       "value": 0.028479999999999964,
+       "when": {
+        "kind": "target_rank",
+        "ranks": [
+         "elite",
+         "boss"
+        ]
+       }
+      },
+      {
+       "id": "stat-vsBoss",
+       "pool": "cond",
+       "value": 0.05548,
+       "when": {
+        "kind": "target_rank",
+        "ranks": [
+         "boss"
+        ]
+       }
+      },
+      {
+       "id": "stat-vsControlled",
+       "pool": "cond",
+       "value": 0.086595,
+       "when": {
+        "kind": "target_status",
+        "statuses": [
+         "stun",
+         "root",
+         "petrify",
+         "slow",
+         "fear",
+         "time_stop",
+         "freeze"
+        ]
+       }
+      },
+      {
+       "id": "stat-vsNear",
+       "pool": "cond",
+       "value": 0.031309999999999984,
+       "when": {
+        "kind": "distance",
+        "op": "lte",
+        "value": 3
+       }
+      },
+      {
+       "id": "stat-vsFar",
+       "pool": "cond",
+       "value": 0.05321000000000004,
+       "when": {
+        "kind": "distance",
+        "op": "gte",
+        "value": 6
+       }
+      },
+      {
+       "id": "stat-vsHealthy",
+       "pool": "cond",
+       "value": 0.01460499999999999,
+       "when": {
+        "kind": "target_hp",
+        "op": "gt",
+        "value": 0.8
+       }
+      },
+      {
+       "id": "stat-vsLow",
+       "pool": "cond",
+       "value": 0.28010999999999997,
+       "when": {
+        "kind": "target_hp",
+        "op": "lt",
+        "value": 0.35
+       }
+      }
+     ],
+     "rules": [
+      {
+       "id": "innate-hidden-return",
+       "name": "回旋刃",
+       "description": "击杀时 50% 几率迸出 3 枚回旋刃（各 50% 伤害）",
+       "source": "回旋流 · 固有",
+       "tier": 1,
+       "trigger": "kill",
+       "chance": 0.5,
+       "icd": 0,
+       "filter": {
+        "weapons": [
+         "hidden"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "shards",
+        "count": 3,
+        "ratio": 0.5,
+        "range": 6,
+        "damageType": "physical",
+        "ref": "hit",
+        "vfx": "combo/return-blade"
+       },
+       "scale": [
+        "action.ratio"
+       ],
+       "vfxKey": "combo/return-blade"
+      },
+      {
+       "id": "atom-erosion",
+       "name": "蚀骨",
+       "description": "被动：中毒最多叠 5 层，独立计时",
+       "source": "set-hidden-standard",
+       "tier": 1.5,
+       "trigger": "passive",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "buff",
+        "duration": 90,
+        "maxStacks": 1,
+        "mods": {},
+        "statusOverrides": {
+         "poison": {
+          "maxStacks": 5,
+          "stackMode": "independent"
+         }
+        }
+       },
+       "scale": [],
+       "vfxKey": "player/miasma"
+      },
+      {
+       "id": "atom-poison-burst",
+       "name": "毒爆",
+       "description": "击杀中毒目标：爆炸，造成剩余毒伤 100%",
+       "source": "set-hidden-standard",
+       "tier": 1.5,
+       "trigger": "kill",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [
+        {
+         "kind": "target_status",
+         "statuses": [
+          "poison"
+         ]
+        }
+       ],
+       "action": {
+        "type": "detonate",
+        "statuses": [
+         "poison"
+        ],
+        "ratio": 1.5,
+        "remove": false,
+        "radius": 2.5
+       },
+       "scale": [
+        "action.ratio"
+       ],
+       "vfxKey": "player/toxic_bomb"
+      },
+      {
+       "id": "aspect-tf-knife-bleeding-hit",
+       "name": "环刃 · 群敌流血追击",
+       "description": "目标处于流血且你周围4格内敌人至少3个：伤害增加55%。",
+       "source": "aspect-tf-knife",
+       "tier": 1.2,
+       "trigger": "passive",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [
+        {
+         "kind": "target_status",
+         "statuses": [
+          "bleed"
+         ]
+        },
+        {
+         "kind": "crowd",
+         "op": "gte",
+         "value": 3,
+         "radius": 4
+        }
+       ],
+       "action": {
+        "type": "amplify",
+        "ratio": 0.55,
+        "against": []
+       },
+       "scale": [],
+       "vfxKey": "player/ward"
+      },
+      {
+       "id": "aspect-tf-knife-crowd-evasion",
+       "name": "环刃 · 群敌闪避",
+       "description": "你周围4格内敌人至少3个：闪避增加20%，最多1层。",
+       "source": "aspect-tf-knife",
+       "tier": 1.2,
+       "trigger": "passive",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [
+        {
+         "kind": "crowd",
+         "op": "gte",
+         "value": 3,
+         "radius": 4
+        }
+       ],
+       "action": {
+        "type": "buff",
+        "duration": 30,
+        "maxStacks": 1,
+        "mods": {
+         "dodge": 0.2
+        }
+       },
+       "scale": [],
+       "vfxKey": "player/ward"
+      },
+      {
+       "id": "aspect-tf-knife-spine-single",
+       "name": "环刃 · 节拍强化",
+       "description": "进入战斗至少3秒且你周围12格内敌人不超过1个，飞刀、扇刃、乱刃：伤害增加15%。",
+       "source": "aspect-tf-knife",
+       "tier": 1.2,
+       "trigger": "passive",
+       "chance": 1,
+       "icd": 0,
+       "filter": {
+        "skills": [
+         "throwing_knife",
+         "fan_of_knives",
+         "blade_flurry"
+        ]
+       },
+       "when": [
+        {
+         "kind": "combat_time",
+         "op": "gte",
+         "value": 3
+        },
+        {
+         "kind": "crowd",
+         "op": "lte",
+         "value": 1,
+         "radius": 12
+        }
+       ],
+       "action": {
+        "type": "amplify",
+        "ratio": 0.15,
+        "against": []
+       },
+       "scale": [],
+       "vfxKey": "player/throwing_knife"
+      },
+      {
+       "id": "aspect-tf-knife-spine-clear",
+       "name": "环刃 · 节拍强化",
+       "description": "你周围12格内敌人至少3个，飞刀、扇刃、乱刃：伤害增加105%。",
+       "source": "aspect-tf-knife",
+       "tier": 1.2,
+       "trigger": "passive",
+       "chance": 1,
+       "icd": 0,
+       "filter": {
+        "skills": [
+         "throwing_knife",
+         "fan_of_knives",
+         "blade_flurry"
+        ]
+       },
+       "when": [
+        {
+         "kind": "crowd",
+         "op": "gte",
+         "value": 3,
+         "radius": 12
+        }
+       ],
+       "action": {
+        "type": "amplify",
+        "ratio": 1.05,
+        "against": []
+       },
+       "scale": [],
+       "vfxKey": "player/throwing_knife"
+      },
+      {
+       "id": "aspect-tf-knife-spine-elite",
+       "name": "环刃 · 节拍强化",
+       "description": "进入战斗不足3秒，飞刀、扇刃、乱刃，施放时：伤害增加115%，持续3秒，最多1层。",
+       "source": "aspect-tf-knife",
+       "tier": 1.2,
+       "trigger": "cast",
+       "chance": 1,
+       "icd": 0,
+       "filter": {
+        "skills": [
+         "throwing_knife",
+         "fan_of_knives",
+         "blade_flurry"
+        ]
+       },
+       "when": [
+        {
+         "kind": "combat_time",
+         "op": "lt",
+         "value": 3
+        }
+       ],
+       "action": {
+        "type": "buff",
+        "duration": 90,
+        "maxStacks": 1,
+        "mods": {
+         "damageMult": 1.15
+        }
+       },
+       "scale": [],
+       "vfxKey": "player/throwing_knife"
+      },
+      {
+       "id": "aspect-tf-knife-spine-survival",
+       "name": "环刃 · 节拍强化",
+       "description": "飞刀、扇刃、乱刃，施放时：护盾取现有值与最大生命20%的较高值，至少持续3秒。",
+       "source": "aspect-tf-knife",
+       "tier": 1.2,
+       "trigger": "cast",
+       "chance": 1,
+       "icd": 0,
+       "filter": {
+        "skills": [
+         "throwing_knife",
+         "fan_of_knives",
+         "blade_flurry"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "shield",
+        "ratio": 0.2,
+        "ref": "maxHp",
+        "duration": 90
+       },
+       "scale": [],
+       "vfxKey": "player/throwing_knife"
+      },
+      {
+       "id": "aspect-tf-knife-spine-safety",
+       "name": "环刃 · 节拍强化",
+       "description": "飞刀、扇刃、乱刃，施放时：闪避增加20%，持续3秒，最多1层。",
+       "source": "aspect-tf-knife",
+       "tier": 1.2,
+       "trigger": "cast",
+       "chance": 1,
+       "icd": 0,
+       "filter": {
+        "skills": [
+         "throwing_knife",
+         "fan_of_knives",
+         "blade_flurry"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "buff",
+        "duration": 90,
+        "maxStacks": 1,
+        "mods": {
+         "dodge": 0.2
+        }
+       },
+       "scale": [],
+       "vfxKey": "player/throwing_knife"
+      },
+      {
+       "id": "aspect-tr-riposte:27",
+       "name": "反击之魂",
+       "description": "受击时 20% 几率以第 1 技能槽反击一次（60%），冷却 2 秒",
+       "source": "aspect-tr-riposte",
+       "tier": 1.2,
+       "trigger": "hurt",
+       "chance": 0.2,
+       "icd": 60,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "echo",
+        "ratio": 0.72,
+        "delay": 1,
+        "skill": "slot1"
+       },
+       "scale": [
+        "action.ratio"
+       ],
+       "vfxKey": "player/whirl"
+      },
+      {
+       "id": "aspect-tr-opening:29",
+       "name": "开场",
+       "description": "进入战斗后 3 秒内伤害 ×1.4",
+       "source": "aspect-tr-opening",
+       "tier": 1.2,
+       "trigger": "combat_start",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "buff",
+        "duration": 90,
+        "maxStacks": 1,
+        "mods": {
+         "damageMult": 0.4
+        }
+       },
+       "scale": [],
+       "vfxKey": "player/whirl"
+      },
+      {
+       "id": "stat-igniteChance",
+       "name": "点燃几率",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hit",
+       "chance": 0.066195,
+       "icd": 0,
+       "filter": {
+        "categories": [
+         "direct"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "status",
+        "ref": "dealt",
+        "status": "burn",
+        "duration": 90,
+        "strength": 0,
+        "ratio": 0.3
+       },
+       "scale": [],
+       "vfxKey": "player/ember"
+      },
+      {
+       "id": "stat-chillChance",
+       "name": "冰缓几率",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hit",
+       "chance": 0.05694500000000002,
+       "icd": 0,
+       "filter": {
+        "categories": [
+         "direct"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "status",
+        "ref": "dealt",
+        "status": "slow",
+        "duration": 60,
+        "strength": 0.3,
+        "ratio": 0
+       },
+       "scale": [],
+       "vfxKey": "player/frost"
+      },
+      {
+       "id": "stat-shockChance",
+       "name": "感电几率",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hit",
+       "chance": 0.047335000000000016,
+       "icd": 0,
+       "filter": {
+        "categories": [
+         "direct"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "status",
+        "ref": "dealt",
+        "status": "shock",
+        "duration": 90,
+        "strength": 0.12,
+        "ratio": 0
+       },
+       "scale": [],
+       "vfxKey": "player/chain"
+      },
+      {
+       "id": "stat-poisonChance",
+       "name": "中毒几率",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hit",
+       "chance": 0.06522500000000003,
+       "icd": 0,
+       "filter": {
+        "categories": [
+         "direct"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "status",
+        "ref": "dealt",
+        "status": "poison",
+        "duration": 90,
+        "strength": 0,
+        "ratio": 0.3
+       },
+       "scale": [],
+       "vfxKey": "player/poison_arrow"
+      },
+      {
+       "id": "stat-bleedChance",
+       "name": "流血几率",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hit",
+       "chance": 0.06500999999999998,
+       "icd": 0,
+       "filter": {
+        "categories": [
+         "direct"
+        ]
+       },
+       "when": [],
+       "action": {
+        "type": "status",
+        "ref": "dealt",
+        "status": "bleed",
+        "duration": 90,
+        "strength": 0,
+        "ratio": 0.3
+       },
+       "scale": [],
+       "vfxKey": "player/execute"
+      },
+      {
+       "id": "stat-manaOnKill",
+       "name": "击杀回复能量",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "kill",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "mana",
+        "ratio": 0,
+        "ref": "maxMana",
+        "flat": 2.3739999999999997
+       },
+       "scale": [],
+       "vfxKey": "player/mend"
+      },
+      {
+       "id": "stat-lifeOnKill",
+       "name": "击杀回复生命",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "kill",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "heal",
+        "ratio": 0.005646999999999994,
+        "ref": "maxHp"
+       },
+       "scale": [],
+       "vfxKey": "player/mend"
+      },
+      {
+       "id": "stat-cooldownOnKill",
+       "name": "击杀减少冷却",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "kill",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "cooldown",
+        "mode": "all",
+        "ticks": 1
+       },
+       "scale": [],
+       "vfxKey": "player/mend"
+      },
+      {
+       "id": "stat-thorns",
+       "name": "荆棘",
+       "description": "装备属性触发",
+       "source": "装备与养成属性",
+       "tier": 1,
+       "trigger": "hurt",
+       "chance": 1,
+       "icd": 0,
+       "filter": {},
+       "when": [],
+       "action": {
+        "type": "nova",
+        "ratio": 1.4980700000000002,
+        "radius": 0,
+        "damageType": "physical",
+        "ref": "armor",
+        "at": "target",
+        "maxTargets": 1
+       },
+       "scale": [],
+       "vfxKey": "player/counter_strike"
+      }
+     ],
+     "damageAdd": 1.17,
+     "damageMult": 31.07,
+     "combos": [
+      {
+       "id": "innate-hidden-return",
+       "name": "回旋刃",
+       "description": "击杀时 50% 几率迸出 3 枚回旋刃（各 50% 伤害）",
+       "source": "回旋流 · 固有",
+       "weapons": [
+        "hidden"
+       ],
+       "trigger": "kill",
+       "chance": 0.5,
+       "cooldown": 0,
+       "action": {
+        "type": "shards",
+        "count": 3,
+        "ratio": 0.5,
+        "range": 6,
+        "damageType": "physical",
+        "vfx": "combo/return-blade"
+       }
+      }
+     ]
+    },
+    "skills": [
+     {
+      "weapons": [
+       "hidden"
+      ],
+      "id": "fan_of_knives",
+      "name": "扇刃",
+      "kind": "projectile",
+      "damage": 85957,
+      "range": 8,
+      "radius": 0.3,
+      "cooldown": 42,
+      "cost": 10,
+      "windup": 5,
+      "duration": 0,
+      "description": "扇形掷出五柄飞刀；基础伤害 ×1.01",
+      "projectiles": 5,
+      "projectileSpread": 0.22,
+      "mechanics": {
+       "damageType": "physical",
+       "targeting": "self",
+       "projectile": {
+        "orbit": {
+         "duration": 90,
+         "radius": 1.5,
+         "interval": 15,
+         "speed": 0.14
+        },
+        "collisionRadius": 1,
+        "penetrations": 0,
+        "turnRate": 0,
+        "explosionRadius": 0
+       },
+       "statuses": []
+      },
+      "resolution": {
+       "attackShare": 1,
+       "baseCooldown": 45,
+       "skillCooldownReduction": 0.04,
+       "statsCooldownReduction": 0.022865,
+       "effectiveCooldownReduction": 0.06195040000000007,
+       "cooldownCap": 0.75,
+       "finalCooldown": 42
+      },
+      "tags": [
+       "martial",
+       "ranged",
+       "physical",
+       "projectile"
+      ]
+     },
+     {
+      "weapons": [
+       "hidden"
+      ],
+      "id": "death_lotus",
+      "name": "死莲",
+      "kind": "area",
+      "damage": 2884801,
+      "range": 0,
+      "radius": 4.6680525,
+      "cooldown": 150,
+      "cost": 26,
+      "windup": 6,
+      "duration": 0,
+      "description": "旋身挥刃三次并使敌人流血",
+      "mechanics": {
+       "damageType": "physical",
+       "targeting": "enemy",
+       "schedule": {
+        "hits": 3,
+        "interval": 10,
+        "followCaster": true,
+        "interruptOnMove": false
+       },
+       "statuses": [
+        {
+         "kind": "bleed",
+         "duration": 90,
+         "strength": 0,
+         "scope": "hit",
+         "interval": 30,
+         "damageType": "physical",
+         "cleanse": true,
+         "breakOnDamage": false,
+         "removeWithSource": false,
+         "total": 368841
+        }
+       ]
+      },
+      "resolution": {
+       "attackShare": 1,
+       "baseCooldown": 160,
+       "skillCooldownReduction": 0.04,
+       "statsCooldownReduction": 0.022865,
+       "effectiveCooldownReduction": 0.06195040000000007,
+       "cooldownCap": 0.75,
+       "finalCooldown": 150
+      },
+      "tags": [
+       "martial",
+       "melee",
+       "physical",
+       "area",
+       "dot"
+      ]
+     },
+     {
+      "weapons": [
+       "hidden"
+      ],
+      "id": "night_veil",
+      "name": "夜幕",
+      "kind": "area",
+      "damage": 1548834,
+      "range": 0,
+      "radius": 4.6680525,
+      "cooldown": 113,
+      "cost": 20,
+      "windup": 5,
+      "duration": 0,
+      "description": "以暗影笼罩周围敌人并致盲；基础伤害 ×0.66",
+      "mechanics": {
+       "damageType": "shadow",
+       "targeting": "enemy",
+       "statuses": [
+        {
+         "kind": "blind",
+         "duration": 75,
+         "strength": 0.33,
+         "scope": "hit",
+         "cleanse": true,
+         "breakOnDamage": false,
+         "removeWithSource": false
+        }
+       ]
+      },
+      "resolution": {
+       "attackShare": 1,
+       "baseCooldown": 120,
+       "skillCooldownReduction": 0.04,
+       "statsCooldownReduction": 0.022865,
+       "effectiveCooldownReduction": 0.06195040000000007,
+       "cooldownCap": 0.75,
+       "finalCooldown": 113
+      },
+      "tags": [
+       "martial",
+       "melee",
+       "shadow",
+       "area"
+      ]
+     },
+     {
+      "weapons": [
+       "hidden"
+      ],
+      "id": "explosive_kunai",
+      "name": "爆裂苦无",
+      "kind": "projectile",
+      "damage": 6840233,
+      "range": 10,
+      "radius": 1.867221,
+      "cooldown": 80,
+      "cost": 18,
+      "windup": 8,
+      "duration": 0,
+      "description": "命中后爆炸；基础伤害 ×2.74",
+      "mechanics": {
+       "damageType": "physical",
+       "targeting": "enemy",
+       "projectile": {
+        "collisionRadius": 0.3,
+        "penetrations": 0,
+        "turnRate": 0,
+        "explosionRadius": 1.867221
+       },
+       "statuses": []
+      },
+      "resolution": {
+       "attackShare": 1,
+       "baseCooldown": 85,
+       "skillCooldownReduction": 0.04,
+       "statsCooldownReduction": 0.022865,
+       "effectiveCooldownReduction": 0.06195040000000007,
+       "cooldownCap": 0.75,
+       "finalCooldown": 80
+      },
+      "tags": [
+       "martial",
+       "ranged",
+       "physical",
+       "projectile"
+      ]
+     }
+    ]
+   },
+   "burst": {
+    "weapons": [
+     "hidden"
+    ],
+    "id": "echo_hidden",
+    "name": "回响·飞刃之雨",
+    "kind": "projectile",
+    "damage": 58726869,
+    "range": 13,
+    "radius": 0.5,
+    "cooldown": 9000,
+    "cost": 0,
+    "windup": 4,
+    "duration": 0,
+    "description": "刻片回响爆发（开场受控授予）",
+    "projectiles": 15,
+    "projectileSpread": 0.4189,
+    "mechanics": {
+     "damageType": "physical",
+     "targeting": "enemy",
+     "projectile": {
+      "collisionRadius": 1,
+      "penetrations": 20,
+      "turnRate": 0,
+      "explosionRadius": 0
+     },
+     "statuses": []
+    },
+    "tags": [
+     "martial",
+     "ranged",
+     "physical",
+     "projectile"
+    ]
+   }
+  }
+ },
+ "lines": {
+  "fall": "天幕裂开一道光缝，你从光里坠了下来。手里的刻片在发亮。",
+  "choose": "刻片投出三道回响。选一道唤醒它——它会决定你手里的武器。",
+  "skipNote": "跳过开场前，先选一把初始武器。",
+  "land": "脚下……是星潮？",
+  "waves": [
+   "又来了一群——它们是被光引来的。",
+   "更多了！"
+  ],
+  "energyFull": "潮能满了，按 {key} 放出回响爆发",
+  "boss": "岛缘下的星潮翻涌起来，有什么东西爬上来了。",
+  "bossUnlock": "刻片在发烫——按 {key} 放出回响爆发！",
+  "fade": "刻片「咔」地裂开一道缝，光一格一格熄灭了。"
+ }
+}

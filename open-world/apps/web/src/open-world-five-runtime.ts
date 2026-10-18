@@ -1,0 +1,15 @@
+import wind from '../../../packages/asset-manifest/open-world.v1.json';
+import Phaser from 'phaser';
+import raw from '../../../packages/asset-manifest/open-world-five.v1.json';
+import type {Asset} from './starsea-assets.ts';
+type Resource={id:string;kind:string;island:string;category:string;runtime:any;source:any;actions?:any;states?:any;group?:string};
+const resources=new Map(([...raw.assets,...wind.assets] as unknown as Resource[]).map(a=>[a.id,a]));
+/** Production namespace reader. It does not add entities, rules, dialogue or map placements. */
+export function fiveIslandResource(id:string){const value=resources.get(id);if(!value)throw Error('Unknown five-island art resource '+id);return value;}
+export function fiveIslandActor(id:string):Asset{const a=fiveIslandResource(id);if(a.kind!=='actor')throw Error(id+' is not an actor');return a as unknown as Asset;}
+export const fiveIslandTexture=(file:string)=>'five-art:'+file;
+/** Queue only the chosen map's resources, avoiding a preload of all five islands. */
+export function preloadFiveIslandImages(scene:Phaser.Scene,ids:readonly string[]){const files=new Set<string>();for(const id of ids){const a=fiveIslandResource(id),r=a.runtime;if(['sprite','ground','mask','symbol'].includes(a.kind)&&r.file)files.add(r.file);if(a.kind==='actor'&&r.kind==='atlas'){scene.load.atlas(id,r.image,r.atlas);scene.load.json(id+':sockets',r.sockets);}if(a.kind==='effect'&&r.texture)files.add(r.texture);if(a.kind==='water')scene.load.text(id+':shader',r.shaderURL);}for(const file of files)if(!scene.textures.exists(fiveIslandTexture(file)))scene.load.image(fiveIslandTexture(file),file);}
+/** Exact declared material math shared with the review, preserving source alpha. */
+export function fiveIslandMaterialTexture(scene:Phaser.Scene,id:string,textureKey:(file:string)=>string=fiveIslandTexture){const a=fiveIslandResource(id),r=a.runtime;if(a.kind!=='sprite'&&a.kind!=='ground')throw Error(id+' is not a bitmap module');const key='five-material:'+id;if(scene.textures.exists(key))return key;const image=scene.textures.get(textureKey(r.file)).getSourceImage() as HTMLImageElement;if(!image?.width)throw Error('Five-island bitmap not preloaded: '+id);const c=document.createElement('canvas');c.width=image.width;c.height=image.height;const x=c.getContext('2d')!;x.drawImage(image,0,0);if(r.material?.tint){x.globalCompositeOperation='multiply';x.fillStyle=r.material.tint;x.fillRect(0,0,c.width,c.height);x.globalCompositeOperation='destination-in';x.drawImage(image,0,0);}if(r.material?.wash){x.globalCompositeOperation='source-atop';x.globalAlpha=r.material.wash.alpha;x.fillStyle=r.material.wash.color;x.fillRect(0,0,c.width,c.height);x.globalAlpha=1;}x.globalCompositeOperation='source-over';scene.textures.addCanvas(key,c);return key;}
+export function createFiveIslandModule(scene:Phaser.Scene,id:string,x:number,y:number){const a=fiveIslandResource(id),r=a.runtime;if(a.kind!=='sprite')throw Error(id+' is not a placeable module');const image=scene.add.image(x,y,fiveIslandMaterialTexture(scene,id)).setOrigin(r.anchor[0],r.anchor[1]);image.setScale(r.displayWidth/image.width).setDepth(y);return image;}

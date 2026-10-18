@@ -1,0 +1,9 @@
+import {test,expect} from 'vitest';
+import {resolveAudioSettings,defaultAudioSettings} from '../apps/web/src/audio/settings.ts';
+import {Footsteps} from '../apps/web/src/audio/footsteps.ts';
+import {MusicStateMachine} from '../apps/web/src/audio/environment.ts';
+import {CombatAudio} from '../apps/web/src/combat-audio.ts';
+test('旧volume迁移与五滑块往返、异常输入',()=>{expect(resolveAudioSettings({volume:.22})).toEqual({...defaultAudioSettings,master:.22});const audio={master:.3,music:.4,ambience:.5,effects:.6,ui:.7,muteBackground:false};expect(resolveAudioSettings(JSON.parse(JSON.stringify({audio})))).toEqual(audio);expect(resolveAudioSettings({audio:{master:9,music:-1,effects:'x'}})).toMatchObject({master:1,music:0,effects:.8});});
+test('真实位移控制脚步，快移增加频率，瞬移不补播',()=>{const count=(speed:number)=>{const f=new Footsteps();let n=0;for(let t=0;t<120;t++)if(f.step({x:t*speed/30,y:0},'wind'))n++;return n;};expect(count(6)).toBeGreaterThan(count(3)*1.8);const f=new Footsteps();f.step({x:0,y:0},'wind');expect(f.step({x:30,y:0},'wind')).toBe(false);expect(f.step({x:32,y:0},'wind',true)).toBe(false);});
+test('音乐脱战6秒防抖及首领切换时长',()=>{const m=new MusicStateMachine();expect(m.update(0,true,false).state).toBe('combat');expect(m.update(5,false,false).state).toBe('combat');expect(m.update(6,false,false)).toMatchObject({state:'exploration',seconds:4,changed:true});expect(m.update(7,true,true)).toMatchObject({state:'boss',seconds:1.5});});
+test('同帧击杀合并；拾取合并；reset取消待播事件',async()=>{const a=new CombatAudio(),calls:string[]=[];a.mixer.play=((r:any)=>{calls.push(r.id);return true;}) as any;for(let i=0;i<3;i++)a.play('kill',1,.8);await Promise.resolve();expect(calls).toEqual(['cue/multi-kill']);a.play('loot',1,.8);a.play('pickup-equipment',1,.8);expect(calls).toHaveLength(2);a.play('kill',2,.8);a.reset();await Promise.resolve();expect(calls).toHaveLength(2);});

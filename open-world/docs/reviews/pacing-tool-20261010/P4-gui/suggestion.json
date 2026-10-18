@@ -1,0 +1,2181 @@
+{
+  "kind": "pacing-target-suggestion",
+  "requiresConfirmation": true,
+  "notApplied": true,
+  "requiresTargetSelection": true,
+  "targetSource": "config/excel/节奏目标.xlsx",
+  "versions": {
+    "client": "0.11.25",
+    "protocol": 35,
+    "rules": "ow-66",
+    "assets": "world-art-20261007-v24-world-runtime",
+    "db": 16
+  },
+  "characterId": "485a0cf4-9d8f-4f06-a1fa-cb864b7b243c",
+  "overrides": {
+    "monsterHp": 0.25,
+    "monsterAttack": 1
+  },
+  "pendingOverrides": {
+    "monsterHp": 0.25,
+    "monsterAttack": 1
+  },
+  "trial": {
+    "id": "924f4f30-645c-4700-a327-c9f63297aa50",
+    "scene": "single",
+    "status": "won",
+    "versions": {
+      "client": "0.11.25",
+      "protocol": 35,
+      "rules": "ow-66",
+      "assets": "world-art-20261007-v24-world-runtime",
+      "db": 16
+    },
+    "seed": 41,
+    "tick": 195,
+    "elapsedSeconds": 6.5,
+    "wallSeconds": 6.95461269999994,
+    "kills": 1,
+    "targets": 1,
+    "targetHp": 0,
+    "initialHp": 395833,
+    "clearSeconds": 6.5,
+    "damage": 395833,
+    "incomingHits": 2,
+    "casts": {
+      "fireball": 3,
+      "meteor": 1,
+      "ember": 2
+    },
+    "failures": {},
+    "expectedXp": 1127749,
+    "killsPerMinute": 9.23076923076923,
+    "xpPerHour": 624599446.1538461,
+    "nextLevelSeconds": null,
+    "targetSeconds": 8.699051899158338,
+    "frozen": {
+      "characterId": "485a0cf4-9d8f-4f06-a1fa-cb864b7b243c",
+      "revision": 15,
+      "overrides": {
+        "monsterHp": 0.25,
+        "monsterAttack": 1
+      },
+      "requestedSkills": [
+        "fireball",
+        "meteor",
+        "ember"
+      ],
+      "executedSkills": [
+        "fireball",
+        "meteor",
+        "ember"
+      ],
+      "skillRanks": {
+        "fireball": 5,
+        "meteor": 5,
+        "ember": 5
+      },
+      "stats": {
+        "attack": 1292,
+        "armor": 330,
+        "hp": 8366,
+        "speed": 6,
+        "mana": 100,
+        "regen": 10,
+        "statusDuration": 0.6900000000000001,
+        "igniteChance": 0.42000000000000004,
+        "hpPercent": 0.4,
+        "attackPercent": 0.2,
+        "weapon": "staff",
+        "effects": [],
+        "damageAdd": 1.47,
+        "damageMult": 1,
+        "zones": [
+          {
+            "id": "mastery",
+            "label": "等级精通",
+            "kind": "add",
+            "value": 1.47
+          },
+          {
+            "id": "weapon-affinity",
+            "label": "主手加成 · 武技",
+            "kind": "mult",
+            "value": 1.14,
+            "tags": [
+              "martial"
+            ]
+          },
+          {
+            "id": "affix-fire",
+            "label": "火焰伤害",
+            "kind": "add",
+            "value": 1.6,
+            "tags": [
+              "fire"
+            ]
+          },
+          {
+            "id": "affix-dot",
+            "label": "持续伤害",
+            "kind": "add",
+            "value": 0.15,
+            "tags": [
+              "dot"
+            ]
+          }
+        ],
+        "combos": [
+          {
+            "id": "innate-staff-ignite",
+            "name": "引燃",
+            "description": "火焰技能命中时点燃目标 3 秒（共 30% 伤害）",
+            "source": "元素流 · 固有",
+            "weapons": [
+              "staff"
+            ],
+            "trigger": "hit",
+            "chance": 1,
+            "cooldown": 0,
+            "damageTypes": [
+              "fire"
+            ],
+            "action": {
+              "type": "status",
+              "status": "burn",
+              "duration": 90,
+              "strength": 0,
+              "ratio": 0.3
+            }
+          },
+          {
+            "id": "innate-staff-shatter",
+            "name": "碎冰",
+            "description": "冰霜伤害击中燃烧或迟缓中的敌人时碎冰爆发（60% 伤害，半径 2.5，1 秒冷却）",
+            "source": "元素流 · 固有",
+            "weapons": [
+              "staff"
+            ],
+            "trigger": "hit",
+            "chance": 1,
+            "cooldown": 30,
+            "damageTypes": [
+              "cold"
+            ],
+            "targetStatus": [
+              "burn",
+              "slow"
+            ],
+            "action": {
+              "type": "nova",
+              "radius": 2.5,
+              "ratio": 0.6,
+              "damageType": "cold",
+              "vfx": "combo/shatter"
+            }
+          }
+        ],
+        "rules": [
+          {
+            "id": "innate-staff-ignite",
+            "name": "引燃",
+            "description": "火焰技能命中时点燃目标 3 秒（共 30% 伤害）",
+            "source": "元素流 · 固有",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "weapons": [
+                "staff"
+              ],
+              "damageTypes": [
+                "fire"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "status",
+              "ref": "hit",
+              "status": "burn",
+              "duration": 90,
+              "strength": 0,
+              "ratio": 0.3
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "combo/innate-staff-ignite"
+          },
+          {
+            "id": "innate-staff-shatter",
+            "name": "碎冰",
+            "description": "冰霜伤害击中燃烧或迟缓中的敌人时碎冰爆发（60% 伤害，半径 2.5，1 秒冷却）",
+            "source": "元素流 · 固有",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 30,
+            "filter": {
+              "weapons": [
+                "staff"
+              ],
+              "damageTypes": [
+                "cold"
+              ]
+            },
+            "when": [
+              {
+                "kind": "target_status",
+                "statuses": [
+                  "burn",
+                  "slow"
+                ]
+              }
+            ],
+            "action": {
+              "type": "nova",
+              "ratio": 0.6,
+              "radius": 2.5,
+              "damageType": "cold",
+              "ref": "hit",
+              "at": "target",
+              "vfx": "combo/shatter"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "combo/shatter"
+          },
+          {
+            "id": "atom-flame-stack",
+            "name": "叠焰",
+            "description": "被动：燃烧最多叠 3 层",
+            "source": "set-staff-standard",
+            "tier": 1,
+            "trigger": "passive",
+            "chance": 1,
+            "icd": 0,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "buff",
+              "duration": 90,
+              "maxStacks": 1,
+              "mods": {},
+              "statusOverrides": {
+                "burn": {
+                  "maxStacks": 3,
+                  "stackMode": "refresh"
+                }
+              }
+            },
+            "scale": [],
+            "vfxKey": "player/ember"
+          },
+          {
+            "id": "atom-detonate",
+            "name": "引爆",
+            "description": "火焰命中燃烧满层目标：引爆剩余燃烧，范围 2.5",
+            "source": "set-staff-standard",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 30,
+            "filter": {
+              "damageTypes": [
+                "fire"
+              ]
+            },
+            "when": [
+              {
+                "kind": "target_status",
+                "statuses": [
+                  "burn"
+                ],
+                "minStacks": 3
+              }
+            ],
+            "action": {
+              "type": "detonate",
+              "statuses": [
+                "burn"
+              ],
+              "ratio": 1,
+              "remove": true,
+              "radius": 2.5
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "player/fireball"
+          },
+          {
+            "id": "atom-quake",
+            "name": "震波",
+            "description": "范围技能命中 ≥ 4 敌，冷却 1 秒：震波（50%，半径 2.5）",
+            "source": "铭纹：古枝吊坠",
+            "tier": 0.5,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 30,
+            "filter": {
+              "tags": [
+                "area"
+              ]
+            },
+            "when": [
+              {
+                "kind": "cast_hits",
+                "op": "gte",
+                "value": 4
+              }
+            ],
+            "action": {
+              "type": "nova",
+              "ratio": 0.25,
+              "radius": 2.5,
+              "damageType": "physical",
+              "ref": "hit",
+              "at": "target"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "player/ground_slam"
+          },
+          {
+            "id": "aspect-st-ember-burn",
+            "name": "余烬之心",
+            "description": "燃烧伤害 ×1.2",
+            "source": "aspect-st-ember",
+            "tier": 1,
+            "trigger": "passive",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "statusKinds": [
+                "burn"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "amplify",
+              "ratio": 0.2,
+              "against": []
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "player/ember"
+          },
+          {
+            "id": "pacing-aspect-st-ember-expose-boss",
+            "name": "命中强敌时揭开弱点",
+            "description": "命中强敌时揭开弱点",
+            "source": "aspect-st-ember",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 30,
+            "filter": {},
+            "when": [
+              {
+                "kind": "target_rank",
+                "ranks": [
+                  "boss"
+                ]
+              }
+            ],
+            "action": {
+              "type": "status",
+              "ref": "hit",
+              "status": "vulnerable",
+              "duration": 90,
+              "strength": 0.25,
+              "ratio": 0
+            },
+            "scale": [],
+            "vfxKey": "player/ward"
+          },
+          {
+            "id": "pacing-aspect-st-ember-focus-boss",
+            "name": "集中火力压制强敌",
+            "description": "集中火力压制强敌",
+            "source": "aspect-st-ember",
+            "tier": 1,
+            "trigger": "passive",
+            "chance": 1,
+            "icd": 0,
+            "filter": {},
+            "when": [
+              {
+                "kind": "target_rank",
+                "ranks": [
+                  "boss"
+                ]
+              }
+            ],
+            "action": {
+              "type": "amplify",
+              "ratio": 1.206865,
+              "against": []
+            },
+            "scale": [],
+            "vfxKey": "player/ward"
+          },
+          {
+            "id": "pacing-aspect-st-ember-expose-elite",
+            "name": "命中强敌时揭开弱点",
+            "description": "命中强敌时揭开弱点",
+            "source": "aspect-st-ember",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 30,
+            "filter": {},
+            "when": [
+              {
+                "kind": "target_rank",
+                "ranks": [
+                  "elite"
+                ]
+              }
+            ],
+            "action": {
+              "type": "status",
+              "ref": "hit",
+              "status": "vulnerable",
+              "duration": 90,
+              "strength": 0.25,
+              "ratio": 0
+            },
+            "scale": [],
+            "vfxKey": "player/ward"
+          },
+          {
+            "id": "pacing-aspect-st-ember-focus-elite",
+            "name": "集中火力压制强敌",
+            "description": "集中火力压制强敌",
+            "source": "aspect-st-ember",
+            "tier": 1,
+            "trigger": "passive",
+            "chance": 1,
+            "icd": 0,
+            "filter": {},
+            "when": [
+              {
+                "kind": "target_rank",
+                "ranks": [
+                  "elite"
+                ]
+              }
+            ],
+            "action": {
+              "type": "amplify",
+              "ratio": 1.754999,
+              "against": []
+            },
+            "scale": [],
+            "vfxKey": "player/ward"
+          },
+          {
+            "id": "pacing-aspect-st-ember-focus-normal",
+            "name": "集中火力压制强敌",
+            "description": "集中火力压制强敌",
+            "source": "aspect-st-ember",
+            "tier": 1,
+            "trigger": "passive",
+            "chance": 1,
+            "icd": 0,
+            "filter": {},
+            "when": [
+              {
+                "kind": "target_rank",
+                "ranks": [
+                  "normal"
+                ]
+              }
+            ],
+            "action": {
+              "type": "amplify",
+              "ratio": 0.164085,
+              "against": []
+            },
+            "scale": [],
+            "vfxKey": "player/ward"
+          },
+          {
+            "id": "pacing-aspect-st-ember-evasion",
+            "name": "转移时避开追击",
+            "description": "转移时避开追击",
+            "source": "aspect-st-ember",
+            "tier": 1,
+            "trigger": "passive",
+            "chance": 1,
+            "icd": 0,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "buff",
+              "duration": 1,
+              "maxStacks": 1,
+              "mods": {
+                "dodge": 0.338983
+              }
+            },
+            "scale": [],
+            "vfxKey": "player/ward"
+          },
+          {
+            "id": "aspect-st-ember-state",
+            "name": "余烬之心",
+            "description": "余烬之心",
+            "source": "aspect-st-ember",
+            "tier": 1,
+            "trigger": "passive",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "statusKinds": [
+                "burn"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "buff",
+              "duration": 1,
+              "maxStacks": 1,
+              "mods": {},
+              "flags": {
+                "dotCrit": true
+              }
+            },
+            "scale": [],
+            "vfxKey": "player/ward"
+          },
+          {
+            "id": "stat-igniteChance",
+            "name": "点燃几率",
+            "description": "装备属性触发",
+            "source": "装备与养成属性",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 0.42000000000000004,
+            "icd": 0,
+            "filter": {
+              "categories": [
+                "direct"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "status",
+              "ref": "dealt",
+              "status": "burn",
+              "duration": 90,
+              "strength": 0,
+              "ratio": 0.3
+            },
+            "scale": [],
+            "vfxKey": "player/ember"
+          }
+        ]
+      },
+      "skills": [
+        {
+          "weapons": [],
+          "id": "fireball",
+          "name": "火球术",
+          "kind": "projectile",
+          "damage": 17019,
+          "range": 11,
+          "radius": 1.5,
+          "cooldown": 85,
+          "cost": 20,
+          "windup": 10,
+          "duration": 0,
+          "description": "造成范围爆炸的火球",
+          "mechanics": {
+            "damageType": "fire",
+            "targeting": "enemy",
+            "projectile": {
+              "collisionRadius": 0.3,
+              "penetrations": 0,
+              "turnRate": 0,
+              "explosionRadius": 1.5
+            },
+            "statuses": [
+              {
+                "kind": "burn",
+                "duration": 90,
+                "strength": 0,
+                "scope": "hit",
+                "interval": 30,
+                "damageType": "fire",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false,
+                "total": 5106
+              }
+            ]
+          },
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 85,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 85
+          },
+          "tags": [
+            "spell",
+            "fire",
+            "projectile",
+            "dot"
+          ]
+        },
+        {
+          "weapons": [],
+          "id": "meteor",
+          "name": "陨石术",
+          "kind": "zone",
+          "damage": 20423,
+          "range": 12,
+          "radius": 3.5,
+          "cooldown": 180,
+          "cost": 35,
+          "windup": 25,
+          "duration": 0,
+          "description": "召唤陨石砸击地面",
+          "mechanics": {
+            "damageType": "fire",
+            "targeting": "ground",
+            "zone": {
+              "mode": "burst",
+              "hits": 1,
+              "interval": 30,
+              "firstDelay": 0,
+              "pullSpeed": 0,
+              "budget": "per_tick"
+            },
+            "statuses": [
+              {
+                "kind": "burn",
+                "duration": 90,
+                "strength": 0,
+                "scope": "hit",
+                "interval": 30,
+                "damageType": "fire",
+                "cleanse": true,
+                "breakOnDamage": false,
+                "removeWithSource": false,
+                "total": 6127
+              }
+            ]
+          },
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 180,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 180
+          },
+          "tags": [
+            "spell",
+            "fire",
+            "area",
+            "dot"
+          ]
+        },
+        {
+          "weapons": [],
+          "id": "ember",
+          "name": "燎原",
+          "kind": "zone",
+          "damage": 4425,
+          "range": 8,
+          "radius": 3.3,
+          "cooldown": 130,
+          "cost": 20,
+          "windup": 10,
+          "duration": 150,
+          "description": "持续燃烧区域",
+          "mechanics": {
+            "damageType": "fire",
+            "targeting": "ground",
+            "zone": {
+              "mode": "periodic",
+              "hits": 5,
+              "interval": 30,
+              "firstDelay": 29,
+              "pullSpeed": 0,
+              "budget": "per_tick"
+            },
+            "statuses": []
+          },
+          "resolution": {
+            "attackShare": 1,
+            "baseCooldown": 130,
+            "skillCooldownReduction": 0,
+            "statsCooldownReduction": 0,
+            "effectiveCooldownReduction": 0,
+            "cooldownCap": 0.75,
+            "finalCooldown": 130
+          },
+          "tags": [
+            "spell",
+            "fire",
+            "area",
+            "dot"
+          ]
+        }
+      ]
+    }
+  },
+  "history": [
+    {
+      "id": "924f4f30-645c-4700-a327-c9f63297aa50",
+      "scene": "single",
+      "status": "won",
+      "versions": {
+        "client": "0.11.25",
+        "protocol": 35,
+        "rules": "ow-66",
+        "assets": "world-art-20261007-v24-world-runtime",
+        "db": 16
+      },
+      "seed": 41,
+      "tick": 195,
+      "elapsedSeconds": 6.5,
+      "wallSeconds": 6.95461269999994,
+      "kills": 1,
+      "targets": 1,
+      "targetHp": 0,
+      "initialHp": 395833,
+      "clearSeconds": 6.5,
+      "damage": 395833,
+      "incomingHits": 2,
+      "casts": {
+        "fireball": 3,
+        "meteor": 1,
+        "ember": 2
+      },
+      "failures": {},
+      "expectedXp": 1127749,
+      "killsPerMinute": 9.23076923076923,
+      "xpPerHour": 624599446.1538461,
+      "nextLevelSeconds": null,
+      "targetSeconds": 8.699051899158338,
+      "frozen": {
+        "characterId": "485a0cf4-9d8f-4f06-a1fa-cb864b7b243c",
+        "revision": 15,
+        "overrides": {
+          "monsterHp": 0.25,
+          "monsterAttack": 1
+        },
+        "requestedSkills": [
+          "fireball",
+          "meteor",
+          "ember"
+        ],
+        "executedSkills": [
+          "fireball",
+          "meteor",
+          "ember"
+        ],
+        "skillRanks": {
+          "fireball": 5,
+          "meteor": 5,
+          "ember": 5
+        },
+        "stats": {
+          "attack": 1292,
+          "armor": 330,
+          "hp": 8366,
+          "speed": 6,
+          "mana": 100,
+          "regen": 10,
+          "statusDuration": 0.6900000000000001,
+          "igniteChance": 0.42000000000000004,
+          "hpPercent": 0.4,
+          "attackPercent": 0.2,
+          "weapon": "staff",
+          "effects": [],
+          "damageAdd": 1.47,
+          "damageMult": 1,
+          "zones": [
+            {
+              "id": "mastery",
+              "label": "等级精通",
+              "kind": "add",
+              "value": 1.47
+            },
+            {
+              "id": "weapon-affinity",
+              "label": "主手加成 · 武技",
+              "kind": "mult",
+              "value": 1.14,
+              "tags": [
+                "martial"
+              ]
+            },
+            {
+              "id": "affix-fire",
+              "label": "火焰伤害",
+              "kind": "add",
+              "value": 1.6,
+              "tags": [
+                "fire"
+              ]
+            },
+            {
+              "id": "affix-dot",
+              "label": "持续伤害",
+              "kind": "add",
+              "value": 0.15,
+              "tags": [
+                "dot"
+              ]
+            }
+          ],
+          "combos": [
+            {
+              "id": "innate-staff-ignite",
+              "name": "引燃",
+              "description": "火焰技能命中时点燃目标 3 秒（共 30% 伤害）",
+              "source": "元素流 · 固有",
+              "weapons": [
+                "staff"
+              ],
+              "trigger": "hit",
+              "chance": 1,
+              "cooldown": 0,
+              "damageTypes": [
+                "fire"
+              ],
+              "action": {
+                "type": "status",
+                "status": "burn",
+                "duration": 90,
+                "strength": 0,
+                "ratio": 0.3
+              }
+            },
+            {
+              "id": "innate-staff-shatter",
+              "name": "碎冰",
+              "description": "冰霜伤害击中燃烧或迟缓中的敌人时碎冰爆发（60% 伤害，半径 2.5，1 秒冷却）",
+              "source": "元素流 · 固有",
+              "weapons": [
+                "staff"
+              ],
+              "trigger": "hit",
+              "chance": 1,
+              "cooldown": 30,
+              "damageTypes": [
+                "cold"
+              ],
+              "targetStatus": [
+                "burn",
+                "slow"
+              ],
+              "action": {
+                "type": "nova",
+                "radius": 2.5,
+                "ratio": 0.6,
+                "damageType": "cold",
+                "vfx": "combo/shatter"
+              }
+            }
+          ],
+          "rules": [
+            {
+              "id": "innate-staff-ignite",
+              "name": "引燃",
+              "description": "火焰技能命中时点燃目标 3 秒（共 30% 伤害）",
+              "source": "元素流 · 固有",
+              "tier": 1,
+              "trigger": "hit",
+              "chance": 1,
+              "icd": 0,
+              "filter": {
+                "weapons": [
+                  "staff"
+                ],
+                "damageTypes": [
+                  "fire"
+                ]
+              },
+              "when": [],
+              "action": {
+                "type": "status",
+                "ref": "hit",
+                "status": "burn",
+                "duration": 90,
+                "strength": 0,
+                "ratio": 0.3
+              },
+              "scale": [
+                "action.ratio"
+              ],
+              "vfxKey": "combo/innate-staff-ignite"
+            },
+            {
+              "id": "innate-staff-shatter",
+              "name": "碎冰",
+              "description": "冰霜伤害击中燃烧或迟缓中的敌人时碎冰爆发（60% 伤害，半径 2.5，1 秒冷却）",
+              "source": "元素流 · 固有",
+              "tier": 1,
+              "trigger": "hit",
+              "chance": 1,
+              "icd": 30,
+              "filter": {
+                "weapons": [
+                  "staff"
+                ],
+                "damageTypes": [
+                  "cold"
+                ]
+              },
+              "when": [
+                {
+                  "kind": "target_status",
+                  "statuses": [
+                    "burn",
+                    "slow"
+                  ]
+                }
+              ],
+              "action": {
+                "type": "nova",
+                "ratio": 0.6,
+                "radius": 2.5,
+                "damageType": "cold",
+                "ref": "hit",
+                "at": "target",
+                "vfx": "combo/shatter"
+              },
+              "scale": [
+                "action.ratio"
+              ],
+              "vfxKey": "combo/shatter"
+            },
+            {
+              "id": "atom-flame-stack",
+              "name": "叠焰",
+              "description": "被动：燃烧最多叠 3 层",
+              "source": "set-staff-standard",
+              "tier": 1,
+              "trigger": "passive",
+              "chance": 1,
+              "icd": 0,
+              "filter": {},
+              "when": [],
+              "action": {
+                "type": "buff",
+                "duration": 90,
+                "maxStacks": 1,
+                "mods": {},
+                "statusOverrides": {
+                  "burn": {
+                    "maxStacks": 3,
+                    "stackMode": "refresh"
+                  }
+                }
+              },
+              "scale": [],
+              "vfxKey": "player/ember"
+            },
+            {
+              "id": "atom-detonate",
+              "name": "引爆",
+              "description": "火焰命中燃烧满层目标：引爆剩余燃烧，范围 2.5",
+              "source": "set-staff-standard",
+              "tier": 1,
+              "trigger": "hit",
+              "chance": 1,
+              "icd": 30,
+              "filter": {
+                "damageTypes": [
+                  "fire"
+                ]
+              },
+              "when": [
+                {
+                  "kind": "target_status",
+                  "statuses": [
+                    "burn"
+                  ],
+                  "minStacks": 3
+                }
+              ],
+              "action": {
+                "type": "detonate",
+                "statuses": [
+                  "burn"
+                ],
+                "ratio": 1,
+                "remove": true,
+                "radius": 2.5
+              },
+              "scale": [
+                "action.ratio"
+              ],
+              "vfxKey": "player/fireball"
+            },
+            {
+              "id": "atom-quake",
+              "name": "震波",
+              "description": "范围技能命中 ≥ 4 敌，冷却 1 秒：震波（50%，半径 2.5）",
+              "source": "铭纹：古枝吊坠",
+              "tier": 0.5,
+              "trigger": "hit",
+              "chance": 1,
+              "icd": 30,
+              "filter": {
+                "tags": [
+                  "area"
+                ]
+              },
+              "when": [
+                {
+                  "kind": "cast_hits",
+                  "op": "gte",
+                  "value": 4
+                }
+              ],
+              "action": {
+                "type": "nova",
+                "ratio": 0.25,
+                "radius": 2.5,
+                "damageType": "physical",
+                "ref": "hit",
+                "at": "target"
+              },
+              "scale": [
+                "action.ratio"
+              ],
+              "vfxKey": "player/ground_slam"
+            },
+            {
+              "id": "aspect-st-ember-burn",
+              "name": "余烬之心",
+              "description": "燃烧伤害 ×1.2",
+              "source": "aspect-st-ember",
+              "tier": 1,
+              "trigger": "passive",
+              "chance": 1,
+              "icd": 0,
+              "filter": {
+                "statusKinds": [
+                  "burn"
+                ]
+              },
+              "when": [],
+              "action": {
+                "type": "amplify",
+                "ratio": 0.2,
+                "against": []
+              },
+              "scale": [
+                "action.ratio"
+              ],
+              "vfxKey": "player/ember"
+            },
+            {
+              "id": "pacing-aspect-st-ember-expose-boss",
+              "name": "命中强敌时揭开弱点",
+              "description": "命中强敌时揭开弱点",
+              "source": "aspect-st-ember",
+              "tier": 1,
+              "trigger": "hit",
+              "chance": 1,
+              "icd": 30,
+              "filter": {},
+              "when": [
+                {
+                  "kind": "target_rank",
+                  "ranks": [
+                    "boss"
+                  ]
+                }
+              ],
+              "action": {
+                "type": "status",
+                "ref": "hit",
+                "status": "vulnerable",
+                "duration": 90,
+                "strength": 0.25,
+                "ratio": 0
+              },
+              "scale": [],
+              "vfxKey": "player/ward"
+            },
+            {
+              "id": "pacing-aspect-st-ember-focus-boss",
+              "name": "集中火力压制强敌",
+              "description": "集中火力压制强敌",
+              "source": "aspect-st-ember",
+              "tier": 1,
+              "trigger": "passive",
+              "chance": 1,
+              "icd": 0,
+              "filter": {},
+              "when": [
+                {
+                  "kind": "target_rank",
+                  "ranks": [
+                    "boss"
+                  ]
+                }
+              ],
+              "action": {
+                "type": "amplify",
+                "ratio": 1.206865,
+                "against": []
+              },
+              "scale": [],
+              "vfxKey": "player/ward"
+            },
+            {
+              "id": "pacing-aspect-st-ember-expose-elite",
+              "name": "命中强敌时揭开弱点",
+              "description": "命中强敌时揭开弱点",
+              "source": "aspect-st-ember",
+              "tier": 1,
+              "trigger": "hit",
+              "chance": 1,
+              "icd": 30,
+              "filter": {},
+              "when": [
+                {
+                  "kind": "target_rank",
+                  "ranks": [
+                    "elite"
+                  ]
+                }
+              ],
+              "action": {
+                "type": "status",
+                "ref": "hit",
+                "status": "vulnerable",
+                "duration": 90,
+                "strength": 0.25,
+                "ratio": 0
+              },
+              "scale": [],
+              "vfxKey": "player/ward"
+            },
+            {
+              "id": "pacing-aspect-st-ember-focus-elite",
+              "name": "集中火力压制强敌",
+              "description": "集中火力压制强敌",
+              "source": "aspect-st-ember",
+              "tier": 1,
+              "trigger": "passive",
+              "chance": 1,
+              "icd": 0,
+              "filter": {},
+              "when": [
+                {
+                  "kind": "target_rank",
+                  "ranks": [
+                    "elite"
+                  ]
+                }
+              ],
+              "action": {
+                "type": "amplify",
+                "ratio": 1.754999,
+                "against": []
+              },
+              "scale": [],
+              "vfxKey": "player/ward"
+            },
+            {
+              "id": "pacing-aspect-st-ember-focus-normal",
+              "name": "集中火力压制强敌",
+              "description": "集中火力压制强敌",
+              "source": "aspect-st-ember",
+              "tier": 1,
+              "trigger": "passive",
+              "chance": 1,
+              "icd": 0,
+              "filter": {},
+              "when": [
+                {
+                  "kind": "target_rank",
+                  "ranks": [
+                    "normal"
+                  ]
+                }
+              ],
+              "action": {
+                "type": "amplify",
+                "ratio": 0.164085,
+                "against": []
+              },
+              "scale": [],
+              "vfxKey": "player/ward"
+            },
+            {
+              "id": "pacing-aspect-st-ember-evasion",
+              "name": "转移时避开追击",
+              "description": "转移时避开追击",
+              "source": "aspect-st-ember",
+              "tier": 1,
+              "trigger": "passive",
+              "chance": 1,
+              "icd": 0,
+              "filter": {},
+              "when": [],
+              "action": {
+                "type": "buff",
+                "duration": 1,
+                "maxStacks": 1,
+                "mods": {
+                  "dodge": 0.338983
+                }
+              },
+              "scale": [],
+              "vfxKey": "player/ward"
+            },
+            {
+              "id": "aspect-st-ember-state",
+              "name": "余烬之心",
+              "description": "余烬之心",
+              "source": "aspect-st-ember",
+              "tier": 1,
+              "trigger": "passive",
+              "chance": 1,
+              "icd": 0,
+              "filter": {
+                "statusKinds": [
+                  "burn"
+                ]
+              },
+              "when": [],
+              "action": {
+                "type": "buff",
+                "duration": 1,
+                "maxStacks": 1,
+                "mods": {},
+                "flags": {
+                  "dotCrit": true
+                }
+              },
+              "scale": [],
+              "vfxKey": "player/ward"
+            },
+            {
+              "id": "stat-igniteChance",
+              "name": "点燃几率",
+              "description": "装备属性触发",
+              "source": "装备与养成属性",
+              "tier": 1,
+              "trigger": "hit",
+              "chance": 0.42000000000000004,
+              "icd": 0,
+              "filter": {
+                "categories": [
+                  "direct"
+                ]
+              },
+              "when": [],
+              "action": {
+                "type": "status",
+                "ref": "dealt",
+                "status": "burn",
+                "duration": 90,
+                "strength": 0,
+                "ratio": 0.3
+              },
+              "scale": [],
+              "vfxKey": "player/ember"
+            }
+          ]
+        },
+        "skills": [
+          {
+            "weapons": [],
+            "id": "fireball",
+            "name": "火球术",
+            "kind": "projectile",
+            "damage": 17019,
+            "range": 11,
+            "radius": 1.5,
+            "cooldown": 85,
+            "cost": 20,
+            "windup": 10,
+            "duration": 0,
+            "description": "造成范围爆炸的火球",
+            "mechanics": {
+              "damageType": "fire",
+              "targeting": "enemy",
+              "projectile": {
+                "collisionRadius": 0.3,
+                "penetrations": 0,
+                "turnRate": 0,
+                "explosionRadius": 1.5
+              },
+              "statuses": [
+                {
+                  "kind": "burn",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "interval": 30,
+                  "damageType": "fire",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false,
+                  "total": 5106
+                }
+              ]
+            },
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 85,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 85
+            },
+            "tags": [
+              "spell",
+              "fire",
+              "projectile",
+              "dot"
+            ]
+          },
+          {
+            "weapons": [],
+            "id": "meteor",
+            "name": "陨石术",
+            "kind": "zone",
+            "damage": 20423,
+            "range": 12,
+            "radius": 3.5,
+            "cooldown": 180,
+            "cost": 35,
+            "windup": 25,
+            "duration": 0,
+            "description": "召唤陨石砸击地面",
+            "mechanics": {
+              "damageType": "fire",
+              "targeting": "ground",
+              "zone": {
+                "mode": "burst",
+                "hits": 1,
+                "interval": 30,
+                "firstDelay": 0,
+                "pullSpeed": 0,
+                "budget": "per_tick"
+              },
+              "statuses": [
+                {
+                  "kind": "burn",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "interval": 30,
+                  "damageType": "fire",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false,
+                  "total": 6127
+                }
+              ]
+            },
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 180,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 180
+            },
+            "tags": [
+              "spell",
+              "fire",
+              "area",
+              "dot"
+            ]
+          },
+          {
+            "weapons": [],
+            "id": "ember",
+            "name": "燎原",
+            "kind": "zone",
+            "damage": 4425,
+            "range": 8,
+            "radius": 3.3,
+            "cooldown": 130,
+            "cost": 20,
+            "windup": 10,
+            "duration": 150,
+            "description": "持续燃烧区域",
+            "mechanics": {
+              "damageType": "fire",
+              "targeting": "ground",
+              "zone": {
+                "mode": "periodic",
+                "hits": 5,
+                "interval": 30,
+                "firstDelay": 29,
+                "pullSpeed": 0,
+                "budget": "per_tick"
+              },
+              "statuses": []
+            },
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 130,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 130
+            },
+            "tags": [
+              "spell",
+              "fire",
+              "area",
+              "dot"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "28d0073e-8e23-4ac0-8bfd-bd21f3e6fb98",
+      "scene": "single",
+      "status": "won",
+      "versions": {
+        "client": "0.11.25",
+        "protocol": 35,
+        "rules": "ow-66",
+        "assets": "world-art-20261007-v24-world-runtime",
+        "db": 16
+      },
+      "seed": 41,
+      "tick": 941,
+      "elapsedSeconds": 31.366666666666667,
+      "wallSeconds": 34.00323219999997,
+      "kills": 1,
+      "targets": 1,
+      "targetHp": 0,
+      "initialHp": 1583333,
+      "clearSeconds": 31.366666666666667,
+      "damage": 1583333,
+      "incomingHits": 9,
+      "casts": {
+        "fireball": 10,
+        "meteor": 2,
+        "ember": 7
+      },
+      "failures": {},
+      "expectedXp": 1127749,
+      "killsPerMinute": 1.9128586609989373,
+      "xpPerHour": 129433466.52497344,
+      "nextLevelSeconds": null,
+      "targetSeconds": 34.79620759663335,
+      "frozen": {
+        "characterId": "485a0cf4-9d8f-4f06-a1fa-cb864b7b243c",
+        "revision": 15,
+        "overrides": {
+          "monsterHp": 1,
+          "monsterAttack": 1
+        },
+        "requestedSkills": [
+          "fireball",
+          "meteor",
+          "ember"
+        ],
+        "executedSkills": [
+          "fireball",
+          "meteor",
+          "ember"
+        ],
+        "skillRanks": {
+          "fireball": 5,
+          "meteor": 5,
+          "ember": 5
+        },
+        "stats": {
+          "attack": 1292,
+          "armor": 330,
+          "hp": 8366,
+          "speed": 6,
+          "mana": 100,
+          "regen": 10,
+          "statusDuration": 0.6900000000000001,
+          "igniteChance": 0.42000000000000004,
+          "hpPercent": 0.4,
+          "attackPercent": 0.2,
+          "weapon": "staff",
+          "effects": [],
+          "damageAdd": 1.47,
+          "damageMult": 1,
+          "zones": [
+            {
+              "id": "mastery",
+              "label": "等级精通",
+              "kind": "add",
+              "value": 1.47
+            },
+            {
+              "id": "weapon-affinity",
+              "label": "主手加成 · 武技",
+              "kind": "mult",
+              "value": 1.14,
+              "tags": [
+                "martial"
+              ]
+            },
+            {
+              "id": "affix-fire",
+              "label": "火焰伤害",
+              "kind": "add",
+              "value": 1.6,
+              "tags": [
+                "fire"
+              ]
+            },
+            {
+              "id": "affix-dot",
+              "label": "持续伤害",
+              "kind": "add",
+              "value": 0.15,
+              "tags": [
+                "dot"
+              ]
+            }
+          ],
+          "combos": [
+            {
+              "id": "innate-staff-ignite",
+              "name": "引燃",
+              "description": "火焰技能命中时点燃目标 3 秒（共 30% 伤害）",
+              "source": "元素流 · 固有",
+              "weapons": [
+                "staff"
+              ],
+              "trigger": "hit",
+              "chance": 1,
+              "cooldown": 0,
+              "damageTypes": [
+                "fire"
+              ],
+              "action": {
+                "type": "status",
+                "status": "burn",
+                "duration": 90,
+                "strength": 0,
+                "ratio": 0.3
+              }
+            },
+            {
+              "id": "innate-staff-shatter",
+              "name": "碎冰",
+              "description": "冰霜伤害击中燃烧或迟缓中的敌人时碎冰爆发（60% 伤害，半径 2.5，1 秒冷却）",
+              "source": "元素流 · 固有",
+              "weapons": [
+                "staff"
+              ],
+              "trigger": "hit",
+              "chance": 1,
+              "cooldown": 30,
+              "damageTypes": [
+                "cold"
+              ],
+              "targetStatus": [
+                "burn",
+                "slow"
+              ],
+              "action": {
+                "type": "nova",
+                "radius": 2.5,
+                "ratio": 0.6,
+                "damageType": "cold",
+                "vfx": "combo/shatter"
+              }
+            }
+          ],
+          "rules": [
+            {
+              "id": "innate-staff-ignite",
+              "name": "引燃",
+              "description": "火焰技能命中时点燃目标 3 秒（共 30% 伤害）",
+              "source": "元素流 · 固有",
+              "tier": 1,
+              "trigger": "hit",
+              "chance": 1,
+              "icd": 0,
+              "filter": {
+                "weapons": [
+                  "staff"
+                ],
+                "damageTypes": [
+                  "fire"
+                ]
+              },
+              "when": [],
+              "action": {
+                "type": "status",
+                "ref": "hit",
+                "status": "burn",
+                "duration": 90,
+                "strength": 0,
+                "ratio": 0.3
+              },
+              "scale": [
+                "action.ratio"
+              ],
+              "vfxKey": "combo/innate-staff-ignite"
+            },
+            {
+              "id": "innate-staff-shatter",
+              "name": "碎冰",
+              "description": "冰霜伤害击中燃烧或迟缓中的敌人时碎冰爆发（60% 伤害，半径 2.5，1 秒冷却）",
+              "source": "元素流 · 固有",
+              "tier": 1,
+              "trigger": "hit",
+              "chance": 1,
+              "icd": 30,
+              "filter": {
+                "weapons": [
+                  "staff"
+                ],
+                "damageTypes": [
+                  "cold"
+                ]
+              },
+              "when": [
+                {
+                  "kind": "target_status",
+                  "statuses": [
+                    "burn",
+                    "slow"
+                  ]
+                }
+              ],
+              "action": {
+                "type": "nova",
+                "ratio": 0.6,
+                "radius": 2.5,
+                "damageType": "cold",
+                "ref": "hit",
+                "at": "target",
+                "vfx": "combo/shatter"
+              },
+              "scale": [
+                "action.ratio"
+              ],
+              "vfxKey": "combo/shatter"
+            },
+            {
+              "id": "atom-flame-stack",
+              "name": "叠焰",
+              "description": "被动：燃烧最多叠 3 层",
+              "source": "set-staff-standard",
+              "tier": 1,
+              "trigger": "passive",
+              "chance": 1,
+              "icd": 0,
+              "filter": {},
+              "when": [],
+              "action": {
+                "type": "buff",
+                "duration": 90,
+                "maxStacks": 1,
+                "mods": {},
+                "statusOverrides": {
+                  "burn": {
+                    "maxStacks": 3,
+                    "stackMode": "refresh"
+                  }
+                }
+              },
+              "scale": [],
+              "vfxKey": "player/ember"
+            },
+            {
+              "id": "atom-detonate",
+              "name": "引爆",
+              "description": "火焰命中燃烧满层目标：引爆剩余燃烧，范围 2.5",
+              "source": "set-staff-standard",
+              "tier": 1,
+              "trigger": "hit",
+              "chance": 1,
+              "icd": 30,
+              "filter": {
+                "damageTypes": [
+                  "fire"
+                ]
+              },
+              "when": [
+                {
+                  "kind": "target_status",
+                  "statuses": [
+                    "burn"
+                  ],
+                  "minStacks": 3
+                }
+              ],
+              "action": {
+                "type": "detonate",
+                "statuses": [
+                  "burn"
+                ],
+                "ratio": 1,
+                "remove": true,
+                "radius": 2.5
+              },
+              "scale": [
+                "action.ratio"
+              ],
+              "vfxKey": "player/fireball"
+            },
+            {
+              "id": "atom-quake",
+              "name": "震波",
+              "description": "范围技能命中 ≥ 4 敌，冷却 1 秒：震波（50%，半径 2.5）",
+              "source": "铭纹：古枝吊坠",
+              "tier": 0.5,
+              "trigger": "hit",
+              "chance": 1,
+              "icd": 30,
+              "filter": {
+                "tags": [
+                  "area"
+                ]
+              },
+              "when": [
+                {
+                  "kind": "cast_hits",
+                  "op": "gte",
+                  "value": 4
+                }
+              ],
+              "action": {
+                "type": "nova",
+                "ratio": 0.25,
+                "radius": 2.5,
+                "damageType": "physical",
+                "ref": "hit",
+                "at": "target"
+              },
+              "scale": [
+                "action.ratio"
+              ],
+              "vfxKey": "player/ground_slam"
+            },
+            {
+              "id": "aspect-st-ember-burn",
+              "name": "余烬之心",
+              "description": "燃烧伤害 ×1.2",
+              "source": "aspect-st-ember",
+              "tier": 1,
+              "trigger": "passive",
+              "chance": 1,
+              "icd": 0,
+              "filter": {
+                "statusKinds": [
+                  "burn"
+                ]
+              },
+              "when": [],
+              "action": {
+                "type": "amplify",
+                "ratio": 0.2,
+                "against": []
+              },
+              "scale": [
+                "action.ratio"
+              ],
+              "vfxKey": "player/ember"
+            },
+            {
+              "id": "pacing-aspect-st-ember-expose-boss",
+              "name": "命中强敌时揭开弱点",
+              "description": "命中强敌时揭开弱点",
+              "source": "aspect-st-ember",
+              "tier": 1,
+              "trigger": "hit",
+              "chance": 1,
+              "icd": 30,
+              "filter": {},
+              "when": [
+                {
+                  "kind": "target_rank",
+                  "ranks": [
+                    "boss"
+                  ]
+                }
+              ],
+              "action": {
+                "type": "status",
+                "ref": "hit",
+                "status": "vulnerable",
+                "duration": 90,
+                "strength": 0.25,
+                "ratio": 0
+              },
+              "scale": [],
+              "vfxKey": "player/ward"
+            },
+            {
+              "id": "pacing-aspect-st-ember-focus-boss",
+              "name": "集中火力压制强敌",
+              "description": "集中火力压制强敌",
+              "source": "aspect-st-ember",
+              "tier": 1,
+              "trigger": "passive",
+              "chance": 1,
+              "icd": 0,
+              "filter": {},
+              "when": [
+                {
+                  "kind": "target_rank",
+                  "ranks": [
+                    "boss"
+                  ]
+                }
+              ],
+              "action": {
+                "type": "amplify",
+                "ratio": 1.206865,
+                "against": []
+              },
+              "scale": [],
+              "vfxKey": "player/ward"
+            },
+            {
+              "id": "pacing-aspect-st-ember-expose-elite",
+              "name": "命中强敌时揭开弱点",
+              "description": "命中强敌时揭开弱点",
+              "source": "aspect-st-ember",
+              "tier": 1,
+              "trigger": "hit",
+              "chance": 1,
+              "icd": 30,
+              "filter": {},
+              "when": [
+                {
+                  "kind": "target_rank",
+                  "ranks": [
+                    "elite"
+                  ]
+                }
+              ],
+              "action": {
+                "type": "status",
+                "ref": "hit",
+                "status": "vulnerable",
+                "duration": 90,
+                "strength": 0.25,
+                "ratio": 0
+              },
+              "scale": [],
+              "vfxKey": "player/ward"
+            },
+            {
+              "id": "pacing-aspect-st-ember-focus-elite",
+              "name": "集中火力压制强敌",
+              "description": "集中火力压制强敌",
+              "source": "aspect-st-ember",
+              "tier": 1,
+              "trigger": "passive",
+              "chance": 1,
+              "icd": 0,
+              "filter": {},
+              "when": [
+                {
+                  "kind": "target_rank",
+                  "ranks": [
+                    "elite"
+                  ]
+                }
+              ],
+              "action": {
+                "type": "amplify",
+                "ratio": 1.754999,
+                "against": []
+              },
+              "scale": [],
+              "vfxKey": "player/ward"
+            },
+            {
+              "id": "pacing-aspect-st-ember-focus-normal",
+              "name": "集中火力压制强敌",
+              "description": "集中火力压制强敌",
+              "source": "aspect-st-ember",
+              "tier": 1,
+              "trigger": "passive",
+              "chance": 1,
+              "icd": 0,
+              "filter": {},
+              "when": [
+                {
+                  "kind": "target_rank",
+                  "ranks": [
+                    "normal"
+                  ]
+                }
+              ],
+              "action": {
+                "type": "amplify",
+                "ratio": 0.164085,
+                "against": []
+              },
+              "scale": [],
+              "vfxKey": "player/ward"
+            },
+            {
+              "id": "pacing-aspect-st-ember-evasion",
+              "name": "转移时避开追击",
+              "description": "转移时避开追击",
+              "source": "aspect-st-ember",
+              "tier": 1,
+              "trigger": "passive",
+              "chance": 1,
+              "icd": 0,
+              "filter": {},
+              "when": [],
+              "action": {
+                "type": "buff",
+                "duration": 1,
+                "maxStacks": 1,
+                "mods": {
+                  "dodge": 0.338983
+                }
+              },
+              "scale": [],
+              "vfxKey": "player/ward"
+            },
+            {
+              "id": "aspect-st-ember-state",
+              "name": "余烬之心",
+              "description": "余烬之心",
+              "source": "aspect-st-ember",
+              "tier": 1,
+              "trigger": "passive",
+              "chance": 1,
+              "icd": 0,
+              "filter": {
+                "statusKinds": [
+                  "burn"
+                ]
+              },
+              "when": [],
+              "action": {
+                "type": "buff",
+                "duration": 1,
+                "maxStacks": 1,
+                "mods": {},
+                "flags": {
+                  "dotCrit": true
+                }
+              },
+              "scale": [],
+              "vfxKey": "player/ward"
+            },
+            {
+              "id": "stat-igniteChance",
+              "name": "点燃几率",
+              "description": "装备属性触发",
+              "source": "装备与养成属性",
+              "tier": 1,
+              "trigger": "hit",
+              "chance": 0.42000000000000004,
+              "icd": 0,
+              "filter": {
+                "categories": [
+                  "direct"
+                ]
+              },
+              "when": [],
+              "action": {
+                "type": "status",
+                "ref": "dealt",
+                "status": "burn",
+                "duration": 90,
+                "strength": 0,
+                "ratio": 0.3
+              },
+              "scale": [],
+              "vfxKey": "player/ember"
+            }
+          ]
+        },
+        "skills": [
+          {
+            "weapons": [],
+            "id": "fireball",
+            "name": "火球术",
+            "kind": "projectile",
+            "damage": 17019,
+            "range": 11,
+            "radius": 1.5,
+            "cooldown": 85,
+            "cost": 20,
+            "windup": 10,
+            "duration": 0,
+            "description": "造成范围爆炸的火球",
+            "mechanics": {
+              "damageType": "fire",
+              "targeting": "enemy",
+              "projectile": {
+                "collisionRadius": 0.3,
+                "penetrations": 0,
+                "turnRate": 0,
+                "explosionRadius": 1.5
+              },
+              "statuses": [
+                {
+                  "kind": "burn",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "interval": 30,
+                  "damageType": "fire",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false,
+                  "total": 5106
+                }
+              ]
+            },
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 85,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 85
+            },
+            "tags": [
+              "spell",
+              "fire",
+              "projectile",
+              "dot"
+            ]
+          },
+          {
+            "weapons": [],
+            "id": "meteor",
+            "name": "陨石术",
+            "kind": "zone",
+            "damage": 20423,
+            "range": 12,
+            "radius": 3.5,
+            "cooldown": 180,
+            "cost": 35,
+            "windup": 25,
+            "duration": 0,
+            "description": "召唤陨石砸击地面",
+            "mechanics": {
+              "damageType": "fire",
+              "targeting": "ground",
+              "zone": {
+                "mode": "burst",
+                "hits": 1,
+                "interval": 30,
+                "firstDelay": 0,
+                "pullSpeed": 0,
+                "budget": "per_tick"
+              },
+              "statuses": [
+                {
+                  "kind": "burn",
+                  "duration": 90,
+                  "strength": 0,
+                  "scope": "hit",
+                  "interval": 30,
+                  "damageType": "fire",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false,
+                  "total": 6127
+                }
+              ]
+            },
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 180,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 180
+            },
+            "tags": [
+              "spell",
+              "fire",
+              "area",
+              "dot"
+            ]
+          },
+          {
+            "weapons": [],
+            "id": "ember",
+            "name": "燎原",
+            "kind": "zone",
+            "damage": 4425,
+            "range": 8,
+            "radius": 3.3,
+            "cooldown": 130,
+            "cost": 20,
+            "windup": 10,
+            "duration": 150,
+            "description": "持续燃烧区域",
+            "mechanics": {
+              "damageType": "fire",
+              "targeting": "ground",
+              "zone": {
+                "mode": "periodic",
+                "hits": 5,
+                "interval": 30,
+                "firstDelay": 29,
+                "pullSpeed": 0,
+                "budget": "per_tick"
+              },
+              "statuses": []
+            },
+            "resolution": {
+              "attackShare": 1,
+              "baseCooldown": 130,
+              "skillCooldownReduction": 0,
+              "statsCooldownReduction": 0,
+              "effectiveCooldownReduction": 0,
+              "cooldownCap": 0.75,
+              "finalCooldown": 130
+            },
+            "tags": [
+              "spell",
+              "fire",
+              "area",
+              "dot"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "candidate": {
+    "sheet": "升级段里程碑",
+    "field": "bossKillSeconds",
+    "value": 6.5,
+    "targetId": null,
+    "scene": "single",
+    "level": 50
+  }
+}

@@ -1,0 +1,17 @@
+import sharp from 'sharp';
+import {readFile,writeFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+const root=resolve(import.meta.dirname,'../docs/reviews/physical-vfx-20261011');
+const captures=JSON.parse(await readFile(resolve(root,'metrics/after-captures.json'),'utf8'));
+const label=(text,w)=>Buffer.from(`<svg width="${w}" height="28"><rect width="100%" height="100%" fill="#fff8e7"/><text x="10" y="19" font-size="14" fill="#493c30">${text}</text></svg>`);
+const tile=async(phase,id,frame,width=300)=>sharp(await sharp(resolve(root,phase,`${id}-f${frame}.png`)).extract({left:485,top:200,width:550,height:390}).resize(width,213).toBuffer()).extend({top:28,bottom:0,left:0,right:0,background:'#fff8e7'}).composite([{input:label(`${phase} / ${id} +${frame}`,width),top:0,left:0}]).png().toBuffer();
+const sheets=[];
+for(const [i,row]of captures.entries())sheets.push({input:await tile('after',row.id,3),left:i%6*300,top:Math.floor(i/6)*241});
+await sharp({create:{width:1800,height:Math.ceil(captures.length/6)*241,channels:4,background:'#e9dfc9'}}).composite(sheets).png().toFile(resolve(root,'after-contact-sheet.png'));
+const samples=['cut','whirl','ground_slam','cleave'];const compare=[];
+for(const [n,id]of samples.entries())for(const [col,phase]of ['before','after'].entries())compare.push({input:await tile(phase,id,3,300),left:(n%2*2+col)*300,top:Math.floor(n/2)*241});
+await sharp({create:{width:1200,height:482,channels:4,background:'#e9dfc9'}}).composite(compare).png().toFile(resolve(root,'before-after.png'));
+const frames=captures.flatMap(c=>(c.frames??[]).map(f=>({id:c.id,release:c.release,...f})));
+const beforeLoad=JSON.parse(await readFile(resolve(root,'metrics/before-load.json'),'utf8')),afterLoad=JSON.parse(await readFile(resolve(root,'metrics/after-load.json'),'utf8'));
+const summary={skills:captures.length,screenshots:captures.length*3,offsetsAligned:frames.length===129&&frames.every(f=>f.tick===f.release+f.offset),errors:frames.flatMap(f=>f.diagnostics?.effects?.errors??[]),missingResources:frames.flatMap(f=>f.diagnostics?.wardrobe?.errors??[]),performance:{beforeFPS:beforeLoad.fps,afterFPS:afterLoad.fps,ratio:afterLoad.fps/beforeLoad.fps,threshold:.9,passed:afterLoad.fps/beforeLoad.fps>=.9},ids:captures.map(c=>c.id)};
+await writeFile(resolve(root,'metrics/after-summary.json'),JSON.stringify(summary,null,2));console.log(JSON.stringify(summary));

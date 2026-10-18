@@ -1,0 +1,31 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+ ❯ tests/build-variety-r6-review.test.ts (4 tests | 1 failed) 75ms
+   ✓ a real blink carries the orbit through a target outside the destination circle and registers swept contact 33ms
+   ✓ orbit sweep stops at wall x=15 y=12.2 and resolves only earlier contacts 11ms
+   ✓ orbit sweep stops at wall x=11 y=12.2 and resolves only earlier contacts 11ms
+   × orbit sweep stops at wall x=15 y=11 and resolves only earlier contacts 19ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/build-variety-r6-review.test.ts > orbit sweep stops at wall x=15 y=11 and resolves only earlier contacts
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/build-variety-r6-review.test.ts:12:633
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  00:45:39
+   Duration  1.89s (transform 910ms, setup 0ms, import 1.63s, tests 75ms, environment 0ms)
+

@@ -1,0 +1,14 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>A 型装备 Tips · 布局验收</title></head><body>
+<main class="tip-qa"><h1>A 型装备 Tips · 布局验收</h1><p>独立展示数据，用于检查四种品质、完整属性与长文本；不读写玩家存档。</p><div id="qa-items" class="tip-qa-items"></div></main><div id="tooltip" role="tooltip"></div>
+<script type="module">
+import './src/ui-entry.css';
+import {itemSlot} from './src/ui-components.ts';
+import {art} from './src/ui-assets.ts';
+import {TooltipController} from './src/tooltip-controller.ts';
+const qualities=['common','magic','rare','legendary'],labels=['普通','魔法','稀有','传说'];
+const fixtures=qualities.map((quality,i)=>({gear:{id:'fixture-'+quality,base:'omega-blade',slot:'weapon',name:labels[i]+'品质的苍风旅者长刃',attack:32,armor:0,effect:'chain',rank:2,locked:false,quality,affixes:[{id:'crit',name:'暴击率',tier:1,stat:'critChance',value:4,description:'暴击率 +4%'},{id:'hp',name:'生命',tier:2,stat:'hp',value:40,description:'生命 +40'},{id:'speed',name:'移速',tier:3,stat:'speed',value:.2,description:'移动速度 +0.2'}]},primary_attribute:'attack',revision:1,ruleset_version:'layout-fixture',equipped:false,max_rank:5,attributes:{base:{attack:32,armor:0},enhancement:{attack:16,armor:0},effective:{attack:48,armor:0}},effect_description:'命中向附近敌人传导 30% 伤害。',replaces:{name:'原有武器',rank:1},comparison:{attack:{current:94,equipped:106,delta:12},armor:{current:31,equipped:29,delta:-2}},currentSets:[],equippedSets:[]}));
+const long={...structuredClone(fixtures[3]),gear:{...structuredClone(fixtures[3].gear),id:'fixture-long',name:'长名称与套装内容完整显示的传说长刃',setId:'berserker',setName:'狂战士'},effect_description:'命中向附近敌人传导 30% 伤害。\n'+Array.from({length:8},(_,i)=>`长文本验收段落 ${i+1}：条件说明与数值需要完整显示，允许自然换行及内部滚动，不省略正文。`).join('\n'),currentSets:[{setId:'berserker',setName:'狂战士',count:2,total:3,activeBonuses:[2]}],equippedSets:[{setId:'berserker',setName:'狂战士',count:2,total:3,activeBonuses:[2]}]};fixtures.push(long);
+document.querySelector('#qa-items').innerHTML=fixtures.map(f=>itemSlot({action:'fixture',id:f.gear.id,label:f.gear.name,src:art('gear-'+f.gear.base),className:'gear-card quality-'+f.gear.quality,equipmentTip:{id:f.gear.id,revision:1}})).join('');
+const controller=new TooltipController(()=>{});controller.configure(async id=>structuredClone(fixtures.find(f=>f.gear.id===id)));controller.bind();document.addEventListener('keydown',event=>{if(event.key==='Escape'){controller.dismiss();event.preventDefault();}});
+</script><style>.tip-qa{padding:var(--space-6);max-width:calc(var(--size-slot)*12);margin:auto}.tip-qa h1{font-size:var(--font-size-h1)}.tip-qa p{font-size:var(--font-size-caption);color:var(--color-text-secondary)}.tip-qa-items{display:flex;gap:var(--space-4);flex-wrap:wrap;padding:var(--space-4) 0}</style>
+</body></html>

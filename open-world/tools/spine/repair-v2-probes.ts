@@ -1,0 +1,12 @@
+import {measureAuthoredField} from './authored-field.ts';
+import {currentParity} from './parity.ts';
+import {readJson,save,review,decision} from './io.ts';
+const out=review+'/S7/V2',v=await readJson(out+'/validation.json'),field=await measureAuthoredField(out),parity=await currentParity(out+'/budget');
+v.field.oneHitRows=field.oneHitRows;v.field.oneHitRate=field.oneHitRate;v.budget.parity=parity;
+v.checks.field=field.oneHitRate>=.9&&v.field.rows.every((r:any)=>r.passed);v.checks.budget=v.budget.rows.every((r:any)=>r.inBand)&&parity.every(r=>r.passed);
+v.auditLimitations=['原V1/V2内容定价使用了|P|且部分标准宿主误用了燃烧配置，不能据此宣称正预算归一达标；原始记录保留，V3按有符号P与实际标准宿主正式验收。','初始功能技能只将damage置零，没有真正移除其机械效果；V3改为保留输出宿主、真实加入/移除功能技能。','本次仅修复V2一刀线可观测夹具与平价配置；没有增加候选方案或第四次完整验证。'];
+v.accepted=Object.values(v.checks).every(Boolean);await save(out+'/validation.json',v);await save(out+'/validation-summary.json',{...v,budget:{counts:v.budget.counts,parity}});
+await decision('预算审计的净收益符号、标准宿主与功能技能基线错误','保留原始记录和原推导，禁止把负P绝对值当正预算；标准人前缀现在实际装配标准人；功能技能保留宿主输出并真实移除/加入，盾疗damage字段不当作伤害。V3以修复口径验收，旧S2/V1/V2不能与V3预算直接同比；不重置已用测量/迭代额度','tools/spine/audit.ts、content.ts、preflight.ts、numeric-todo.md');
+await decision('V2一刀线探针中的无限HP放大敌方防御AI且存在未出手机会','一刀线改为每目标附近合法可见站位、保留真实普通怪群布局/护甲与地形的固定木桩，关闭敌方AI并精确去暴击；首次直接命中与原HP比较，未命中仍计分母。TTK/TTD仍使用实际营地与完整AI，旧无效夹具记录不覆盖','tools/spine/authored-field.ts、S7/V2/authored-field-summary.json');
+await decision('武器平价配置只改模板名而保留了剑系白值、威能和觉醒','按真实同档模板重新生成主手及预期套装部位，匹配武器与技能的传奇/天赋/觉醒，养成进度和词缀期望保留；重新测D1，不把S5旧配置当最终平价验收','tools/spine/player.ts、parity.ts');
+console.log(JSON.stringify({oneHitRate:field.oneHitRate,parity:parity.map(r=>({level:r.level,gap:r.gap})),checks:v.checks}));

@@ -1,0 +1,27 @@
+--- a/apps/web/src/components/GearDetails.ts
++++ b/apps/web/src/components/GearDetails.ts
+@@ -18,7 +18,7 @@
+  return resourceCostHtml(rows,'强化消耗',{compact:true});
+ }
+ /** 主手倾向：战杖／法杖逐件不同；显示武器类型名与亲和系别。 */
+-const weaponTraitText=(gear:Gear)=>{const label=gearWeaponLabel(gear),affinity=gearWeaponAffinity(gear);return label&&affinity?` · ${label} · ${weaponAffinityNames[affinity]}亲和`:'';};
++const weaponTraitText=(gear:Gear)=>{const label=gearWeaponLabel(gear),affinity=gearWeaponAffinity(gear);return label&&affinity?` · ${label} · 擅长${weaponAffinityNames[affinity]}`:'';};
+ export function GearDetails(gear:Gear,snapshot:Snapshot,context:'bag'|'character',busy:boolean){
+  const worn=Object.values(snapshot.equipment).includes(gear.id),quality=gearQuality(gear);
+  const quoteArea=`<div id="preview" data-gear="${esc(gear.id)}" data-preview-context="${context}" aria-busy="true"><p class="gear-quote-state" role="status">读取中…</p></div>`;
+--- a/packages/rules/damage-zones.ts
++++ b/packages/rules/damage-zones.ts
+@@ -1,3 +1,4 @@
++import {mainHandBonusLabel} from '../content/ui-labels.ts';
+ import {damageZoneSchema} from '../contracts/damage-zones.ts';
+ import type {CharacterState,Stats} from '../contracts/index.ts';
+ import {mainHandAffinity,weaponAffinityNames} from './weapon-skills.ts';
+@@ -19,7 +20,7 @@
+ export function characterDamageZones(s:Pick<CharacterState,'level'|'starsea'>&Partial<Pick<CharacterState,'gear'|'equipment'>>,stats:Stats):DamageZone[]{
+  const zones:DamageZone[]=[{id:'mastery',label:'等级精通',kind:'add',value:Math.round(.03*(s.level-1)*100)/100}];
+  // 武器亲和：主手倾向的系别（武技／法术）获得一个独立 [×]；不匹配的技能照常可用，只是没有这一区。
+- const affinity=s.gear&&s.equipment?mainHandAffinity({gear:s.gear,equipment:s.equipment}):null;if(affinity)zones.push({id:'weapon-affinity',label:'武器亲和 · '+weaponAffinityNames[affinity],kind:'mult',value:weaponAffinityPower,tags:[affinity]});
++ const affinity=s.gear&&s.equipment?mainHandAffinity({gear:s.gear,equipment:s.equipment}):null;if(affinity)zones.push({id:'weapon-affinity',label:mainHandBonusLabel+' · '+weaponAffinityNames[affinity],kind:'mult',value:weaponAffinityPower,tags:[affinity]});
+  for(const z of stats.zones??[])zones.push(z);
+  s.starsea?.bosses.forEach(map=>{const n=Number(map.replace('ss-map-boss-',''))-1;if(islandPower[n])zones.push({id:'island-'+(n+1),label:islandPowerNames[n],kind:'mult',value:islandPower[n]});});
+  if(s.starsea?.hardmode)zones.push({id:'hardmode',label:'裂星潮',kind:'mult',value:hardmodePower});

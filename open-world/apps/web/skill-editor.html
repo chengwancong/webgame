@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>技能配置工具 - 工程化技能系统</title>
+<style>
+:root {
+  --bg-0: #05070C;
+  --bg-1: #0A0D12;
+  --bg-2: #0F131C;
+  --bg-3: #161D2B;
+  --bg-4: #1E2636;
+  --accent: #38BDF8;
+  --accent-fire: #F59E0B;
+  --accent-cold: #60A5FA;
+  --accent-lightning: #A78BFA;
+  --accent-poison: #34D399;
+  --text: #E8EDF2;
+  --text-dim: #9BA5B0;
+  --border: #2A3441;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg-0);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  line-height: 1.6;
+  overflow: hidden;
+}
+
+.app-layout {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+}
+
+.app-header {
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem 2rem;
+}
+
+.app-header h1 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.02em;
+}
+
+.stats-bar {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+.stat-item strong {
+  color: var(--accent);
+}
+
+.main-container {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  overflow: hidden;
+}
+
+.sidebar {
+  background: var(--bg-1);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 1.5rem 0;
+}
+
+.filter-section {
+  padding: 0 1.5rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+
+.filter-section h3 {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.filter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag-filter {
+  padding: 0.4rem 0.8rem;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tag-filter:hover {
+  background: var(--bg-4);
+}
+
+.tag-filter.active {
+  background: var(--accent);
+  color: var(--bg-0);
+  border-color: var(--accent);
+}
+
+.level-filter {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.level-filter input {
+  width: 60px;
+  padding: 0.4rem;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 4px;
+}
+
+.content-area {
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+.toolbar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+button {
+  background: var(--bg-3);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+button:hover:not(:disabled) {
+  background: var(--bg-4);
+  border-color: var(--accent);
+}
+
+button.primary {
+  background: var(--accent);
+  color: var(--bg-0);
+  border-color: var(--accent);
+}
+
+.search-box {
+  flex: 1;
+  min-width: 200px;
+  max-width: 400px;
+  padding: 0.75rem 1rem;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.search-box:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+
+.skill-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.skill-card:hover {
+  background: var(--bg-3);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.skill-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 1rem;
+}
+
+.skill-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.skill-id {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  font-family: 'Consolas', monospace;
+}
+
+.skill-level {
+  background: var(--bg-4);
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.skill-desc {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.skill-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.stat {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.stat strong {
+  color: var(--text);
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-tag {
+  padding: 0.25rem 0.6rem;
+  background: var(--bg-4);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.skill-tag.melee { border-left: 3px solid #EF4444; }
+.skill-tag.ranged { border-left: 3px solid #10B981; }
+.skill-tag.control { border-left: 3px solid #60A5FA; }
+.skill-tag.support { border-left: 3px solid #F59E0B; }
+.skill-tag.summon { border-left: 3px solid #A78BFA; }
+.skill-tag.aura { border-left: 3px solid #EC4899; }
+.skill-tag.utility { border-left: 3px solid #6366F1; }
+
+.damage-type {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.damage-type.physical { background: #78350F; color: #FEF3C7; }
+.damage-type.fire { background: #7C2D12; color: #FED7AA; }
+.damage-type.cold { background: #1E3A8A; color: #DBEAFE; }
+.damage-type.lightning { background: #5B21B6; color: #EDE9FE; }
+.damage-type.poison { background: #064E3B; color: #D1FAE5; }
+.damage-type.chaos { background: #450A0A; color: #FEE2E2; }
+.damage-type.holy { background: #713F12; color: #FEF9C3; }
+.damage-type.shadow { background: #1F2937; color: #F3F4F6; }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(5, 7, 12, 0.95);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 2rem;
+}
+
+.modal-overlay.visible {
+  display: flex;
+}
+
+.modal {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.modal h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.modal-section {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-section:last-child {
+  border-bottom: none;
+}
+
+.modal-section h3 {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.effect-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.effect-item {
+  background: var(--bg-3);
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 3px solid var(--accent);
+}
+
+.effect-type {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-transform: capitalize;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.tree-view {
+  display: grid;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.tree-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.tree-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tree-nodes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-dim);
+}
+</style>
+</head>
+<body>
+
+<div class="app-layout">
+  <header class="app-header">
+    <h1>技能配置工具</h1>
+    <div class="stats-bar">
+      <div class="stat-item">总技能: <strong id="total-skills">0</strong></div>
+      <div class="stat-item">近战: <strong id="melee-count">0</strong></div>
+      <div class="stat-item">远程: <strong id="ranged-count">0</strong></div>
+      <div class="stat-item">控制: <strong id="control-count">0</strong></div>
+      <div class="stat-item">辅助: <strong id="support-count">0</strong></div>
+      <div class="stat-item">召唤: <strong id="summon-count">0</strong></div>
+      <div class="stat-item">光环: <strong id="aura-count">0</strong></div>
+      <div class="stat-item">工具: <strong id="utility-count">0</strong></div>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <aside class="sidebar">
+      <div class="filter-section">
+        <h3>分类筛选</h3>
+        <div class="filter-tags">
+          <button class="tag-filter active" data-category="all">全部</button>
+          <button class="tag-filter" data-category="melee">近战</button>
+          <button class="tag-filter" data-category="ranged">远程</button>
+          <button class="tag-filter" data-category="control">控制</button>
+          <button class="tag-filter" data-category="support">辅助</button>
+          <button class="tag-filter" data-category="summon">召唤</button>
+          <button class="tag-filter" data-category="aura">光环</button>
+          <button class="tag-filter" data-category="utility">工具</button>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <h3>等级范围</h3>
+        <div class="level-filter">
+          <input type="number" id="min-level" value="1" min="1" max="30">
+          <span>-</span>
+          <input type="number" id="max-level" value="30" min="1" max="30">
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <h3>标签筛选</h3>
+        <div class="filter-tags" id="tag-filters">
+          <!-- 动态生成 -->
+        </div>
+      </div>
+    </aside>
+
+    <main class="content-area">
+      <div class="toolbar">
+        <input type="text" class="search-box" id="search" placeholder="搜索技能 ID 或名称...">
+        <button onclick="showAllSkillTrees()">查看技能树</button>
+        <button onclick="exportSkills()">导出配置</button>
+        <button class="primary" onclick="addNewSkill()">+ 新增技能</button>
+      </div>
+
+      <div class="skills-grid" id="skills-container">
+        <!-- 技能卡片将动态生成 -->
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- 技能详情弹窗 -->
+<div class="modal-overlay" id="skill-modal">
+  <div class="modal">
+    <h2 id="modal-skill-name">技能详情</h2>
+    
+    <div class="modal-section">
+      <h3>基础信息</h3>
+      <div id="modal-basic-info"></div>
+    </div>
+
+    <div class="modal-section">
+      <h3>效果列表</h3>
+      <div class="effect-list" id="modal-effects"></div>
+    </div>
+
+    <div class="modal-section" id="modal-conditions-section" style="display: none;">
+      <h3>触发条件</h3>
+      <div id="modal-conditions"></div>
+    </div>
+
+    <div class="modal-section">
+      <h3>升级成长</h3>
+      <div id="modal-scaling"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="editSkill()">编辑</button>
+      <button onclick="closeModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 技能树弹窗 -->
+<div class="modal-overlay" id="tree-modal">
+  <div class="modal">
+    <h2>技能树系统</h2>
+    <div class="tree-view" id="tree-container"></div>
+    <div class="modal-actions">
+      <button onclick="closeTreeModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+// 模拟导入技能数据
+import { allSkills } from './skills-complete.ts';
+import { skillDatabase, getSkillById, getSkillsByCategory, skillStats } from './skill-database.ts';
+
+let currentFilter = 'all';
+let currentTags = new Set();
+let searchTerm = '';
+let levelRange = { min: 1, max: 30 };
+
+// 初始化统计
+function updateStats() {
+  document.getElementById('total-skills').textContent = skillStats.total;
+  Object.entries(skillStats.byCategory).forEach(([category, count]) => {
+    const elem = document.getElementById(category + '-count');
+    if (elem) elem.textContent = count;
+  });
+}
+
+// 收集所有标签
+function collectTags() {
+  const tags = new Set();
+  allSkills.forEach(skill => {
+    if (skill.tags) {
+      skill.tags.forEach(tag => tags.add(tag));
+    }
+  });
+  
+  const container = document.getElementById('tag-filters');
+  container.innerHTML = Array.from(tags).sort().map(tag => 
+    `<button class="tag-filter" data-tag="${tag}">${tag}</button>`
+  ).join('');
+}
+
+// 渲染技能卡片
+function renderSkills() {
+  const container = document.getElementById('skills-container');
+  
+  let skills = allSkills;
+  
+  // 分类过滤
+  if (currentFilter !== 'all') {
+    skills = skills.filter(s => s.category === currentFilter);
+  }
+  
+  // 等级过滤
+  skills = skills.filter(s => s.unlock.level >= levelRange.min && s.unlock.level <= levelRange.max);
+  
+  // 标签过滤
+  if (currentTags.size > 0) {
+    skills = skills.filter(s => 
+      s.tags && s.tags.some(tag => currentTags.has(tag))
+    );
+  }
+  
+  // 搜索过滤
+  if (searchTerm) {
+    const term = searchTerm.toLowerCase();
+    skills = skills.filter(s => 
+      s.id.toLowerCase().includes(term) || 
+      s.name.toLowerCase().includes(term) ||
+      s.description.toLowerCase().includes(term)
+    );
+  }
+  
+  if (skills.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div style="font-size: 4rem; opacity: 0.3;">🔍</div><p>没有找到匹配的技能</p></div>';
+    return;
+  }
+  
+  container.innerHTML = skills.map(skill => {
+    const damageEffect = skill.effects.find(e => e.type === 'damage');
+    const damageType = damageEffect?.damage?.type || 'physical';
+    
+    return `
+      <div class="skill-card" onclick="showSkillDetail('${skill.id}')">
+        <div class="skill-header">
+          <div>
+            <div class="skill-name">${skill.name}</div>
+            <div class="skill-id">${skill.id}</div>
+          </div>
+          <div class="skill-level">Lv.${skill.unlock.level}</div>
+        </div>
+        
+        <div class="skill-desc">${skill.description}</div>
+        
+        <div class="skill-stats">
+          <div class="stat">冷却: <strong>${(skill.cooldown.base / 30).toFixed(1)}s</strong></div>
+          <div class="stat">消耗: <strong>${skill.cost.mana} 能量</strong></div>
+          ${damageEffect ? `<div class="stat">伤害: <strong>${damageEffect.damage.base}</strong></div>` : ''}
+          ${skill.targeting.range > 0 ? `<div class="stat">距离: <strong>${skill.targeting.range}</strong></div>` : ''}
+        </div>
+        
+        <div class="skill-tags">
+          <span class="skill-tag ${skill.category}">${skill.category}</span>
+          ${damageEffect ? `<span class="damage-type ${damageType}">${damageType}</span>` : ''}
+          ${(skill.tags || []).slice(0, 3).map(tag => `<span class="skill-tag">${tag}</span>`).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// 显示技能详情
+window.showSkillDetail = (skillId) => {
+  const skill = getSkillById(skillId);
+  if (!skill) return;
+  
+  document.getElementById('modal-skill-name').textContent = skill.name;
+  
+  document.getElementById('modal-basic-info').innerHTML = `
+    <div class="skill-stats">
+      <div class="stat">ID: <strong>${skill.id}</strong></div>
+      <div class="stat">分类: <strong>${skill.category}</strong></div>
+      <div class="stat">解锁等级: <strong>${skill.unlock.level}</strong></div>
+      <div class="stat">目标方式: <strong>${skill.targeting.type}</strong></div>
+      <div class="stat">施法方式: <strong>${skill.delivery.method}</strong></div>
+      <div class="stat">冷却: <strong>${(skill.cooldown.base / 30).toFixed(1)}秒</strong></div>
+      <div class="stat">能量消耗: <strong>${skill.cost.mana}</strong></div>
+      ${skill.cost.health ? `<div class="stat">生命消耗: <strong>${skill.cost.health}</strong></div>` : ''}
+      <div class="stat">前摇: <strong>${(skill.cast.windup / 30).toFixed(2)}秒</strong></div>
+      ${skill.duration ? `<div class="stat">持续: <strong>${(skill.duration / 30).toFixed(1)}秒</strong></div>` : ''}
+    </div>
+    <p style="margin-top: 1rem; color: var(--text-dim);">${skill.description}</p>
+  `;
+  
+  document.getElementById('modal-effects').innerHTML = skill.effects.map(effect => {
+    let content = `<div class="effect-type">${effect.type}</div>`;
+    
+    if (effect.damage) {
+      content += `
+        <div>伤害: ${effect.damage.base} + ${(effect.damage.scaling * 100).toFixed(0)}% 攻击力</div>
+        <div>类型: <span class="damage-type ${effect.damage.type}">${effect.damage.type}</span></div>
+        ${effect.damage.areaRadius ? `<div>范围: ${effect.damage.areaRadius}</div>` : ''}
+        ${effect.damage.pierce ? `<div>穿透: 是</div>` : ''}
+      `;
+    }
+    
+    if (effect.heal) {
+      content += `<div>治疗: ${effect.heal.base}</div>`;
+    }
+    
+    if (effect.buff) {
+      content += `<div>增益效果，持续 ${(effect.buff.duration / 30).toFixed(1)}秒</div>`;
+      content += `<div>${JSON.stringify(effect.buff.stats)}</div>`;
+    }
+    
+    if (effect.debuff) {
+      content += `<div>减益: ${effect.debuff.type}，持续 ${(effect.debuff.duration / 30).toFixed(1)}秒</div>`;
+    }
+    
+    if (effect.summon) {
+      content += `<div>召唤: ${effect.summon.count}个 ${effect.summon.unitType}</div>`;
+      content += `<div>持续: ${(effect.summon.duration / 30).toFixed(1)}秒</div>`;
+    }
+    
+    return `<div class="effect-item">${content}</div>`;
+  }).join('');
+  
+  if (skill.conditions && skill.conditions.length > 0) {
+    document.getElementById('modal-conditions-section').style.display = 'block';
+    document.getElementById('modal-conditions').innerHTML = skill.conditions.map(cond => 
+      `<div class="effect-item"><div class="effect-type">${cond.type}</div><div>${JSON.stringify(cond)}</div></div>`
+    ).join('');
+  } else {
+    document.getElementById('modal-conditions-section').style.display = 'none';
+  }
+  
+  document.getElementById('modal-scaling').innerHTML = `
+    <div>最高等级: ${skill.scaling.maxLevel}</div>
+    <div>每级成长: ${JSON.stringify(skill.scaling.perLevel)}</div>
+  `;
+  
+  document.getElementById('skill-modal').classList.add('visible');
+};
+
+window.closeModal = () => {
+  document.getElementById('skill-modal').classList.remove('visible');
+};
+
+// 技能树显示
+window.showAllSkillTrees = () => {
+  const container = document.getElementById('tree-container');
+  container.innerHTML = skillDatabase.trees.map(tree => `
+    <div class="tree-card">
+      <h3>${tree.name}</h3>
+      <p style="color: var(--text-dim); margin-bottom: 1rem;">${tree.description}</p>
+      <div><strong>精通加成:</strong></div>
+      ${tree.masteryBonus.map(bonus => `
+        <div style="margin: 0.5rem 0; padding: 0.5rem; background: var(--bg-3); border-radius: 6px;">
+          ${bonus.pointsRequired}点: ${bonus.description}
+        </div>
+      `).join('')}
+      <div class="tree-nodes">
+        ${tree.nodes.map(node => {
+          const skill = getSkillById(node.skillId);
+          return `
+            <div style="padding: 0.75rem; background: var(--bg-3); border-radius: 6px; border-left: 3px solid var(--accent);">
+              <div style="font-weight: 600;">${skill?.name || node.skillId}</div>
+              <div style="font-size: 0.85rem; color: var(--text-dim);">Tier ${node.tier}</div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `).join('');
+  
+  document.getElementById('tree-modal').classList.add('visible');
+};
+
+window.closeTreeModal = () => {
+  document.getElementById('tree-modal').classList.remove('visible');
+};
+
+window.exportSkills = () => {
+  const data = JSON.stringify(allSkills, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'skills-export.json';
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+// 事件监听
+document.querySelectorAll('[data-category]').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    document.querySelectorAll('[data-category]').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    currentFilter = e.target.dataset.category;
+    renderSkills();
+  });
+});
+
+document.getElementById('search').addEventListener('input', (e) => {
+  searchTerm = e.target.value;
+  renderSkills();
+});
+
+document.getElementById('min-level').addEventListener('input', (e) => {
+  levelRange.min = parseInt(e.target.value) || 1;
+  renderSkills();
+});
+
+document.getElementById('max-level').addEventListener('input', (e) => {
+  levelRange.max = parseInt(e.target.value) || 30;
+  renderSkills();
+});
+
+// 标签过滤事件（动态绑定）
+document.addEventListener('click', (e) => {
+  if (e.target.matches('[data-tag]')) {
+    const tag = e.target.dataset.tag;
+    e.target.classList.toggle('active');
+    
+    if (currentTags.has(tag)) {
+      currentTags.delete(tag);
+    } else {
+      currentTags.add(tag);
+    }
+    
+    renderSkills();
+  }
+});
+
+// 初始化
+updateStats();
+collectTags();
+renderSkills();
+</script>
+
+</body>
+</html>

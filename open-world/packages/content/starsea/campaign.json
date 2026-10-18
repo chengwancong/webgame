@@ -1,0 +1,1427 @@
+{
+ "version": "starsea-20261003-d1",
+ "campaignId": "starsea-invasion",
+ "title": "裂星远航",
+ "npcs": [
+  {
+   "id": "ss-npc-cheng",
+   "name": "港务长·澄",
+   "role": "拾星港港务长，主港管理、接取与归档；承认风险、不给空保证。",
+   "voice": "短句、实事求是，先问船与人的状况。",
+   "idle": [
+    "船和人都还好？好。港里的事我盯着，岛上的事交给你。",
+    "出港前看一眼补给。星潮不等人，也不会因为你累了就停。",
+    "我不跟你保证下一座岛安全。我只保证你回来时，港还在。"
+   ]
+  },
+  {
+   "id": "ss-npc-milo",
+   "name": "领航员·米洛",
+   "role": "伙伴领航员，航图选择与旅程过渡；场景跟随不自动承诺战斗AI。",
+   "voice": "活泼，有一点自嘲；行动时迅速收起玩笑。",
+   "idle": [
+    "航图我重新画过了——这次真没把海怪画成云。想去哪座岛？",
+    "上回我迷路三次，三次都找回来了，这也算本事吧？要看航图吗？",
+    "风向正好。要出发就趁现在，晚了星潮会把航线搅乱。"
+   ]
+  },
+  {
+   "id": "ss-npc-tongling",
+   "name": "机巧师·铜铃",
+   "role": "工坊与强化、武器盘说明；修复魔导设备。",
+   "voice": "用具体零件解释问题，不用堆砌工程术语。",
+   "idle": [
+    "刀口卷了就拿来。换个卡榫的事，用不着整把重打。",
+    "强化不靠运气：材料够不够、成功率多少，单子上都写着，看清再按。",
+    "你那块武器盘的齿轮咬得有点紧，有空来工坊调一调。"
+   ]
+  },
+  {
+   "id": "ss-npc-qingmang",
+   "name": "邮差·青芒",
+   "role": "雾铃邮路信使，调查、采集制造引导。",
+   "voice": "轻快但守信；对包裹内容保密，对危险诚实。",
+   "idle": [
+    "包裹里装的什么我不能说；路上哪儿有怪，我可以告诉你。",
+    "顺路采点材料回来吧，我教你做点用得上的东西。",
+    "我送信从不迟到——除非桥断了。桥断了也送得到，就是晚一点。"
+   ]
+  },
+  {
+   "id": "ss-npc-xuemi",
+   "name": "记录官·雪弥",
+   "role": "霜镜观测站与旧航约记录官，召唤石解读。",
+   "voice": "精确，区分证据与猜测；偶尔很干的幽默。",
+   "idle": [
+    "观测记录显示星潮在变强。这是事实；“还会更糟”是推测，我分开记。",
+    "召唤石上的刻纹我读懂了一半。另一半要么是古语，要么是刻的人手抖。",
+    "要用召唤石就说一声。用法我讲清楚，后果也会。"
+   ]
+  },
+  {
+   "id": "ss-npc-mijia",
+   "name": "暮界译者·弥迦",
+   "role": "反征服派译者，解释暮界家书、难民证词与界桥计划。",
+   "voice": "谨慎，先给可验证事实；不会替侵军免责。",
+   "idle": [
+    "家书我只照原文译，不替谁辩解。你想听，我就念给你。",
+    "暮界不只有侵军。证词我都核对过，能证实的我才说。",
+    "威能法典里记的力量，都是拿代价换来的。想学，先看清代价。"
+   ]
+  },
+  {
+   "id": "ss-npc-jinyu",
+   "name": "龙裔见证者·烬羽",
+   "role": "龙族航约见证者，龙眠岛与旧航网。",
+   "voice": "庄重而朴素，用旧航行经历解释誓约。",
+   "idle": [
+    "旧航约第一句：先守住归途，再去远方。我守了很多年，还没守完。",
+    "年轻时我也绕过这片暗礁。那时没有灯塔，只有星星。",
+    "想证明自己，就来挑战。在誓约面前，强也好弱也好，都得说真话。"
+   ]
+  }
+ ],
+ "monsters": [
+  {
+   "id": "ss-mon-dusk-blade",
+   "name": "暮界刀兵",
+   "chapter": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "rank": "normal",
+   "rule": "raider",
+   "role": "blade",
+   "height": 80
+  },
+  {
+   "id": "ss-mon-dusk-gunner",
+   "name": "暮界铳手",
+   "chapter": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "rank": "normal",
+   "rule": "archer",
+   "role": "gunner",
+   "height": 80
+  },
+  {
+   "id": "ss-mon-dusk-weaver",
+   "name": "暮界织隙者",
+   "chapter": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "rank": "normal",
+   "rule": "caster",
+   "role": "mage",
+   "height": 80
+  },
+  {
+   "id": "ss-mon-wind-hound",
+   "name": "风原巡猎兽",
+   "chapter": [
+    1
+   ],
+   "rank": "normal",
+   "rule": "beast",
+   "height": 80
+  },
+  {
+   "id": "ss-mon-dock-scavenger",
+   "name": "港湾拾荒者",
+   "chapter": [
+    1
+   ],
+   "rank": "normal",
+   "rule": "raider",
+   "height": 80
+  },
+  {
+   "id": "ss-mon-moss-warden",
+   "name": "苔壳巡守",
+   "chapter": [
+    2
+   ],
+   "rank": "normal",
+   "rule": "guard",
+   "height": 90
+  },
+  {
+   "id": "ss-mon-pollen-caller",
+   "name": "花尘唤灵者",
+   "chapter": [
+    2
+   ],
+   "rank": "normal",
+   "rule": "summoner",
+   "height": 80
+  },
+  {
+   "id": "ss-mon-ember-worker",
+   "name": "炉渣小灵",
+   "chapter": [
+    3
+   ],
+   "rank": "normal",
+   "rule": "caster",
+   "height": 80
+  },
+  {
+   "id": "ss-mon-ore-loader",
+   "name": "矿道搬运机",
+   "chapter": [
+    3
+   ],
+   "rank": "normal",
+   "rule": "guard",
+   "height": 90
+  },
+  {
+   "id": "ss-mon-frost-hound",
+   "name": "霜脊巡猎兽",
+   "chapter": [
+    4
+   ],
+   "rank": "normal",
+   "rule": "beast",
+   "height": 80
+  },
+  {
+   "id": "ss-mon-frozen-watch",
+   "name": "冻舰守卫",
+   "chapter": [
+    4
+   ],
+   "rank": "normal",
+   "rule": "guard",
+   "height": 90
+  },
+  {
+   "id": "ss-mon-rift-lurker",
+   "name": "裂隙潜猎者",
+   "chapter": [
+    5
+   ],
+   "rank": "normal",
+   "rule": "assassin",
+   "height": 80
+  },
+  {
+   "id": "ss-mon-rift-caller",
+   "name": "裂隙唤潮者",
+   "chapter": [
+    5
+   ],
+   "rank": "normal",
+   "rule": "summoner",
+   "height": 80
+  },
+  {
+   "id": "ss-mon-bone-sentinel",
+   "name": "龙骨巡卫",
+   "chapter": [
+    6
+   ],
+   "rank": "normal",
+   "rule": "guard",
+   "height": 90
+  },
+  {
+   "id": "ss-mon-oath-acolyte",
+   "name": "旧约侍仪",
+   "chapter": [
+    6
+   ],
+   "rank": "normal",
+   "rule": "caster",
+   "height": 80
+  },
+  {
+   "id": "ss-elite-hook-leader",
+   "name": "星钩头目",
+   "chapter": [
+    1
+   ],
+   "rank": "elite",
+   "rule": "raider",
+   "height": 110
+  },
+  {
+   "id": "ss-elite-vine-keeper",
+   "name": "藤甲扼路者",
+   "chapter": [
+    2
+   ],
+   "rank": "elite",
+   "rule": "guard",
+   "height": 110
+  },
+  {
+   "id": "ss-elite-forge-overseer",
+   "name": "炉甲压阵机",
+   "chapter": [
+    3
+   ],
+   "rank": "elite",
+   "rule": "guard",
+   "height": 110
+  },
+  {
+   "id": "ss-elite-frost-lock",
+   "name": "霜锁卫士",
+   "chapter": [
+    4
+   ],
+   "rank": "elite",
+   "rule": "guard",
+   "height": 110
+  },
+  {
+   "id": "ss-elite-rift-hunter",
+   "name": "裂界猎兵",
+   "chapter": [
+    5
+   ],
+   "rank": "elite",
+   "rule": "assassin",
+   "height": 110
+  },
+  {
+   "id": "ss-elite-oath-keeper",
+   "name": "龙骨执令者",
+   "chapter": [
+    6
+   ],
+   "rank": "elite",
+   "rule": "guard",
+   "height": 110
+  }
+ ],
+ "bosses": [
+  {
+   "id": "ss-boss-port-vanguard",
+   "name": "暮界先锋·卡珀",
+   "chapter": 1,
+   "base": "meadow-boss",
+   "skills": [
+    "ss-fx-b01-lance",
+    "ss-fx-b01-stomp",
+    "ss-fx-b01-charge"
+   ],
+   "height": 150
+  },
+  {
+   "id": "ss-boss-fog-quartermaster",
+   "name": "军需官·格铎",
+   "chapter": 2,
+   "base": "forest-boss",
+   "skills": [
+    "ss-fx-b02-bolt",
+    "ss-fx-b02-zone",
+    "ss-fx-b02-summon"
+   ],
+   "height": 150
+  },
+  {
+   "id": "ss-boss-core-extractor",
+   "name": "岛心采能机·掘星者",
+   "chapter": 3,
+   "base": "rift-boss",
+   "skills": [
+    "ss-fx-b03-beam",
+    "ss-fx-b03-flame",
+    "ss-fx-b03-stomp"
+   ],
+   "height": 150
+  },
+  {
+   "id": "ss-boss-ice-patrol",
+   "name": "冻舰巡守·霜镜卫",
+   "chapter": 4,
+   "base": "frost_queen",
+   "skills": [
+    "ss-fx-b04-lance",
+    "ss-fx-b04-blizzard",
+    "ss-fx-b04-burst"
+   ],
+   "height": 150
+  },
+  {
+   "id": "ss-boss-rift-marshal",
+   "name": "裂隙督军·乌洛",
+   "chapter": 5,
+   "base": "abyss_lord",
+   "skills": [
+    "ss-fx-b05-bolt",
+    "ss-fx-b05-zone",
+    "ss-fx-b05-ritual"
+   ],
+   "height": 150
+  },
+  {
+   "id": "ss-boss-vilo",
+   "name": "暮界提督·维洛",
+   "chapter": 6,
+   "base": "dragon_king",
+   "skills": [
+    "ss-fx-b06-beam",
+    "ss-fx-b06-rain",
+    "ss-fx-b06-mark"
+   ],
+   "height": 150
+  }
+ ],
+ "chapters": [
+  {
+   "n": 1,
+   "id": "ss-c01",
+   "title": "航图之外的乘客",
+   "island": "风栖岛",
+   "map": "ss-map-wind",
+   "giver": "ss-npc-cheng",
+   "ally": "ss-npc-milo",
+   "feature": "装备强化；第一章回港后首领试炼",
+   "reveal": "航钥回应旧求援装置；玩家来自未登记的界外坐标。",
+   "choice": {
+    "task": 4,
+    "a": {
+     "id": "shore",
+     "name": "岸线突击",
+     "landmark": "route-a",
+     "enemies": [
+      "ss-mon-dusk-gunner",
+      "ss-mon-wind-hound"
+     ],
+     "goal": "先接近铳手，清除岸线3名敌人",
+     "risk": "铳手在远处放冷枪，巡猎兽会扑上来；先贴近铳手，再回头收拾猎兽。"
+    },
+    "b": {
+     "id": "warehouse",
+     "name": "仓库突击",
+     "landmark": "route-b",
+     "enemies": [
+      "ss-elite-hook-leader",
+      "ss-mon-dock-scavenger"
+     ],
+     "goal": "躲开重击，清除仓库3名敌人",
+     "risk": "星钩头目是精英，会蓄力重击，风险更高；看到预警就躲开。"
+    },
+    "after": "两路回到先锋入口；奖励与下一章关系一致，回港对白记录路线。"
+   },
+   "tasks": [
+    {
+     "id": "ss-c01-t01",
+     "title": "落点求生",
+     "kind": "battle",
+     "goal": "在落点拾起航钥，并击退2只风原巡猎兽。",
+     "speaker": "ss-npc-milo",
+     "accept": "你是从那束光里掉出来的？先站稳，别踩到岛缘。",
+     "player": "我不知道这里是哪儿。那块刻片刚才在发光。",
+     "complete": "先把它收好。我带你去港口，那里有人能解释船以外的事。",
+     "landmark": "landing",
+     "required": 2,
+     "requires": "campaign:accept",
+     "completionEvent": "ss-c01-t01:complete",
+     "locationMap": "ss-map-wind",
+     "resources": [
+      "ss-npc-milo",
+      "ss-prop-key",
+      "ss-mon-wind-hound",
+      "ss-map-wind"
+     ]
+    },
+    {
+     "id": "ss-c01-t02",
+     "title": "港口登记",
+     "kind": "dialogue",
+     "goal": "向澄说明来历，并让航钥接触登记台。",
+     "speaker": "ss-npc-cheng",
+     "accept": "航图里没有你的出发港。名字可以稍后说清，先告诉我有没有受伤。",
+     "player": "这件东西是家里留下的。我没有打开过什么门。",
+     "complete": "它应答了旧求援格式。你不是偷渡者，但我们还不知道是哪条航路。",
+     "landmark": "hall",
+     "required": 0,
+     "requires": "ss-c01-t01:complete",
+     "completionEvent": "ss-c01-t02:complete",
+     "locationMap": "ss-map-port",
+     "resources": [
+      "ss-npc-cheng",
+      "ss-prop-key",
+      "ss-prop-contract",
+      "ss-map-wind",
+      "ss-map-port",
+      "ss-prop-sign"
+     ]
+    },
+    {
+     "id": "ss-c01-t03",
+     "title": "抢救船台",
+     "kind": "defend",
+     "goal": "启动船台的临时引擎，守住它并击退3名侵军。",
+     "speaker": "ss-npc-tongling",
+     "accept": "他们掐断了输能线。把这边守住，我能让船台重新工作。",
+     "player": "我负责挡住他们，你告诉我什么时候退。",
+     "complete": "好了，冷却稳定了。你若要出门，先到工坊检查装备。",
+     "landmark": "objective",
+     "required": 3,
+     "requires": "ss-c01-t02:complete",
+     "completionEvent": "ss-c01-t03:complete",
+     "locationMap": "ss-map-wind",
+     "resources": [
+      "ss-npc-tongling",
+      "ss-prop-engine",
+      "ss-mon-dusk-blade",
+      "ss-mon-dusk-gunner",
+      "ss-map-wind"
+     ]
+    },
+    {
+     "id": "ss-c01-t04",
+     "title": "两条进港路",
+     "kind": "choice-battle",
+     "goal": "选择岸线突击或仓库突击，清除所选路线守卫。",
+     "speaker": "ss-npc-milo",
+     "accept": "岸线有铳手，仓库里是星钩头目。选一条，我们把退路留出来。",
+     "player": "先看清他们的站位，再动手。",
+     "complete": "入口打通了。那名先锋守着起航控制，得让他离开。",
+     "landmark": "route-a",
+     "required": 3,
+     "requires": "ss-c01-t03:complete",
+     "completionEvent": "ss-c01-t04:complete",
+     "locationMap": "ss-map-wind",
+     "resources": [
+      "ss-npc-milo",
+      "ss-elite-hook-leader",
+      "ss-mon-dusk-gunner",
+      "ss-prop-cargo",
+      "ss-map-wind",
+      "ss-mon-wind-hound",
+      "ss-mon-dock-scavenger"
+     ]
+    },
+    {
+     "id": "ss-c01-t05",
+     "title": "击退登港先锋",
+     "kind": "boss",
+     "goal": "做好准备后进入风栖船台，击败暮界先锋·卡珀。",
+     "speaker": "ss-npc-cheng",
+     "accept": "先锋占着出港平台。准备好再进去，港口会替你保住后方。",
+     "player": "我看到他的护甲在蓄能。",
+     "complete": "平台夺回来了。你身上的钥匙还在应答，我们需要查清谁在求援。",
+     "landmark": "gate",
+     "required": 1,
+     "requires": "ss-c01-t04:complete",
+     "completionEvent": "ss-c01-t05:complete",
+     "locationMap": "ss-map-boss-1",
+     "resources": [
+      "ss-npc-cheng",
+      "ss-boss-port-vanguard",
+      "ss-map-wind",
+      "ss-map-boss-1"
+     ]
+    },
+    {
+     "id": "ss-c01-t06",
+     "title": "第一份船员契约",
+     "kind": "report",
+     "goal": "返回拾星港，与澄和米洛签订援航船员契约。",
+     "speaker": "ss-npc-cheng",
+     "accept": "你可以留在这里等消息，也可以随我们去查失联的邮路。",
+     "player": "我想回家。要找到那条路，看来得先弄清这里发生了什么。",
+     "complete": "那就写下名字。船员契约保证的是互相照看，不是一路无险。",
+     "landmark": "port",
+     "required": 0,
+     "requires": "ss-c01-t05:complete",
+     "completionEvent": "ss-c01-t06:complete",
+     "locationMap": "ss-map-port",
+     "resources": [
+      "ss-npc-cheng",
+      "ss-npc-milo",
+      "ss-prop-contract",
+      "ss-prop-world-chart",
+      "ss-map-wind",
+      "ss-map-port"
+     ]
+    }
+   ]
+  },
+  {
+   "n": 2,
+   "id": "ss-c02",
+   "title": "寄往敌境的信",
+   "island": "雾铃岛",
+   "map": "ss-map-mist",
+   "giver": "ss-npc-milo",
+   "ally": "ss-npc-qingmang",
+   "feature": "采集与制造",
+   "reveal": "暮界居民正在等待补给；侵军军需搜集六岛岛心资料。",
+   "choice": {
+    "task": 4,
+    "a": {
+     "id": "canopy",
+     "name": "树冠步道",
+     "landmark": "route-a",
+     "enemies": [
+      "ss-mon-dusk-gunner",
+      "ss-mon-pollen-caller"
+     ],
+     "goal": "清除3名远程守卫",
+     "risk": "铳手和唤灵者都在远处出手，贴近打掉他们，别站在空地上挨打。"
+    },
+    "b": {
+     "id": "creek",
+     "name": "溪谷便道",
+     "landmark": "route-b",
+     "enemies": [
+      "ss-elite-vine-keeper",
+      "ss-mon-moss-warden"
+     ],
+     "goal": "清除3名近战守卫",
+     "risk": "藤甲扼路者是精英，皮糙肉厚；苔壳巡守会护着它，边退边打。"
+    },
+    "after": "两路均取得同一军需坐标；第五章青芒提及玩家曾选的路线。"
+   },
+   "tasks": [
+    {
+     "id": "ss-c02-t01",
+     "title": "封印货箱",
+     "kind": "investigate",
+     "goal": "检查青芒留下的封印货箱。",
+     "speaker": "ss-npc-milo",
+     "accept": "箱子上是邮路封条，里面却有舰团的货单。先留着证据，别急着下结论。",
+     "player": "有人利用邮路替他们运货？",
+     "complete": "收件名和军令不同。还有一封家书，得找到看得懂的人。",
+     "landmark": "clue-1",
+     "required": 1,
+     "requires": "ss-c01-t06:complete",
+     "completionEvent": "ss-c02-t01:complete",
+     "locationMap": "ss-map-mist",
+     "resources": [
+      "ss-npc-milo",
+      "ss-prop-cargo",
+      "ss-prop-letter",
+      "ss-map-mist"
+     ]
+    },
+    {
+     "id": "ss-c02-t02",
+     "title": "三处邮站",
+     "kind": "multi-investigate",
+     "goal": "调查三处邮站记录，核对最后一次交接。",
+     "speaker": "ss-npc-qingmang",
+     "accept": "邮站的记录牌不会替人撒谎。看时间、签章和装货方向。",
+     "player": "最后一次交接没有回执。",
+     "complete": "第三块牌上有我的记号。我被他们关在前面的旧站。",
+     "landmark": "clue-2",
+     "required": 3,
+     "requires": "ss-c02-t01:complete",
+     "completionEvent": "ss-c02-t02:complete",
+     "locationMap": "ss-map-mist",
+     "resources": [
+      "ss-npc-qingmang",
+      "ss-prop-postal",
+      "ss-mon-moss-warden",
+      "ss-mon-pollen-caller",
+      "ss-map-mist"
+     ]
+    },
+    {
+     "id": "ss-c02-t03",
+     "title": "找回信使",
+     "kind": "rescue",
+     "goal": "清除3名守卫，近距离解开青芒的绑扣。",
+     "speaker": "ss-npc-qingmang",
+     "accept": "先清理站外，再来解扣。别让他们借我的位置把你围住。",
+     "player": "你为什么替暮界的人送信？",
+     "complete": "信里的人不一定是拿枪的人。我不知道军需官把补给换成了什么。",
+     "landmark": "objective",
+     "required": 3,
+     "requires": "ss-c02-t02:complete",
+     "completionEvent": "ss-c02-t03:complete",
+     "locationMap": "ss-map-mist",
+     "resources": [
+      "ss-npc-qingmang",
+      "ss-prop-binding",
+      "ss-mon-dusk-blade",
+      "ss-mon-dusk-weaver",
+      "ss-map-mist"
+     ]
+    },
+    {
+     "id": "ss-c02-t04",
+     "title": "追踪军需队",
+     "kind": "choice-battle",
+     "goal": "选择树冠步道或溪谷便道，截住军需队。",
+     "speaker": "ss-npc-qingmang",
+     "accept": "树冠路能接近铳手，溪谷路得先过藤甲巡守。选你能应付的。",
+     "player": "我们把货单带回来。",
+     "complete": "军需官就在北面的平台，货箱上的坐标都指向那里。",
+     "landmark": "route-a",
+     "required": 3,
+     "requires": "ss-c02-t03:complete",
+     "completionEvent": "ss-c02-t04:complete",
+     "locationMap": "ss-map-mist",
+     "resources": [
+      "ss-npc-qingmang",
+      "ss-elite-vine-keeper",
+      "ss-mon-dusk-gunner",
+      "ss-prop-cargo",
+      "ss-map-mist",
+      "ss-mon-pollen-caller",
+      "ss-mon-moss-warden"
+     ]
+    },
+    {
+     "id": "ss-c02-t05",
+     "title": "截击军需官",
+     "kind": "boss",
+     "goal": "进入军需平台，击败军需官·格铎并取得岛心清单。",
+     "speaker": "ss-npc-milo",
+     "accept": "他用货箱挡住了后退的位置。留出侧路，看到仪式蓄力就警惕援兵。",
+     "player": "清单不是一个岛，是六个。",
+     "complete": "这不是抢一趟船的计划。他们准备把整个主航区接起来。",
+     "landmark": "gate",
+     "required": 1,
+     "requires": "ss-c02-t04:complete",
+     "completionEvent": "ss-c02-t05:complete",
+     "locationMap": "ss-map-boss-2",
+     "resources": [
+      "ss-npc-milo",
+      "ss-boss-fog-quartermaster",
+      "ss-prop-letter",
+      "ss-map-mist",
+      "ss-map-boss-2"
+     ]
+    },
+    {
+     "id": "ss-c02-t06",
+     "title": "译出敌方家书",
+     "kind": "report",
+     "goal": "回港，由弥迦翻译家书，青芒核对军需清单。",
+     "speaker": "ss-npc-mijia",
+     "accept": "这封信在问供暖什么时候恢复。写信的人不是军需官，也不知道这里的岛会怎样。",
+     "player": "你来自暮界？",
+     "complete": "是。我能帮你核对译文，也会告诉你哪些命令不能替他们辩护。",
+     "landmark": "port",
+     "required": 0,
+     "requires": "ss-c02-t05:complete",
+     "completionEvent": "ss-c02-t06:complete",
+     "locationMap": "ss-map-port",
+     "resources": [
+      "ss-npc-mijia",
+      "ss-npc-qingmang",
+      "ss-prop-letter",
+      "ss-prop-faction-dusk",
+      "ss-map-mist",
+      "ss-map-port"
+     ]
+    }
+   ]
+  },
+  {
+   "n": 3,
+   "id": "ss-c03",
+   "title": "炉心争夺战",
+   "island": "赤炉岛",
+   "map": "ss-map-forge",
+   "giver": "ss-npc-tongling",
+   "ally": "ss-npc-tongling",
+   "feature": "武器盘与高难挑战",
+   "reveal": "六岛心被规划为界桥供能；抽取将牺牲浮岛稳定。",
+   "choice": {
+    "task": 3,
+    "a": {
+     "id": "roof",
+     "name": "炉顶检修路",
+     "landmark": "route-a",
+     "enemies": [
+      "ss-mon-dusk-gunner",
+      "ss-mon-dusk-weaver"
+     ],
+     "goal": "清除3名远程守卫",
+     "risk": "铳手和织隙者都在远处出手，借管线掩护逐个接近。"
+    },
+    "b": {
+     "id": "mine",
+     "name": "矿道运输路",
+     "landmark": "route-b",
+     "enemies": [
+      "ss-elite-forge-overseer",
+      "ss-mon-ore-loader"
+     ],
+     "goal": "清除3名重装守卫",
+     "risk": "炉甲压阵机是精英，冲撞很疼；侧身躲开再反击。"
+    },
+    "after": "均取得相同工程记录；不以选择制造不可避免的工人死亡。"
+   },
+   "tasks": [
+    {
+     "id": "ss-c03-t01",
+     "title": "输能溯源",
+     "kind": "investigate",
+     "goal": "检查主输能管上的改装记录。",
+     "speaker": "ss-npc-tongling",
+     "accept": "这根管原来给工坊供能。现在阀门改了，能量全往岛外走。",
+     "player": "岛心能承受这种抽取吗？",
+     "complete": "短时间也许能，永久接界绝对不行。工人没有签过这种工程。",
+     "landmark": "clue",
+     "required": 1,
+     "requires": "ss-c02-t06:complete",
+     "completionEvent": "ss-c03-t01:complete",
+     "locationMap": "ss-map-forge",
+     "resources": [
+      "ss-npc-tongling",
+      "ss-prop-pipe",
+      "ss-mon-ember-worker",
+      "ss-map-forge",
+      "ss-prop-faction-workshop"
+     ]
+    },
+    {
+     "id": "ss-c03-t02",
+     "title": "冷却设备",
+     "kind": "multi-interact",
+     "goal": "清理操作区并依次恢复两座冷却阀。",
+     "speaker": "ss-npc-tongling",
+     "accept": "先关掉泄压端，再开回流。阀盘亮起来就离开喷口。",
+     "player": "两座阀盘都恢复了。",
+     "complete": "冷却回来了。接下来夺回控制台，别让他们重新接管。",
+     "landmark": "valve-1",
+     "required": 2,
+     "requires": "ss-c03-t01:complete",
+     "completionEvent": "ss-c03-t02:complete",
+     "locationMap": "ss-map-forge",
+     "resources": [
+      "ss-npc-tongling",
+      "ss-prop-valve",
+      "ss-prop-pipe",
+      "ss-mon-ore-loader",
+      "ss-map-forge"
+     ]
+    },
+    {
+     "id": "ss-c03-t03",
+     "title": "夺回控制",
+     "kind": "choice-battle",
+     "goal": "选择炉顶检修路或矿道运输路，夺回控制台。",
+     "speaker": "ss-npc-milo",
+     "accept": "炉顶的铳手看得远，矿道里是重甲搬运机。两边都能到控制台。",
+     "player": "我会在有退路的位置交战。",
+     "complete": "控制记录已经拿到。设备写着六岛的名字，这就是界桥工程。",
+     "landmark": "route-a",
+     "required": 3,
+     "requires": "ss-c03-t02:complete",
+     "completionEvent": "ss-c03-t03:complete",
+     "locationMap": "ss-map-forge",
+     "resources": [
+      "ss-npc-milo",
+      "ss-elite-forge-overseer",
+      "ss-mon-dusk-gunner",
+      "ss-mon-ore-loader",
+      "ss-map-forge",
+      "ss-mon-dusk-weaver"
+     ]
+    },
+    {
+     "id": "ss-c03-t04",
+     "title": "守住岛心",
+     "kind": "defend",
+     "goal": "启动稳定器，清除4名敌人并守住岛心范围。",
+     "speaker": "ss-npc-tongling",
+     "accept": "我需要岛心稳定的这段时间。敌人压进来，稳定就会中断。",
+     "player": "别停，我守住这里。",
+     "complete": "岛心撑住了。采能机还连着主干线，准备好再去拆它。",
+     "landmark": "objective",
+     "required": 4,
+     "requires": "ss-c03-t03:complete",
+     "completionEvent": "ss-c03-t04:complete",
+     "locationMap": "ss-map-forge",
+     "resources": [
+      "ss-npc-tongling",
+      "ss-prop-core",
+      "ss-prop-engine",
+      "ss-mon-dusk-blade",
+      "ss-mon-dusk-weaver",
+      "ss-map-forge"
+     ]
+    },
+    {
+     "id": "ss-c03-t05",
+     "title": "击败采能机",
+     "kind": "boss",
+     "goal": "进入核心台，击败岛心采能机·掘星者。",
+     "speaker": "ss-npc-tongling",
+     "accept": "它的聚束沿着钳口射出。躲开地面的方向线，别把退路让给炉火。",
+     "player": "主干线已经断开。",
+     "complete": "这回抽取停了。我们把维护记录公开，没人再能偷偷改这座炉。",
+     "landmark": "gate",
+     "required": 1,
+     "requires": "ss-c03-t04:complete",
+     "completionEvent": "ss-c03-t05:complete",
+     "locationMap": "ss-map-boss-3",
+     "resources": [
+      "ss-npc-tongling",
+      "ss-boss-core-extractor",
+      "ss-prop-pipe",
+      "ss-map-forge",
+      "ss-map-boss-3"
+     ]
+    },
+    {
+     "id": "ss-c03-t06",
+     "title": "新的引擎",
+     "kind": "report",
+     "goal": "回港安装维修完成的飞艇引擎，读取界桥工程记录。",
+     "speaker": "ss-npc-tongling",
+     "accept": "引擎能把我们送到霜镜，那里保存旧航路的记录。",
+     "player": "我开始明白这把钥匙为什么重要了。",
+     "complete": "先别替它编故事。让记录告诉我们答案。工坊的组合台也向你开放了。",
+     "landmark": "port",
+     "required": 0,
+     "requires": "ss-c03-t05:complete",
+     "completionEvent": "ss-c03-t06:complete",
+     "locationMap": "ss-map-port",
+     "resources": [
+      "ss-npc-tongling",
+      "ss-prop-engine",
+      "ss-prop-world-chart",
+      "ss-map-forge",
+      "ss-map-port"
+     ]
+    }
+   ]
+  },
+  {
+   "n": 4,
+   "id": "ss-c04",
+   "title": "冰封的应答者",
+   "island": "霜镜岛",
+   "map": "ss-map-frost",
+   "giver": "ss-npc-xuemi",
+   "ally": "ss-npc-jinyu",
+   "feature": "召唤石",
+   "reveal": "故乡曾参与援航；玩家的家族标记在应答名录中。",
+   "choice": {
+    "task": 3,
+    "a": {
+     "id": "bridge-deck",
+     "name": "内部舰桥",
+     "landmark": "route-a",
+     "enemies": [
+      "ss-elite-frost-lock",
+      "ss-mon-frozen-watch"
+     ],
+     "goal": "清除3名甲板守卫",
+     "risk": "霜锁卫士是精英，会把你冻在原地；别被困在窄舱里。"
+    },
+    "b": {
+     "id": "outer-hull",
+     "name": "外壳通道",
+     "landmark": "route-b",
+     "enemies": [
+      "ss-mon-dusk-gunner",
+      "ss-mon-frost-hound"
+     ],
+     "goal": "清除3名外壳巡兵",
+     "risk": "铳手放冷枪，巡猎兽会扑上来；先解决铳手。"
+    },
+    "after": "两路同获星盘校验记录；只改变本章战术与回港描述。"
+   },
+   "tasks": [
+    {
+     "id": "ss-c04-t01",
+     "title": "冻舰搜查",
+     "kind": "multi-investigate",
+     "goal": "搜查三份冻舰记录，确认旧航约名录。",
+     "speaker": "ss-npc-xuemi",
+     "accept": "冰封的是记录室，不是里面的时间。别把旧日期当成今天的消息。",
+     "player": "这个印记和家里的刻片一样。",
+     "complete": "先记录下来。我们需要观测站校验，不能只凭一个相似图案。",
+     "landmark": "clue",
+     "required": 3,
+     "requires": "ss-c03-t06:complete",
+     "completionEvent": "ss-c04-t01:complete",
+     "locationMap": "ss-map-frost",
+     "resources": [
+      "ss-npc-xuemi",
+      "ss-prop-log",
+      "ss-mon-frost-hound",
+      "ss-map-frost"
+     ]
+    },
+    {
+     "id": "ss-c04-t02",
+     "title": "唤醒观测站",
+     "kind": "multi-interact",
+     "goal": "清除守卫，恢复两座观测装置。",
+     "speaker": "ss-npc-xuemi",
+     "accept": "两台设备的参考方向一致，旧星图才能读出来。先把供能接稳。",
+     "player": "两台都开始工作了。",
+     "complete": "它接收到的应答和你航钥相符。至少七十年前，你的世界来过这里。",
+     "landmark": "device-1",
+     "required": 2,
+     "requires": "ss-c04-t01:complete",
+     "completionEvent": "ss-c04-t02:complete",
+     "locationMap": "ss-map-frost",
+     "resources": [
+      "ss-npc-xuemi",
+      "ss-prop-observatory",
+      "ss-mon-frozen-watch",
+      "ss-map-frost"
+     ]
+    },
+    {
+     "id": "ss-c04-t03",
+     "title": "进入舰桥",
+     "kind": "choice-battle",
+     "goal": "选择内部舰桥或外壳通道，前往星盘室。",
+     "speaker": "ss-npc-milo",
+     "accept": "内部有霜锁卫士，外壳路要避开远程晶弹。选一条，我们在星盘室会合。",
+     "player": "星盘室会有完整坐标吗？",
+     "complete": "可能只有过去的。先走到那里，再决定下一步。",
+     "landmark": "route-a",
+     "required": 3,
+     "requires": "ss-c04-t02:complete",
+     "completionEvent": "ss-c04-t03:complete",
+     "locationMap": "ss-map-frost",
+     "resources": [
+      "ss-npc-milo",
+      "ss-elite-frost-lock",
+      "ss-mon-dusk-gunner",
+      "ss-mon-frost-hound",
+      "ss-map-frost",
+      "ss-mon-frozen-watch"
+     ]
+    },
+    {
+     "id": "ss-c04-t04",
+     "title": "复原星图",
+     "kind": "investigate",
+     "goal": "校验星盘记录与航钥刻片，保存应答结果。",
+     "speaker": "ss-npc-jinyu",
+     "accept": "这是保管人的印记。援航条款仍然有效，但开启记录不是开启归途。",
+     "player": "我家里的人曾经保管这份契约。",
+     "complete": "记录足以证明联系，剩下的经过要由钥匙自己解码。",
+     "landmark": "objective",
+     "required": 1,
+     "requires": "ss-c04-t03:complete",
+     "completionEvent": "ss-c04-t04:complete",
+     "locationMap": "ss-map-frost",
+     "resources": [
+      "ss-npc-jinyu",
+      "ss-prop-star-chart",
+      "ss-prop-key",
+      "ss-map-frost"
+     ]
+    },
+    {
+     "id": "ss-c04-t05",
+     "title": "冻舰巡守",
+     "kind": "boss",
+     "goal": "进入观测庭，击败失控的冻舰巡守·霜镜卫。",
+     "speaker": "ss-npc-xuemi",
+     "accept": "巡守把所有新信号都当成侵入。冰枪的发射方向和风雪范围都会先出现。",
+     "player": "我会离开它标出的范围。",
+     "complete": "设备恢复了合法应答。旧观测不会再把我们的求援拒在门外。",
+     "landmark": "gate",
+     "required": 1,
+     "requires": "ss-c04-t04:complete",
+     "completionEvent": "ss-c04-t05:complete",
+     "locationMap": "ss-map-boss-4",
+     "resources": [
+      "ss-npc-xuemi",
+      "ss-boss-ice-patrol",
+      "ss-prop-observatory",
+      "ss-map-frost",
+      "ss-map-boss-4"
+     ]
+    },
+    {
+     "id": "ss-c04-t06",
+     "title": "解读旧航约",
+     "kind": "report",
+     "goal": "回港整理应答名录，确认契约与召唤石的记录用途。",
+     "speaker": "ss-npc-xuemi",
+     "accept": "名录确认你的家族曾保管航钥。这不等于你被命令来这里，更不等于家已经消失。",
+     "player": "那我就继续找能回答现在情况的证据。",
+     "complete": "弥迦带来沉星的撤离记录。它可能保存这次求援的原始信号。",
+     "landmark": "port",
+     "required": 0,
+     "requires": "ss-c04-t05:complete",
+     "completionEvent": "ss-c04-t06:complete",
+     "locationMap": "ss-map-port",
+     "resources": [
+      "ss-npc-xuemi",
+      "ss-npc-jinyu",
+      "ss-prop-log",
+      "ss-prop-key",
+      "ss-map-frost",
+      "ss-map-port"
+     ]
+    }
+   ]
+  },
+  {
+   "n": 5,
+   "id": "ss-c05",
+   "title": "敌人的故乡",
+   "island": "沉星岛",
+   "map": "ss-map-rift",
+   "giver": "ss-npc-mijia",
+   "ally": "ss-npc-qingmang",
+   "feature": "威能法典与团队副本",
+   "reveal": "玩家家族是航钥保管人；本次穿越响应群岛紧急求援；维洛选择征服。",
+   "choice": {
+    "task": 3,
+    "a": {
+     "id": "battery",
+     "name": "炮台通道",
+     "landmark": "route-a",
+     "enemies": [
+      "ss-mon-dusk-gunner",
+      "ss-mon-dusk-weaver"
+     ],
+     "goal": "清除3名炮台守卫",
+     "risk": "铳手和织隙者火力集中，先打离你最近的那个。"
+    },
+    "b": {
+     "id": "rift-path",
+     "name": "裂隙通道",
+     "landmark": "route-b",
+     "enemies": [
+      "ss-elite-rift-hunter",
+      "ss-mon-rift-lurker"
+     ],
+     "goal": "清除3名裂隙巡兵",
+     "risk": "裂界猎兵是精英，潜猎者会从侧面偷袭；留意身边的动静。"
+    },
+    "after": "两路均保留平民撤离与完整证据，不改变统一结局。"
+   },
+   "tasks": [
+    {
+     "id": "ss-c05-t01",
+     "title": "要塞登陆",
+     "kind": "battle",
+     "goal": "抵达前哨，击退3名裂隙守卫。",
+     "speaker": "ss-npc-mijia",
+     "accept": "这里有前线军队，也有被带来的平民。我会给你明确位置，不让你靠猜测动手。",
+     "player": "先夺下登陆点。",
+     "complete": "登陆点安全了。证词就在灰白帐篷旁，军令存放在上层。",
+     "landmark": "landing",
+     "required": 3,
+     "requires": "ss-c04-t06:complete",
+     "completionEvent": "ss-c05-t01:complete",
+     "locationMap": "ss-map-rift",
+     "resources": [
+      "ss-npc-mijia",
+      "ss-mon-rift-lurker",
+      "ss-mon-dusk-blade",
+      "ss-map-rift"
+     ]
+    },
+    {
+     "id": "ss-c05-t02",
+     "title": "核对证词",
+     "kind": "multi-investigate",
+     "goal": "核对两份证词与一份撤离名单。",
+     "speaker": "ss-npc-qingmang",
+     "accept": "姓名、出发日期、军需回执对得上。有人还在等我们给他们一个出口。",
+     "player": "救这些人，不会让侵军停止。",
+     "complete": "所以要做两件事：给平民出口，把军队的界桥关掉。",
+     "landmark": "clue",
+     "required": 3,
+     "requires": "ss-c05-t01:complete",
+     "completionEvent": "ss-c05-t02:complete",
+     "locationMap": "ss-map-rift",
+     "resources": [
+      "ss-npc-qingmang",
+      "ss-prop-testimony",
+      "ss-prop-refugee",
+      "ss-prop-letter",
+      "ss-map-rift"
+     ]
+    },
+    {
+     "id": "ss-c05-t03",
+     "title": "穿过前哨",
+     "kind": "choice-battle",
+     "goal": "选择炮台通道或裂隙通道，抵达供能厅。",
+     "speaker": "ss-npc-mijia",
+     "accept": "炮台路能先处理铳手，裂隙路由潜猎者巡守。两边都能走到供能厅。",
+     "player": "我不会让他们把证词毁掉。",
+     "complete": "证词已交给青芒。现在去断开供能，我们才有时间撤离。",
+     "landmark": "route-a",
+     "required": 3,
+     "requires": "ss-c05-t02:complete",
+     "completionEvent": "ss-c05-t03:complete",
+     "locationMap": "ss-map-rift",
+     "resources": [
+      "ss-npc-mijia",
+      "ss-elite-rift-hunter",
+      "ss-mon-dusk-gunner",
+      "ss-mon-rift-lurker",
+      "ss-map-rift",
+      "ss-mon-dusk-weaver"
+     ]
+    },
+    {
+     "id": "ss-c05-t04",
+     "title": "断开界桥供能",
+     "kind": "multi-interact",
+     "goal": "清理守卫后关闭三座界桥供能器。",
+     "speaker": "ss-npc-mijia",
+     "accept": "按编号断开供能。不要把仍在使用的撤离装置和军用供能器混在一起。",
+     "player": "三座供能器都停了。",
+     "complete": "军用界桥暂时打不开了，督军会来夺回控制。",
+     "landmark": "device-1",
+     "required": 3,
+     "requires": "ss-c05-t03:complete",
+     "completionEvent": "ss-c05-t04:complete",
+     "locationMap": "ss-map-rift",
+     "resources": [
+      "ss-npc-mijia",
+      "ss-prop-supply",
+      "ss-prop-pipe",
+      "ss-mon-rift-caller",
+      "ss-map-rift"
+     ]
+    },
+    {
+     "id": "ss-c05-t05",
+     "title": "击败前线督军",
+     "kind": "boss",
+     "goal": "进入界桥厅，击败裂隙督军·乌洛并取得求援记录。",
+     "speaker": "ss-npc-milo",
+     "accept": "他在祭台上接着另一端。离开干扰区，看到仪式蓄力就处理召来的敌人。",
+     "player": "这份记录是我们出发那天的。",
+     "complete": "求援确实来自群岛。维洛把能救人的契约改成了军队的桥。",
+     "landmark": "gate",
+     "required": 1,
+     "requires": "ss-c05-t04:complete",
+     "completionEvent": "ss-c05-t05:complete",
+     "locationMap": "ss-map-boss-5",
+     "resources": [
+      "ss-npc-milo",
+      "ss-boss-rift-marshal",
+      "ss-prop-bridge",
+      "ss-map-rift",
+      "ss-map-boss-5"
+     ]
+    },
+    {
+     "id": "ss-c05-t06",
+     "title": "航钥的记忆",
+     "kind": "report",
+     "goal": "回港解码求援记录，弄清你的来历与维洛的命令。",
+     "speaker": "ss-npc-mijia",
+     "accept": "你的祖辈保管旧航钥。钥匙收到紧急求援，把仍能应答的你送来。维洛知道界桥会让浮岛失稳，还是签了命令。",
+     "player": "我的家没有把我交给一场战争。这次回应，是我自己决定继续。",
+     "complete": "故乡仍有应答，但坐标缺了一段。先去龙眠关闭界桥，我们才能继续查它。",
+     "landmark": "port",
+     "required": 0,
+     "requires": "ss-c05-t05:complete",
+     "completionEvent": "ss-c05-t06:complete",
+     "locationMap": "ss-map-port",
+     "resources": [
+      "ss-npc-mijia",
+      "ss-npc-cheng",
+      "ss-prop-key",
+      "ss-prop-log",
+      "ss-map-rift",
+      "ss-map-port"
+     ]
+    }
+   ]
+  },
+  {
+   "n": 6,
+   "id": "ss-c06",
+   "title": "群岛再次启航",
+   "island": "龙眠岛",
+   "map": "ss-map-dragon",
+   "giver": "ss-npc-jinyu",
+   "ally": "ss-npc-milo",
+   "feature": "梦魇挑战；后续归乡线索",
+   "reveal": "六岛联合关闭侵军界桥；故乡有应答碎片，完整坐标仍缺失。",
+   "choice": {
+    "task": 3,
+    "a": {
+     "id": "oath-road",
+     "name": "旧祭道",
+     "landmark": "route-a",
+     "enemies": [
+      "ss-elite-oath-keeper",
+      "ss-mon-oath-acolyte"
+     ],
+     "goal": "清除3名旧航巡守",
+     "risk": "龙骨执令者是精英，侍仪会给它加护；先打断护持。"
+    },
+    "b": {
+     "id": "hangar",
+     "name": "机库通道",
+     "landmark": "route-b",
+     "enemies": [
+      "ss-mon-dusk-gunner",
+      "ss-mon-dusk-weaver"
+     ],
+     "goal": "清除3名舰团守卫",
+     "risk": "铳手和织隙者都在远处出手，别一次引来太多。"
+    },
+    "after": "两路回合至同一中枢；尾声对白记录所选路线，不分结局。"
+   },
+   "tasks": [
+    {
+     "id": "ss-c06-t01",
+     "title": "龙裔会盟",
+     "kind": "dialogue",
+     "goal": "在龙眠誓约庭提交五章记录与航钥。",
+     "speaker": "ss-npc-jinyu",
+     "accept": "契约认可应答者，也要求有人共同担责。你带来的记录足以让六岛重新会盟。",
+     "player": "我们要关掉军队的桥，也要给撤出来的人一个落脚点。",
+     "complete": "群岛已经同意。援航不再只由一个守门人决定。",
+     "landmark": "clue",
+     "required": 0,
+     "requires": "ss-c05-t06:complete",
+     "completionEvent": "ss-c06-t01:complete",
+     "locationMap": "ss-map-dragon",
+     "resources": [
+      "ss-npc-jinyu",
+      "ss-prop-key",
+      "ss-prop-faction-alliance",
+      "ss-prop-faction-dragon",
+      "ss-map-dragon"
+     ]
+    },
+    {
+     "id": "ss-c06-t02",
+     "title": "航约试炼",
+     "kind": "battle",
+     "goal": "击败3名失控的旧航网巡守，让航网认可你的应答。",
+     "speaker": "ss-npc-jinyu",
+     "accept": "这些巡守不辨认新旗帜。保住装置，结束失控的维护。",
+     "player": "我会留意盾击和护持信号。",
+     "complete": "应答通过。前面的节点可以重新接入群岛航网。",
+     "landmark": "objective",
+     "required": 3,
+     "requires": "ss-c06-t01:complete",
+     "completionEvent": "ss-c06-t02:complete",
+     "locationMap": "ss-map-dragon",
+     "resources": [
+      "ss-npc-jinyu",
+      "ss-mon-bone-sentinel",
+      "ss-mon-oath-acolyte",
+      "ss-elite-oath-keeper",
+      "ss-map-dragon"
+     ]
+    },
+    {
+     "id": "ss-c06-t03",
+     "title": "进入航网中枢",
+     "kind": "choice-battle",
+     "goal": "选择旧祭道或机库通道，抵达中枢节点。",
+     "speaker": "ss-npc-milo",
+     "accept": "祭道上是旧约巡守，机库里是舰团兵。我们得选一条能保住退路的。",
+     "player": "在中枢会合，然后一起把它关掉。",
+     "complete": "通道已经打通。接下来我留在节点旁，你去前方清理敌人。",
+     "landmark": "route-a",
+     "required": 3,
+     "requires": "ss-c06-t02:complete",
+     "completionEvent": "ss-c06-t03:complete",
+     "locationMap": "ss-map-dragon",
+     "resources": [
+      "ss-npc-milo",
+      "ss-elite-oath-keeper",
+      "ss-mon-dusk-gunner",
+      "ss-mon-bone-sentinel",
+      "ss-map-dragon",
+      "ss-mon-oath-acolyte",
+      "ss-mon-dusk-weaver"
+     ]
+    },
+    {
+     "id": "ss-c06-t04",
+     "title": "稳定三个航网节点",
+     "kind": "multi-defend",
+     "goal": "依次启动三座节点，击退来袭的敌人，直到节点稳定。",
+     "speaker": "ss-npc-jinyu",
+     "accept": "一次稳住一个节点。没人守住范围，或敌人压入，稳定就不会增长。",
+     "player": "第三座开始稳定了。",
+     "complete": "六岛接上了。现在进中枢夺回主控，军队的界桥才能真正关闭。",
+     "landmark": "device-1",
+     "required": 3,
+     "requires": "ss-c06-t03:complete",
+     "completionEvent": "ss-c06-t04:complete",
+     "locationMap": "ss-map-dragon",
+     "resources": [
+      "ss-npc-jinyu",
+      "ss-prop-node",
+      "ss-prop-core",
+      "ss-mon-dusk-blade",
+      "ss-mon-dusk-weaver",
+      "ss-map-dragon"
+     ]
+    },
+    {
+     "id": "ss-c06-t05",
+     "title": "暮界提督",
+     "kind": "boss",
+     "goal": "做好准备后进入航网中枢，击败暮界提督·维洛。",
+     "speaker": "ss-boss-vilo",
+     "accept": "我的人没有时间继续等。我知道这座桥的代价，也知道不接它会失去什么。",
+     "player": "你知道代价，所以更不能替这里的人决定。",
+     "complete": "主控已经解除。我不会把故乡的希望建在另一座岛的坠落上。",
+     "landmark": "gate",
+     "required": 1,
+     "requires": "ss-c06-t04:complete",
+     "completionEvent": "ss-c06-t05:complete",
+     "locationMap": "ss-map-boss-6",
+     "resources": [
+      "ss-boss-vilo",
+      "ss-npc-milo",
+      "ss-map-dragon",
+      "ss-map-boss-6"
+     ]
+    },
+    {
+     "id": "ss-c06-t06",
+     "title": "关闭界桥与尾声",
+     "kind": "post-boss-report",
+     "goal": "击败维洛后操作主控关闭军用界桥，回港确认复航与平民安置。",
+     "speaker": "ss-npc-cheng",
+     "accept": "六岛的潮窗都恢复了，撤出来的人已经登记。你可以出发去找那段缺失坐标。",
+     "player": "那条路还没找到，但这次我知道有人在等我们回来。",
+     "complete": "米洛把航图留了空白页。下一次启航，写你自己的目的地。",
+     "landmark": "terminal",
+     "required": 1,
+     "requires": "ss-c06-t05:complete",
+     "completionEvent": "ss-c06-t06:complete",
+     "locationMap": "ss-map-boss-6",
+     "resources": [
+      "ss-npc-cheng",
+      "ss-npc-milo",
+      "ss-prop-bridge",
+      "ss-prop-node",
+      "ss-prop-world-chart",
+      "ss-prop-contract",
+      "ss-map-dragon",
+      "ss-map-boss-6"
+     ]
+    }
+   ]
+  }
+ ]
+}

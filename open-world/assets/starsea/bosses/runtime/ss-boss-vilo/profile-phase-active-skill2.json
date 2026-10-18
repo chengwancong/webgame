@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "id": "ss-boss-vilo-phase-active",
+  "runtime": {
+    "json": "/art/starsea/bosses/ss-boss-vilo/Character.json",
+    "atlas": "/art/starsea/bosses/ss-boss-vilo/Character.atlas",
+    "pma": true
+  },
+  "skinNames": [
+    "BODY/ss-boss-vilo",
+    "HEAD/ss-boss-vilo",
+    "SS/ss-boss-vilo"
+  ],
+  "acceptedBodySets": [
+    "ss-boss-vilo"
+  ],
+  "nativeFacing": "left",
+  "referenceHeight": 188.738206015493,
+  "ground": [
+    -0.25,
+    0
+  ],
+  "fps": 60,
+  "previewBounds": {
+    "minX": -225.64433068457132,
+    "maxX": 120.34874851914354,
+    "minY": -59.65580058773169,
+    "maxY": 278.6203679232824
+  },
+  "weapons": {
+    "ss-boss-vilo": {
+      "family": "sword",
+      "skinNames": [
+        "RIGHTHAND/ss-boss-vilo"
+      ],
+      "actions": {
+        "idle": {
+          "name": "SS_idle_active",
+          "loop": true,
+          "sourceAnimation": "Wait2"
+        },
+        "move": {
+          "name": "SS_move_active",
+          "loop": true,
+          "sourceAnimation": "Run2"
+        },
+        "attack": {
+          "name": "SS_attack_active",
+          "loop": false,
+          "sourceAnimation": "Attack_TwoHand1",
+          "impactTime": 0.4166666666666667
+        },
+        "hurt": {
+          "name": "SS_hurt_active",
+          "loop": false,
+          "sourceAnimation": "Damage2"
+        },
+        "death": {
+          "name": "SS_death",
+          "loop": false,
+          "sourceAnimation": "Die"
+        },
+        "skill": {
+          "name": "SS_skill2_active",
+          "sourceAnimation": "Cast1",
+          "impactTime": 0.6666666666666666,
+          "loop": false,
+          "mount": "ground",
+          "mechanism": {
+            "id": "ss-fx-b06-rain",
+            "name": "界桥星火雨",
+            "rule": "fire_rain",
+            "kind": "zone",
+            "windupTicks": 90,
+            "delayTicks": 0,
+            "mount": "ground",
+            "visual": "从上落下的星火和真实落点火层，持续150 ticks",
+            "owner": "monster_vfx",
+            "mechanismStatus": "existing-rule-reference; new actor binding not implemented",
+            "chapter": [
+              6
+            ]
+          },
+          "limitations": "合法共用原生动作；战斗时序由实际前摇/恢复映射。",
+          "profile": "/art/starsea/bosses/ss-boss-vilo/profile-skill2.json"
+        },
+        "projectile": {
+          "name": "SS_skill2_active",
+          "sourceAnimation": "Cast1",
+          "impactTime": 0.6666666666666666,
+          "loop": false,
+          "mount": "ground",
+          "mechanism": {
+            "id": "ss-fx-b06-rain",
+            "name": "界桥星火雨",
+            "rule": "fire_rain",
+            "kind": "zone",
+            "windupTicks": 90,
+            "delayTicks": 0,
+            "mount": "ground",
+            "visual": "从上落下的星火和真实落点火层，持续150 ticks",
+            "owner": "monster_vfx",
+            "mechanismStatus": "existing-rule-reference; new actor binding not implemented",
+            "chapter": [
+              6
+            ]
+          },
+          "limitations": "合法共用原生动作；战斗时序由实际前摇/恢复映射。",
+          "profile": "/art/starsea/bosses/ss-boss-vilo/profile-skill2.json"
+        }
+      },
+      "sockets": {
+        "weapon": {
+          "slot": "RIGHTHAND",
+          "pixel": [
+            27.5,
+            12
+          ],
+          "imageSize": [
+            55,
+            222
+          ]
+        },
+        "muzzle": {
+          "slot": "RIGHTHAND",
+          "pixel": [
+            27.5,
+            12
+          ],
+          "imageSize": [
+            55,
+            222
+          ]
+        }
+      },
+      "muzzlePolicy": "weapon-tip"
+    }
+  },
+  "renderAppearance": {
+    "rig": "modular-hero",
+    "family": "sword",
+    "styleProfile": "v2-soft",
+    "revision": 1,
+    "parts": {
+      "head": {
+        "setId": "ss-boss-vilo"
+      },
+      "body": {
+        "setId": "ss-boss-vilo"
+      },
+      "hands": {
+        "setId": "ss-boss-vilo"
+      },
+      "legs": {
+        "setId": "ss-boss-vilo"
+      },
+      "feet": {
+        "setId": "ss-boss-vilo"
+      },
+      "back": {
+        "setId": "ss-boss-vilo"
+      },
+      "weapon": {
+        "setId": "ss-boss-vilo"
+      }
+    }
+  },
+  "sourceNativeVersion": "4.2.43",
+  "actionSelection": {
+    "priority": [
+      "death",
+      "living-phase-transition",
+      "selected-living-action"
+    ],
+    "deathAction": "SS_death",
+    "deathCancelsPhaseTransition": true,
+    "phaseActive": "modifier for living actions only",
+    "deathCleanupTime": 0.65
+  }
+}

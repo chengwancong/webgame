@@ -1,0 +1,16 @@
+import {writeFile,mkdir} from 'node:fs/promises';import {join} from 'node:path';import {group,out,sharp,json,record} from './pipeline.mjs';import {flows,professions} from './flows.mjs';
+const line='#3c2b23',cream='#fff7e6',glyphs={
+blade:'<path d="M18 15L47 44M46 15L17 44M14 38L25 49M40 49L51 38" fill="none" stroke-width="5" stroke-linecap="round"/>',
+ember:'<path d="M34 10C28 23 18 27 20 39C21 53 47 52 46 37C45 29 40 25 39 20C37 29 32 29 34 10Z"/>',
+glacier:'<path d="M18 16H46V33Q45 44 32 51Q19 44 18 33Z"/><path d="M32 23V39M25 27L39 35M25 35L39 27" stroke="#fff7e6" stroke-width="3"/>',
+storm:'<path d="M34 10L18 35H31L27 53L48 26H34Z"/>',
+arcanum:'<path d="M32 11L48 42H16ZM16 22H48L32 53Z" fill="none" stroke-width="3.5" stroke-linejoin="round"/>',
+shade:'<path d="M40 12C16 8 9 44 32 51C43 54 51 47 53 39C30 47 22 24 40 12Z"/>',
+venom:'<path d="M33 11C27 23 17 28 18 39C20 56 47 54 47 37C46 27 40 21 33 11Z"/><path d="M27 42Q33 30 40 28" stroke="#fff7e6" stroke-width="3" fill="none"/>',
+ricochet:'<path d="M30 11L34 27L23 25ZM49 39L33 34L40 25ZM13 44L25 32L30 43Z"/>',
+frostneedle:'<path d="M32 9L38 30L32 55L26 30Z"/><path d="M17 23L47 40M17 40L47 23" stroke-width="3" fill="none"/>'};
+const jobs={scarf:`<path d="M12 12Q31 22 50 12L54 24Q34 32 14 24Z" fill="#78b9c4"/><path d="M18 24L12 55L26 48L33 53L30 26Z" fill="#78b9c4"/><path d="M33 26L40 47L52 49L47 26Z" fill="#cbb694"/>`,crystal:`<path d="M32 5L48 23L42 43L32 56L20 42L16 23Z" fill="#78b9c4"/><path d="M32 5L26 25L32 56L38 24Z" fill="#fff7e6"/><path d="M16 23L26 25L48 23M20 42L32 56L42 43" fill="none"/>`,tassel:`<path d="M13 10Q30 4 46 14L42 26L19 26Z" fill="#78b9c4"/><path d="M21 26L15 55L27 49L33 57L34 26Z" fill="#cbb694"/><path d="M34 26L44 53L52 44L46 26Z" fill="#fff7e6"/>`};
+await mkdir(join(group,'sources/accessories'),{recursive:true});await mkdir(join(out,'accessories'),{recursive:true});const entries=[];
+for(const item of [...flows.map(f=>({id:'badge-'+f.id,kind:'badge',flow:f.id,body:`<circle cx="32" cy="32" r="28" fill="${cream}" stroke="${line}" stroke-width="3"/><g fill="${f.color}" stroke="${line}" stroke-width="2" stroke-linejoin="round">${glyphs[f.id]}</g>`})),...Object.entries(jobs).map(([id,body])=>({id:'job-'+id,kind:'profession',body:`<g stroke="${line}" stroke-width="2.6" stroke-linejoin="round">${body}</g>`}))]){
+ const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 64 64">${item.body}</svg>`,source=join(group,'sources/accessories',item.id+'.svg');await writeFile(source,svg);for(const [size,px]of [['small',32],['medium',48],['large',64]]){const file=join(out,'accessories',item.id+'-'+size+'.png');await sharp(Buffer.from(svg)).resize(px,px).png().toFile(file);entries.push({id:item.id+'-'+size,kind:item.kind,flow:item.flow,size,file:'/art/starsea/pets/v3/accessories/'+item.id+'-'+size+'.png',source:await record(source),output:await record(file),method:'Hand-authored flat vector emblem/accessory in PA2 line palette, rasterized to independent transparent PNG'});}}
+await json(join(group,'accessories.json'),entries);await json(join(out,'accessories.json'),entries);console.log('36 independent badge/job PNGs, 9 emblems + 3 professions x 3 sizes');

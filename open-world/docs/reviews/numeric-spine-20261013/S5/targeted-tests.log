@@ -1,0 +1,115 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+ ❯ tests/elite-affixes.test.ts (3 tests | 1 failed) 42ms
+   ✓ rolls a stable, distinct affix set within the world tier range and freezes it into the spawn 11ms
+   ✓ frost nova telegraphs on the caster, then hits and slows a hero still inside the radius 22ms
+   × a shielded elite raises its shield once engaged and drains it before HP 8ms
+ ✓ tests/elite-affixes-w2.test.ts (4 tests) 45ms
+ ❯ tests/monster-model.test.ts (6 tests | 3 failed) 27ms
+   × uses the selected template, specified level, rank and difficulty as independent layers 4ms
+   × keeps species differences at the same level and does not read the player level 1ms
+   ✓ binds skills and boss behavior independently from presentation artwork 2ms
+   × uses configured monster armor and penetration while preserving old guard snapshots 2ms
+   ✓ restores exact actor attributes, health and deaths without recalculating from current configuration 13ms
+   ✓ rejects missing map selectors, unknown templates, levels, ranks, skills and malformed curves 4ms
+ ✓ tests/swarm-health-line.test.ts (5 tests) 21ms
+ ✓ tests/world-tier.test.ts (2 tests) 16ms
+ ✓ tests/dungeon-content.test.ts (3 tests) 16ms
+ ✓ tests/monster-curve-tool.test.ts (4 tests) 13ms
+ ✓ tests/swarm-role-proposal.test.ts (3 tests) 8ms
+ ✓ tests/numeric-source-audit.test.ts (2 tests) 3ms
+ ✓ tests/dungeon-wall-tool.test.ts (2 tests) 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/elite-affixes.test.ts > a shielded elite raises its shield once engaged and drains it before HP
+AssertionError: expected +0 to be -4 // Object.is equality
+
+- Expected
++ Received
+
+- -4
++ 0
+
+ ❯ tests/elite-affixes.test.ts:49:118
+     47|  const hp=e.hp;(w as any).damage(e,shield-1,false,undefined,{category:…
+     48|  expect(e.hp).toBe(hp);expect(e.shield).toBe(1);
+     49|  (w as any).damage(e,11,false,undefined,{category:'direct',damageType:…
+       |                                                                                                                      ^
+     50|  // The shield lapses after its duration and returns on the next cycle.
+     51|  for(let i=0;i<eliteAffixes.shielded.duration;i++)w.step();expect(e.sh…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/monster-model.test.ts > uses the selected template, specified level, rank and difficulty as independent layers
+AssertionError: expected 3 to be 95 // Object.is equality
+
+- Expected
++ Received
+
+- 95
++ 3
+
+ ❯ tests/monster-model.test.ts:15:22
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/monster-model.test.ts > keeps species differences at the same level and does not read the player level
+AssertionError: expected [ [ 3, 45 ], [ 3, 51 ], [ 3, 42 ] ] to deeply equal [ [ 180, 16 ], [ 153, 18 ], …(1) ]
+
+- Expected
++ Received
+
+  [
+    [
+-     180,
+-     16,
++     3,
++     45,
+    ],
+    [
+-     153,
+-     18,
++     3,
++     51,
+    ],
+    [
+-     171,
+-     15,
++     3,
++     42,
+    ],
+  ]
+
+ ❯ tests/monster-model.test.ts:21:31
+     19| it('keeps species differences at the same level and does not read the …
+     20|  const sample=regionById('tundra').spawns.filter(s=>!s.elite),unique=n…
+     21|  expect([...unique.values()]).toEqual([[180,16],[153,18],[171,15]]);
+       |                               ^
+     22|  for(const r of regions)for(const s of r.spawns)expect(s.monster?.leve…
+     23|  expect(monsterLevelValues('campaign',3).hp).toBe(125);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/monster-model.test.ts > uses configured monster armor and penetration while preserving old guard snapshots
+AssertionError: expected 3 to be 25 // Object.is equality
+
+- Expected
++ Received
+
+- 25
++ 3
+
+ ❯ tests/monster-model.test.ts:33:70
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  2 failed | 8 passed (10)
+      Tests  4 failed | 30 passed (34)
+   Start at  10:13:03
+   Duration  4.08s (transform 696ms, setup 0ms, import 2.84s, tests 194ms, environment 1ms)
+

@@ -1,0 +1,11 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {monsterContent} from '../packages/content/monsters.ts';
+import {versions} from '../packages/contracts/index.ts';
+import {stats,trace} from '../tests/fixtures/combat-feedback-scenario.ts';
+if(monsterContent.ranks.elite.hp!==4||monsterContent.ranks.elite.attack!==2||monsterContent.ranks.rare.hp!==8||monsterContent.ranks.rare.attack!==2)throw Error('The approved W3 rank declaration differs');
+const path='tests/fixtures/combat-feedback-w3.json';
+const old=JSON.parse(readFileSync('tests/fixtures/combat-feedback-current.json','utf8')),current=trace();
+const sources=['packages/content/monsters.json','packages/content/skills-extended.json','packages/simulation/index.ts'].map(file=>({file,sha256:createHash('sha256').update(readFileSync(file)).digest('hex')}));
+writeFileSync(path,JSON.stringify({meta:{versions,reason:'Current W3 inputs use elite4/2, rare8/2 and current cut/whirl ranges3/4.5. Historical traces remain immutable.',sources},seed:41,stats,trace:current},null,2));
+writeFileSync('docs/reviews/open-world-m2-m4/W3/rank-feedback-review.json',JSON.stringify({old:'tests/fixtures/combat-feedback-current.json',current:path,oldHitCount:old.trace.hits.length,currentHitCount:current.hits.length,oldFinalHp:old.trace.hero.hp,currentFinalHp:current.hero.hp,sources,source:'Actual600-tick World with the current adopted monster ranks and skill data. Existing damage/RNG assertions continue against a separate current trace; neither historical fixture is overwritten.'},null,2));

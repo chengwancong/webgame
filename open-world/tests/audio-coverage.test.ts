@@ -1,0 +1,10 @@
+import {test,expect} from 'vitest';
+import {existsSync,readFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {vfxProfiles} from '../apps/web/src/vfx-profiles.ts';
+import {soundProfiles} from '../apps/web/src/audio/sound-profiles.ts';
+import {sampleBank,preloadSamples} from '../apps/web/src/audio/sample-bank.ts';
+import {cueRecipes} from '../apps/web/src/audio/sound-recipes.ts';
+test('每个特效阶段有采样或明确合成兜底',()=>{for(const p of Object.values(vfxProfiles)){const sound=soundProfiles[p.key];expect(sound,p.key).toBeDefined();for(const stage of ['cast','release','impact',...(['zone','shield','beam'].includes(p.family)?['loop']:[]),...(p.key.startsWith('status/')?['tick','end']:[]),...(p.key.startsWith('boss/')?['warning']:[])]){const recipe=sound[stage as 'cast'];expect(recipe,p.key+'/'+stage).toBeDefined();expect(Boolean(recipe.samples?.length||recipe.layers.length)).toBe(true);}}});
+test('已登记接入的所有文件真实存在且WAV头合法',()=>{for(const [key,stages]of Object.entries(sampleBank))for(const [stage,entry]of Object.entries(stages)){expect(entry.source,key).toMatch(/^(synth|synth-placeholder|external)$/);expect(entry.license).toBeTruthy();if(!entry.wired)continue;expect(entry.files.length,key+'/'+stage).toBeGreaterThan(0);for(const file of entry.files){const path=resolve('apps/web/public','.'+file);expect(existsSync(path),file).toBe(true);expect(readFileSync(path).subarray(0,4).toString()).toBe('RIFF');}}});
+test('提示音完整且预载不包含未装配技能或环境长文件',()=>{for(const key of ['hit','crit','hurt','kill','block','multi-kill','shield-up','shield-hit','shield-break','miss','danger','cast','bag-full'])expect(cueRecipes[key]?.layers.length,key).toBeGreaterThan(0);const files=preloadSamples(['cut']);expect(files.some(f=>f.includes('/player/cut__'))).toBe(true);expect(files.some(f=>f.includes('/player/fireball__')||f.includes('/amb/'))).toBe(false);});

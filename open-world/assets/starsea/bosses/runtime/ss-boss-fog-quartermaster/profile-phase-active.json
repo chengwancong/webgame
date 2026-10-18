@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "id": "ss-boss-fog-quartermaster-phase-active",
+  "runtime": {
+    "json": "/art/starsea/bosses/ss-boss-fog-quartermaster/Character.json",
+    "atlas": "/art/starsea/bosses/ss-boss-fog-quartermaster/Character.atlas",
+    "pma": true
+  },
+  "skinNames": [
+    "BODY/ss-boss-fog-quartermaster",
+    "HEAD/ss-boss-fog-quartermaster",
+    "SS/ss-boss-fog-quartermaster"
+  ],
+  "acceptedBodySets": [
+    "ss-boss-fog-quartermaster"
+  ],
+  "nativeFacing": "left",
+  "referenceHeight": 192.35067507907945,
+  "ground": [
+    -0.25,
+    0
+  ],
+  "fps": 60,
+  "previewBounds": {
+    "minX": -199.32823276405986,
+    "maxX": 139.14730721408392,
+    "minY": -80.77035031225124,
+    "maxY": 275.34094673229674
+  },
+  "weapons": {
+    "ss-boss-fog-quartermaster": {
+      "family": "magic",
+      "skinNames": [
+        "RIGHTHAND/ss-boss-fog-quartermaster"
+      ],
+      "actions": {
+        "idle": {
+          "name": "SS_idle_active",
+          "loop": true,
+          "sourceAnimation": "Wait1"
+        },
+        "move": {
+          "name": "SS_move_active",
+          "loop": true,
+          "sourceAnimation": "Run1"
+        },
+        "attack": {
+          "name": "SS_attack_active",
+          "loop": false,
+          "sourceAnimation": "Spell1",
+          "impactTime": 0.3333333333333333
+        },
+        "hurt": {
+          "name": "SS_hurt_active",
+          "loop": false,
+          "sourceAnimation": "Damage1"
+        },
+        "death": {
+          "name": "SS_death",
+          "loop": false,
+          "sourceAnimation": "Die"
+        },
+        "skill": {
+          "name": "SS_skill1_active",
+          "sourceAnimation": "Spell1",
+          "impactTime": 0.3333333333333333,
+          "loop": false,
+          "mount": "hand",
+          "mechanism": {
+            "id": "ss-fx-b02-bolt",
+            "name": "军需裂潮弹",
+            "rule": "void_bolt",
+            "kind": "projectile",
+            "windupTicks": 15,
+            "delayTicks": 0,
+            "mount": "hand",
+            "visual": "有方形铜夹的紫晶弹，短拖尾",
+            "owner": "monster_vfx",
+            "mechanismStatus": "existing-rule-reference; new actor binding not implemented",
+            "chapter": [
+              2
+            ]
+          },
+          "limitations": "合法共用原生动作；战斗时序由实际前摇/恢复映射。"
+        },
+        "projectile": {
+          "name": "SS_skill1_active",
+          "sourceAnimation": "Spell1",
+          "impactTime": 0.3333333333333333,
+          "loop": false,
+          "mount": "hand",
+          "mechanism": {
+            "id": "ss-fx-b02-bolt",
+            "name": "军需裂潮弹",
+            "rule": "void_bolt",
+            "kind": "projectile",
+            "windupTicks": 15,
+            "delayTicks": 0,
+            "mount": "hand",
+            "visual": "有方形铜夹的紫晶弹，短拖尾",
+            "owner": "monster_vfx",
+            "mechanismStatus": "existing-rule-reference; new actor binding not implemented",
+            "chapter": [
+              2
+            ]
+          },
+          "limitations": "合法共用原生动作；战斗时序由实际前摇/恢复映射。"
+        }
+      },
+      "sockets": {
+        "weapon": {
+          "slot": "RIGHTHAND",
+          "pixel": [
+            36.5,
+            12
+          ],
+          "imageSize": [
+            73,
+            236
+          ]
+        },
+        "muzzle": {
+          "slot": "RIGHTHAND",
+          "pixel": [
+            36.5,
+            12
+          ],
+          "imageSize": [
+            73,
+            236
+          ]
+        }
+      },
+      "muzzlePolicy": "weapon-tip"
+    }
+  },
+  "renderAppearance": {
+    "rig": "modular-hero",
+    "family": "magic",
+    "styleProfile": "v2-soft",
+    "revision": 1,
+    "parts": {
+      "head": {
+        "setId": "ss-boss-fog-quartermaster"
+      },
+      "body": {
+        "setId": "ss-boss-fog-quartermaster"
+      },
+      "hands": {
+        "setId": "ss-boss-fog-quartermaster"
+      },
+      "legs": {
+        "setId": "ss-boss-fog-quartermaster"
+      },
+      "feet": {
+        "setId": "ss-boss-fog-quartermaster"
+      },
+      "back": {
+        "setId": "ss-boss-fog-quartermaster"
+      },
+      "weapon": {
+        "setId": "ss-boss-fog-quartermaster"
+      }
+    }
+  },
+  "sourceNativeVersion": "4.2.43",
+  "actionSelection": {
+    "priority": [
+      "death",
+      "living-phase-transition",
+      "selected-living-action"
+    ],
+    "deathAction": "SS_death",
+    "deathCancelsPhaseTransition": true,
+    "phaseActive": "modifier for living actions only",
+    "deathCleanupTime": 0.65
+  }
+}

@@ -1,0 +1,36 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+ ✓ tests/stage-keys.database.test.ts (5 tests) 23868ms
+   ✓ settles a real dungeon chest and elite sources with frozen private rules, then crafts one actual item with matching idempotent receipts and no cross-stage material  4476ms
+   ✓ a real layer4 boss victory opens5 and a newly started layer5 freezes the declared relative difficulty  4370ms
+   ✓ changing the private probability for a newly created instance grants an actual key on an actual elite kill  4172ms
+   ✓ returns persisted diagnostics from actual damage and the real timeout; reconnect returns the same result  1964ms
+   ✓ real endgame material sources craft canonical cores or capped glyph overflow, with identical replay and persisted power after reconnect  8607ms
+ ✓ tests/starsea-events.database.test.ts (2 tests) 5890ms
+   ✓ a zone tide night joins the live permit and its actually killed invader drops rare or better  5647ms
+ ❯ tests/authored-dungeon-entry.database.test.ts (1 test | 1 failed) 3348ms
+   × a player enters every authored island dungeon through the real catalogue and create/leave commands without copying island access into legacy progression 2977ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/authored-dungeon-entry.database.test.ts > a player enters every authored island dungeon through the real catalogue and create/leave commands without copying island access into legacy progression
+AssertionError: {"code":"DUNGEON_CONNECTION","message":"请先完成副本加载。"}: expected 409 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 409
+
+ ❯ request tests/authored-dungeon-entry.database.test.ts:13:219
+
+ ❯ tests/authored-dungeon-entry.database.test.ts:28:129
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 7 passed (8)
+   Start at  02:46:43
+   Duration  36.86s (transform 1.18s, setup 0ms, import 3.37s, tests 33.11s, environment 0ms)

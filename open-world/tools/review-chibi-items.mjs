@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {chromium} from 'playwright';
+import {escapeHtml} from './equipment-art/common.mjs';
+
+const folder=resolve('assets/ui-source/v2/items-chibi'),catalog=JSON.parse(await readFile(resolve(folder,'catalog.json'),'utf8'));
+const out=resolve('../docs/reviews/open-world/chibi-items-20261003');await mkdir(out,{recursive:true});
+const url=path=>pathToFileURL(path).href;
+const cards=catalog.items.map(item=>`<article><h2>${escapeHtml(item.name)}</h2><div class="compare"><div><img src="${url(item.previousSource)}"><span>此前</span></div><div><img src="${url(resolve(folder,item.id+'.png'))}"><span>简洁 Q 版手绘</span></div></div><div class="sizes"><span>实际小尺寸</span><img width="32" height="32" src="${url(resolve(folder,item.id+'.png'))}"><img width="48" height="48" src="${url(resolve(folder,item.id+'.png'))}"></div></article>`).join('');
+const html=`<!doctype html><html lang="zh-CN"><meta charset="utf-8"><style>@font-face{font-family:WorldSans;src:url('${url(resolve('apps/web/public/art/NotoSansSC.ttf'))}');font-weight:100 900}*{box-sizing:border-box}body{margin:0;padding:24px;background:#0b1f3b;color:#f7e6c8;font:14px WorldSans,sans-serif}h1{font-size:28px;margin:0 0 8px}p{color:#a9c3d2;margin:0 0 24px}main{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}article{padding:16px;border:1px solid #385570;border-radius:8px}h2{font-size:16px;font-weight:500;margin:0 0 12px}.compare{display:flex;gap:16px}.compare>div{display:grid;gap:4px;text-align:center;font-size:12px;color:#a9c3d2;flex:1}.compare img{width:96px;height:96px;margin:auto;object-fit:contain;background:#435465;border-radius:8px}.sizes{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:12px;color:#a9c3d2;font-size:12px}.sizes img{object-fit:contain;background:#435465;border-radius:4px}</style><h1>道具图标 · 简洁 Q 版手绘</h1><p>${catalog.count} 张独立透明图 · 旧图与新图对照 · 32px / 48px 实际尺寸</p><main>${cards}</main></html>`;
+const path=resolve(out,'comparison.html');await writeFile(path,html);
+const browser=await chromium.launch({channel:'chrome',headless:true});
+try{const page=await browser.newPage({viewport:{width:1440,height:960}});await page.goto(url(path));await page.evaluate(()=>document.fonts.ready);await page.evaluate(()=>Promise.all([...document.images].map(img=>img.decode())));const sizes=await page.locator('.sizes img').evaluateAll(images=>images.map(img=>({actual:[img.width,img.height],source:[img.naturalWidth,img.naturalHeight]})));for(const image of sizes){assert.deepEqual(image.source,[256,256]);assert.equal(image.actual[0],image.actual[1]);}await page.screenshot({path:resolve(out,'comparison-all.png'),fullPage:true});await writeFile(resolve(out,'review.json'),JSON.stringify({ok:true,count:catalog.count,sizes},null,2));console.log(JSON.stringify({ok:true,count:catalog.count,out}));}finally{await browser.close();}

@@ -1,0 +1,666 @@
+{
+  "at": "2026-10-08T23:58:34.695Z",
+  "phase": "middle",
+  "instance": "8dcc4e82-c053-4d65-bfae-9b7a0bfaac72",
+  "status": "failed",
+  "outcome": "failed",
+  "reason": "角色已倒下",
+  "stage": 1,
+  "worldTier": 1,
+  "worldDifficulty": {
+    "hp": 1,
+    "attack": 1
+  },
+  "versions": {
+    "db": 16,
+    "rules": "ow-62",
+    "assets": "world-art-20261007-v24-world-runtime",
+    "client": "0.11.21",
+    "protocol": 32
+  },
+  "definition": {
+    "id": "field-rift-1",
+    "name": "沉星密仓",
+    "numericStage": 13,
+    "level": 29,
+    "policyEntryLevel": 1,
+    "monsterLevel": 29,
+    "enemyScale": {
+      "hp": 2.020017591629012,
+      "attack": 0.5047438847016514,
+      "hpPerStage": 0,
+      "attackPerStage": 0
+    },
+    "timeLimitSeconds": 1800
+  },
+  "players": [
+    {
+      "id": "a18ad942-0719-40cf-b14d-3f14e328284c",
+      "entryStats": {
+        "hp": 908,
+        "mana": 100,
+        "armor": 72,
+        "regen": 10,
+        "rules": [
+          {
+            "id": "innate-sword-qi",
+            "icd": 0,
+            "name": "剑气",
+            "tier": 1,
+            "when": [],
+            "count": "hit",
+            "every": 3,
+            "scale": [
+              "action.ratio"
+            ],
+            "action": {
+              "at": "target",
+              "ref": "hit",
+              "vfx": "combo/sword-qi",
+              "type": "nova",
+              "ratio": 0.35,
+              "radius": 2.2,
+              "damageType": "physical"
+            },
+            "chance": 1,
+            "filter": {
+              "weapons": [
+                "sword"
+              ]
+            },
+            "source": "剑势流 · 固有",
+            "vfxKey": "combo/sword-qi",
+            "trigger": "nth",
+            "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）"
+          },
+          {
+            "id": "atom-evasion",
+            "icd": 120,
+            "also": [
+              "dodge"
+            ],
+            "name": "疾影",
+            "tier": 0.5,
+            "when": [],
+            "scale": [],
+            "action": {
+              "mods": {},
+              "type": "buff",
+              "flags": {
+                "forceCrit": true
+              },
+              "consume": "nextCast",
+              "duration": 90,
+              "maxStacks": 1
+            },
+            "chance": 1,
+            "filter": {},
+            "source": "铭纹：夜行软靴",
+            "vfxKey": "player/shadow_step",
+            "trigger": "dash",
+            "description": "闪避或位移后：下一次技能必定暴击，持续3秒，效果冷却4秒"
+          },
+          {
+            "id": "stat-chillChance",
+            "icd": 0,
+            "name": "冰缓几率",
+            "tier": 1,
+            "when": [],
+            "scale": [],
+            "action": {
+              "ref": "dealt",
+              "type": "status",
+              "ratio": 0,
+              "status": "slow",
+              "duration": 60,
+              "strength": 0.3
+            },
+            "chance": 0.1248,
+            "filter": {
+              "categories": [
+                "direct"
+              ]
+            },
+            "source": "装备与养成属性",
+            "vfxKey": "player/frost",
+            "trigger": "hit",
+            "description": "装备属性触发"
+          },
+          {
+            "id": "stat-manaOnKill",
+            "icd": 0,
+            "name": "击杀回复灵力",
+            "tier": 1,
+            "when": [],
+            "scale": [],
+            "action": {
+              "ref": "maxMana",
+              "flat": 2,
+              "type": "mana",
+              "ratio": 0
+            },
+            "chance": 1,
+            "filter": {},
+            "source": "装备与养成属性",
+            "vfxKey": "player/mend",
+            "trigger": "kill",
+            "description": "装备属性触发"
+          },
+          {
+            "id": "stat-lifeOnKill",
+            "icd": 0,
+            "name": "击杀回复生命",
+            "tier": 1,
+            "when": [],
+            "scale": [],
+            "action": {
+              "ref": "maxHp",
+              "type": "heal",
+              "ratio": 0.006
+            },
+            "chance": 1,
+            "filter": {},
+            "source": "装备与养成属性",
+            "vfxKey": "player/mend",
+            "trigger": "kill",
+            "description": "装备属性触发"
+          }
+        ],
+        "speed": 7,
+        "vsLow": 0.24,
+        "zones": [
+          {
+            "id": "mastery",
+            "kind": "add",
+            "label": "等级精通",
+            "value": 0.87
+          },
+          {
+            "id": "weapon-affinity",
+            "kind": "mult",
+            "tags": [
+              "martial"
+            ],
+            "label": "武器亲和 · 武技",
+            "value": 1.14
+          },
+          {
+            "id": "affix-ranged",
+            "kind": "add",
+            "tags": [
+              "ranged"
+            ],
+            "label": "远程伤害",
+            "value": 0.15
+          },
+          {
+            "id": "affix-fire",
+            "kind": "add",
+            "tags": [
+              "fire"
+            ],
+            "label": "火焰伤害",
+            "value": 0.08
+          },
+          {
+            "id": "affix-lightning",
+            "kind": "add",
+            "tags": [
+              "lightning"
+            ],
+            "label": "闪电伤害",
+            "value": 0.08
+          },
+          {
+            "id": "talent-martial-mastery",
+            "kind": "mult",
+            "tags": [
+              "martial"
+            ],
+            "label": "天赋 · 武技精通",
+            "value": 1.12
+          },
+          {
+            "id": "talent-spell-mastery",
+            "kind": "mult",
+            "tags": [
+              "spell"
+            ],
+            "label": "天赋 · 法术精通",
+            "value": 1.12
+          },
+          {
+            "id": "affix-arcane",
+            "kind": "add",
+            "tags": [
+              "arcane"
+            ],
+            "label": "奥术伤害",
+            "value": 0.147086
+          },
+          {
+            "id": "island-1",
+            "kind": "mult",
+            "label": "风栖之力",
+            "value": 1.3
+          },
+          {
+            "id": "island-2",
+            "kind": "mult",
+            "label": "雾铃之力",
+            "value": 1.35
+          },
+          {
+            "id": "island-3",
+            "kind": "mult",
+            "label": "赤炉之力",
+            "value": 1.4
+          },
+          {
+            "id": "island-4",
+            "kind": "mult",
+            "label": "霜镜之力",
+            "value": 1.45
+          }
+        ],
+        "attack": 174,
+        "combos": [
+          {
+            "id": "innate-sword-qi",
+            "name": "剑气",
+            "every": 3,
+            "action": {
+              "vfx": "combo/sword-qi",
+              "type": "nova",
+              "ratio": 0.35,
+              "radius": 2.2,
+              "damageType": "physical"
+            },
+            "chance": 1,
+            "source": "剑势流 · 固有",
+            "trigger": "nth",
+            "weapons": [
+              "sword"
+            ],
+            "cooldown": 0,
+            "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）"
+          }
+        ],
+        "weapon": "sword",
+        "effects": [
+          "ward"
+        ],
+        "allResist": 0.17,
+        "damageAdd": 0.87,
+        "lifesteal": 0,
+        "critChance": 0.05,
+        "damageMult": 3.563,
+        "lifeOnKill": 0.006,
+        "manaOnKill": 2,
+        "chillChance": 0.1248,
+        "conditional": [
+          {
+            "id": "stat-vsLow",
+            "pool": "cond",
+            "when": {
+              "op": "lt",
+              "kind": "target_hp",
+              "value": 0.35
+            },
+            "value": 0.24
+          }
+        ],
+        "penetration": 0.12,
+        "arcaneResist": 0.16,
+        "armorPercent": 0.174286,
+        "executeBonus": 1,
+        "shadowResist": 0.08,
+        "critMultiplier": 1.8439999999999999,
+        "executeThreshold": 0.2
+      },
+      "skills": [
+        {
+          "id": "cut"
+        },
+        {
+          "id": "ward"
+        },
+        {
+          "id": "whirl"
+        }
+      ]
+    }
+  ],
+  "monsters": [
+    {
+      "id": "042d5954-2281-4f49-ac86-63ee4ab8a28a",
+      "name": "裂缝幼影",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 2.020017591629012,
+        "armor": 1,
+        "attack": 0.5047438847016514
+      },
+      "maxHp": 3710,
+      "attack": 130,
+      "alive": true
+    },
+    {
+      "id": "cb8d8b0f-35d5-4e81-a5fd-37d4ebcdb853",
+      "name": "裂缝幼影",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 2.020017591629012,
+        "armor": 1,
+        "attack": 0.5047438847016514
+      },
+      "maxHp": 3710,
+      "attack": 130,
+      "alive": false
+    },
+    {
+      "id": "8099a3bf-13aa-46e9-a0f1-81a9d2786301",
+      "name": "裂缝幼影",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 2.020017591629012,
+        "armor": 1,
+        "attack": 0.5047438847016514
+      },
+      "maxHp": 3710,
+      "attack": 130,
+      "alive": false
+    },
+    {
+      "id": "009d3f95-2fdf-44f0-aa10-2518822daa6e",
+      "name": "裂缝幼影",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 2.020017591629012,
+        "armor": 1,
+        "attack": 0.5047438847016514
+      },
+      "maxHp": 3710,
+      "attack": 130,
+      "alive": false
+    },
+    {
+      "id": "1e7892c5-4f75-4c6e-a1e0-8dadf3b85c77",
+      "name": "裂缝幼影",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 2.020017591629012,
+        "armor": 1,
+        "attack": 0.5047438847016514
+      },
+      "maxHp": 3710,
+      "attack": 130,
+      "alive": false
+    },
+    {
+      "id": "11b612e3-bb5e-4469-aadd-d86d8eb2dc5c",
+      "name": "裂缝幼影",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 2.020017591629012,
+        "armor": 1,
+        "attack": 0.5047438847016514
+      },
+      "maxHp": 3710,
+      "attack": 130,
+      "alive": true
+    },
+    {
+      "id": "f0c2497c-e99e-418f-a365-b21fd6e3247b",
+      "name": "裂缝幼影",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 2.020017591629012,
+        "armor": 1,
+        "attack": 0.5047438847016514
+      },
+      "maxHp": 3710,
+      "attack": 130,
+      "alive": false
+    },
+    {
+      "id": "d65ff0aa-7849-4a29-aff3-32d51978b5cc",
+      "name": "裂缝幼影",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 2.020017591629012,
+        "armor": 1,
+        "attack": 0.5047438847016514
+      },
+      "maxHp": 3710,
+      "attack": 130,
+      "alive": false
+    },
+    {
+      "id": "f74931c8-8025-46dd-aac5-96cbf4d17d66",
+      "name": "碎桥步兵",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 2.020017591629012,
+        "armor": 1,
+        "attack": 0.5047438847016514
+      },
+      "maxHp": 16749,
+      "attack": 102,
+      "alive": true
+    },
+    {
+      "id": "1b62f897-4031-4948-a60f-bb38be92a45d",
+      "name": "碎桥步兵",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 2.020017591629012,
+        "armor": 1,
+        "attack": 0.5047438847016514
+      },
+      "maxHp": 16749,
+      "attack": 102,
+      "alive": false
+    },
+    {
+      "id": "4121d7f3-b014-48cd-a49e-e311c86700c1",
+      "name": "碎桥步兵",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 2.020017591629012,
+        "armor": 1,
+        "attack": 0.5047438847016514
+      },
+      "maxHp": 16749,
+      "attack": 102,
+      "alive": false
+    },
+    {
+      "id": "45127205-78d7-4cdd-aa78-2a1c7389cc95",
+      "name": "碎桥步兵",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 2.020017591629012,
+        "armor": 1,
+        "attack": 0.5047438847016514
+      },
+      "maxHp": 16749,
+      "attack": 102,
+      "alive": false
+    },
+    {
+      "id": "86ee51d9-d286-426f-a396-4485868ab765",
+      "name": "裂界督猎者",
+      "boss": false,
+      "elite": true,
+      "level": 29,
+      "difficulty": {
+        "hp": 2.020017591629012,
+        "armor": 1,
+        "attack": 0.5047438847016514
+      },
+      "maxHp": 119105,
+      "attack": 200,
+      "alive": true
+    },
+    {
+      "id": "53a1aec8-36a6-4047-abc1-4889750c8a86",
+      "name": "裂界督猎者",
+      "boss": false,
+      "elite": true,
+      "level": 29,
+      "difficulty": {
+        "hp": 2.020017591629012,
+        "armor": 1,
+        "attack": 0.5047438847016514
+      },
+      "maxHp": 119105,
+      "attack": 200,
+      "alive": true
+    },
+    {
+      "id": "1b62f897-4031-4948-a60f-bb38be92a45d-echo-8025",
+      "name": "召唤影",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 1,
+        "armor": 1,
+        "attack": 1
+      },
+      "maxHp": 18,
+      "attack": 3,
+      "alive": false
+    },
+    {
+      "id": "4121d7f3-b014-48cd-a49e-e311c86700c1-echo-8063",
+      "name": "召唤影",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 1,
+        "armor": 1,
+        "attack": 1
+      },
+      "maxHp": 18,
+      "attack": 3,
+      "alive": false
+    },
+    {
+      "id": "45127205-78d7-4cdd-aa78-2a1c7389cc95-echo-8085",
+      "name": "召唤影",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 1,
+        "armor": 1,
+        "attack": 1
+      },
+      "maxHp": 18,
+      "attack": 3,
+      "alive": false
+    },
+    {
+      "id": "1b62f897-4031-4948-a60f-bb38be92a45d-echo-8115",
+      "name": "召唤影",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 1,
+        "armor": 1,
+        "attack": 1
+      },
+      "maxHp": 18,
+      "attack": 3,
+      "alive": false
+    },
+    {
+      "id": "4121d7f3-b014-48cd-a49e-e311c86700c1-echo-8153",
+      "name": "召唤影",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 1,
+        "armor": 1,
+        "attack": 1
+      },
+      "maxHp": 18,
+      "attack": 3,
+      "alive": false
+    },
+    {
+      "id": "45127205-78d7-4cdd-aa78-2a1c7389cc95-echo-8175",
+      "name": "召唤影",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 1,
+        "armor": 1,
+        "attack": 1
+      },
+      "maxHp": 18,
+      "attack": 3,
+      "alive": false
+    },
+    {
+      "id": "1b62f897-4031-4948-a60f-bb38be92a45d-echo-8205",
+      "name": "召唤影",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 1,
+        "armor": 1,
+        "attack": 1
+      },
+      "maxHp": 18,
+      "attack": 3,
+      "alive": false
+    },
+    {
+      "id": "45127205-78d7-4cdd-aa78-2a1c7389cc95-echo-8265",
+      "name": "召唤影",
+      "boss": false,
+      "elite": false,
+      "level": 29,
+      "difficulty": {
+        "hp": 1,
+        "armor": 1,
+        "attack": 1
+      },
+      "maxHp": 18,
+      "attack": 3,
+      "alive": false
+    }
+  ]
+}

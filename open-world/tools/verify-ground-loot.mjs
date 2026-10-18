@@ -1,0 +1,3 @@
+import {spawn} from 'node:child_process';import {startDatabase,stopChild,registerApi,root} from './runtime.mjs';
+const db=await startDatabase({temporary:true});let runner;
+try{runner=spawn(process.execPath,['node_modules/vitest/vitest.mjs','run','tests/database.test.ts','tests/ground-loot.test.ts','-t','batch pickup|collects reachable|fans stacked'],{cwd:root,env:{...process.env,AW_DATABASE_URL:db.dsn},stdio:'inherit',windowsHide:true});const finished=new Promise(resolve=>runner.once('exit',resolve));await registerApi(db,runner);const code=await finished;if(code!==0)process.exitCode=1;}finally{await stopChild(runner);console.log('Isolated pickup verification cleanup:',JSON.stringify(await db.stop()));}

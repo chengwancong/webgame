@@ -1,0 +1,10 @@
+import {readFile,mkdir,copyFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {createHash} from 'node:crypto';
+const root=resolve(import.meta.dirname,'..');
+const manifest=JSON.parse(await readFile(resolve(root,'packages/asset-manifest/telegraph-reuse.json'),'utf8'));
+const source=resolve(root,'assets/telegraph-reuse/tip-glow.png'),bytes=await readFile(source);
+if(createHash('sha256').update(bytes).digest('hex')!==manifest.sha256)throw Error('Registered telegraph source hash changed');
+const destination=resolve(root,'apps/web/public'+manifest.image);
+await mkdir(resolve(destination,'..'),{recursive:true});await copyFile(source,destination);
+console.log('Verified and copied existing telegraph fragment: '+manifest.key);

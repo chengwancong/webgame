@@ -1,0 +1,5042 @@
+{
+  "chapter": 1,
+  "region": "ss-map-wind",
+  "seed": 41,
+  "samplesPerZone": 1,
+  "seconds": 90,
+  "source": "Actual authored camps and World from the zone waypoint; actual standard build at the declared stage-clear clock.",
+  "acceptance": [
+    {
+      "zone": "ow-wind-z1",
+      "survived": true,
+      "actual": 0.702962962962963,
+      "target": 0.5,
+      "relativeGap": 0,
+      "engagementPassed": true,
+      "decision": "threshold met"
+    },
+    {
+      "zone": "ow-wind-z2",
+      "survived": true,
+      "actual": 0.5244444444444445,
+      "target": 0.5,
+      "relativeGap": 0,
+      "engagementPassed": true,
+      "decision": "threshold met"
+    },
+    {
+      "zone": "ow-wind-z3",
+      "survived": true,
+      "actual": 0.49296296296296294,
+      "target": 0.5,
+      "relativeGap": 0.014074074074074128,
+      "engagementPassed": true,
+      "decision": "2026-10-07 user tolerance: within5%, accepted"
+    },
+    {
+      "zone": "ow-wind-z4",
+      "survived": true,
+      "actual": 0.4462962962962963,
+      "target": 0.5,
+      "relativeGap": 0.1074074074074074,
+      "engagementPassed": false,
+      "decision": "outside user tolerance"
+    },
+    {
+      "zone": "ow-wind-z5",
+      "survived": true,
+      "actual": 0.5170370370370371,
+      "target": 0.5,
+      "relativeGap": 0,
+      "engagementPassed": true,
+      "decision": "threshold met"
+    },
+    {
+      "zone": "ow-wind-z6",
+      "survived": true,
+      "actual": 0.4318518518518519,
+      "target": 0.5,
+      "relativeGap": 0.13629629629629625,
+      "engagementPassed": false,
+      "decision": "outside user tolerance"
+    }
+  ],
+  "rows": [
+    {
+      "stage": 1,
+      "clock": 6.033709273838165,
+      "start": "Registered zone waypoint",
+      "report": {
+        "generated": "2026-10-07T13:58:52.099Z",
+        "versions": {
+          "client": "0.11.15",
+          "protocol": 31,
+          "rules": "ow-56",
+          "assets": "world-art-20261007-v24-world-runtime",
+          "db": 16
+        },
+        "region": "ss-map-wind",
+        "zone": {
+          "_row": 21,
+          "id": "ow-wind-z1",
+          "region": "ss-map-wind",
+          "name": "落风坡",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 170.66666666666666,
+            "h": 256
+          },
+          "levelBand": [
+            1,
+            2
+          ],
+          "theme": "wind",
+          "ground": "ow-art-grass",
+          "banner": "ow-zone-wind-1"
+        },
+        "start": {
+          "x": 125,
+          "y": 185
+        },
+        "seeds": [
+          41
+        ],
+        "budgetSeconds": 90,
+        "chunkCells": 32,
+        "chunkReach": 2,
+        "difficulty": {
+          "hp": 1,
+          "attack": 1,
+          "armor": 1
+        },
+        "affixRange": null,
+        "requestedSkills": [
+          "cut",
+          "whirl",
+          "ward"
+        ],
+        "executedSkills": [
+          "cut",
+          "whirl",
+          "ward"
+        ],
+        "skillRanks": {
+          "cut": 1,
+          "whirl": 1,
+          "ward": 1
+        },
+        "build": {
+          "stats": {
+            "weapon": "sword",
+            "hp": 224,
+            "attack": 29,
+            "armor": 5,
+            "speed": 6,
+            "mana": 104,
+            "regen": 11,
+            "effects": [],
+            "poisonResist": 0.03816,
+            "poisonChance": 0.016499999999999997,
+            "lightningResist": 0.035339999999999996,
+            "coldResist": 0.039420000000000004,
+            "lifeOnKill": 0.0031500000000000018,
+            "shockChance": 0.01947,
+            "manaOnKill": 1.6140000000000003,
+            "fireResist": 0.04158000000000003,
+            "igniteChance": 0.020970000000000006,
+            "bleedChance": 0.018689999999999995,
+            "arcaneResist": 0.03726000000000001,
+            "shadowResist": 0.038790000000000005,
+            "allResist": 0.017760000000000005,
+            "chillChance": 0.01908,
+            "rules": [
+              {
+                "id": "innate-sword-qi",
+                "name": "剑气",
+                "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                "source": "剑势流 · 固有",
+                "tier": 1,
+                "trigger": "nth",
+                "chance": 1,
+                "icd": 0,
+                "every": 3,
+                "count": "hit",
+                "filter": {
+                  "weapons": [
+                    "sword"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "nova",
+                  "ratio": 0.35,
+                  "radius": 2.2,
+                  "damageType": "physical",
+                  "ref": "hit",
+                  "at": "target",
+                  "vfx": "combo/sword-qi"
+                },
+                "scale": [
+                  "action.ratio"
+                ],
+                "vfxKey": "combo/sword-qi"
+              },
+              {
+                "id": "stat-igniteChance",
+                "name": "点燃几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.020970000000000006,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "burn",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/ember"
+              },
+              {
+                "id": "stat-chillChance",
+                "name": "冰缓几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.01908,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "slow",
+                  "duration": 60,
+                  "strength": 0.3,
+                  "ratio": 0
+                },
+                "scale": [],
+                "vfxKey": "player/frost"
+              },
+              {
+                "id": "stat-shockChance",
+                "name": "感电几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.01947,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "shock",
+                  "duration": 90,
+                  "strength": 0.12,
+                  "ratio": 0
+                },
+                "scale": [],
+                "vfxKey": "player/chain"
+              },
+              {
+                "id": "stat-poisonChance",
+                "name": "中毒几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.016499999999999997,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/poison_arrow"
+              },
+              {
+                "id": "stat-bleedChance",
+                "name": "流血几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.018689999999999995,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "bleed",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/execute"
+              },
+              {
+                "id": "stat-manaOnKill",
+                "name": "击杀回复灵力",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "kill",
+                "chance": 1,
+                "icd": 0,
+                "filter": {},
+                "when": [],
+                "action": {
+                  "type": "mana",
+                  "ratio": 0,
+                  "ref": "maxMana",
+                  "flat": 1.6140000000000003
+                },
+                "scale": [],
+                "vfxKey": "player/mend"
+              },
+              {
+                "id": "stat-lifeOnKill",
+                "name": "击杀回复生命",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "kill",
+                "chance": 1,
+                "icd": 0,
+                "filter": {},
+                "when": [],
+                "action": {
+                  "type": "heal",
+                  "ratio": 0.0031500000000000018,
+                  "ref": "maxHp"
+                },
+                "scale": [],
+                "vfxKey": "player/mend"
+              }
+            ],
+            "zones": [
+              {
+                "id": "mastery",
+                "label": "等级精通",
+                "kind": "add",
+                "value": 0.03
+              },
+              {
+                "id": "weapon-affinity",
+                "label": "武器亲和 · 武技",
+                "kind": "mult",
+                "value": 1.14,
+                "tags": [
+                  "martial"
+                ]
+              }
+            ],
+            "damageAdd": 0.03,
+            "damageMult": 1,
+            "combos": [
+              {
+                "id": "innate-sword-qi",
+                "name": "剑气",
+                "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                "source": "剑势流 · 固有",
+                "weapons": [
+                  "sword"
+                ],
+                "trigger": "nth",
+                "chance": 1,
+                "cooldown": 0,
+                "every": 3,
+                "action": {
+                  "type": "nova",
+                  "radius": 2.2,
+                  "ratio": 0.35,
+                  "damageType": "physical",
+                  "vfx": "combo/sword-qi"
+                }
+              }
+            ]
+          },
+          "skills": [
+            {
+              "id": "cut",
+              "category": "melee",
+              "unlockLevel": 1,
+              "name": "斩击",
+              "kind": "single",
+              "damage": 71,
+              "range": 3,
+              "radius": 0,
+              "cooldown": 24,
+              "cost": 0,
+              "windup": 3,
+              "duration": 0,
+              "description": "近距离斩击",
+              "weapons": [
+                "sword"
+              ],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "enemy",
+                "statuses": []
+              },
+              "tags": [
+                "martial",
+                "melee",
+                "physical",
+                "single"
+              ],
+              "resolution": {
+                "attackShare": 1,
+                "baseCooldown": 24,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 24
+              }
+            },
+            {
+              "id": "whirl",
+              "category": "melee",
+              "unlockLevel": 2,
+              "name": "旋风斩",
+              "kind": "area",
+              "damage": 61,
+              "range": 0,
+              "radius": 4.5,
+              "cooldown": 75,
+              "cost": 15,
+              "windup": 7,
+              "duration": 0,
+              "description": "清剿身边敌群",
+              "weapons": [
+                "sword"
+              ],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "enemy",
+                "statuses": []
+              },
+              "tags": [
+                "martial",
+                "melee",
+                "physical",
+                "area"
+              ],
+              "resolution": {
+                "attackShare": 1,
+                "baseCooldown": 75,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 75
+              }
+            },
+            {
+              "id": "ward",
+              "category": "support",
+              "unlockLevel": 1,
+              "name": "护身印",
+              "kind": "shield",
+              "damage": 45,
+              "range": 0,
+              "radius": 0,
+              "cooldown": 240,
+              "cost": 15,
+              "windup": 1,
+              "duration": 168,
+              "description": "吸收伤害",
+              "weapons": [],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "self",
+                "statuses": []
+              },
+              "resolution": {
+                "attackShare": 0,
+                "baseCooldown": 240,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 240
+              }
+            }
+          ]
+        },
+        "summary": {
+          "samples": 1,
+          "completed": 0,
+          "deaths": 0,
+          "kills": 50,
+          "killsPerMinute": 33.333333333333336,
+          "engagedShare": 0.702962962962963,
+          "normalTtkSamples": 48,
+          "normalTtkSeconds": 1.470833333333333,
+          "clearedCamps": 12,
+          "meanCampClearSeconds": 5.413888888888889
+        },
+        "samples": [
+          {
+            "seed": 41,
+            "seconds": 90,
+            "survived": true,
+            "completed": false,
+            "loadedCamps": [
+              "ow-wind-camp-1-10",
+              "ow-wind-camp-1-11",
+              "ow-wind-camp-1-12",
+              "ow-wind-camp-1-13",
+              "ow-wind-camp-1-14",
+              "ow-wind-camp-1-15",
+              "ow-wind-camp-1-16",
+              "ow-wind-camp-1-17",
+              "ow-wind-camp-1-18",
+              "ow-wind-camp-1-19",
+              "ow-wind-camp-1-20",
+              "ow-wind-camp-1-21",
+              "ow-wind-camp-1-22",
+              "ow-wind-camp-1-23",
+              "ow-wind-camp-1-24",
+              "ow-wind-camp-1-25",
+              "ow-wind-camp-1-27",
+              "ow-wind-camp-1-28",
+              "ow-wind-camp-1-29",
+              "ow-wind-camp-1-3",
+              "ow-wind-camp-1-30",
+              "ow-wind-camp-1-4",
+              "ow-wind-camp-1-5",
+              "ow-wind-camp-1-6",
+              "ow-wind-camp-1-7",
+              "ow-wind-camp-1-8",
+              "ow-wind-camp-1-9",
+              "ow-wind-camp-6-19",
+              "ow-wind-camp-6-15",
+              "ow-wind-camp-6-17",
+              "ow-wind-camp-6-22",
+              "ow-wind-camp-6-24",
+              "ow-wind-camp-1-1",
+              "ow-wind-camp-1-2",
+              "ow-wind-camp-1-26",
+              "ow-wind-camp-6-4",
+              "ow-wind-camp-6-6",
+              "ow-wind-camp-6-1",
+              "ow-wind-camp-6-26",
+              "ow-wind-camp-6-27"
+            ],
+            "zoneKills": 50,
+            "otherZoneKills": 0,
+            "killsPerMinute": 33.333333333333336,
+            "engagedShare": 0.702962962962963,
+            "movingShare": 0.30777777777777776,
+            "normalTtk": {
+              "samples": 48,
+              "meanSeconds": 1.470833333333333,
+              "values": [
+                0.03333333333333333,
+                1.9,
+                1.4666666666666666,
+                3.2333333333333334,
+                0.03333333333333333,
+                0.6333333333333333,
+                2.2333333333333334,
+                2.433333333333333,
+                0.03333333333333333,
+                2.066666666666667,
+                2.066666666666667,
+                0.03333333333333333,
+                0.3333333333333333,
+                1.6333333333333333,
+                4.033333333333333,
+                0.03333333333333333,
+                2.1333333333333333,
+                2.1333333333333333,
+                1.9333333333333333,
+                0.03333333333333333,
+                1.4333333333333333,
+                2.2333333333333334,
+                3.2333333333333334,
+                0.03333333333333333,
+                1.8666666666666667,
+                0.7,
+                2.433333333333333,
+                0.03333333333333333,
+                1.9666666666666666,
+                1.9666666666666666,
+                0.03333333333333333,
+                0.03333333333333333,
+                1.9666666666666666,
+                3.566666666666667,
+                0.03333333333333333,
+                1.4333333333333333,
+                2.2333333333333334,
+                3.2333333333333334,
+                0.03333333333333333,
+                0.43333333333333335,
+                2.033333333333333,
+                2.433333333333333,
+                0.03333333333333333,
+                1.9333333333333333,
+                1.9333333333333333,
+                4.033333333333333,
+                0.03333333333333333,
+                0.8333333333333334
+              ]
+            },
+            "eliteTtk": {
+              "samples": 2,
+              "meanSeconds": 10.05,
+              "values": [
+                10.466666666666667,
+                9.633333333333333
+              ]
+            },
+            "rareTtk": {
+              "samples": 0,
+              "meanSeconds": null,
+              "values": []
+            },
+            "camps": [
+              {
+                "id": "ow-wind-camp-1-1",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-1-2",
+                "loaded": true,
+                "firstHitTick": 2253,
+                "clearTick": 2388,
+                "clearSeconds": 4.533333333333333
+              },
+              {
+                "id": "ow-wind-camp-1-3",
+                "loaded": true,
+                "firstHitTick": 2053,
+                "clearTick": 2182,
+                "clearSeconds": 4.333333333333333
+              },
+              {
+                "id": "ow-wind-camp-1-4",
+                "loaded": true,
+                "firstHitTick": 2627,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-1-5",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-1-6",
+                "loaded": true,
+                "firstHitTick": 1528,
+                "clearTick": 1833,
+                "clearSeconds": 10.2
+              },
+              {
+                "id": "ow-wind-camp-1-7",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-1-8",
+                "loaded": true,
+                "firstHitTick": 1166,
+                "clearTick": 1295,
+                "clearSeconds": 4.333333333333333
+              },
+              {
+                "id": "ow-wind-camp-1-9",
+                "loaded": true,
+                "firstHitTick": 993,
+                "clearTick": 1125,
+                "clearSeconds": 4.433333333333334
+              },
+              {
+                "id": "ow-wind-camp-1-10",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-1-11",
+                "loaded": true,
+                "firstHitTick": 410,
+                "clearTick": 737,
+                "clearSeconds": 10.933333333333334
+              },
+              {
+                "id": "ow-wind-camp-1-12",
+                "loaded": true,
+                "firstHitTick": 797,
+                "clearTick": 935,
+                "clearSeconds": 4.633333333333334
+              },
+              {
+                "id": "ow-wind-camp-1-13",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-1-14",
+                "loaded": true,
+                "firstHitTick": 210,
+                "clearTick": 339,
+                "clearSeconds": 4.333333333333333
+              },
+              {
+                "id": "ow-wind-camp-1-15",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-1-16",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-1-17",
+                "loaded": true,
+                "firstHitTick": 16,
+                "clearTick": 144,
+                "clearSeconds": 4.3
+              },
+              {
+                "id": "ow-wind-camp-1-18",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-1-19",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-1-20",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-1-21",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-1-22",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-1-23",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-1-24",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-1-25",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-1-26",
+                "loaded": true,
+                "firstHitTick": 2448,
+                "clearTick": 2586,
+                "clearSeconds": 4.633333333333334
+              },
+              {
+                "id": "ow-wind-camp-1-27",
+                "loaded": true,
+                "firstHitTick": 1889,
+                "clearTick": 2009,
+                "clearSeconds": 4.033333333333333
+              },
+              {
+                "id": "ow-wind-camp-1-28",
+                "loaded": true,
+                "firstHitTick": 1362,
+                "clearTick": 1489,
+                "clearSeconds": 4.266666666666667
+              },
+              {
+                "id": "ow-wind-camp-1-29",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-1-30",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              }
+            ],
+            "damage": 9515,
+            "incoming": 42,
+            "casts": {
+              "whirl": 32,
+              "ward": 11,
+              "cut": 90
+            },
+            "castFailures": {},
+            "hpLeft": 222,
+            "manaLeft": 90.8333333333333,
+            "position": {
+              "x": 153.02027451164037,
+              "y": 102.60662037162666
+            },
+            "checkpointRestored": false
+          }
+        ],
+        "limits": [
+          "Actual authored geometry, camp templates/levels/budgets, streamed chunks and World movement/combat. The player receives no extra HP, mana, healing or damage multipliers.",
+          "The route visits each target-zone camp once, starting at the declared landing or explicit controlled start. All nearby camps, including other zones, remain present and can engage.",
+          "This measures initial-cycle route efficiency. No respawn, rewards, server settlement or natural sustainable drop-frequency claim is made; those require persistent camp/source probes.",
+          "Mean TTK is conditional on kills. Unfinished camps, deaths, failed casts and zero-kill runs remain visible in the sample and aggregate rate."
+        ]
+      }
+    },
+    {
+      "stage": 1,
+      "clock": 6.033709273838165,
+      "start": "Registered zone waypoint",
+      "report": {
+        "generated": "2026-10-07T13:58:55.067Z",
+        "versions": {
+          "client": "0.11.15",
+          "protocol": 31,
+          "rules": "ow-56",
+          "assets": "world-art-20261007-v24-world-runtime",
+          "db": 16
+        },
+        "region": "ss-map-wind",
+        "zone": {
+          "_row": 22,
+          "id": "ow-wind-z2",
+          "region": "ss-map-wind",
+          "name": "船台湾",
+          "rect": {
+            "x": 0,
+            "y": 256,
+            "w": 170.66666666666666,
+            "h": 256
+          },
+          "levelBand": [
+            2,
+            4
+          ],
+          "theme": "wind",
+          "ground": "ow-art-stone",
+          "banner": "ow-zone-wind-2"
+        },
+        "start": {
+          "x": 125,
+          "y": 335
+        },
+        "seeds": [
+          41
+        ],
+        "budgetSeconds": 90,
+        "chunkCells": 32,
+        "chunkReach": 2,
+        "difficulty": {
+          "hp": 1,
+          "attack": 1,
+          "armor": 1
+        },
+        "affixRange": null,
+        "requestedSkills": [
+          "cut",
+          "whirl",
+          "ward"
+        ],
+        "executedSkills": [
+          "cut",
+          "whirl",
+          "ward"
+        ],
+        "skillRanks": {
+          "cut": 1,
+          "whirl": 1,
+          "ward": 1
+        },
+        "build": {
+          "stats": {
+            "weapon": "sword",
+            "hp": 242,
+            "attack": 32,
+            "armor": 5,
+            "speed": 6,
+            "mana": 104,
+            "regen": 11,
+            "effects": [],
+            "poisonResist": 0.03816,
+            "poisonChance": 0.016499999999999997,
+            "lightningResist": 0.035339999999999996,
+            "coldResist": 0.039420000000000004,
+            "lifeOnKill": 0.0031500000000000018,
+            "shockChance": 0.01947,
+            "manaOnKill": 1.6140000000000003,
+            "fireResist": 0.04158000000000003,
+            "igniteChance": 0.020970000000000006,
+            "bleedChance": 0.018689999999999995,
+            "arcaneResist": 0.03726000000000001,
+            "shadowResist": 0.038790000000000005,
+            "allResist": 0.017760000000000005,
+            "chillChance": 0.01908,
+            "rules": [
+              {
+                "id": "innate-sword-qi",
+                "name": "剑气",
+                "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                "source": "剑势流 · 固有",
+                "tier": 1,
+                "trigger": "nth",
+                "chance": 1,
+                "icd": 0,
+                "every": 3,
+                "count": "hit",
+                "filter": {
+                  "weapons": [
+                    "sword"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "nova",
+                  "ratio": 0.35,
+                  "radius": 2.2,
+                  "damageType": "physical",
+                  "ref": "hit",
+                  "at": "target",
+                  "vfx": "combo/sword-qi"
+                },
+                "scale": [
+                  "action.ratio"
+                ],
+                "vfxKey": "combo/sword-qi"
+              },
+              {
+                "id": "stat-igniteChance",
+                "name": "点燃几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.020970000000000006,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "burn",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/ember"
+              },
+              {
+                "id": "stat-chillChance",
+                "name": "冰缓几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.01908,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "slow",
+                  "duration": 60,
+                  "strength": 0.3,
+                  "ratio": 0
+                },
+                "scale": [],
+                "vfxKey": "player/frost"
+              },
+              {
+                "id": "stat-shockChance",
+                "name": "感电几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.01947,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "shock",
+                  "duration": 90,
+                  "strength": 0.12,
+                  "ratio": 0
+                },
+                "scale": [],
+                "vfxKey": "player/chain"
+              },
+              {
+                "id": "stat-poisonChance",
+                "name": "中毒几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.016499999999999997,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/poison_arrow"
+              },
+              {
+                "id": "stat-bleedChance",
+                "name": "流血几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.018689999999999995,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "bleed",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/execute"
+              },
+              {
+                "id": "stat-manaOnKill",
+                "name": "击杀回复灵力",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "kill",
+                "chance": 1,
+                "icd": 0,
+                "filter": {},
+                "when": [],
+                "action": {
+                  "type": "mana",
+                  "ratio": 0,
+                  "ref": "maxMana",
+                  "flat": 1.6140000000000003
+                },
+                "scale": [],
+                "vfxKey": "player/mend"
+              },
+              {
+                "id": "stat-lifeOnKill",
+                "name": "击杀回复生命",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "kill",
+                "chance": 1,
+                "icd": 0,
+                "filter": {},
+                "when": [],
+                "action": {
+                  "type": "heal",
+                  "ratio": 0.0031500000000000018,
+                  "ref": "maxHp"
+                },
+                "scale": [],
+                "vfxKey": "player/mend"
+              }
+            ],
+            "zones": [
+              {
+                "id": "mastery",
+                "label": "等级精通",
+                "kind": "add",
+                "value": 0.06
+              },
+              {
+                "id": "weapon-affinity",
+                "label": "武器亲和 · 武技",
+                "kind": "mult",
+                "value": 1.14,
+                "tags": [
+                  "martial"
+                ]
+              }
+            ],
+            "damageAdd": 0.06,
+            "damageMult": 1,
+            "combos": [
+              {
+                "id": "innate-sword-qi",
+                "name": "剑气",
+                "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                "source": "剑势流 · 固有",
+                "weapons": [
+                  "sword"
+                ],
+                "trigger": "nth",
+                "chance": 1,
+                "cooldown": 0,
+                "every": 3,
+                "action": {
+                  "type": "nova",
+                  "radius": 2.2,
+                  "ratio": 0.35,
+                  "damageType": "physical",
+                  "vfx": "combo/sword-qi"
+                }
+              }
+            ]
+          },
+          "skills": [
+            {
+              "id": "cut",
+              "category": "melee",
+              "unlockLevel": 1,
+              "name": "斩击",
+              "kind": "single",
+              "damage": 80,
+              "range": 3,
+              "radius": 0,
+              "cooldown": 24,
+              "cost": 0,
+              "windup": 3,
+              "duration": 0,
+              "description": "近距离斩击",
+              "weapons": [
+                "sword"
+              ],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "enemy",
+                "statuses": []
+              },
+              "tags": [
+                "martial",
+                "melee",
+                "physical",
+                "single"
+              ],
+              "resolution": {
+                "attackShare": 1,
+                "baseCooldown": 24,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 24
+              }
+            },
+            {
+              "id": "whirl",
+              "category": "melee",
+              "unlockLevel": 2,
+              "name": "旋风斩",
+              "kind": "area",
+              "damage": 69,
+              "range": 0,
+              "radius": 4.5,
+              "cooldown": 75,
+              "cost": 15,
+              "windup": 7,
+              "duration": 0,
+              "description": "清剿身边敌群",
+              "weapons": [
+                "sword"
+              ],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "enemy",
+                "statuses": []
+              },
+              "tags": [
+                "martial",
+                "melee",
+                "physical",
+                "area"
+              ],
+              "resolution": {
+                "attackShare": 1,
+                "baseCooldown": 75,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 75
+              }
+            },
+            {
+              "id": "ward",
+              "category": "support",
+              "unlockLevel": 1,
+              "name": "护身印",
+              "kind": "shield",
+              "damage": 48,
+              "range": 0,
+              "radius": 0,
+              "cooldown": 240,
+              "cost": 15,
+              "windup": 1,
+              "duration": 168,
+              "description": "吸收伤害",
+              "weapons": [],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "self",
+                "statuses": []
+              },
+              "resolution": {
+                "attackShare": 0,
+                "baseCooldown": 240,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 240
+              }
+            }
+          ]
+        },
+        "summary": {
+          "samples": 1,
+          "completed": 0,
+          "deaths": 0,
+          "kills": 61,
+          "killsPerMinute": 40.666666666666664,
+          "engagedShare": 0.5244444444444445,
+          "normalTtkSamples": 59,
+          "normalTtkSeconds": 1.0327683615819208,
+          "clearedCamps": 15,
+          "meanCampClearSeconds": 3.4066666666666663
+        },
+        "samples": [
+          {
+            "seed": 41,
+            "seconds": 90,
+            "survived": true,
+            "completed": false,
+            "loadedCamps": [
+              "ow-wind-camp-2-1",
+              "ow-wind-camp-2-10",
+              "ow-wind-camp-2-11",
+              "ow-wind-camp-2-12",
+              "ow-wind-camp-2-13",
+              "ow-wind-camp-2-14",
+              "ow-wind-camp-2-15",
+              "ow-wind-camp-2-16",
+              "ow-wind-camp-2-17",
+              "ow-wind-camp-2-18",
+              "ow-wind-camp-2-19",
+              "ow-wind-camp-2-2",
+              "ow-wind-camp-2-20",
+              "ow-wind-camp-2-21",
+              "ow-wind-camp-2-22",
+              "ow-wind-camp-2-23",
+              "ow-wind-camp-2-26",
+              "ow-wind-camp-2-27",
+              "ow-wind-camp-2-28",
+              "ow-wind-camp-2-29",
+              "ow-wind-camp-2-3",
+              "ow-wind-camp-2-30",
+              "ow-wind-camp-2-4",
+              "ow-wind-camp-2-5",
+              "ow-wind-camp-2-6",
+              "ow-wind-camp-2-7",
+              "ow-wind-camp-2-8",
+              "ow-wind-camp-2-9",
+              "ow-wind-camp-3-1",
+              "ow-wind-camp-3-17",
+              "ow-wind-camp-3-8",
+              "ow-wind-camp-3-15",
+              "ow-wind-camp-3-26",
+              "ow-wind-camp-3-27",
+              "ow-wind-camp-3-4",
+              "ow-wind-camp-3-6",
+              "ow-wind-camp-2-24",
+              "ow-wind-camp-2-25",
+              "ow-wind-camp-3-22",
+              "ow-wind-camp-3-24",
+              "ow-wind-camp-1-22",
+              "ow-wind-camp-1-23",
+              "ow-wind-camp-1-24",
+              "ow-wind-camp-1-25"
+            ],
+            "zoneKills": 61,
+            "otherZoneKills": 0,
+            "killsPerMinute": 40.66666666666667,
+            "engagedShare": 0.5244444444444445,
+            "movingShare": 0.48777777777777775,
+            "normalTtk": {
+              "samples": 59,
+              "meanSeconds": 1.0327683615819208,
+              "values": [
+                0.03333333333333333,
+                1.6333333333333333,
+                1.1666666666666667,
+                1.6333333333333333,
+                0.03333333333333333,
+                0.03333333333333333,
+                2.533333333333333,
+                1.0333333333333334,
+                1.6333333333333333,
+                2.3333333333333335,
+                0.9333333333333333,
+                0.03333333333333333,
+                2.533333333333333,
+                1.6333333333333333,
+                1.0333333333333334,
+                0.03333333333333333,
+                2.533333333333333,
+                1.6333333333333333,
+                0.03333333333333333,
+                1.0666666666666667,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                0.8333333333333334,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                1.0666666666666667,
+                1.5,
+                1.6333333333333333,
+                0.03333333333333333,
+                1.0333333333333334,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                0.8333333333333334,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                0.03333333333333333,
+                1.0333333333333334,
+                2.533333333333333,
+                0.03333333333333333,
+                1.3333333333333333,
+                1.6333333333333333,
+                2.433333333333333,
+                0.03333333333333333,
+                1.0666666666666667,
+                1.6333333333333333,
+                0.16666666666666666,
+                0.03333333333333333,
+                1.1,
+                1.6333333333333333,
+                1,
+                0.03333333333333333,
+                0.8333333333333334,
+                1.3333333333333333,
+                2.533333333333333,
+                0.03333333333333333
+              ]
+            },
+            "eliteTtk": {
+              "samples": 2,
+              "meanSeconds": 5.883333333333333,
+              "values": [
+                5.033333333333333,
+                6.733333333333333
+              ]
+            },
+            "rareTtk": {
+              "samples": 0,
+              "meanSeconds": null,
+              "values": []
+            },
+            "camps": [
+              {
+                "id": "ow-wind-camp-2-1",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-2-2",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-2-3",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-2-4",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-2-5",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-2-6",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-2-7",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-2-8",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-2-9",
+                "loaded": true,
+                "firstHitTick": 2394,
+                "clearTick": 2498,
+                "clearSeconds": 3.5
+              },
+              {
+                "id": "ow-wind-camp-2-10",
+                "loaded": true,
+                "firstHitTick": 2540,
+                "clearTick": 2627,
+                "clearSeconds": 2.933333333333333
+              },
+              {
+                "id": "ow-wind-camp-2-11",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-2-12",
+                "loaded": true,
+                "firstHitTick": 2239,
+                "clearTick": 2318,
+                "clearSeconds": 2.6666666666666665
+              },
+              {
+                "id": "ow-wind-camp-2-13",
+                "loaded": true,
+                "firstHitTick": 22,
+                "clearTick": 111,
+                "clearSeconds": 3
+              },
+              {
+                "id": "ow-wind-camp-2-14",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-2-15",
+                "loaded": true,
+                "firstHitTick": 2046,
+                "clearTick": 2142,
+                "clearSeconds": 3.2333333333333334
+              },
+              {
+                "id": "ow-wind-camp-2-16",
+                "loaded": true,
+                "firstHitTick": 159,
+                "clearTick": 322,
+                "clearSeconds": 5.466666666666667
+              },
+              {
+                "id": "ow-wind-camp-2-17",
+                "loaded": true,
+                "firstHitTick": 1882,
+                "clearTick": 1975,
+                "clearSeconds": 3.1333333333333333
+              },
+              {
+                "id": "ow-wind-camp-2-18",
+                "loaded": true,
+                "firstHitTick": 1750,
+                "clearTick": 1831,
+                "clearSeconds": 2.7333333333333334
+              },
+              {
+                "id": "ow-wind-camp-2-19",
+                "loaded": true,
+                "firstHitTick": 401,
+                "clearTick": 503,
+                "clearSeconds": 3.433333333333333
+              },
+              {
+                "id": "ow-wind-camp-2-20",
+                "loaded": true,
+                "firstHitTick": 1594,
+                "clearTick": 1672,
+                "clearSeconds": 2.6333333333333333
+              },
+              {
+                "id": "ow-wind-camp-2-21",
+                "loaded": true,
+                "firstHitTick": 581,
+                "clearTick": 782,
+                "clearSeconds": 6.733333333333333
+              },
+              {
+                "id": "ow-wind-camp-2-22",
+                "loaded": true,
+                "firstHitTick": 1444,
+                "clearTick": 1523,
+                "clearSeconds": 2.6666666666666665
+              },
+              {
+                "id": "ow-wind-camp-2-23",
+                "loaded": true,
+                "firstHitTick": 860,
+                "clearTick": 962,
+                "clearSeconds": 3.433333333333333
+              },
+              {
+                "id": "ow-wind-camp-2-24",
+                "loaded": true,
+                "firstHitTick": 1254,
+                "clearTick": 1339,
+                "clearSeconds": 2.8666666666666667
+              },
+              {
+                "id": "ow-wind-camp-2-25",
+                "loaded": true,
+                "firstHitTick": 1067,
+                "clearTick": 1146,
+                "clearSeconds": 2.6666666666666665
+              },
+              {
+                "id": "ow-wind-camp-2-26",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-2-27",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-2-28",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-2-29",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-2-30",
+                "loaded": true,
+                "firstHitTick": 2683,
+                "clearTick": null,
+                "clearSeconds": null
+              }
+            ],
+            "damage": 8016,
+            "incoming": 53,
+            "casts": {
+              "ward": 11,
+              "whirl": 33,
+              "cut": 73
+            },
+            "castFailures": {},
+            "hpLeft": 242,
+            "manaLeft": 90.8333333333333,
+            "position": {
+              "x": 101.16769100088891,
+              "y": 303.26196186468246
+            },
+            "checkpointRestored": false
+          }
+        ],
+        "limits": [
+          "Actual authored geometry, camp templates/levels/budgets, streamed chunks and World movement/combat. The player receives no extra HP, mana, healing or damage multipliers.",
+          "The route visits each target-zone camp once, starting at the declared landing or explicit controlled start. All nearby camps, including other zones, remain present and can engage.",
+          "This measures initial-cycle route efficiency. No respawn, rewards, server settlement or natural sustainable drop-frequency claim is made; those require persistent camp/source probes.",
+          "Mean TTK is conditional on kills. Unfinished camps, deaths, failed casts and zero-kill runs remain visible in the sample and aggregate rate."
+        ]
+      }
+    },
+    {
+      "stage": 2,
+      "clock": 24.69434495505994,
+      "start": "Registered zone waypoint",
+      "report": {
+        "generated": "2026-10-07T13:58:58.425Z",
+        "versions": {
+          "client": "0.11.15",
+          "protocol": 31,
+          "rules": "ow-56",
+          "assets": "world-art-20261007-v24-world-runtime",
+          "db": 16
+        },
+        "region": "ss-map-wind",
+        "zone": {
+          "_row": 23,
+          "id": "ow-wind-z3",
+          "region": "ss-map-wind",
+          "name": "风车高地",
+          "rect": {
+            "x": 170.66666666666666,
+            "y": 256,
+            "w": 170.66666666666666,
+            "h": 256
+          },
+          "levelBand": [
+            3,
+            4
+          ],
+          "theme": "wind",
+          "ground": "ow-art-sand",
+          "banner": "ow-zone-wind-3"
+        },
+        "start": {
+          "x": 256,
+          "y": 350
+        },
+        "seeds": [
+          41
+        ],
+        "budgetSeconds": 90,
+        "chunkCells": 32,
+        "chunkReach": 2,
+        "difficulty": {
+          "hp": 1,
+          "attack": 1,
+          "armor": 1
+        },
+        "affixRange": null,
+        "requestedSkills": [
+          "cut",
+          "whirl",
+          "ward"
+        ],
+        "executedSkills": [
+          "cut",
+          "whirl",
+          "ward"
+        ],
+        "skillRanks": {
+          "cut": 2,
+          "whirl": 2,
+          "ward": 2
+        },
+        "build": {
+          "stats": {
+            "weapon": "sword",
+            "hp": 260,
+            "attack": 35,
+            "armor": 5,
+            "speed": 6,
+            "mana": 104,
+            "regen": 11,
+            "effects": [],
+            "poisonResist": 0.03816,
+            "poisonChance": 0.016499999999999997,
+            "lightningResist": 0.035339999999999996,
+            "coldResist": 0.039420000000000004,
+            "lifeOnKill": 0.0031500000000000018,
+            "shockChance": 0.01947,
+            "manaOnKill": 1.6140000000000003,
+            "fireResist": 0.04158000000000003,
+            "igniteChance": 0.020970000000000006,
+            "bleedChance": 0.018689999999999995,
+            "arcaneResist": 0.03726000000000001,
+            "shadowResist": 0.038790000000000005,
+            "allResist": 0.017760000000000005,
+            "chillChance": 0.01908,
+            "rules": [
+              {
+                "id": "innate-sword-qi",
+                "name": "剑气",
+                "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                "source": "剑势流 · 固有",
+                "tier": 1,
+                "trigger": "nth",
+                "chance": 1,
+                "icd": 0,
+                "every": 3,
+                "count": "hit",
+                "filter": {
+                  "weapons": [
+                    "sword"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "nova",
+                  "ratio": 0.35,
+                  "radius": 2.2,
+                  "damageType": "physical",
+                  "ref": "hit",
+                  "at": "target",
+                  "vfx": "combo/sword-qi"
+                },
+                "scale": [
+                  "action.ratio"
+                ],
+                "vfxKey": "combo/sword-qi"
+              },
+              {
+                "id": "stat-igniteChance",
+                "name": "点燃几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.020970000000000006,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "burn",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/ember"
+              },
+              {
+                "id": "stat-chillChance",
+                "name": "冰缓几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.01908,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "slow",
+                  "duration": 60,
+                  "strength": 0.3,
+                  "ratio": 0
+                },
+                "scale": [],
+                "vfxKey": "player/frost"
+              },
+              {
+                "id": "stat-shockChance",
+                "name": "感电几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.01947,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "shock",
+                  "duration": 90,
+                  "strength": 0.12,
+                  "ratio": 0
+                },
+                "scale": [],
+                "vfxKey": "player/chain"
+              },
+              {
+                "id": "stat-poisonChance",
+                "name": "中毒几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.016499999999999997,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/poison_arrow"
+              },
+              {
+                "id": "stat-bleedChance",
+                "name": "流血几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.018689999999999995,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "bleed",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/execute"
+              },
+              {
+                "id": "stat-manaOnKill",
+                "name": "击杀回复灵力",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "kill",
+                "chance": 1,
+                "icd": 0,
+                "filter": {},
+                "when": [],
+                "action": {
+                  "type": "mana",
+                  "ratio": 0,
+                  "ref": "maxMana",
+                  "flat": 1.6140000000000003
+                },
+                "scale": [],
+                "vfxKey": "player/mend"
+              },
+              {
+                "id": "stat-lifeOnKill",
+                "name": "击杀回复生命",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "kill",
+                "chance": 1,
+                "icd": 0,
+                "filter": {},
+                "when": [],
+                "action": {
+                  "type": "heal",
+                  "ratio": 0.0031500000000000018,
+                  "ref": "maxHp"
+                },
+                "scale": [],
+                "vfxKey": "player/mend"
+              }
+            ],
+            "zones": [
+              {
+                "id": "mastery",
+                "label": "等级精通",
+                "kind": "add",
+                "value": 0.09
+              },
+              {
+                "id": "weapon-affinity",
+                "label": "武器亲和 · 武技",
+                "kind": "mult",
+                "value": 1.14,
+                "tags": [
+                  "martial"
+                ]
+              }
+            ],
+            "damageAdd": 0.09,
+            "damageMult": 1,
+            "combos": [
+              {
+                "id": "innate-sword-qi",
+                "name": "剑气",
+                "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                "source": "剑势流 · 固有",
+                "weapons": [
+                  "sword"
+                ],
+                "trigger": "nth",
+                "chance": 1,
+                "cooldown": 0,
+                "every": 3,
+                "action": {
+                  "type": "nova",
+                  "radius": 2.2,
+                  "ratio": 0.35,
+                  "damageType": "physical",
+                  "vfx": "combo/sword-qi"
+                }
+              }
+            ]
+          },
+          "skills": [
+            {
+              "id": "cut",
+              "category": "melee",
+              "unlockLevel": 1,
+              "name": "斩击",
+              "kind": "single",
+              "damage": 101,
+              "range": 3,
+              "radius": 0,
+              "cooldown": 24,
+              "cost": 0,
+              "windup": 3,
+              "duration": 0,
+              "description": "近距离斩击",
+              "weapons": [
+                "sword"
+              ],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "enemy",
+                "statuses": []
+              },
+              "tags": [
+                "martial",
+                "melee",
+                "physical",
+                "single"
+              ],
+              "resolution": {
+                "attackShare": 1,
+                "baseCooldown": 24,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 24
+              }
+            },
+            {
+              "id": "whirl",
+              "category": "melee",
+              "unlockLevel": 2,
+              "name": "旋风斩",
+              "kind": "area",
+              "damage": 87,
+              "range": 0,
+              "radius": 4.5,
+              "cooldown": 75,
+              "cost": 15,
+              "windup": 7,
+              "duration": 0,
+              "description": "清剿身边敌群",
+              "weapons": [
+                "sword"
+              ],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "enemy",
+                "statuses": []
+              },
+              "tags": [
+                "martial",
+                "melee",
+                "physical",
+                "area"
+              ],
+              "resolution": {
+                "attackShare": 1,
+                "baseCooldown": 75,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 75
+              }
+            },
+            {
+              "id": "ward",
+              "category": "support",
+              "unlockLevel": 1,
+              "name": "护身印",
+              "kind": "shield",
+              "damage": 58,
+              "range": 0,
+              "radius": 0,
+              "cooldown": 240,
+              "cost": 15,
+              "windup": 1,
+              "duration": 168,
+              "description": "吸收伤害",
+              "weapons": [],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "self",
+                "statuses": []
+              },
+              "resolution": {
+                "attackShare": 0,
+                "baseCooldown": 240,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 240
+              }
+            }
+          ]
+        },
+        "summary": {
+          "samples": 1,
+          "completed": 0,
+          "deaths": 0,
+          "kills": 57,
+          "killsPerMinute": 38,
+          "engagedShare": 0.49296296296296294,
+          "normalTtkSamples": 54,
+          "normalTtkSeconds": 0.9962962962962962,
+          "clearedCamps": 14,
+          "meanCampClearSeconds": 3.619047619047619
+        },
+        "samples": [
+          {
+            "seed": 41,
+            "seconds": 90,
+            "survived": true,
+            "completed": false,
+            "loadedCamps": [
+              "ow-wind-camp-3-10",
+              "ow-wind-camp-3-11",
+              "ow-wind-camp-3-12",
+              "ow-wind-camp-3-13",
+              "ow-wind-camp-3-14",
+              "ow-wind-camp-3-15",
+              "ow-wind-camp-3-16",
+              "ow-wind-camp-3-18",
+              "ow-wind-camp-3-19",
+              "ow-wind-camp-3-2",
+              "ow-wind-camp-3-26",
+              "ow-wind-camp-3-27",
+              "ow-wind-camp-3-28",
+              "ow-wind-camp-3-29",
+              "ow-wind-camp-3-3",
+              "ow-wind-camp-3-30",
+              "ow-wind-camp-3-4",
+              "ow-wind-camp-3-5",
+              "ow-wind-camp-3-6",
+              "ow-wind-camp-3-7",
+              "ow-wind-camp-3-9",
+              "ow-wind-camp-3-1",
+              "ow-wind-camp-3-17",
+              "ow-wind-camp-3-8",
+              "ow-wind-camp-3-20",
+              "ow-wind-camp-3-21",
+              "ow-wind-camp-3-22",
+              "ow-wind-camp-3-23",
+              "ow-wind-camp-6-24",
+              "ow-wind-camp-6-25",
+              "ow-wind-camp-4-1",
+              "ow-wind-camp-4-12",
+              "ow-wind-camp-4-15",
+              "ow-wind-camp-4-18",
+              "ow-wind-camp-4-2",
+              "ow-wind-camp-4-21",
+              "ow-wind-camp-4-29",
+              "ow-wind-camp-4-5",
+              "ow-wind-camp-4-9",
+              "ow-wind-camp-5-22",
+              "ow-wind-camp-5-23",
+              "ow-wind-camp-5-16",
+              "ow-wind-camp-6-20",
+              "ow-wind-camp-6-21",
+              "ow-wind-camp-6-23",
+              "ow-wind-camp-6-22",
+              "ow-wind-camp-6-19",
+              "ow-wind-camp-1-25",
+              "ow-wind-camp-2-11",
+              "ow-wind-camp-2-13",
+              "ow-wind-camp-2-16",
+              "ow-wind-camp-2-19",
+              "ow-wind-camp-2-21",
+              "ow-wind-camp-2-28",
+              "ow-wind-camp-2-4",
+              "ow-wind-camp-2-8",
+              "ow-wind-camp-1-18",
+              "ow-wind-camp-1-21",
+              "ow-wind-camp-2-23",
+              "ow-wind-camp-2-10",
+              "ow-wind-camp-2-15",
+              "ow-wind-camp-2-18",
+              "ow-wind-camp-2-20",
+              "ow-wind-camp-2-22",
+              "ow-wind-camp-2-27",
+              "ow-wind-camp-2-3",
+              "ow-wind-camp-2-30",
+              "ow-wind-camp-2-7"
+            ],
+            "zoneKills": 57,
+            "otherZoneKills": 0,
+            "killsPerMinute": 38,
+            "engagedShare": 0.49296296296296294,
+            "movingShare": 0.4988888888888889,
+            "normalTtk": {
+              "samples": 54,
+              "meanSeconds": 0.9962962962962962,
+              "values": [
+                0.13333333333333333,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.13333333333333333,
+                1.7333333333333334,
+                1.6333333333333333,
+                1.7333333333333334,
+                0.13333333333333333,
+                0.8333333333333334,
+                1.6333333333333333,
+                1.7333333333333334,
+                0.13333333333333333,
+                0.8333333333333334,
+                1.6333333333333333,
+                1.7333333333333334,
+                0.13333333333333333,
+                0.8333333333333334,
+                1.6333333333333333,
+                1.7333333333333334,
+                0.03333333333333333,
+                1.4,
+                1.9666666666666666,
+                0.8333333333333334,
+                0.03333333333333333,
+                0.03333333333333333,
+                1,
+                1.8,
+                0.13333333333333333,
+                0.8333333333333334,
+                1.6333333333333333,
+                1.7333333333333334,
+                0.13333333333333333,
+                0.8333333333333334,
+                1.6333333333333333,
+                1.7333333333333334,
+                0.13333333333333333,
+                0.8333333333333334,
+                1.6333333333333333,
+                1.7333333333333334,
+                0.03333333333333333,
+                0.13333333333333333,
+                0.9333333333333333,
+                2.533333333333333,
+                0.03333333333333333,
+                0.4,
+                1.2,
+                2.1666666666666665,
+                0.13333333333333333,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.16666666666666666,
+                0.8333333333333334,
+                1.7,
+                0.13333333333333333
+              ]
+            },
+            "eliteTtk": {
+              "samples": 3,
+              "meanSeconds": 6.133333333333333,
+              "values": [
+                5.833333333333333,
+                5.833333333333333,
+                6.733333333333333
+              ]
+            },
+            "rareTtk": {
+              "samples": 0,
+              "meanSeconds": null,
+              "values": []
+            },
+            "camps": [
+              {
+                "id": "ow-wind-camp-3-1",
+                "loaded": true,
+                "firstHitTick": 2025,
+                "clearTick": 2226,
+                "clearSeconds": 6.733333333333333
+              },
+              {
+                "id": "ow-wind-camp-3-2",
+                "loaded": true,
+                "firstHitTick": 1421,
+                "clearTick": 1499,
+                "clearSeconds": 2.6333333333333333
+              },
+              {
+                "id": "ow-wind-camp-3-3",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-3-4",
+                "loaded": true,
+                "firstHitTick": 1699,
+                "clearTick": 1800,
+                "clearSeconds": 3.4
+              },
+              {
+                "id": "ow-wind-camp-3-5",
+                "loaded": true,
+                "firstHitTick": 840,
+                "clearTick": 918,
+                "clearSeconds": 2.6333333333333333
+              },
+              {
+                "id": "ow-wind-camp-3-6",
+                "loaded": true,
+                "firstHitTick": 2350,
+                "clearTick": 2551,
+                "clearSeconds": 6.733333333333333
+              },
+              {
+                "id": "ow-wind-camp-3-7",
+                "loaded": true,
+                "firstHitTick": 656,
+                "clearTick": 734,
+                "clearSeconds": 2.6333333333333333
+              },
+              {
+                "id": "ow-wind-camp-3-8",
+                "loaded": true,
+                "firstHitTick": 2655,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-3-9",
+                "loaded": true,
+                "firstHitTick": 473,
+                "clearTick": 551,
+                "clearSeconds": 2.6333333333333333
+              },
+              {
+                "id": "ow-wind-camp-3-10",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-3-11",
+                "loaded": true,
+                "firstHitTick": 39,
+                "clearTick": 240,
+                "clearSeconds": 6.733333333333333
+              },
+              {
+                "id": "ow-wind-camp-3-12",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-3-13",
+                "loaded": true,
+                "firstHitTick": 282,
+                "clearTick": 360,
+                "clearSeconds": 2.6333333333333333
+              },
+              {
+                "id": "ow-wind-camp-3-14",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-3-15",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-3-16",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-3-17",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-3-18",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-3-19",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-3-20",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-3-21",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-3-22",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-3-23",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-3-24",
+                "loaded": false,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-3-25",
+                "loaded": false,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-3-26",
+                "loaded": true,
+                "firstHitTick": 1862,
+                "clearTick": 1950,
+                "clearSeconds": 2.966666666666667
+              },
+              {
+                "id": "ow-wind-camp-3-27",
+                "loaded": true,
+                "firstHitTick": 1575,
+                "clearTick": 1653,
+                "clearSeconds": 2.6333333333333333
+              },
+              {
+                "id": "ow-wind-camp-3-28",
+                "loaded": true,
+                "firstHitTick": 1267,
+                "clearTick": 1345,
+                "clearSeconds": 2.6333333333333333
+              },
+              {
+                "id": "ow-wind-camp-3-29",
+                "loaded": true,
+                "firstHitTick": 1121,
+                "clearTick": 1193,
+                "clearSeconds": 2.433333333333333
+              },
+              {
+                "id": "ow-wind-camp-3-30",
+                "loaded": true,
+                "firstHitTick": 983,
+                "clearTick": 1079,
+                "clearSeconds": 3.2333333333333334
+              }
+            ],
+            "damage": 10673,
+            "incoming": 43,
+            "casts": {
+              "ward": 11,
+              "whirl": 31,
+              "cut": 74
+            },
+            "castFailures": {},
+            "hpLeft": 260,
+            "manaLeft": 95.04733333333299,
+            "position": {
+              "x": 191.55323931938614,
+              "y": 324.81420195363904
+            },
+            "checkpointRestored": false
+          }
+        ],
+        "limits": [
+          "Actual authored geometry, camp templates/levels/budgets, streamed chunks and World movement/combat. The player receives no extra HP, mana, healing or damage multipliers.",
+          "The route visits each target-zone camp once, starting at the declared landing or explicit controlled start. All nearby camps, including other zones, remain present and can engage.",
+          "This measures initial-cycle route efficiency. No respawn, rewards, server settlement or natural sustainable drop-frequency claim is made; those require persistent camp/source probes.",
+          "Mean TTK is conditional on kills. Unfinished camps, deaths, failed casts and zero-kill runs remain visible in the sample and aggregate rate."
+        ]
+      }
+    },
+    {
+      "stage": 2,
+      "clock": 24.69434495505994,
+      "start": "Registered zone waypoint",
+      "report": {
+        "generated": "2026-10-07T13:59:01.625Z",
+        "versions": {
+          "client": "0.11.15",
+          "protocol": 31,
+          "rules": "ow-56",
+          "assets": "world-art-20261007-v24-world-runtime",
+          "db": 16
+        },
+        "region": "ss-map-wind",
+        "zone": {
+          "_row": 24,
+          "id": "ow-wind-z4",
+          "region": "ss-map-wind",
+          "name": "旧码头",
+          "rect": {
+            "x": 341.3333333333333,
+            "y": 256,
+            "w": 170.66666666666666,
+            "h": 256
+          },
+          "levelBand": [
+            4,
+            5
+          ],
+          "theme": "wind",
+          "ground": "ow-art-dirt",
+          "banner": "ow-zone-wind-4"
+        },
+        "start": {
+          "x": 385,
+          "y": 325
+        },
+        "seeds": [
+          41
+        ],
+        "budgetSeconds": 90,
+        "chunkCells": 32,
+        "chunkReach": 2,
+        "difficulty": {
+          "hp": 1,
+          "attack": 1,
+          "armor": 1
+        },
+        "affixRange": null,
+        "requestedSkills": [
+          "cut",
+          "whirl",
+          "ward"
+        ],
+        "executedSkills": [
+          "cut",
+          "whirl",
+          "ward"
+        ],
+        "skillRanks": {
+          "cut": 2,
+          "whirl": 2,
+          "ward": 2
+        },
+        "build": {
+          "stats": {
+            "weapon": "sword",
+            "hp": 278,
+            "attack": 37,
+            "armor": 5,
+            "speed": 6,
+            "mana": 104,
+            "regen": 11,
+            "effects": [],
+            "poisonResist": 0.03816,
+            "poisonChance": 0.016499999999999997,
+            "lightningResist": 0.035339999999999996,
+            "coldResist": 0.039420000000000004,
+            "lifeOnKill": 0.0031500000000000018,
+            "shockChance": 0.01947,
+            "manaOnKill": 1.6140000000000003,
+            "fireResist": 0.04158000000000003,
+            "igniteChance": 0.020970000000000006,
+            "bleedChance": 0.018689999999999995,
+            "arcaneResist": 0.03726000000000001,
+            "shadowResist": 0.038790000000000005,
+            "allResist": 0.017760000000000005,
+            "chillChance": 0.01908,
+            "rules": [
+              {
+                "id": "innate-sword-qi",
+                "name": "剑气",
+                "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                "source": "剑势流 · 固有",
+                "tier": 1,
+                "trigger": "nth",
+                "chance": 1,
+                "icd": 0,
+                "every": 3,
+                "count": "hit",
+                "filter": {
+                  "weapons": [
+                    "sword"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "nova",
+                  "ratio": 0.35,
+                  "radius": 2.2,
+                  "damageType": "physical",
+                  "ref": "hit",
+                  "at": "target",
+                  "vfx": "combo/sword-qi"
+                },
+                "scale": [
+                  "action.ratio"
+                ],
+                "vfxKey": "combo/sword-qi"
+              },
+              {
+                "id": "stat-igniteChance",
+                "name": "点燃几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.020970000000000006,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "burn",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/ember"
+              },
+              {
+                "id": "stat-chillChance",
+                "name": "冰缓几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.01908,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "slow",
+                  "duration": 60,
+                  "strength": 0.3,
+                  "ratio": 0
+                },
+                "scale": [],
+                "vfxKey": "player/frost"
+              },
+              {
+                "id": "stat-shockChance",
+                "name": "感电几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.01947,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "shock",
+                  "duration": 90,
+                  "strength": 0.12,
+                  "ratio": 0
+                },
+                "scale": [],
+                "vfxKey": "player/chain"
+              },
+              {
+                "id": "stat-poisonChance",
+                "name": "中毒几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.016499999999999997,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/poison_arrow"
+              },
+              {
+                "id": "stat-bleedChance",
+                "name": "流血几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.018689999999999995,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "bleed",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/execute"
+              },
+              {
+                "id": "stat-manaOnKill",
+                "name": "击杀回复灵力",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "kill",
+                "chance": 1,
+                "icd": 0,
+                "filter": {},
+                "when": [],
+                "action": {
+                  "type": "mana",
+                  "ratio": 0,
+                  "ref": "maxMana",
+                  "flat": 1.6140000000000003
+                },
+                "scale": [],
+                "vfxKey": "player/mend"
+              },
+              {
+                "id": "stat-lifeOnKill",
+                "name": "击杀回复生命",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "kill",
+                "chance": 1,
+                "icd": 0,
+                "filter": {},
+                "when": [],
+                "action": {
+                  "type": "heal",
+                  "ratio": 0.0031500000000000018,
+                  "ref": "maxHp"
+                },
+                "scale": [],
+                "vfxKey": "player/mend"
+              }
+            ],
+            "zones": [
+              {
+                "id": "mastery",
+                "label": "等级精通",
+                "kind": "add",
+                "value": 0.12
+              },
+              {
+                "id": "weapon-affinity",
+                "label": "武器亲和 · 武技",
+                "kind": "mult",
+                "value": 1.14,
+                "tags": [
+                  "martial"
+                ]
+              }
+            ],
+            "damageAdd": 0.12,
+            "damageMult": 1,
+            "combos": [
+              {
+                "id": "innate-sword-qi",
+                "name": "剑气",
+                "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                "source": "剑势流 · 固有",
+                "weapons": [
+                  "sword"
+                ],
+                "trigger": "nth",
+                "chance": 1,
+                "cooldown": 0,
+                "every": 3,
+                "action": {
+                  "type": "nova",
+                  "radius": 2.2,
+                  "ratio": 0.35,
+                  "damageType": "physical",
+                  "vfx": "combo/sword-qi"
+                }
+              }
+            ]
+          },
+          "skills": [
+            {
+              "id": "cut",
+              "category": "melee",
+              "unlockLevel": 1,
+              "name": "斩击",
+              "kind": "single",
+              "damage": 110,
+              "range": 3,
+              "radius": 0,
+              "cooldown": 24,
+              "cost": 0,
+              "windup": 3,
+              "duration": 0,
+              "description": "近距离斩击",
+              "weapons": [
+                "sword"
+              ],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "enemy",
+                "statuses": []
+              },
+              "tags": [
+                "martial",
+                "melee",
+                "physical",
+                "single"
+              ],
+              "resolution": {
+                "attackShare": 1,
+                "baseCooldown": 24,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 24
+              }
+            },
+            {
+              "id": "whirl",
+              "category": "melee",
+              "unlockLevel": 2,
+              "name": "旋风斩",
+              "kind": "area",
+              "damage": 94,
+              "range": 0,
+              "radius": 4.5,
+              "cooldown": 75,
+              "cost": 15,
+              "windup": 7,
+              "duration": 0,
+              "description": "清剿身边敌群",
+              "weapons": [
+                "sword"
+              ],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "enemy",
+                "statuses": []
+              },
+              "tags": [
+                "martial",
+                "melee",
+                "physical",
+                "area"
+              ],
+              "resolution": {
+                "attackShare": 1,
+                "baseCooldown": 75,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 75
+              }
+            },
+            {
+              "id": "ward",
+              "category": "support",
+              "unlockLevel": 1,
+              "name": "护身印",
+              "kind": "shield",
+              "damage": 62,
+              "range": 0,
+              "radius": 0,
+              "cooldown": 240,
+              "cost": 15,
+              "windup": 1,
+              "duration": 168,
+              "description": "吸收伤害",
+              "weapons": [],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "self",
+                "statuses": []
+              },
+              "resolution": {
+                "attackShare": 0,
+                "baseCooldown": 240,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 240
+              }
+            }
+          ]
+        },
+        "summary": {
+          "samples": 1,
+          "completed": 0,
+          "deaths": 0,
+          "kills": 63,
+          "killsPerMinute": 42.00000000000001,
+          "engagedShare": 0.4462962962962963,
+          "normalTtkSamples": 61,
+          "normalTtkSeconds": 0.691256830601093,
+          "clearedCamps": 15,
+          "meanCampClearSeconds": 2.953333333333333
+        },
+        "samples": [
+          {
+            "seed": 41,
+            "seconds": 90,
+            "survived": true,
+            "completed": false,
+            "loadedCamps": [
+              "ow-wind-camp-3-10",
+              "ow-wind-camp-3-12",
+              "ow-wind-camp-3-19",
+              "ow-wind-camp-4-1",
+              "ow-wind-camp-4-10",
+              "ow-wind-camp-4-11",
+              "ow-wind-camp-4-12",
+              "ow-wind-camp-4-13",
+              "ow-wind-camp-4-14",
+              "ow-wind-camp-4-15",
+              "ow-wind-camp-4-16",
+              "ow-wind-camp-4-17",
+              "ow-wind-camp-4-18",
+              "ow-wind-camp-4-19",
+              "ow-wind-camp-4-2",
+              "ow-wind-camp-4-20",
+              "ow-wind-camp-4-21",
+              "ow-wind-camp-4-22",
+              "ow-wind-camp-4-23",
+              "ow-wind-camp-4-24",
+              "ow-wind-camp-4-26",
+              "ow-wind-camp-4-27",
+              "ow-wind-camp-4-28",
+              "ow-wind-camp-4-29",
+              "ow-wind-camp-4-3",
+              "ow-wind-camp-4-30",
+              "ow-wind-camp-4-4",
+              "ow-wind-camp-4-5",
+              "ow-wind-camp-4-6",
+              "ow-wind-camp-4-7",
+              "ow-wind-camp-4-8",
+              "ow-wind-camp-4-9",
+              "ow-wind-camp-3-14",
+              "ow-wind-camp-3-3",
+              "ow-wind-camp-3-30",
+              "ow-wind-camp-3-5",
+              "ow-wind-camp-5-22",
+              "ow-wind-camp-5-23",
+              "ow-wind-camp-5-24",
+              "ow-wind-camp-5-25",
+              "ow-wind-camp-4-25",
+              "ow-wind-camp-3-21",
+              "ow-wind-camp-3-23"
+            ],
+            "zoneKills": 63,
+            "otherZoneKills": 0,
+            "killsPerMinute": 42,
+            "engagedShare": 0.4462962962962963,
+            "movingShare": 0.5466666666666666,
+            "normalTtk": {
+              "samples": 61,
+              "meanSeconds": 0.691256830601093,
+              "values": [
+                0.03333333333333333,
+                0.03333333333333333,
+                1.0333333333333334,
+                1.5333333333333334,
+                0.4,
+                0.4,
+                0.4,
+                1.2666666666666666,
+                0.03333333333333333,
+                1.0333333333333334,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                1.0333333333333334,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                1.0333333333333334,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                0.03333333333333333,
+                2.533333333333333,
+                0.03333333333333333,
+                1.0666666666666667,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                1.0333333333333334,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                0.03333333333333333,
+                0.6,
+                1.6333333333333333,
+                0.03333333333333333,
+                1.1,
+                0.03333333333333333,
+                0.8333333333333334,
+                0.03333333333333333,
+                0.8333333333333334,
+                0.36666666666666664,
+                0.03333333333333333,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.36666666666666664,
+                0.03333333333333333,
+                0.03333333333333333,
+                1.1333333333333333,
+                2.2333333333333334,
+                0.03333333333333333,
+                0.03333333333333333,
+                0.6,
+                1.6333333333333333,
+                0.03333333333333333,
+                0.8333333333333334,
+                0.03333333333333333,
+                0.8333333333333334,
+                0.03333333333333333,
+                0.8333333333333334,
+                0.03333333333333333
+              ]
+            },
+            "eliteTtk": {
+              "samples": 2,
+              "meanSeconds": 4.033333333333333,
+              "values": [
+                4.033333333333333,
+                4.033333333333333
+              ]
+            },
+            "rareTtk": {
+              "samples": 0,
+              "meanSeconds": null,
+              "values": []
+            },
+            "camps": [
+              {
+                "id": "ow-wind-camp-4-1",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-4-2",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-4-3",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-4-4",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-4-5",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-4-6",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-4-7",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-4-8",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-4-9",
+                "loaded": true,
+                "firstHitTick": 33,
+                "clearTick": 108,
+                "clearSeconds": 2.533333333333333
+              },
+              {
+                "id": "ow-wind-camp-4-10",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-4-11",
+                "loaded": true,
+                "firstHitTick": 2635,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-4-12",
+                "loaded": true,
+                "firstHitTick": 172,
+                "clearTick": 220,
+                "clearSeconds": 1.6333333333333333
+              },
+              {
+                "id": "ow-wind-camp-4-13",
+                "loaded": true,
+                "firstHitTick": 1979,
+                "clearTick": 2064,
+                "clearSeconds": 2.8666666666666667
+              },
+              {
+                "id": "ow-wind-camp-4-14",
+                "loaded": true,
+                "firstHitTick": 2475,
+                "clearTick": 2562,
+                "clearSeconds": 2.933333333333333
+              },
+              {
+                "id": "ow-wind-camp-4-15",
+                "loaded": true,
+                "firstHitTick": 259,
+                "clearTick": 337,
+                "clearSeconds": 2.6333333333333333
+              },
+              {
+                "id": "ow-wind-camp-4-16",
+                "loaded": true,
+                "firstHitTick": 1737,
+                "clearTick": 1922,
+                "clearSeconds": 6.2
+              },
+              {
+                "id": "ow-wind-camp-4-17",
+                "loaded": true,
+                "firstHitTick": 2136,
+                "clearTick": 2211,
+                "clearSeconds": 2.533333333333333
+              },
+              {
+                "id": "ow-wind-camp-4-18",
+                "loaded": true,
+                "firstHitTick": 1460,
+                "clearTick": 1540,
+                "clearSeconds": 2.7
+              },
+              {
+                "id": "ow-wind-camp-4-19",
+                "loaded": true,
+                "firstHitTick": 438,
+                "clearTick": 516,
+                "clearSeconds": 2.6333333333333333
+              },
+              {
+                "id": "ow-wind-camp-4-20",
+                "loaded": true,
+                "firstHitTick": 2281,
+                "clearTick": 2353,
+                "clearSeconds": 2.433333333333333
+              },
+              {
+                "id": "ow-wind-camp-4-21",
+                "loaded": true,
+                "firstHitTick": 704,
+                "clearTick": 848,
+                "clearSeconds": 4.833333333333333
+              },
+              {
+                "id": "ow-wind-camp-4-22",
+                "loaded": true,
+                "firstHitTick": 588,
+                "clearTick": 666,
+                "clearSeconds": 2.6333333333333333
+              },
+              {
+                "id": "ow-wind-camp-4-23",
+                "loaded": true,
+                "firstHitTick": 1252,
+                "clearTick": 1324,
+                "clearSeconds": 2.433333333333333
+              },
+              {
+                "id": "ow-wind-camp-4-24",
+                "loaded": true,
+                "firstHitTick": 929,
+                "clearTick": 1008,
+                "clearSeconds": 2.6666666666666665
+              },
+              {
+                "id": "ow-wind-camp-4-25",
+                "loaded": true,
+                "firstHitTick": 1107,
+                "clearTick": 1185,
+                "clearSeconds": 2.6333333333333333
+              },
+              {
+                "id": "ow-wind-camp-4-26",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-4-27",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-4-28",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-4-29",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-4-30",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              }
+            ],
+            "damage": 10696,
+            "incoming": 63,
+            "casts": {
+              "ward": 11,
+              "whirl": 29,
+              "cut": 67
+            },
+            "castFailures": {},
+            "hpLeft": 266,
+            "manaLeft": 104,
+            "position": {
+              "x": 442.9352502101111,
+              "y": 320.69216340330314
+            },
+            "checkpointRestored": false
+          }
+        ],
+        "limits": [
+          "Actual authored geometry, camp templates/levels/budgets, streamed chunks and World movement/combat. The player receives no extra HP, mana, healing or damage multipliers.",
+          "The route visits each target-zone camp once, starting at the declared landing or explicit controlled start. All nearby camps, including other zones, remain present and can engage.",
+          "This measures initial-cycle route efficiency. No respawn, rewards, server settlement or natural sustainable drop-frequency claim is made; those require persistent camp/source probes.",
+          "Mean TTK is conditional on kills. Unfinished camps, deaths, failed casts and zero-kill runs remain visible in the sample and aggregate rate."
+        ]
+      }
+    },
+    {
+      "stage": 3,
+      "clock": 45.37604422023624,
+      "start": "Registered zone waypoint",
+      "report": {
+        "generated": "2026-10-07T13:59:05.675Z",
+        "versions": {
+          "client": "0.11.15",
+          "protocol": 31,
+          "rules": "ow-56",
+          "assets": "world-art-20261007-v24-world-runtime",
+          "db": 16
+        },
+        "region": "ss-map-wind",
+        "zone": {
+          "_row": 25,
+          "id": "ow-wind-z5",
+          "region": "ss-map-wind",
+          "name": "岸线崖",
+          "rect": {
+            "x": 341.3333333333333,
+            "y": 0,
+            "w": 170.66666666666666,
+            "h": 256
+          },
+          "levelBand": [
+            5,
+            7
+          ],
+          "theme": "wind",
+          "ground": "ow-art-planks",
+          "banner": "ow-zone-wind-5"
+        },
+        "start": {
+          "x": 385,
+          "y": 185
+        },
+        "seeds": [
+          41
+        ],
+        "budgetSeconds": 90,
+        "chunkCells": 32,
+        "chunkReach": 2,
+        "difficulty": {
+          "hp": 1,
+          "attack": 1,
+          "armor": 1
+        },
+        "affixRange": null,
+        "requestedSkills": [
+          "cut",
+          "whirl",
+          "ward"
+        ],
+        "executedSkills": [
+          "cut",
+          "whirl",
+          "ward"
+        ],
+        "skillRanks": {
+          "cut": 2,
+          "whirl": 2,
+          "ward": 2
+        },
+        "build": {
+          "stats": {
+            "weapon": "sword",
+            "hp": 298,
+            "attack": 43,
+            "armor": 6,
+            "speed": 6,
+            "mana": 105,
+            "regen": 11,
+            "effects": [],
+            "fireResist": 0.04673500000000001,
+            "bleedChance": 0.02205999999999997,
+            "allResist": 0.021019999999999987,
+            "lightningResist": 0.04290499999999998,
+            "shockChance": 0.02246999999999999,
+            "poisonChance": 0.01971999999999998,
+            "lifeOnKill": 0.003789999999999998,
+            "igniteChance": 0.024354999999999974,
+            "chillChance": 0.021849999999999984,
+            "manaOnKill": 1.8340000000000005,
+            "poisonResist": 0.04483499999999997,
+            "coldResist": 0.045834999999999994,
+            "arcaneResist": 0.042659999999999976,
+            "shadowResist": 0.04469999999999999,
+            "rules": [
+              {
+                "id": "innate-sword-qi",
+                "name": "剑气",
+                "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                "source": "剑势流 · 固有",
+                "tier": 1,
+                "trigger": "nth",
+                "chance": 1,
+                "icd": 0,
+                "every": 3,
+                "count": "hit",
+                "filter": {
+                  "weapons": [
+                    "sword"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "nova",
+                  "ratio": 0.35,
+                  "radius": 2.2,
+                  "damageType": "physical",
+                  "ref": "hit",
+                  "at": "target",
+                  "vfx": "combo/sword-qi"
+                },
+                "scale": [
+                  "action.ratio"
+                ],
+                "vfxKey": "combo/sword-qi"
+              },
+              {
+                "id": "stat-igniteChance",
+                "name": "点燃几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.024354999999999974,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "burn",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/ember"
+              },
+              {
+                "id": "stat-chillChance",
+                "name": "冰缓几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.021849999999999984,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "slow",
+                  "duration": 60,
+                  "strength": 0.3,
+                  "ratio": 0
+                },
+                "scale": [],
+                "vfxKey": "player/frost"
+              },
+              {
+                "id": "stat-shockChance",
+                "name": "感电几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.02246999999999999,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "shock",
+                  "duration": 90,
+                  "strength": 0.12,
+                  "ratio": 0
+                },
+                "scale": [],
+                "vfxKey": "player/chain"
+              },
+              {
+                "id": "stat-poisonChance",
+                "name": "中毒几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.01971999999999998,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/poison_arrow"
+              },
+              {
+                "id": "stat-bleedChance",
+                "name": "流血几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.02205999999999997,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "bleed",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/execute"
+              },
+              {
+                "id": "stat-manaOnKill",
+                "name": "击杀回复灵力",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "kill",
+                "chance": 1,
+                "icd": 0,
+                "filter": {},
+                "when": [],
+                "action": {
+                  "type": "mana",
+                  "ratio": 0,
+                  "ref": "maxMana",
+                  "flat": 1.8340000000000005
+                },
+                "scale": [],
+                "vfxKey": "player/mend"
+              },
+              {
+                "id": "stat-lifeOnKill",
+                "name": "击杀回复生命",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "kill",
+                "chance": 1,
+                "icd": 0,
+                "filter": {},
+                "when": [],
+                "action": {
+                  "type": "heal",
+                  "ratio": 0.003789999999999998,
+                  "ref": "maxHp"
+                },
+                "scale": [],
+                "vfxKey": "player/mend"
+              }
+            ],
+            "zones": [
+              {
+                "id": "mastery",
+                "label": "等级精通",
+                "kind": "add",
+                "value": 0.15
+              },
+              {
+                "id": "weapon-affinity",
+                "label": "武器亲和 · 武技",
+                "kind": "mult",
+                "value": 1.14,
+                "tags": [
+                  "martial"
+                ]
+              }
+            ],
+            "damageAdd": 0.15,
+            "damageMult": 1,
+            "combos": [
+              {
+                "id": "innate-sword-qi",
+                "name": "剑气",
+                "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                "source": "剑势流 · 固有",
+                "weapons": [
+                  "sword"
+                ],
+                "trigger": "nth",
+                "chance": 1,
+                "cooldown": 0,
+                "every": 3,
+                "action": {
+                  "type": "nova",
+                  "radius": 2.2,
+                  "ratio": 0.35,
+                  "damageType": "physical",
+                  "vfx": "combo/sword-qi"
+                }
+              }
+            ]
+          },
+          "skills": [
+            {
+              "id": "cut",
+              "category": "melee",
+              "unlockLevel": 1,
+              "name": "斩击",
+              "kind": "single",
+              "damage": 131,
+              "range": 3,
+              "radius": 0,
+              "cooldown": 24,
+              "cost": 0,
+              "windup": 3,
+              "duration": 0,
+              "description": "近距离斩击",
+              "weapons": [
+                "sword"
+              ],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "enemy",
+                "statuses": []
+              },
+              "tags": [
+                "martial",
+                "melee",
+                "physical",
+                "single"
+              ],
+              "resolution": {
+                "attackShare": 1,
+                "baseCooldown": 24,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 24
+              }
+            },
+            {
+              "id": "whirl",
+              "category": "melee",
+              "unlockLevel": 2,
+              "name": "旋风斩",
+              "kind": "area",
+              "damage": 113,
+              "range": 0,
+              "radius": 4.5,
+              "cooldown": 75,
+              "cost": 15,
+              "windup": 7,
+              "duration": 0,
+              "description": "清剿身边敌群",
+              "weapons": [
+                "sword"
+              ],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "enemy",
+                "statuses": []
+              },
+              "tags": [
+                "martial",
+                "melee",
+                "physical",
+                "area"
+              ],
+              "resolution": {
+                "attackShare": 1,
+                "baseCooldown": 75,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 75
+              }
+            },
+            {
+              "id": "ward",
+              "category": "support",
+              "unlockLevel": 1,
+              "name": "护身印",
+              "kind": "shield",
+              "damage": 67,
+              "range": 0,
+              "radius": 0,
+              "cooldown": 240,
+              "cost": 15,
+              "windup": 1,
+              "duration": 168,
+              "description": "吸收伤害",
+              "weapons": [],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "self",
+                "statuses": []
+              },
+              "resolution": {
+                "attackShare": 0,
+                "baseCooldown": 240,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 240
+              }
+            }
+          ]
+        },
+        "summary": {
+          "samples": 1,
+          "completed": 0,
+          "deaths": 0,
+          "kills": 64,
+          "killsPerMinute": 42.666666666666664,
+          "engagedShare": 0.5170370370370371,
+          "normalTtkSamples": 62,
+          "normalTtkSeconds": 0.7999999999999998,
+          "clearedCamps": 16,
+          "meanCampClearSeconds": 3.3375000000000004
+        },
+        "samples": [
+          {
+            "seed": 41,
+            "seconds": 90,
+            "survived": true,
+            "completed": false,
+            "loadedCamps": [
+              "ow-wind-camp-5-10",
+              "ow-wind-camp-5-11",
+              "ow-wind-camp-5-12",
+              "ow-wind-camp-5-13",
+              "ow-wind-camp-5-14",
+              "ow-wind-camp-5-15",
+              "ow-wind-camp-5-16",
+              "ow-wind-camp-5-17",
+              "ow-wind-camp-5-18",
+              "ow-wind-camp-5-19",
+              "ow-wind-camp-5-20",
+              "ow-wind-camp-5-21",
+              "ow-wind-camp-5-22",
+              "ow-wind-camp-5-23",
+              "ow-wind-camp-5-24",
+              "ow-wind-camp-5-25",
+              "ow-wind-camp-5-27",
+              "ow-wind-camp-5-28",
+              "ow-wind-camp-5-29",
+              "ow-wind-camp-5-3",
+              "ow-wind-camp-5-30",
+              "ow-wind-camp-5-4",
+              "ow-wind-camp-5-5",
+              "ow-wind-camp-5-6",
+              "ow-wind-camp-5-7",
+              "ow-wind-camp-5-8",
+              "ow-wind-camp-5-9",
+              "ow-wind-camp-6-10",
+              "ow-wind-camp-6-12",
+              "ow-wind-camp-4-1",
+              "ow-wind-camp-4-2",
+              "ow-wind-camp-4-26",
+              "ow-wind-camp-4-27",
+              "ow-wind-camp-4-28",
+              "ow-wind-camp-4-3",
+              "ow-wind-camp-4-4",
+              "ow-wind-camp-3-3",
+              "ow-wind-camp-3-30",
+              "ow-wind-camp-6-14",
+              "ow-wind-camp-6-16",
+              "ow-wind-camp-6-21",
+              "ow-wind-camp-6-23",
+              "ow-wind-camp-3-5",
+              "ow-wind-camp-4-10",
+              "ow-wind-camp-4-11",
+              "ow-wind-camp-4-29",
+              "ow-wind-camp-4-30",
+              "ow-wind-camp-4-5",
+              "ow-wind-camp-4-6",
+              "ow-wind-camp-4-7",
+              "ow-wind-camp-4-9",
+              "ow-wind-camp-5-1",
+              "ow-wind-camp-5-2",
+              "ow-wind-camp-5-26",
+              "ow-wind-camp-6-5",
+              "ow-wind-camp-6-8",
+              "ow-wind-camp-6-3",
+              "ow-wind-camp-6-30"
+            ],
+            "zoneKills": 64,
+            "otherZoneKills": 0,
+            "killsPerMinute": 42.66666666666667,
+            "engagedShare": 0.5170370370370371,
+            "movingShare": 0.47,
+            "normalTtk": {
+              "samples": 62,
+              "meanSeconds": 0.7999999999999998,
+              "values": [
+                0.03333333333333333,
+                1.1,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                1.0333333333333334,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                1.0333333333333334,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                0.03333333333333333,
+                1.2,
+                2.533333333333333,
+                0.03333333333333333,
+                1.1,
+                0.8333333333333334,
+                0.03333333333333333,
+                0.8333333333333334,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                0.8333333333333334,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                0.8333333333333334,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                0.03333333333333333,
+                0.9333333333333333,
+                2.533333333333333,
+                0.03333333333333333,
+                0.03333333333333333,
+                0.9666666666666667,
+                0.9,
+                0.03333333333333333,
+                0.3333333333333333,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                1.1,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                0.03333333333333333,
+                0.8333333333333334,
+                2.1333333333333333,
+                0.03333333333333333,
+                0.8333333333333334,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                0.03333333333333333,
+                0.9333333333333333,
+                2.533333333333333,
+                0.03333333333333333,
+                0.03333333333333333,
+                1.3
+              ]
+            },
+            "eliteTtk": {
+              "samples": 2,
+              "meanSeconds": 4.85,
+              "values": [
+                5.666666666666667,
+                4.033333333333333
+              ]
+            },
+            "rareTtk": {
+              "samples": 0,
+              "meanSeconds": null,
+              "values": []
+            },
+            "camps": [
+              {
+                "id": "ow-wind-camp-5-1",
+                "loaded": true,
+                "firstHitTick": 2419,
+                "clearTick": 2611,
+                "clearSeconds": 6.433333333333334
+              },
+              {
+                "id": "ow-wind-camp-5-2",
+                "loaded": true,
+                "firstHitTick": 2255,
+                "clearTick": 2354,
+                "clearSeconds": 3.3333333333333335
+              },
+              {
+                "id": "ow-wind-camp-5-3",
+                "loaded": true,
+                "firstHitTick": 1855,
+                "clearTick": 1935,
+                "clearSeconds": 2.7
+              },
+              {
+                "id": "ow-wind-camp-5-4",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-5-5",
+                "loaded": true,
+                "firstHitTick": 1717,
+                "clearTick": 1789,
+                "clearSeconds": 2.433333333333333
+              },
+              {
+                "id": "ow-wind-camp-5-6",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-5-7",
+                "loaded": true,
+                "firstHitTick": 1300,
+                "clearTick": 1381,
+                "clearSeconds": 2.7333333333333334
+              },
+              {
+                "id": "ow-wind-camp-5-8",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-5-9",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-5-10",
+                "loaded": true,
+                "firstHitTick": 1140,
+                "clearTick": 1221,
+                "clearSeconds": 2.7333333333333334
+              },
+              {
+                "id": "ow-wind-camp-5-11",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-5-12",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-5-13",
+                "loaded": true,
+                "firstHitTick": 980,
+                "clearTick": 1061,
+                "clearSeconds": 2.7333333333333334
+              },
+              {
+                "id": "ow-wind-camp-5-14",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-5-15",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-5-16",
+                "loaded": true,
+                "firstHitTick": 702,
+                "clearTick": 903,
+                "clearSeconds": 6.733333333333333
+              },
+              {
+                "id": "ow-wind-camp-5-17",
+                "loaded": true,
+                "firstHitTick": 24,
+                "clearTick": 104,
+                "clearSeconds": 2.7
+              },
+              {
+                "id": "ow-wind-camp-5-18",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-5-19",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-5-20",
+                "loaded": true,
+                "firstHitTick": 180,
+                "clearTick": 258,
+                "clearSeconds": 2.6333333333333333
+              },
+              {
+                "id": "ow-wind-camp-5-21",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-5-22",
+                "loaded": true,
+                "firstHitTick": 494,
+                "clearTick": 582,
+                "clearSeconds": 2.966666666666667
+              },
+              {
+                "id": "ow-wind-camp-5-23",
+                "loaded": true,
+                "firstHitTick": 357,
+                "clearTick": 435,
+                "clearSeconds": 2.6333333333333333
+              },
+              {
+                "id": "ow-wind-camp-5-24",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-5-25",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-5-26",
+                "loaded": true,
+                "firstHitTick": 2129,
+                "clearTick": 2213,
+                "clearSeconds": 2.8333333333333335
+              },
+              {
+                "id": "ow-wind-camp-5-27",
+                "loaded": true,
+                "firstHitTick": 1972,
+                "clearTick": 2068,
+                "clearSeconds": 3.2333333333333334
+              },
+              {
+                "id": "ow-wind-camp-5-28",
+                "loaded": true,
+                "firstHitTick": 1580,
+                "clearTick": 1678,
+                "clearSeconds": 3.3
+              },
+              {
+                "id": "ow-wind-camp-5-29",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-5-30",
+                "loaded": true,
+                "firstHitTick": 1428,
+                "clearTick": 1525,
+                "clearSeconds": 3.2666666666666666
+              }
+            ],
+            "damage": 13974,
+            "incoming": 27,
+            "casts": {
+              "whirl": 32,
+              "ward": 10,
+              "cut": 76
+            },
+            "castFailures": {},
+            "hpLeft": 298,
+            "manaLeft": 105,
+            "position": {
+              "x": 374.48647845559276,
+              "y": 93.20027225956989
+            },
+            "checkpointRestored": false
+          }
+        ],
+        "limits": [
+          "Actual authored geometry, camp templates/levels/budgets, streamed chunks and World movement/combat. The player receives no extra HP, mana, healing or damage multipliers.",
+          "The route visits each target-zone camp once, starting at the declared landing or explicit controlled start. All nearby camps, including other zones, remain present and can engage.",
+          "This measures initial-cycle route efficiency. No respawn, rewards, server settlement or natural sustainable drop-frequency claim is made; those require persistent camp/source probes.",
+          "Mean TTK is conditional on kills. Unfinished camps, deaths, failed casts and zero-kill runs remain visible in the sample and aggregate rate."
+        ]
+      }
+    },
+    {
+      "stage": 3,
+      "clock": 45.37604422023624,
+      "start": "Registered zone waypoint",
+      "report": {
+        "generated": "2026-10-07T13:59:08.034Z",
+        "versions": {
+          "client": "0.11.15",
+          "protocol": 31,
+          "rules": "ow-56",
+          "assets": "world-art-20261007-v24-world-runtime",
+          "db": 16
+        },
+        "region": "ss-map-wind",
+        "zone": {
+          "_row": 26,
+          "id": "ow-wind-z6",
+          "region": "ss-map-wind",
+          "name": "船坞要塞",
+          "rect": {
+            "x": 170.66666666666666,
+            "y": 0,
+            "w": 170.66666666666666,
+            "h": 256
+          },
+          "levelBand": [
+            7,
+            8
+          ],
+          "theme": "wind",
+          "ground": "ow-art-grass",
+          "banner": "ow-zone-wind-6"
+        },
+        "start": {
+          "x": 256,
+          "y": 155
+        },
+        "seeds": [
+          41
+        ],
+        "budgetSeconds": 90,
+        "chunkCells": 32,
+        "chunkReach": 2,
+        "difficulty": {
+          "hp": 1,
+          "attack": 1,
+          "armor": 1
+        },
+        "affixRange": null,
+        "requestedSkills": [
+          "cut",
+          "whirl",
+          "ward"
+        ],
+        "executedSkills": [
+          "cut",
+          "whirl",
+          "ward"
+        ],
+        "skillRanks": {
+          "cut": 2,
+          "whirl": 2,
+          "ward": 2
+        },
+        "build": {
+          "stats": {
+            "weapon": "sword",
+            "hp": 334,
+            "attack": 48,
+            "armor": 7,
+            "speed": 6,
+            "mana": 105,
+            "regen": 11,
+            "effects": [],
+            "fireResist": 0.04673500000000001,
+            "bleedChance": 0.02205999999999997,
+            "allResist": 0.021019999999999987,
+            "lightningResist": 0.04290499999999998,
+            "shockChance": 0.02246999999999999,
+            "poisonChance": 0.01971999999999998,
+            "lifeOnKill": 0.003789999999999998,
+            "igniteChance": 0.024354999999999974,
+            "chillChance": 0.021849999999999984,
+            "manaOnKill": 1.8340000000000005,
+            "poisonResist": 0.04483499999999997,
+            "coldResist": 0.045834999999999994,
+            "arcaneResist": 0.042659999999999976,
+            "shadowResist": 0.04469999999999999,
+            "critChance": 0.02,
+            "rules": [
+              {
+                "id": "innate-sword-qi",
+                "name": "剑气",
+                "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                "source": "剑势流 · 固有",
+                "tier": 1,
+                "trigger": "nth",
+                "chance": 1,
+                "icd": 0,
+                "every": 3,
+                "count": "hit",
+                "filter": {
+                  "weapons": [
+                    "sword"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "nova",
+                  "ratio": 0.35,
+                  "radius": 2.2,
+                  "damageType": "physical",
+                  "ref": "hit",
+                  "at": "target",
+                  "vfx": "combo/sword-qi"
+                },
+                "scale": [
+                  "action.ratio"
+                ],
+                "vfxKey": "combo/sword-qi"
+              },
+              {
+                "id": "stat-igniteChance",
+                "name": "点燃几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.024354999999999974,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "burn",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/ember"
+              },
+              {
+                "id": "stat-chillChance",
+                "name": "冰缓几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.021849999999999984,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "slow",
+                  "duration": 60,
+                  "strength": 0.3,
+                  "ratio": 0
+                },
+                "scale": [],
+                "vfxKey": "player/frost"
+              },
+              {
+                "id": "stat-shockChance",
+                "name": "感电几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.02246999999999999,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "shock",
+                  "duration": 90,
+                  "strength": 0.12,
+                  "ratio": 0
+                },
+                "scale": [],
+                "vfxKey": "player/chain"
+              },
+              {
+                "id": "stat-poisonChance",
+                "name": "中毒几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.01971999999999998,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "poison",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/poison_arrow"
+              },
+              {
+                "id": "stat-bleedChance",
+                "name": "流血几率",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "hit",
+                "chance": 0.02205999999999997,
+                "icd": 0,
+                "filter": {
+                  "categories": [
+                    "direct"
+                  ]
+                },
+                "when": [],
+                "action": {
+                  "type": "status",
+                  "ref": "dealt",
+                  "status": "bleed",
+                  "duration": 90,
+                  "strength": 0,
+                  "ratio": 0.3
+                },
+                "scale": [],
+                "vfxKey": "player/execute"
+              },
+              {
+                "id": "stat-manaOnKill",
+                "name": "击杀回复灵力",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "kill",
+                "chance": 1,
+                "icd": 0,
+                "filter": {},
+                "when": [],
+                "action": {
+                  "type": "mana",
+                  "ratio": 0,
+                  "ref": "maxMana",
+                  "flat": 1.8340000000000005
+                },
+                "scale": [],
+                "vfxKey": "player/mend"
+              },
+              {
+                "id": "stat-lifeOnKill",
+                "name": "击杀回复生命",
+                "description": "装备属性触发",
+                "source": "装备与养成属性",
+                "tier": 1,
+                "trigger": "kill",
+                "chance": 1,
+                "icd": 0,
+                "filter": {},
+                "when": [],
+                "action": {
+                  "type": "heal",
+                  "ratio": 0.003789999999999998,
+                  "ref": "maxHp"
+                },
+                "scale": [],
+                "vfxKey": "player/mend"
+              }
+            ],
+            "zones": [
+              {
+                "id": "mastery",
+                "label": "等级精通",
+                "kind": "add",
+                "value": 0.21
+              },
+              {
+                "id": "weapon-affinity",
+                "label": "武器亲和 · 武技",
+                "kind": "mult",
+                "value": 1.14,
+                "tags": [
+                  "martial"
+                ]
+              }
+            ],
+            "damageAdd": 0.21,
+            "damageMult": 1,
+            "combos": [
+              {
+                "id": "innate-sword-qi",
+                "name": "剑气",
+                "description": "每第 3 次命中敌人的技能释放，在目标处爆发剑气（35% 伤害，半径 2.2）",
+                "source": "剑势流 · 固有",
+                "weapons": [
+                  "sword"
+                ],
+                "trigger": "nth",
+                "chance": 1,
+                "cooldown": 0,
+                "every": 3,
+                "action": {
+                  "type": "nova",
+                  "radius": 2.2,
+                  "ratio": 0.35,
+                  "damageType": "physical",
+                  "vfx": "combo/sword-qi"
+                }
+              }
+            ]
+          },
+          "skills": [
+            {
+              "id": "cut",
+              "category": "melee",
+              "unlockLevel": 1,
+              "name": "斩击",
+              "kind": "single",
+              "damage": 154,
+              "range": 3,
+              "radius": 0,
+              "cooldown": 24,
+              "cost": 0,
+              "windup": 3,
+              "duration": 0,
+              "description": "近距离斩击",
+              "weapons": [
+                "sword"
+              ],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "enemy",
+                "statuses": []
+              },
+              "tags": [
+                "martial",
+                "melee",
+                "physical",
+                "single"
+              ],
+              "resolution": {
+                "attackShare": 1,
+                "baseCooldown": 24,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 24
+              }
+            },
+            {
+              "id": "whirl",
+              "category": "melee",
+              "unlockLevel": 2,
+              "name": "旋风斩",
+              "kind": "area",
+              "damage": 132,
+              "range": 0,
+              "radius": 4.5,
+              "cooldown": 75,
+              "cost": 15,
+              "windup": 7,
+              "duration": 0,
+              "description": "清剿身边敌群",
+              "weapons": [
+                "sword"
+              ],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "enemy",
+                "statuses": []
+              },
+              "tags": [
+                "martial",
+                "melee",
+                "physical",
+                "area"
+              ],
+              "resolution": {
+                "attackShare": 1,
+                "baseCooldown": 75,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 75
+              }
+            },
+            {
+              "id": "ward",
+              "category": "support",
+              "unlockLevel": 1,
+              "name": "护身印",
+              "kind": "shield",
+              "damage": 75,
+              "range": 0,
+              "radius": 0,
+              "cooldown": 240,
+              "cost": 15,
+              "windup": 1,
+              "duration": 168,
+              "description": "吸收伤害",
+              "weapons": [],
+              "mechanics": {
+                "damageType": "physical",
+                "targeting": "self",
+                "statuses": []
+              },
+              "resolution": {
+                "attackShare": 0,
+                "baseCooldown": 240,
+                "skillCooldownReduction": 0,
+                "statsCooldownReduction": 0,
+                "effectiveCooldownReduction": 0,
+                "cooldownCap": 0.75,
+                "finalCooldown": 240
+              }
+            }
+          ]
+        },
+        "summary": {
+          "samples": 1,
+          "completed": 0,
+          "deaths": 0,
+          "kills": 58,
+          "killsPerMinute": 38.666666666666664,
+          "engagedShare": 0.4318518518518519,
+          "normalTtkSamples": 55,
+          "normalTtkSeconds": 0.8084848484848485,
+          "clearedCamps": 14,
+          "meanCampClearSeconds": 3.138095238095237
+        },
+        "samples": [
+          {
+            "seed": 41,
+            "seconds": 90,
+            "survived": true,
+            "completed": false,
+            "loadedCamps": [
+              "ow-wind-camp-6-10",
+              "ow-wind-camp-6-11",
+              "ow-wind-camp-6-12",
+              "ow-wind-camp-6-13",
+              "ow-wind-camp-6-14",
+              "ow-wind-camp-6-15",
+              "ow-wind-camp-6-16",
+              "ow-wind-camp-6-17",
+              "ow-wind-camp-6-18",
+              "ow-wind-camp-6-20",
+              "ow-wind-camp-6-21",
+              "ow-wind-camp-6-22",
+              "ow-wind-camp-6-23",
+              "ow-wind-camp-6-4",
+              "ow-wind-camp-6-5",
+              "ow-wind-camp-6-6",
+              "ow-wind-camp-6-7",
+              "ow-wind-camp-6-8",
+              "ow-wind-camp-6-9",
+              "ow-wind-camp-6-19",
+              "ow-wind-camp-6-1",
+              "ow-wind-camp-6-2",
+              "ow-wind-camp-6-26",
+              "ow-wind-camp-6-27",
+              "ow-wind-camp-6-28",
+              "ow-wind-camp-6-29",
+              "ow-wind-camp-6-3",
+              "ow-wind-camp-6-30",
+              "ow-wind-camp-5-1",
+              "ow-wind-camp-5-2",
+              "ow-wind-camp-5-26",
+              "ow-wind-camp-5-27",
+              "ow-wind-camp-5-28",
+              "ow-wind-camp-5-3",
+              "ow-wind-camp-5-30",
+              "ow-wind-camp-5-5",
+              "ow-wind-camp-5-7",
+              "ow-wind-camp-1-1",
+              "ow-wind-camp-1-2",
+              "ow-wind-camp-1-26",
+              "ow-wind-camp-1-27",
+              "ow-wind-camp-1-29",
+              "ow-wind-camp-1-4",
+              "ow-wind-camp-1-6",
+              "ow-wind-camp-1-9",
+              "ow-wind-camp-1-12",
+              "ow-wind-camp-1-15",
+              "ow-wind-camp-1-18",
+              "ow-wind-camp-1-21"
+            ],
+            "zoneKills": 58,
+            "otherZoneKills": 0,
+            "killsPerMinute": 38.66666666666667,
+            "engagedShare": 0.4318518518518519,
+            "movingShare": 0.5611111111111111,
+            "normalTtk": {
+              "samples": 55,
+              "meanSeconds": 0.8084848484848485,
+              "values": [
+                0.03333333333333333,
+                0.23333333333333334,
+                0.03333333333333333,
+                1.5333333333333334,
+                0.03333333333333333,
+                0.03333333333333333,
+                1.3666666666666667,
+                0.03333333333333333,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.23333333333333334,
+                0.03333333333333333,
+                0.8333333333333334,
+                1.9666666666666666,
+                1.9666666666666666,
+                0.03333333333333333,
+                0.8333333333333334,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                0.8333333333333334,
+                0.8333333333333334,
+                1.6333333333333333,
+                0.03333333333333333,
+                0.03333333333333333,
+                0.13333333333333333,
+                0.9333333333333333,
+                0.03333333333333333,
+                0.8333333333333334,
+                1.6333333333333333,
+                2.433333333333333,
+                0.03333333333333333,
+                0.8333333333333334,
+                1.6333333333333333,
+                2.433333333333333,
+                0.03333333333333333,
+                0.8333333333333334,
+                2.1666666666666665,
+                2.1666666666666665,
+                0.03333333333333333,
+                0.03333333333333333,
+                0.26666666666666666,
+                0.6,
+                0.03333333333333333,
+                0.8333333333333334,
+                2.2333333333333334,
+                0.6333333333333333,
+                0.03333333333333333,
+                0.6,
+                0.8333333333333334,
+                0.03333333333333333,
+                2.533333333333333,
+                0.8333333333333334,
+                0.23333333333333334,
+                1.0333333333333334
+              ]
+            },
+            "eliteTtk": {
+              "samples": 3,
+              "meanSeconds": 4.633333333333334,
+              "values": [
+                4.033333333333333,
+                4.833333333333333,
+                5.033333333333333
+              ]
+            },
+            "rareTtk": {
+              "samples": 0,
+              "meanSeconds": null,
+              "values": []
+            },
+            "camps": [
+              {
+                "id": "ow-wind-camp-6-1",
+                "loaded": true,
+                "firstHitTick": 1953,
+                "clearTick": 2121,
+                "clearSeconds": 5.633333333333334
+              },
+              {
+                "id": "ow-wind-camp-6-2",
+                "loaded": true,
+                "firstHitTick": 1417,
+                "clearTick": 1500,
+                "clearSeconds": 2.8
+              },
+              {
+                "id": "ow-wind-camp-6-3",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-6-4",
+                "loaded": true,
+                "firstHitTick": 1697,
+                "clearTick": 1745,
+                "clearSeconds": 1.6333333333333333
+              },
+              {
+                "id": "ow-wind-camp-6-5",
+                "loaded": true,
+                "firstHitTick": 855,
+                "clearTick": 943,
+                "clearSeconds": 2.966666666666667
+              },
+              {
+                "id": "ow-wind-camp-6-6",
+                "loaded": true,
+                "firstHitTick": 2243,
+                "clearTick": 2393,
+                "clearSeconds": 5.033333333333333
+              },
+              {
+                "id": "ow-wind-camp-6-7",
+                "loaded": true,
+                "firstHitTick": 676,
+                "clearTick": 751,
+                "clearSeconds": 2.533333333333333
+              },
+              {
+                "id": "ow-wind-camp-6-8",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-6-9",
+                "loaded": true,
+                "firstHitTick": 450,
+                "clearTick": 531,
+                "clearSeconds": 2.7333333333333334
+              },
+              {
+                "id": "ow-wind-camp-6-10",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-6-11",
+                "loaded": true,
+                "firstHitTick": 204,
+                "clearTick": 372,
+                "clearSeconds": 5.633333333333334
+              },
+              {
+                "id": "ow-wind-camp-6-12",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-6-13",
+                "loaded": true,
+                "firstHitTick": 62,
+                "clearTick": 137,
+                "clearSeconds": 2.533333333333333
+              },
+              {
+                "id": "ow-wind-camp-6-14",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-6-15",
+                "loaded": true,
+                "firstHitTick": 2657,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-6-16",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-6-17",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-6-18",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-6-19",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-6-20",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-6-21",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-6-22",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-6-23",
+                "loaded": true,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-6-24",
+                "loaded": false,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-6-25",
+                "loaded": false,
+                "firstHitTick": null,
+                "clearTick": null,
+                "clearSeconds": null
+              },
+              {
+                "id": "ow-wind-camp-6-26",
+                "loaded": true,
+                "firstHitTick": 1808,
+                "clearTick": 1883,
+                "clearSeconds": 2.533333333333333
+              },
+              {
+                "id": "ow-wind-camp-6-27",
+                "loaded": true,
+                "firstHitTick": 1575,
+                "clearTick": 1650,
+                "clearSeconds": 2.533333333333333
+              },
+              {
+                "id": "ow-wind-camp-6-28",
+                "loaded": true,
+                "firstHitTick": 1259,
+                "clearTick": 1341,
+                "clearSeconds": 2.7666666666666666
+              },
+              {
+                "id": "ow-wind-camp-6-29",
+                "loaded": true,
+                "firstHitTick": 1133,
+                "clearTick": 1186,
+                "clearSeconds": 1.8
+              },
+              {
+                "id": "ow-wind-camp-6-30",
+                "loaded": true,
+                "firstHitTick": 1009,
+                "clearTick": 1092,
+                "clearSeconds": 2.8
+              }
+            ],
+            "damage": 13665,
+            "incoming": 41,
+            "casts": {
+              "ward": 10,
+              "whirl": 30,
+              "cut": 62
+            },
+            "castFailures": {},
+            "hpLeft": 334,
+            "manaLeft": 97.00133333333301,
+            "position": {
+              "x": 206.8717142187551,
+              "y": 154.14510493738692
+            },
+            "checkpointRestored": false
+          }
+        ],
+        "limits": [
+          "Actual authored geometry, camp templates/levels/budgets, streamed chunks and World movement/combat. The player receives no extra HP, mana, healing or damage multipliers.",
+          "The route visits each target-zone camp once, starting at the declared landing or explicit controlled start. All nearby camps, including other zones, remain present and can engage.",
+          "This measures initial-cycle route efficiency. No respawn, rewards, server settlement or natural sustainable drop-frequency claim is made; those require persistent camp/source probes.",
+          "Mean TTK is conditional on kills. Unfinished camps, deaths, failed casts and zero-kill runs remain visible in the sample and aggregate rate."
+        ]
+      }
+    }
+  ]
+}

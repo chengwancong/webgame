@@ -1,0 +1,47 @@
+/* Flat light quality surfaces, one selection rim, no texture. */
+.quality-common{--item-surface:var(--color-item-common)}
+.quality-magic{--item-surface:var(--color-item-magic)}
+.quality-rare{--item-surface:var(--color-item-rare)}
+.quality-legendary{--item-surface:var(--color-item-legendary)}
+
+.bag-item-well,
+.battle-result .loot-tile,
+.gear-card,
+.equip-tip-art,
+.bag-detail-heading>.gear-art,
+.bag-detail-heading>.bag-item-image,
+.gear-card-heading>img,
+.character-candidate>img{
+  background:var(--item-surface,var(--color-item-surface));
+  border-color:var(--color-border-subtle);
+  box-shadow:none;
+}
+
+.bag-item:hover:not(:disabled) .bag-item-well,
+.gear-card:hover:not(:disabled),
+.battle-result .loot-tile:hover:not(:disabled){
+  background:color-mix(in srgb,var(--color-text-primary) 6%,var(--item-surface,var(--color-item-surface)));
+  border-color:var(--quality-color,var(--color-border-strong));
+}
+.bag-item:active:not(:disabled) .bag-item-well,
+.gear-card:active:not(:disabled),
+.battle-result .loot-tile:active:not(:disabled){
+  background:color-mix(in srgb,var(--color-panel-inset) 12%,var(--item-surface,var(--color-item-surface)));
+}
+.bag-item.is-selected .bag-item-well,
+.bag-item.is-selected:hover .bag-item-well,
+.gear-card[aria-pressed=true],
+.gear-card[aria-pressed=true]:hover:not(:disabled){
+  background:var(--item-surface,var(--color-item-surface));
+  border-color:var(--color-highlight);
+  box-shadow:inset 0 0 0 var(--border-width) var(--color-highlight);
+}
+.bag-item>b{color:var(--color-text-primary);text-shadow:none;letter-spacing:0}
+
+.bag-item>b{font-size:var(--font-size-body);font-weight:var(--font-weight-semibold);color:var(--color-text-primary)}
+
+.bag-item-count{font-size:var(--font-size-body);font-weight:var(--font-weight-bold);color:var(--color-emphasis)}
+
+.character-slot:is([aria-pressed=true],[aria-expanded=true]){background:var(--color-panel-raised);border-color:var(--color-highlight);box-shadow:var(--shadow-selected)}
+
+.bag-item-well[class*=quality-],.gear-card[class*=quality-],.battle-result .loot-tile[class*=quality-]{border:var(--border-width) solid var(--quality-color,var(--color-border-strong))}.bag-item.is-selected .bag-item-well,.gear-card[aria-pressed=true]{border-color:var(--color-highlight);box-shadow:none}.character-slot.empty{border-style:dashed}.character-slot.empty .character-slot-art img{opacity:.3}.slot:not(.character-slot):has(.ui-slot-mark){position:relative;overflow:visible}

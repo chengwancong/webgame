@@ -1,0 +1,32 @@
+
+ RUN  v4.0.18 G:/webgame/abyss-walker-migration/abyss-walker-rewrite/open-world
+
+ ❯ tests/equipment-runtime.database.test.ts (7 tests | 1 failed) 47541ms
+   ✓ saved old labels and pending loot show current names without changing rolls, wallet or historical rows 270ms
+   ✓ a frozen travel pool shows current names without changing its frozen templates or displayed numbers 87ms
+   × the current island campaign crafts all six slots and reinforces them beyond the legacy cap 1527ms
+   ✓ all 324 items can be earned by real crafting commands, equipped, quoted, reinforced once and restored  44968ms
+   ✓ real six-piece loadouts coexist with a retained old core and activate current 2/4 bonuses 219ms
+   ✓ later-stage equip and unopened crafting gates fail without charging or changing the build 84ms
+   ✓ confirmed field combat awards a new-stage item, its claim replays once and private pools stay private 128ms
+ ✓ tests/equipment-runtime.test.ts (8 tests) 623ms
+   ✓ every set activates 2/4/6 distinct pieces and only worn pieces contribute to live attributes  339ms
+ ✓ tests/build-variety-r5.test.ts (25 tests) 131ms
+ ✓ tests/build-variety-r1.test.ts (55 tests) 128ms
+ ✓ tests/build-variety-atom-parts.test.ts (6 tests) 11ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/equipment-runtime.database.test.ts > the current island campaign crafts all six slots and reinforces them beyond the legacy cap
+TypeError: actual value must be number or bigint, received "undefined"
+ ❯ tests/equipment-runtime.database.test.ts:75:99
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 100 passed (101)
+   Start at  22:12:46
+   Duration  53.24s (transform 1.19s, setup 0ms, import 4.00s, tests 48.43s, environment 1ms)
+

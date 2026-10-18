@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>技能动作样片</title>
+<style>
+ body{margin:0;padding:18px;background:#f6f0e2;color:#3a3226;font:14px/1.5 "Microsoft YaHei",sans-serif}
+ h1{font-size:18px;margin:0 0 10px}
+ .bar{display:flex;gap:14px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+ .bar input[type=range]{width:320px}
+ .stage{position:relative;display:block;max-width:1300px;border-radius:10px;overflow:hidden;background:linear-gradient(#d3e3ba);box-shadow:0 1px 4px rgba(0,0,0,.15)}
+ .stage canvas{display:block;width:100%;height:auto}
+ #overlay{position:absolute;inset:0;pointer-events:none}
+ #status{margin-top:8px;font:12px monospace;color:#7a6e5a}
+</style>
+</head>
+<body>
+<h1>技能动作样片</h1>
+<div class="bar">
+ <label>武器 <select id="weapon"></select></label>
+ <label>内容 <select id="mode"><option value="skills">武器技能</option><option value="spells">法术（任意武器）</option><option value="native">原始动作</option><option value="bodies">身体皮肤</option></select></label>
+ <label>节奏 <select id="timing"><option value="game">实战节奏（真实前摇 + 8 tick 收招）</option><option value="native">原始时长</option></select></label>
+ <label>速度 <select id="speed"><option value="1">1×</option><option value="0.5">0.5×</option><option value="0.25">0.25×</option></select></label>
+ <button id="pause">暂停</button>
+ <input id="scrub" type="range" min="0" max="1" step="0.001" value="0">
+ <label><input id="mirror" type="checkbox"> 朝右</label>
+ <label><input id="trail" type="checkbox" checked> 刀尖轨迹</label>
+</div>
+<div class="stage"><canvas id="stage"></canvas><canvas id="overlay"></canvas></div>
+<div id="status"></div>
+<script type="module" src="/src/skill-motion-lab.ts"></script>
+</body>
+</html>

@@ -1,0 +1,810 @@
+{
+  "generated": "2026-10-07T08:36:55.389Z",
+  "owner": "numeric-01a11514",
+  "formalWriter": "main-integration-01a10fc0",
+  "applied": false,
+  "audit": {
+    "versions": {
+      "client": "0.11.14",
+      "protocol": 30,
+      "rules": "ow-55",
+      "assets": "world-art-20261007-v24-world-runtime",
+      "db": 16
+    },
+    "modelSha256": "25ab67c0428780f3d3eb73860ee23cbc66afe1ece2578af62bd3995da1d0bdf8",
+    "stages": 24
+  },
+  "sourceHashes": {
+    "model": {
+      "path": ".design/standard-player-20261005/model.json",
+      "sha256": "25ab67c0428780f3d3eb73860ee23cbc66afe1ece2578af62bd3995da1d0bdf8"
+    },
+    "flow": {
+      "path": ".design/numeric-flow-20261006/flow.json",
+      "sha256": "dd6d0d1a15eeaf7a062680ee1d3364b7bc2c0b5b9a9a4c0b48d03a185c671341"
+    },
+    "monsters": {
+      "path": "packages/content/monsters.json",
+      "sha256": "a51155084c8c1799917257ea28ec95a58d63ea0ae0ccce6ac94eb5896ba88c22"
+    },
+    "tiers": {
+      "path": "packages/content/world-tiers.json",
+      "sha256": "cfbfd0974fd3075fd32847305233ac1bbb4ecbcb8702c37c5b16b3b0fa16e727"
+    },
+    "pools": {
+      "path": "apps/api/src/stage-key-pools.json",
+      "sha256": "0cd601f02ec61b160df0b76ff6fdd53bafa24ea3021a3b8cbca82cac9637e6e9"
+    },
+    "sourceBasis": {
+      "path": "docs/reviews/open-world-m2-m4/W3/key-source-basis.json",
+      "sha256": "dd937d0359bdae978076d21e15589925a8c2bba25b1fda866289b3a117412a5e"
+    }
+  },
+  "tier4": {
+    "target": {
+      "index": 24,
+      "group": "裂星潮",
+      "slot": 6,
+      "start": 1681.7680200295604,
+      "explore": 14.160532111318178,
+      "push": 35.306926730886666,
+      "farm": 68.53697541877997,
+      "clear": 1731.2354788717653,
+      "end": 1799.7724542905453,
+      "R": 25.977068103477727,
+      "level": 48.94354353906941,
+      "g": 0.005513202704770616,
+      "J": 0.3922292389142868,
+      "S": null,
+      "F": null,
+      "lam": 0.027386003831688436,
+      "mc": {
+        "p10": 12.666196965922143,
+        "median": 35.13205186465011,
+        "p90": 56.49108276941866,
+        "max": 88.2317573365213,
+        "paths": {
+          "skip": 0.0002,
+          "drop": 0.7309,
+          "grind": 0.0221,
+          "craft": 0.2468
+        }
+      },
+      "dps1": 12147069.999116413,
+      "ehp": 21653.519598186045,
+      "bossHp": 637721174.9536117,
+      "bossDps": 721.7839866062016,
+      "bossHpFactor": 16.173997539016728,
+      "normalHp": 5757226.488130331,
+      "normalHpFactor": 1.4601579923601458,
+      "farmDpsGain": null,
+      "shareMedian": 0.6611133258866273,
+      "shareLucky": 0.8440184466449696,
+      "shareUnlucky": 0.548172757475083,
+      "keyDropMedian": 25.31027107203945,
+      "dropChanceByCraft": 0.741712476661056
+    },
+    "basis": {
+      "template": "ow-boss-dragon-3",
+      "level": 53,
+      "bossHp": 73826261,
+      "rawDps": 170.83333333333334,
+      "hits": 19,
+      "seed": 41,
+      "seconds": 30,
+      "versions": {
+        "client": "0.11.14",
+        "protocol": 30,
+        "rules": "ow-55",
+        "assets": "world-art-20261007-v24-world-runtime",
+        "db": 16
+      },
+      "limitations": [
+        "Explicit registered field-boss template and explicitly supplied monster level, controlled empty arena.",
+        "Fixed empty arena, stationary zero-armor high-HP target; real boss AI/casts/damage, no victory or natural pacing claim.",
+        "Baseline measures full-health boss phase; full wall phase win-rate probes remain separate."
+      ]
+    },
+    "referenceMode": "explicit registered field template/monster level",
+    "cachedReferenceOnly": false,
+    "valid": true,
+    "desired": {
+      "hp": 8.63813453797439,
+      "attack": 4.225076994768009
+    },
+    "error": null,
+    "proposed": {
+      "tier": 4,
+      "name": "深渊",
+      "unlock": {
+        "kind": "hardmode_bosses",
+        "level": 50,
+        "bosses": [
+          "ss-map-boss-1",
+          "ss-map-boss-2",
+          "ss-map-boss-3",
+          "ss-map-boss-4",
+          "ss-map-boss-5",
+          "ss-map-boss-6"
+        ],
+        "text": "达到50级并击败六岛裂星潮首领"
+      },
+      "monster": {
+        "hp": 8.63813453797439,
+        "attack": 4.225076994768009
+      },
+      "reward": {
+        "xp": 1.8,
+        "gold": 2.2,
+        "material": 2.2,
+        "gear": 2.2
+      },
+      "eliteAffixes": [
+        2,
+        3
+      ]
+    },
+    "maximumReferenceForMonotoneTier4": {
+      "hp": 245277374.98215836,
+      "dps": 465.66708813303325
+    },
+    "recomputeAfterMonsterAdoption": true
+  },
+  "keyPools": {
+    "changes": [
+      {
+        "stage": 1,
+        "before": {
+          "level": 3,
+          "dropProbability": 0.016917383142405318,
+          "required": 59,
+          "basis": {
+            "elitePerMinute": 13.989637305699482,
+            "lambdaPerMinute": 0.2386928247656045,
+            "targetMinutes": 2.9809397007652834,
+            "materialTargetMinutes": 4.173315581071397
+          }
+        },
+        "after": {
+          "level": 3,
+          "dropProbability": 0.02723702081059365,
+          "required": 35,
+          "basis": {
+            "elitePerMinute": 8.359133126934985,
+            "lambdaPerMinute": 0.23083599365656435,
+            "targetMinutes": 2.9809397007652834,
+            "materialTargetMinutes": 4.173315581071397
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 2
+      },
+      {
+        "stage": 2,
+        "before": {
+          "level": 6,
+          "dropProbability": 0.02732041579817379,
+          "required": 69,
+          "basis": {
+            "elitePerMinute": 14.542190305206464,
+            "lambdaPerMinute": 0.40282678772999925,
+            "targetMinutes": 3.3788303477804758,
+            "materialTargetMinutes": 4.730362486892666
+          }
+        },
+        "after": {
+          "level": 6,
+          "dropProbability": 0.03149569425585319,
+          "required": 60,
+          "basis": {
+            "elitePerMinute": 12.587412587412587,
+            "lambdaPerMinute": 0.40282678772999925,
+            "targetMinutes": 3.3788303477804758,
+            "materialTargetMinutes": 4.730362486892666
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 3,
+        "before": {
+          "level": 7,
+          "dropProbability": 0.019190503228781797,
+          "required": 91,
+          "basis": {
+            "elitePerMinute": 16.56441717791411,
+            "lambdaPerMinute": 0.3209692279431309,
+            "targetMinutes": 3.9002787852911562,
+            "materialTargetMinutes": 5.460390299407618
+          }
+        },
+        "after": {
+          "level": 7,
+          "dropProbability": 0.02180727828666218,
+          "required": 80,
+          "basis": {
+            "elitePerMinute": 14.542190305206464,
+            "lambdaPerMinute": 0.3206345211678856,
+            "targetMinutes": 3.9002787852911562,
+            "materialTargetMinutes": 5.460390299407618
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 4,
+        "before": {
+          "level": 10,
+          "dropProbability": 0.008981989314593597,
+          "required": 158,
+          "basis": {
+            "elitePerMinute": 15.652173913043478,
+            "lambdaPerMinute": 0.14122284360431878,
+            "targetMinutes": 7.1867155112257795,
+            "materialTargetMinutes": 10.06140171571609
+          }
+        },
+        "after": {
+          "level": 10,
+          "dropProbability": 0.009436250090863352,
+          "required": 150,
+          "basis": {
+            "elitePerMinute": 14.848762603116407,
+            "lambdaPerMinute": 0.14078191372918072,
+            "targetMinutes": 7.1867155112257795,
+            "materialTargetMinutes": 10.06140171571609
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 5,
+        "before": {
+          "level": 12,
+          "dropProbability": 0.007878482259072839,
+          "required": 183,
+          "basis": {
+            "elitePerMinute": 16.007905138339922,
+            "lambdaPerMinute": 0.12661743075491952,
+            "targetMinutes": 8.12585602424652,
+            "materialTargetMinutes": 11.376198433945127
+          }
+        },
+        "after": {
+          "level": 12,
+          "dropProbability": 0.0069178151128250764,
+          "required": 207,
+          "basis": {
+            "elitePerMinute": 18.18181818181818,
+            "lambdaPerMinute": 0.12621552954367599,
+            "targetMinutes": 8.12585602424652,
+            "materialTargetMinutes": 11.376198433945127
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 6,
+        "before": {
+          "level": 14,
+          "dropProbability": 0.006576792233281892,
+          "required": 213,
+          "basis": {
+            "elitePerMinute": 16.2,
+            "lambdaPerMinute": 0.10689593694359652,
+            "targetMinutes": 9.358000742041007,
+            "materialTargetMinutes": 13.10120103885741
+          }
+        },
+        "after": {
+          "level": 14,
+          "dropProbability": 0.0069068760968415965,
+          "required": 204,
+          "basis": {
+            "elitePerMinute": 15.502392344497606,
+            "lambdaPerMinute": 0.10744458496388931,
+            "targetMinutes": 9.358000742041007,
+            "materialTargetMinutes": 13.10120103885741
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 7,
+        "before": {
+          "level": 16,
+          "dropProbability": 0.004885980856351835,
+          "required": 290,
+          "basis": {
+            "elitePerMinute": 21.862348178137655,
+            "lambdaPerMinute": 0.10708082565410475,
+            "targetMinutes": 9.454372479057213,
+            "materialTargetMinutes": 13.236121470680096
+          }
+        },
+        "after": {
+          "level": 16,
+          "dropProbability": 0.005104848159428799,
+          "required": 273,
+          "basis": {
+            "elitePerMinute": 20.584498094027953,
+            "lambdaPerMinute": 0.10534986410401406,
+            "targetMinutes": 9.454372479057213,
+            "materialTargetMinutes": 13.236121470680096
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 8,
+        "before": {
+          "level": 18,
+          "dropProbability": 0.0045003951256860075,
+          "required": 317,
+          "basis": {
+            "elitePerMinute": 21.204188481675395,
+            "lambdaPerMinute": 0.09564260302881268,
+            "targetMinutes": 10.667451889053893,
+            "materialTargetMinutes": 14.93443264467545
+          }
+        },
+        "after": {
+          "level": 18,
+          "dropProbability": 0.004152946018236459,
+          "required": 337,
+          "basis": {
+            "elitePerMinute": 22.5,
+            "lambdaPerMinute": 0.09363585258891277,
+            "targetMinutes": 10.667451889053893,
+            "materialTargetMinutes": 14.93443264467545
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 9,
+        "before": {
+          "level": 20,
+          "dropProbability": 0.003656815345334463,
+          "required": 395,
+          "basis": {
+            "elitePerMinute": 22.97872340425532,
+            "lambdaPerMinute": 0.08418296311844703,
+            "targetMinutes": 12.260559996738165,
+            "materialTargetMinutes": 17.164783995433428
+          }
+        },
+        "after": {
+          "level": 20,
+          "dropProbability": 0.004472278446719158,
+          "required": 322,
+          "basis": {
+            "elitePerMinute": 18.728323699421964,
+            "lambdaPerMinute": 0.08394613389967313,
+            "targetMinutes": 12.260559996738165,
+            "materialTargetMinutes": 17.164783995433428
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 10,
+        "before": {
+          "level": 22,
+          "dropProbability": 0.002342372478760013,
+          "required": 573,
+          "basis": {
+            "elitePerMinute": 32.53012048192771,
+            "lambdaPerMinute": 0.07628704020065129,
+            "targetMinutes": 12.566738808693097,
+            "materialTargetMinutes": 17.593434332170336
+          }
+        },
+        "after": {
+          "level": 22,
+          "dropProbability": 0.0021654206126152653,
+          "required": 587,
+          "basis": {
+            "elitePerMinute": 33.33333333333333,
+            "lambdaPerMinute": 0.07225895086407765,
+            "targetMinutes": 12.566738808693097,
+            "materialTargetMinutes": 17.593434332170336
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 11,
+        "before": {
+          "level": 24,
+          "dropProbability": 0.002310387367621347,
+          "required": 567,
+          "basis": {
+            "elitePerMinute": 28.571428571428573,
+            "lambdaPerMinute": 0.06608744087189714,
+            "targetMinutes": 14.15366486985912,
+            "materialTargetMinutes": 19.815130817802768
+          }
+        },
+        "after": {
+          "level": 24,
+          "dropProbability": 0.0021887986836292006,
+          "required": 579,
+          "basis": {
+            "elitePerMinute": 29.18918918918919,
+            "lambdaPerMinute": 0.06395928143187665,
+            "targetMinutes": 14.15366486985912,
+            "materialTargetMinutes": 19.815130817802768
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 12,
+        "before": {
+          "level": 26,
+          "dropProbability": 0.0017828155404752133,
+          "required": 730,
+          "basis": {
+            "elitePerMinute": 32.07920792079207,
+            "lambdaPerMinute": 0.057242351859829635,
+            "targetMinutes": 16.23954335926563,
+            "materialTargetMinutes": 22.73536070297188
+          }
+        },
+        "after": {
+          "level": 26,
+          "dropProbability": 0.001610335251092887,
+          "required": 778,
+          "basis": {
+            "elitePerMinute": 34.17721518987342,
+            "lambdaPerMinute": 0.05508113586435119,
+            "targetMinutes": 16.23954335926563,
+            "materialTargetMinutes": 22.73536070297188
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 13,
+        "before": {
+          "level": 28,
+          "dropProbability": 0.0022260970501691846,
+          "required": 636,
+          "basis": {
+            "elitePerMinute": 34.17721518987342,
+            "lambdaPerMinute": 0.07616660653498464,
+            "targetMinutes": 13.28215910321437,
+            "materialTargetMinutes": 18.595022744500117
+          }
+        },
+        "after": {
+          "level": 28,
+          "dropProbability": 0.002181781445061537,
+          "required": 636,
+          "basis": {
+            "elitePerMinute": 34.17721518987342,
+            "lambdaPerMinute": 0.07464867713853036,
+            "targetMinutes": 13.28215910321437,
+            "materialTargetMinutes": 18.595022744500117
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 14,
+        "before": {
+          "level": 30,
+          "dropProbability": 0.001704709604695931,
+          "required": 858,
+          "basis": {
+            "elitePerMinute": 41.0126582278481,
+            "lambdaPerMinute": 0.0699743323134277,
+            "targetMinutes": 14.936084010652849,
+            "materialTargetMinutes": 20.910517614913985
+          }
+        },
+        "after": {
+          "level": 30,
+          "dropProbability": 0.0017040055323812586,
+          "required": 858,
+          "basis": {
+            "elitePerMinute": 41.0126582278481,
+            "lambdaPerMinute": 0.06994540713737388,
+            "targetMinutes": 14.936084010652849,
+            "materialTargetMinutes": 20.910517614913985
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 15,
+        "before": {
+          "level": 32,
+          "dropProbability": 0.001329432580257306,
+          "required": 1052,
+          "basis": {
+            "elitePerMinute": 43.90243902439025,
+            "lambdaPerMinute": 0.05840416359837813,
+            "targetMinutes": 17.111707311741995,
+            "materialTargetMinutes": 23.956390236438793
+          }
+        },
+        "after": {
+          "level": 32,
+          "dropProbability": 0.0016553725020339582,
+          "required": 841,
+          "basis": {
+            "elitePerMinute": 35.064935064935064,
+            "lambdaPerMinute": 0.05809362586445163,
+            "targetMinutes": 17.111707311741995,
+            "materialTargetMinutes": 23.956390236438793
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 16,
+        "before": {
+          "level": 33,
+          "dropProbability": 0.00102695004702269,
+          "required": 1298,
+          "basis": {
+            "elitePerMinute": 48.07121661721068,
+            "lambdaPerMinute": 0.04939210412038687,
+            "targetMinutes": 19.28177949949194,
+            "materialTargetMinutes": 26.994491299288715
+          }
+        },
+        "after": {
+          "level": 33,
+          "dropProbability": 0.001245160039035853,
+          "required": 1078,
+          "basis": {
+            "elitePerMinute": 39.90147783251231,
+            "lambdaPerMinute": 0.049714683491373424,
+            "targetMinutes": 19.28177949949194,
+            "materialTargetMinutes": 26.994491299288715
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 17,
+        "before": {
+          "level": 35,
+          "dropProbability": 0.0005844506554620876,
+          "required": 2154,
+          "basis": {
+            "elitePerMinute": 71.05263157894737,
+            "lambdaPerMinute": 0.041538896999169676,
+            "targetMinutes": 21.653150590175734,
+            "materialTargetMinutes": 30.314410826246025
+          }
+        },
+        "after": {
+          "level": 35,
+          "dropProbability": 0.0007629751057943723,
+          "required": 1671,
+          "basis": {
+            "elitePerMinute": 55.102040816326536,
+            "lambdaPerMinute": 0.04205753188726902,
+            "targetMinutes": 21.653150590175734,
+            "materialTargetMinutes": 30.314410826246025
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 18,
+        "before": {
+          "level": 37,
+          "dropProbability": 0.00046395418122302523,
+          "required": 2715,
+          "basis": {
+            "elitePerMinute": 78.26086956521739,
+            "lambdaPerMinute": 0.03631788322943286,
+            "targetMinutes": 24.77468842556612,
+            "materialTargetMinutes": 34.68456379579256
+          }
+        },
+        "after": {
+          "level": 37,
+          "dropProbability": 0.0008606720402474233,
+          "required": 1479,
+          "basis": {
+            "elitePerMinute": 42.63157894736842,
+            "lambdaPerMinute": 0.03670760690398782,
+            "targetMinutes": 24.77468842556612,
+            "materialTargetMinutes": 34.68456379579256
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 19,
+        "before": {
+          "level": 39,
+          "dropProbability": 0.0003080382925539915,
+          "required": 4315,
+          "basis": {
+            "elitePerMinute": 95.85798816568047,
+            "lambdaPerMinute": 0.029532479803102554,
+            "targetMinutes": 32.1464601437229,
+            "materialTargetMinutes": 45.00504420121205
+          }
+        },
+        "after": {
+          "level": 39,
+          "dropProbability": 0.0006081150246266542,
+          "required": 2230,
+          "basis": {
+            "elitePerMinute": 49.54128440366972,
+            "lambdaPerMinute": 0.030135963380212114,
+            "targetMinutes": 32.1464601437229,
+            "materialTargetMinutes": 45.00504420121205
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 20,
+        "before": {
+          "level": 42,
+          "dropProbability": 0.0002930892450816458,
+          "required": 4676,
+          "basis": {
+            "elitePerMinute": 101.88679245283019,
+            "lambdaPerMinute": 0.02986630004328166,
+            "targetMinutes": 32.778553461155646,
+            "materialTargetMinutes": 45.8899748456179
+          }
+        },
+        "after": {
+          "level": 42,
+          "dropProbability": 0.0006291655387050676,
+          "required": 2200,
+          "basis": {
+            "elitePerMinute": 47.928994082840234,
+            "lambdaPerMinute": 0.03016476169136111,
+            "targetMinutes": 32.778553461155646,
+            "materialTargetMinutes": 45.8899748456179
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 21,
+        "before": {
+          "level": 44,
+          "dropProbability": 0.00011963839286988076,
+          "required": 10982,
+          "basis": {
+            "elitePerMinute": 234.78260869565216,
+            "lambdaPerMinute": 0.02809069437442408,
+            "targetMinutes": 33.4106467785884,
+            "materialTargetMinutes": 46.774905490023755
+          }
+        },
+        "after": {
+          "level": 44,
+          "dropProbability": 0.0005484869406241488,
+          "required": 2429,
+          "basis": {
+            "elitePerMinute": 51.92307692307692,
+            "lambdaPerMinute": 0.02848694268171157,
+            "targetMinutes": 33.4106467785884,
+            "materialTargetMinutes": 46.774905490023755
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 22,
+        "before": {
+          "level": 46,
+          "dropProbability": 0.00011511148927001447,
+          "required": 11190,
+          "basis": {
+            "elitePerMinute": 234.78260869565216,
+            "lambdaPerMinute": 0.027027731372707028,
+            "targetMinutes": 34.042740096021156,
+            "materialTargetMinutes": 47.65983613442962
+          }
+        },
+        "after": {
+          "level": 46,
+          "dropProbability": 0.0005695895933168771,
+          "required": 2285,
+          "basis": {
+            "elitePerMinute": 47.928994082840234,
+            "lambdaPerMinute": 0.02730763405832344,
+            "targetMinutes": 34.042740096021156,
+            "materialTargetMinutes": 47.65983613442962
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 23,
+        "before": {
+          "level": 48,
+          "dropProbability": 0.0001083340308467573,
+          "required": 11398,
+          "basis": {
+            "elitePerMinute": 234.78260869565216,
+            "lambdaPerMinute": 0.02543632420735624,
+            "targetMinutes": 34.67483341345391,
+            "materialTargetMinutes": 48.54476677883547
+          }
+        },
+        "after": {
+          "level": 48,
+          "dropProbability": 0.00048805121447692557,
+          "required": 2546,
+          "basis": {
+            "elitePerMinute": 52.42718446601941,
+            "lambdaPerMinute": 0.025593397002629307,
+            "targetMinutes": 34.67483341345391,
+            "materialTargetMinutes": 48.54476677883547
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      },
+      {
+        "stage": 24,
+        "before": {
+          "level": 49,
+          "dropProbability": 0.00011509665923770118,
+          "required": 11606,
+          "basis": {
+            "elitePerMinute": 234.78260869565216,
+            "lambdaPerMinute": 0.02702424913822525,
+            "targetMinutes": 35.306926730886666,
+            "materialTargetMinutes": 49.42969742324133
+          }
+        },
+        "after": {
+          "level": 49,
+          "dropProbability": 0.0005762923554513133,
+          "required": 2349,
+          "basis": {
+            "elitePerMinute": 47.50733137829912,
+            "lambdaPerMinute": 0.027386003831688436,
+            "targetMinutes": 35.306926730886666,
+            "materialTargetMinutes": 49.42969742324133
+          }
+        },
+        "sourceSamples": 3,
+        "failedSourceSamples": 0
+      }
+    ],
+    "limits": [
+      "Only measured elite source frequency is available in this controlled basis. Natural chest/rare rates and mixed material throughput require the subsequent production dungeon recalibration.",
+      "Existing choice IDs, outputs, weights, private loot and source-material declarations are preserved. No formal private pool is written by this proposal."
+    ]
+  },
+  "acceptance": "Revalidate source hashes and regenerate after adopting monster curves/templates. Main integration owns formal writes. A controlled explicit field template is still provisional until the formal dungeon declares it. Invalid tier calibration remains unadoptable; key proposals are independent. This is not W3 completion."
+}

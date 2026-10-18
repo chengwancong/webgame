@@ -1,0 +1,4 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {resolve} from 'node:path';
+export async function auditShared(out:string){const base=resolve('docs/reviews/pacing-identity-20261013'),original=JSON.parse(await readFile(resolve(base,'C0/shared-hashes.json'),'utf8')),actual:any={},changes:any[]=[];for(const [file,before]of Object.entries(original)){const sha=createHash('sha256').update(await readFile(resolve('..',file))).digest('hex');actual[file]=sha;if(sha!==before)changes.push({file,before,after:sha});}await writeFile(resolve(out,'shared-hashes.json'),JSON.stringify({actual,changes},null,2)+'\n');if(changes.length){await writeFile(resolve(base,'decisions.md'),await readFile(resolve(base,'decisions.md'),'utf8')+'\n| 2026-10-13 | 测量前共享文件哈希变化 '+out+' | 本期改动/其他会话混杂保留，不追加重跑；详见 shared-hashes.json | '+changes.map(c=>c.file).join('、')+' |\n');}}

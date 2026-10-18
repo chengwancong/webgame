@@ -1,0 +1,653 @@
+[
+  {
+    "id": "set-sword-standard",
+    "family": "sword",
+    "series": "standard",
+    "name": "割裂",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "critChance",
+          "value": 0.08
+        }
+      ]
+    },
+    "four": {
+      "atoms": [
+        {
+          "id": "atom-bleed",
+          "tier": 1
+        },
+        {
+          "id": "atom-bloodthirst",
+          "tier": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "set-sword-omega",
+    "family": "sword",
+    "series": "omega",
+    "name": "剑势",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "meleeDamage",
+          "value": 0.1
+        }
+      ]
+    },
+    "four": {
+      "atoms": [
+        {
+          "id": "atom-arrow-stack",
+          "tier": 0.95,
+          "set": {
+            "filter": {}
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "set-sword-primal",
+    "family": "sword",
+    "series": "primal",
+    "name": "决斗",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "vsElite",
+          "value": 0.05
+        }
+      ]
+    },
+    "four": {
+      "atoms": [
+        {
+          "id": "atom-opening",
+          "tier": 1
+        }
+      ],
+      "conditional": [],
+      "rules": [
+        {
+          "id": "set-sword-primal-duel-boss",
+          "name": "决斗",
+          "description": "首领：伤害增加15%。",
+          "source": "set-sword-primal",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_rank",
+              "ranks": [
+                "boss"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.15,
+            "against": []
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/war_cry"
+        }
+      ]
+    }
+  },
+  {
+    "id": "set-hammer-standard",
+    "family": "hammer",
+    "series": "standard",
+    "name": "震岳",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "areaDamage",
+          "value": 0.15
+        }
+      ]
+    },
+    "four": {
+      "atoms": [
+        {
+          "id": "atom-quake",
+          "tier": 1.55
+        }
+      ]
+    }
+  },
+  {
+    "id": "set-hammer-omega",
+    "family": "hammer",
+    "series": "omega",
+    "name": "坚壁",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "armorPercent",
+          "value": 0.6
+        }
+      ]
+    },
+    "four": {
+      "atoms": [
+        {
+          "id": "atom-bulwark",
+          "tier": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "set-hammer-primal",
+    "family": "hammer",
+    "series": "primal",
+    "name": "镇压",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "statusDuration",
+          "value": 0.2
+        }
+      ]
+    },
+    "four": {
+      "atoms": [
+        {
+          "id": "atom-suppress",
+          "tier": 1
+        },
+        {
+          "id": "atom-terror",
+          "tier": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "set-axe-standard",
+    "family": "axe",
+    "series": "standard",
+    "name": "狂骨",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "attackPercent",
+          "value": 0.05
+        }
+      ]
+    },
+    "four": {
+      "atoms": [
+        {
+          "id": "atom-bone",
+          "tier": 1
+        }
+      ],
+      "conditional": [
+        {
+          "id": "bone-leech",
+          "pool": "stat",
+          "stat": "lifestealMultiplier",
+          "value": 2,
+          "when": {
+            "kind": "self_hp",
+            "op": "lt",
+            "value": 0.3
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "set-axe-omega",
+    "family": "axe",
+    "series": "omega",
+    "name": "饮血",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "lifesteal",
+          "value": 0.03
+        }
+      ]
+    },
+    "four": {
+      "atoms": [
+        {
+          "id": "atom-drinking",
+          "tier": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "set-axe-primal",
+    "family": "axe",
+    "series": "primal",
+    "name": "旋锋",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "speedPercent",
+          "value": 0.1
+        }
+      ]
+    },
+    "four": {
+      "atoms": [
+        {
+          "id": "atom-whirl-edge",
+          "tier": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "set-staff-standard",
+    "family": "staff",
+    "series": "standard",
+    "name": "炽炉",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "fireDamage",
+          "value": 0.15
+        }
+      ]
+    },
+    "four": {
+      "atoms": [
+        {
+          "id": "atom-flame-stack",
+          "tier": 1
+        },
+        {
+          "id": "atom-detonate",
+          "tier": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "set-staff-omega",
+    "family": "staff",
+    "series": "omega",
+    "name": "霜镜",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "coldDamage",
+          "value": 0.15
+        }
+      ]
+    },
+    "four": {
+      "atoms": [
+        {
+          "id": "atom-chill",
+          "tier": 1
+        },
+        {
+          "id": "atom-shatter",
+          "tier": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "set-staff-primal",
+    "family": "staff",
+    "series": "primal",
+    "name": "余烬",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "dotDamage",
+          "value": 0.15
+        }
+      ]
+    },
+    "four": {
+      "atoms": [],
+      "flags": {
+        "dotCrit": true
+      },
+      "zones": [
+        {
+          "id": "set-ember-dot",
+          "label": "余烬4件",
+          "kind": "mult",
+          "pool": "mult",
+          "value": 1.25,
+          "tags": [
+            "dot"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "set-hidden-standard",
+    "family": "hidden",
+    "series": "standard",
+    "name": "淬影",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "poisonDamage",
+          "value": 0.15
+        }
+      ]
+    },
+    "four": {
+      "atoms": [
+        {
+          "id": "atom-erosion",
+          "tier": 1
+        },
+        {
+          "id": "atom-poison-burst",
+          "tier": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "set-hidden-omega",
+    "family": "hidden",
+    "series": "omega",
+    "name": "千刃",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "projectileDamage",
+          "value": 0.04
+        }
+      ]
+    },
+    "four": {
+      "atoms": [
+        {
+          "id": "atom-arrow-stack",
+          "tier": 0.5
+        }
+      ],
+      "rules": [
+        {
+          "id": "set-blades-volley",
+          "name": "千刃",
+          "description": "每第三次投射物技能额外1投射物",
+          "source": "set-hidden-omega",
+          "tier": 1,
+          "trigger": "nth",
+          "count": "cast",
+          "every": 3,
+          "chance": 1,
+          "icd": 0,
+          "filter": {
+            "tags": [
+              "projectile"
+            ]
+          },
+          "when": [],
+          "action": {
+            "type": "buff",
+            "duration": 1,
+            "maxStacks": 1,
+            "mods": {
+              "projectiles": 1
+            },
+            "consume": "nextCast",
+            "currentCast": true
+          },
+          "vfxKey": "player/bolt",
+          "scale": []
+        }
+      ]
+    }
+  },
+  {
+    "id": "set-hidden-primal",
+    "family": "hidden",
+    "series": "primal",
+    "name": "疾影",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "dodge",
+          "value": 0.06
+        }
+      ]
+    },
+    "four": {
+      "atoms": [
+        {
+          "id": "atom-evasion",
+          "tier": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "set-wand-standard",
+    "family": "wand",
+    "series": "standard",
+    "name": "雷鸣",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "vsControlled",
+          "value": 0.1
+        }
+      ]
+    },
+    "four": {
+      "atoms": [
+        {
+          "id": "atom-shock",
+          "tier": 1,
+          "set": {
+            "filter": {},
+            "when": [
+              {
+                "kind": "target_status",
+                "statuses": [
+                  "stun",
+                  "root",
+                  "petrify",
+                  "slow",
+                  "fear",
+                  "time_stop",
+                  "freeze"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "atom-thunder",
+          "tier": 1
+        }
+      ],
+      "conditional": [],
+      "rules": [
+        {
+          "id": "set-wand-standard-thunder-shocked",
+          "name": "雷鸣",
+          "description": "目标处于感电：伤害增加25%。",
+          "source": "set-wand-standard",
+          "tier": 1,
+          "trigger": "passive",
+          "chance": 1,
+          "icd": 0,
+          "filter": {},
+          "when": [
+            {
+              "kind": "target_status",
+              "statuses": [
+                "shock"
+              ]
+            }
+          ],
+          "action": {
+            "type": "amplify",
+            "ratio": 0.25,
+            "against": []
+          },
+          "scale": [
+            "action.ratio"
+          ],
+          "vfxKey": "player/chain"
+        }
+      ]
+    }
+  },
+  {
+    "id": "set-wand-omega",
+    "family": "wand",
+    "series": "omega",
+    "name": "潮汐",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "manaPercent",
+          "value": 0.2
+        }
+      ]
+    },
+    "four": {
+      "atoms": [
+        {
+          "id": "atom-overflow",
+          "tier": 0.5
+        },
+        {
+          "id": "atom-refund",
+          "tier": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "set-wand-primal",
+    "family": "wand",
+    "series": "primal",
+    "name": "时砂",
+    "artStageScale": [
+      1,
+      1.25,
+      1.5
+    ],
+    "two": {
+      "stats": [
+        {
+          "stat": "cdr",
+          "value": 0.08
+        }
+      ]
+    },
+    "four": {
+      "atoms": [
+        {
+          "id": "atom-time-sand",
+          "tier": 1
+        }
+      ]
+    }
+  }
+]

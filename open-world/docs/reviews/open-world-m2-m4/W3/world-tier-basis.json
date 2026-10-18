@@ -1,0 +1,180 @@
+{
+  "basis": {
+    "template": "ss-boss-vilo",
+    "level": 49,
+    "bossHp": 46794249,
+    "rawDps": 549.1333333333333,
+    "hits": 32,
+    "seed": 41,
+    "seconds": 30,
+    "versions": {
+      "client": "0.11.14",
+      "protocol": 30,
+      "rules": "ow-55",
+      "assets": "world-art-20261007-v24-world-runtime",
+      "db": 16
+    },
+    "limitations": [
+      "Fixed empty arena, stationary zero-armor high-HP target; real boss AI/casts/damage, no victory or natural pacing claim.",
+      "Baseline measures full-health boss phase; full wall phase win-rate probes remain separate."
+    ]
+  },
+  "target": {
+    "index": 24,
+    "group": "裂星潮",
+    "slot": 6,
+    "start": 1681.7680200295604,
+    "explore": 14.160532111318178,
+    "push": 35.306926730886666,
+    "farm": 68.53697541877997,
+    "clear": 1731.2354788717653,
+    "end": 1799.7724542905453,
+    "R": 27.07727997630341,
+    "level": 48.94354353906941,
+    "g": 0.005986245836605286,
+    "J": 0.43423459901715517,
+    "S": null,
+    "F": null,
+    "lam": 0.02702424913822525,
+    "mc": {
+      "p10": 12.733792546512692,
+      "median": 35.066800528979705,
+      "p90": 56.49108276941866,
+      "max": 81.81753913924926,
+      "paths": {
+        "drop": 0.72985,
+        "grind": 0.0119,
+        "craft": 0.25825
+      }
+    },
+    "dps1": 11982670.907344751,
+    "ehp": 65957.22035610024,
+    "bossHp": 629090222.6355994,
+    "bossDps": 2198.574011870008,
+    "bossHpFactor": 111.41560550690029,
+    "normalHp": 5679307.878470452,
+    "normalHpFactor": 10.058390726355686,
+    "farmDpsGain": null,
+    "shareMedian": 0.6615297057641847,
+    "shareLucky": 0.84331644864054,
+    "shareUnlucky": 0.548172757475083,
+    "keyDropMedian": 25.64908194172554,
+    "dropChanceByCraft": 0.7370523873243033
+  },
+  "derived": {
+    "source": "docs/open-world-numeric-flow.md §8; tier4 derived from actual boss basis and stage24 wall target",
+    "switchAt": [
+      "port",
+      "outpost"
+    ],
+    "outpostReach": 4,
+    "growth": {
+      "afterTier": 4,
+      "maxTier": 100,
+      "name": "深渊",
+      "hp": 1.1,
+      "attack": 1.09,
+      "reward": 1.08
+    },
+    "tiers": [
+      {
+        "tier": 1,
+        "name": "航行",
+        "unlock": {
+          "kind": "default"
+        },
+        "monster": {
+          "hp": 1,
+          "attack": 1
+        },
+        "reward": {
+          "xp": 1,
+          "gold": 1,
+          "material": 1,
+          "gear": 1
+        },
+        "eliteAffixes": [
+          1,
+          1
+        ]
+      },
+      {
+        "tier": 2,
+        "name": "风暴",
+        "unlock": {
+          "kind": "boss",
+          "value": "ss-map-boss-3",
+          "text": "击败第三岛首领后开启"
+        },
+        "monster": {
+          "hp": 1.6,
+          "attack": 1.25
+        },
+        "reward": {
+          "xp": 1.2,
+          "gold": 1.3,
+          "material": 1.3,
+          "gear": 1.35
+        },
+        "eliteAffixes": [
+          1,
+          2
+        ]
+      },
+      {
+        "tier": 3,
+        "name": "潮涌",
+        "unlock": {
+          "kind": "hardmode",
+          "text": "开启裂星潮后开启"
+        },
+        "monster": {
+          "hp": 2.6,
+          "attack": 1.55
+        },
+        "reward": {
+          "xp": 1.4,
+          "gold": 1.6,
+          "material": 1.6,
+          "gear": 1.8
+        },
+        "eliteAffixes": [
+          2,
+          2
+        ]
+      },
+      {
+        "tier": 4,
+        "name": "深渊",
+        "unlock": {
+          "kind": "hardmode_bosses",
+          "level": 50,
+          "bosses": [
+            "ss-map-boss-1",
+            "ss-map-boss-2",
+            "ss-map-boss-3",
+            "ss-map-boss-4",
+            "ss-map-boss-5",
+            "ss-map-boss-6"
+          ],
+          "text": "达到50级并击败六岛裂星潮首领"
+        },
+        "monster": {
+          "hp": 13.44375080441187,
+          "attack": 4.003716180411572
+        },
+        "reward": {
+          "xp": 1.8,
+          "gold": 2.2,
+          "material": 2.2,
+          "gear": 2.2
+        },
+        "eliteAffixes": [
+          2,
+          3
+        ]
+      }
+    ]
+  },
+  "applied": true
+}

@@ -1,0 +1,44 @@
+import assert from 'node:assert/strict';
+import {randomUUID} from 'node:crypto';
+import {readFile,mkdir,writeFile} from 'node:fs/promises';
+import {join} from 'node:path';
+import {chromium} from 'playwright';
+import {Pool} from 'pg';
+import {root} from './runtime.mjs';
+import {versions} from '../packages/contracts/index.ts';
+
+const base='http://127.0.0.1:8612',evidence=join(root,'../docs/reviews/open-world/enhancement-stones-20261003');
+await mkdir(evidence,{recursive:true});
+const report={ok:false,checks:[],errors:[],fixture:'A new QA account is funded solely for interface and debit checks; no existing character is edited.'};
+let browser,pool,page;
+try{
+ const health=await (await fetch(base+'/api/health')).json(),content=await (await fetch(base+'/api/content')).json();
+ assert.deepEqual(health.versions,versions);assert.deepEqual(content.versions,versions);report.versions=versions;
+ const port=Number((await readFile(join(root,'.runtime/dev/data/postmaster.pid'),'utf8')).split(/\r?\n/)[3]);
+ pool=new Pool({connectionString:`postgresql://aw_world@127.0.0.1:${port}/postgres`});
+ browser=await chromium.launch({channel:'chrome',headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-webgl']});
+ page=await browser.newPage({viewport:{width:1280,height:720}});page.on('pageerror',e=>report.errors.push(e.message));
+ const username='stone_'+randomUUID().replaceAll('-','').slice(0,18);
+ await page.goto(base);await page.locator('#username').fill(username);await page.locator('[data-action=login]').click();await page.locator('#hero-name').fill('强化材料验收');await page.locator('[data-action=create]').click();
+ await page.waitForFunction(()=>window.awInspect?.().loggedIn&&window.awInspect().region==='town');
+ const initial=await page.evaluate(()=>window.awInspect().snapshot);assert.equal(initial.material,0);
+ assert.equal((await page.request.post(base+'/api/logout',{data:{}})).status(),200);
+ const state=(await pool.query('SELECT state FROM ow_characters WHERE id=$1',[initial.id])).rows[0].state;
+ delete state.story;state.gold=1000;state.material=10;await pool.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[state,state.id]);
+ await page.reload();await page.locator('#username').fill(username);await page.locator('[data-action=login]').click();await page.waitForFunction(()=>window.awInspect?.().loggedIn&&window.awInspect().region==='town');
+ report.checks.push('real account-only login and camp restoration; live API/content versions match');
+ await page.locator('[data-action=panel][data-id=bag]').click();await page.locator('[data-action=bag-select][data-item-kind=equipment]').first().click();await page.locator('[data-gear-quote-operation=upgrade]:not([disabled])').waitFor();
+ const body=await page.locator('#modal').innerText();assert.ok(body.includes('强化石'));assert.ok(!body.includes('灵石'));
+ await page.screenshot({path:join(evidence,'equipment-cost.png')});
+ const before=await page.evaluate(()=>window.awInspect().snapshot),selected=await page.locator('[data-gear-quote-operation=upgrade]').getAttribute('data-id');
+ await page.locator('[data-gear-quote-operation=upgrade]').click();await page.waitForFunction(revision=>window.awInspect().snapshot.revision>revision,before.revision);
+ const after=await page.evaluate(()=>window.awInspect().snapshot);assert.equal(after.gold,before.gold-35);assert.equal(after.material,before.material-2);assert.equal(after.gear.find(g=>g.id===selected).rank,1);
+ report.checks.push('browser equipment reinforcement debits 35 gold + 2 enhancement stones');
+ await page.locator('#modal [data-action=close]').click();await page.locator('[data-action=panel][data-id=skills]').click();
+ await page.locator('[data-action=skill-focus][data-id=cut]').click();const training=await page.locator('.skill-training').innerText();assert.ok(training.includes('金币'));assert.ok(!training.includes('强化石'));assert.ok(!training.includes('灵石'));
+ await page.screenshot({path:join(evidence,'skill-gold-only.png')});const skillBefore=await page.evaluate(()=>window.awInspect().snapshot);
+ await page.locator('[data-action=skill-upgrade]').click();await page.waitForFunction(revision=>window.awInspect().snapshot.revision>revision,skillBefore.revision);
+ const skillAfter=await page.evaluate(()=>window.awInspect().snapshot);assert.equal(skillAfter.gold,skillBefore.gold-60);assert.equal(skillAfter.material,skillBefore.material);assert.equal(skillAfter.skillRanks.cut,2);
+ report.checks.push('browser skill upgrade costs 60 gold and leaves enhancement stones untouched');
+ assert.deepEqual(report.errors,[]);report.ok=true;
+}catch(error){report.error=String(error);if(page){report.body=await page.locator('body').innerText();await page.screenshot({path:join(evidence,'failure.png')});}process.exitCode=1;}finally{await browser?.close();await pool?.end();await writeFile(join(evidence,'result.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));}

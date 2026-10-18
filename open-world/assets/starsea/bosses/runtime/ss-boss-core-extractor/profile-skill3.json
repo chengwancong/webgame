@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "id": "ss-boss-core-extractor",
+  "runtime": {
+    "json": "/art/starsea/bosses/ss-boss-core-extractor/Character.json",
+    "atlas": "/art/starsea/bosses/ss-boss-core-extractor/Character.atlas",
+    "pma": true
+  },
+  "skinNames": [
+    "BODY/ss-boss-core-extractor",
+    "HEAD/ss-boss-core-extractor",
+    "SS/ss-boss-core-extractor"
+  ],
+  "acceptedBodySets": [
+    "ss-boss-core-extractor"
+  ],
+  "nativeFacing": "left",
+  "referenceHeight": 190.32021102303628,
+  "ground": [
+    -0.25,
+    0
+  ],
+  "fps": 60,
+  "previewBounds": {
+    "minX": -205.4857911342958,
+    "maxX": 121.56564581851623,
+    "minY": -93.2693749839822,
+    "maxY": 279.6072276190829
+  },
+  "weapons": {
+    "ss-boss-core-extractor": {
+      "family": "axe",
+      "skinNames": [
+        "RIGHTHAND/ss-boss-core-extractor"
+      ],
+      "actions": {
+        "idle": {
+          "name": "SS_idle",
+          "loop": true,
+          "sourceAnimation": "Wait2"
+        },
+        "move": {
+          "name": "SS_move",
+          "loop": true,
+          "sourceAnimation": "Run2"
+        },
+        "attack": {
+          "name": "SS_attack",
+          "loop": false,
+          "sourceAnimation": "Attack_TwoHand1",
+          "impactTime": 0.4166666666666667
+        },
+        "hurt": {
+          "name": "SS_hurt",
+          "loop": false,
+          "sourceAnimation": "Damage2"
+        },
+        "death": {
+          "name": "SS_death",
+          "loop": false,
+          "sourceAnimation": "Die"
+        },
+        "skill": {
+          "name": "SS_skill3",
+          "sourceAnimation": "Attack_TwoHand2",
+          "impactTime": 0.43333333333333335,
+          "loop": false,
+          "mount": "ground",
+          "mechanism": {
+            "id": "ss-fx-b03-stomp",
+            "name": "重钳震地",
+            "rule": "frost_stomp",
+            "kind": "zone",
+            "windupTicks": 30,
+            "delayTicks": 20,
+            "mount": "ground",
+            "visual": "冷却液蓝白冲击和金属碎片，范围一致",
+            "owner": "monster_vfx",
+            "mechanismStatus": "existing-rule-reference; new actor binding not implemented",
+            "chapter": [
+              3
+            ]
+          },
+          "limitations": "合法共用原生动作；战斗时序由实际前摇/恢复映射。"
+        },
+        "projectile": {
+          "name": "SS_skill3",
+          "sourceAnimation": "Attack_TwoHand2",
+          "impactTime": 0.43333333333333335,
+          "loop": false,
+          "mount": "ground",
+          "mechanism": {
+            "id": "ss-fx-b03-stomp",
+            "name": "重钳震地",
+            "rule": "frost_stomp",
+            "kind": "zone",
+            "windupTicks": 30,
+            "delayTicks": 20,
+            "mount": "ground",
+            "visual": "冷却液蓝白冲击和金属碎片，范围一致",
+            "owner": "monster_vfx",
+            "mechanismStatus": "existing-rule-reference; new actor binding not implemented",
+            "chapter": [
+              3
+            ]
+          },
+          "limitations": "合法共用原生动作；战斗时序由实际前摇/恢复映射。"
+        }
+      },
+      "sockets": {
+        "weapon": {
+          "slot": "RIGHTHAND",
+          "pixel": [
+            82.5,
+            30.800000000000004
+          ],
+          "imageSize": [
+            165,
+            220
+          ]
+        },
+        "muzzle": {
+          "slot": "RIGHTHAND",
+          "pixel": [
+            82.5,
+            30.800000000000004
+          ],
+          "imageSize": [
+            165,
+            220
+          ]
+        }
+      },
+      "muzzlePolicy": "weapon-tip"
+    }
+  },
+  "renderAppearance": {
+    "rig": "modular-hero",
+    "family": "axe",
+    "styleProfile": "v2-soft",
+    "revision": 1,
+    "parts": {
+      "head": {
+        "setId": "ss-boss-core-extractor"
+      },
+      "body": {
+        "setId": "ss-boss-core-extractor"
+      },
+      "hands": {
+        "setId": "ss-boss-core-extractor"
+      },
+      "legs": {
+        "setId": "ss-boss-core-extractor"
+      },
+      "feet": {
+        "setId": "ss-boss-core-extractor"
+      },
+      "back": {
+        "setId": "ss-boss-core-extractor"
+      },
+      "weapon": {
+        "setId": "ss-boss-core-extractor"
+      }
+    }
+  },
+  "sourceNativeVersion": "4.2.43",
+  "actionSelection": {
+    "priority": [
+      "death",
+      "living-phase-transition",
+      "selected-living-action"
+    ],
+    "deathAction": "SS_death",
+    "deathCancelsPhaseTransition": true,
+    "phaseActive": "modifier for living actions only",
+    "deathCleanupTime": 0.65
+  }
+}

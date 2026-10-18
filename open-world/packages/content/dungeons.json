@@ -1,0 +1,1798 @@
+{
+  "version": 4,
+  "defaults": {
+    "entryLevel": 1,
+    "maxTier": 1,
+    "minTier": 1,
+    "tierRules": {
+      "hpPerTier": 0,
+      "attackPerTier": 0,
+      "rewardPerTier": 0,
+      "affixCount": 0,
+      "recordNightmareRank": false
+    },
+    "timeLimitSeconds": 1800,
+    "loadingSeconds": 120,
+    "retention": {
+      "enabled": true,
+      "seconds": 1800
+    },
+    "disconnect": "retain",
+    "buildLocked": true,
+    "checkpointJoin": true,
+    "quotaAt": "start",
+    "entryCost": {
+      "gold": 0,
+      "material": 0
+    },
+    "rescue": {
+      "seconds": 5,
+      "range": 2,
+      "hpRatio": 0.3
+    },
+    "allyRange": 6,
+    "overflow": "allow",
+    "returnRegion": "town",
+    "refundSystemAbort": true,
+    "party": {
+      "min": 1,
+      "max": 1,
+      "roles": {},
+      "defaultRole": "damage"
+    },
+    "enemyScale": {
+      "hp": 1,
+      "attack": 1,
+      "hpPerStage": 0.12,
+      "attackPerStage": 0.06
+    },
+    "normalGoals": {
+      "killCount": "bossEntry.requiredKills",
+      "eliteCount": "bossEntry.requiredElites"
+    },
+    "reward": {
+      "gold": 0,
+      "xp": 0,
+      "material": 0
+    },
+    "worldDrops": false,
+    "monsterLevel": null,
+    "augments": {
+      "enabled": true,
+      "choices": 3,
+      "rerolls": 1,
+      "roundCount": 3
+    }
+  },
+  "runtime": {
+    "pumpMs": 50,
+    "stateEveryMs": 100,
+    "heartbeatMs": 5000,
+    "connectionTimeoutMs": 15000,
+    "inputHoldMs": 250,
+    "inputEveryMs": 100,
+    "maxInputBatch": 60,
+    "autoTicksPerSlice": 30,
+    "maxCatchupTicksPerSlice": 120,
+    "detailRetentionDays": 7,
+    "maxPreparingPerLeader": 3,
+    "preparingHours": 24,
+    "maxFaultRetries": 3,
+    "cleanupEveryMs": 3600000
+  },
+  "profiles": {
+    "realtime": {
+      "mode": "realtime",
+      "disconnect": "retain"
+    },
+    "simulation": {
+      "mode": "simulation",
+      "disconnect": "end",
+      "retention": {
+        "enabled": false
+      }
+    },
+    "raid": {
+      "partyRef": "challenge.raidParty",
+      "quota": {
+        "pool": "raid",
+        "period": "week",
+        "limitRef": "challenge.raidWeekly"
+      },
+      "feature": "raid"
+    },
+    "high": {
+      "quota": {
+        "pool": "high",
+        "period": "day",
+        "limitRef": "challenge.highDaily"
+      },
+      "feature": "high"
+    },
+    "nightmare": {
+      "tierRef": "challenge.nightmare",
+      "quota": {
+        "pool": "nightmare",
+        "period": "day",
+        "limitRef": "challenge.nightmareDaily"
+      },
+      "feature": "nightmare"
+    },
+    "trial": {
+      "feature": "trial"
+    },
+    "augments-disabled": {
+      "augments": {
+        "enabled": false
+      }
+    }
+  },
+  "definitions": [
+    {
+      "id": "story-meadow",
+      "name": "失踪的远行队",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "meadow",
+      "stages": [
+        "meadow",
+        "meadow-boss"
+      ],
+      "worldDrops": true,
+      "story": "meadow",
+      "level": 1,
+      "policy": {
+        "monsterLevel": 1,
+        "enemyScale": {
+          "hp": 3.8,
+          "attack": 1.8
+        }
+      }
+    },
+    {
+      "id": "story-forest",
+      "name": "被修改的路标",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "forest",
+      "stages": [
+        "forest",
+        "forest-boss"
+      ],
+      "worldDrops": true,
+      "story": "forest",
+      "level": 2,
+      "policy": {
+        "monsterLevel": 2,
+        "enemyScale": {
+          "hp": 3.85,
+          "attack": 0.35
+        }
+      }
+    },
+    {
+      "id": "story-rift",
+      "name": "熄灭的炉火",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "rift",
+      "stages": [
+        "rift",
+        "rift-boss"
+      ],
+      "worldDrops": true,
+      "story": "rift",
+      "level": 4,
+      "policy": {
+        "monsterLevel": 4,
+        "enemyScale": {
+          "hp": 1.95,
+          "attack": 2.95
+        }
+      }
+    },
+    {
+      "id": "story-tundra",
+      "name": "冰下的求救声",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "tundra",
+      "stages": [
+        "tundra",
+        "tundra-boss"
+      ],
+      "worldDrops": true,
+      "story": "tundra",
+      "level": 5,
+      "policy": {
+        "monsterLevel": 5,
+        "enemyScale": {
+          "hp": 1.75,
+          "attack": 1.55
+        }
+      }
+    },
+    {
+      "id": "story-abyss",
+      "name": "没有归来的人",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "abyss",
+      "stages": [
+        "abyss",
+        "abyss-boss"
+      ],
+      "worldDrops": true,
+      "story": "abyss",
+      "level": 7,
+      "policy": {
+        "monsterLevel": 7,
+        "enemyScale": {
+          "hp": 1.35,
+          "attack": 64.2
+        }
+      }
+    },
+    {
+      "id": "story-dragonbone",
+      "name": "最后一条归途",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "dragonbone",
+      "stages": [
+        "dragonbone",
+        "dragonbone-boss"
+      ],
+      "worldDrops": true,
+      "story": "dragonbone",
+      "level": 9,
+      "policy": {
+        "monsterLevel": 9,
+        "enemyScale": {
+          "hp": 3.9,
+          "attack": 27.3
+        }
+      }
+    },
+    {
+      "id": "normal-meadow",
+      "kind": "normal",
+      "profiles": [
+        "realtime"
+      ],
+      "area": "meadow",
+      "stages": [
+        "meadow",
+        "meadow-boss"
+      ],
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 1,
+        "enemyScale": {
+          "hp": 3.8,
+          "attack": 1.8
+        }
+      }
+    },
+    {
+      "id": "normal-forest",
+      "kind": "normal",
+      "profiles": [
+        "realtime"
+      ],
+      "area": "forest",
+      "stages": [
+        "forest",
+        "forest-boss"
+      ],
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 2,
+        "enemyScale": {
+          "hp": 3.85,
+          "attack": 0.35
+        }
+      }
+    },
+    {
+      "id": "normal-rift",
+      "kind": "normal",
+      "profiles": [
+        "realtime"
+      ],
+      "area": "rift",
+      "stages": [
+        "rift",
+        "rift-boss"
+      ],
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 4,
+        "enemyScale": {
+          "hp": 1.95,
+          "attack": 2.95
+        }
+      }
+    },
+    {
+      "id": "normal-tundra",
+      "kind": "normal",
+      "profiles": [
+        "realtime"
+      ],
+      "area": "tundra",
+      "stages": [
+        "tundra",
+        "tundra-boss"
+      ],
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 5,
+        "enemyScale": {
+          "hp": 1.75,
+          "attack": 1.55
+        }
+      }
+    },
+    {
+      "id": "normal-abyss",
+      "kind": "normal",
+      "profiles": [
+        "realtime"
+      ],
+      "area": "abyss",
+      "stages": [
+        "abyss",
+        "abyss-boss"
+      ],
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 7,
+        "enemyScale": {
+          "hp": 1.35,
+          "attack": 64.2
+        }
+      }
+    },
+    {
+      "id": "normal-dragonbone",
+      "kind": "normal",
+      "profiles": [
+        "realtime"
+      ],
+      "area": "dragonbone",
+      "stages": [
+        "dragonbone",
+        "dragonbone-boss"
+      ],
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 9,
+        "enemyScale": {
+          "hp": 3.9,
+          "attack": 27.3
+        }
+      }
+    },
+    {
+      "id": "trial-meadow",
+      "kind": "trial",
+      "profiles": [
+        "realtime",
+        "trial"
+      ],
+      "area": "meadow",
+      "stages": [
+        "meadow-boss"
+      ],
+      "bossAccess": "meadow-boss",
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 1,
+        "enemyScale": {
+          "hp": 3.65,
+          "attack": 1.9
+        }
+      }
+    },
+    {
+      "id": "trial-forest",
+      "kind": "trial",
+      "profiles": [
+        "realtime",
+        "trial"
+      ],
+      "area": "forest",
+      "stages": [
+        "forest-boss"
+      ],
+      "bossAccess": "forest-boss",
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 2,
+        "enemyScale": {
+          "hp": 3.7,
+          "attack": 0.4
+        }
+      }
+    },
+    {
+      "id": "trial-rift",
+      "kind": "trial",
+      "profiles": [
+        "realtime",
+        "trial"
+      ],
+      "area": "rift",
+      "stages": [
+        "rift-boss"
+      ],
+      "bossAccess": "rift-boss",
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 4,
+        "enemyScale": {
+          "hp": 1.85,
+          "attack": 3.1
+        }
+      }
+    },
+    {
+      "id": "trial-tundra",
+      "kind": "trial",
+      "profiles": [
+        "realtime",
+        "trial"
+      ],
+      "area": "tundra",
+      "stages": [
+        "tundra-boss"
+      ],
+      "bossAccess": "tundra-boss",
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 5,
+        "enemyScale": {
+          "hp": 1.7,
+          "attack": 1.65
+        }
+      }
+    },
+    {
+      "id": "trial-abyss",
+      "kind": "trial",
+      "profiles": [
+        "realtime",
+        "trial"
+      ],
+      "area": "abyss",
+      "stages": [
+        "abyss-boss"
+      ],
+      "bossAccess": "abyss-boss",
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 7,
+        "enemyScale": {
+          "hp": 1.3,
+          "attack": 68.05
+        }
+      }
+    },
+    {
+      "id": "trial-dragonbone",
+      "kind": "trial",
+      "profiles": [
+        "realtime",
+        "trial"
+      ],
+      "area": "dragonbone",
+      "stages": [
+        "dragonbone-boss"
+      ],
+      "bossAccess": "dragonbone-boss",
+      "worldDrops": true,
+      "policy": {
+        "monsterLevel": 9,
+        "enemyScale": {
+          "hp": 3.75,
+          "attack": 28.95
+        }
+      }
+    },
+    {
+      "id": "high-meadow",
+      "kind": "high",
+      "profiles": [
+        "simulation",
+        "high"
+      ],
+      "challenge": "high-meadow",
+      "policy": {
+        "monsterLevel": 20,
+        "enemyScale": {
+          "hp": 6.65,
+          "attack": 5.8
+        }
+      }
+    },
+    {
+      "id": "high-forest",
+      "kind": "high",
+      "profiles": [
+        "simulation",
+        "high"
+      ],
+      "challenge": "high-forest",
+      "policy": {
+        "monsterLevel": 30,
+        "enemyScale": {
+          "hp": 6,
+          "attack": 2.35
+        }
+      }
+    },
+    {
+      "id": "high-rift",
+      "kind": "high",
+      "profiles": [
+        "simulation",
+        "high"
+      ],
+      "challenge": "high-rift",
+      "policy": {
+        "monsterLevel": 40,
+        "enemyScale": {
+          "hp": 52.1,
+          "attack": 16.3
+        }
+      }
+    },
+    {
+      "id": "high-tundra",
+      "kind": "high",
+      "profiles": [
+        "simulation",
+        "high"
+      ],
+      "challenge": "high-tundra",
+      "policy": {
+        "monsterLevel": 50,
+        "enemyScale": {
+          "hp": 282.75,
+          "attack": 6.1
+        }
+      }
+    },
+    {
+      "id": "high-abyss",
+      "kind": "high",
+      "profiles": [
+        "simulation",
+        "high"
+      ],
+      "challenge": "high-abyss",
+      "policy": {
+        "monsterLevel": 50,
+        "enemyScale": {
+          "hp": 201,
+          "attack": 128.45
+        }
+      }
+    },
+    {
+      "id": "high-dragonbone",
+      "kind": "high",
+      "profiles": [
+        "simulation",
+        "high"
+      ],
+      "challenge": "high-dragonbone",
+      "policy": {
+        "monsterLevel": 50,
+        "enemyScale": {
+          "hp": 148.75,
+          "attack": 28.95
+        }
+      }
+    },
+    {
+      "id": "nightmare",
+      "kind": "nightmare",
+      "profiles": [
+        "simulation",
+        "nightmare"
+      ],
+      "challenge": "nightmare",
+      "policy": {
+        "monsterLevel": 40,
+        "enemyScale": {
+          "hp": 54.2,
+          "attack": 4.4
+        }
+      }
+    },
+    {
+      "id": "raid-abyss-live",
+      "kind": "raid",
+      "profiles": [
+        "realtime",
+        "raid"
+      ],
+      "challenge": "raid-abyss",
+      "policy": {
+        "monsterLevel": 50,
+        "enemyScale": {
+          "hp": 3452.4,
+          "attack": 90.45
+        }
+      }
+    },
+    {
+      "id": "raid-abyss-auto",
+      "kind": "raid",
+      "profiles": [
+        "simulation",
+        "raid"
+      ],
+      "challenge": "raid-abyss",
+      "policy": {
+        "monsterLevel": 50,
+        "enemyScale": {
+          "hp": 3452.4,
+          "attack": 90.45
+        }
+      }
+    },
+    {
+      "id": "raid-dragon-live",
+      "kind": "raid",
+      "profiles": [
+        "realtime",
+        "raid"
+      ],
+      "challenge": "raid-dragon",
+      "policy": {
+        "monsterLevel": 50,
+        "enemyScale": {
+          "hp": 2025.85,
+          "attack": 17.45
+        }
+      }
+    },
+    {
+      "id": "raid-dragon-auto",
+      "kind": "raid",
+      "profiles": [
+        "simulation",
+        "raid"
+      ],
+      "challenge": "raid-dragon",
+      "policy": {
+        "monsterLevel": 50,
+        "enemyScale": {
+          "hp": 2025.85,
+          "attack": 17.45
+        }
+      }
+    },
+    {
+      "id": "field-wind-1",
+      "name": "风车地窖",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-wind",
+      "stages": [
+        "ss-dg-wind-1-1",
+        "ss-dg-wind-1-2",
+        "ss-dg-wind-1-3"
+      ],
+      "numericStage": 1,
+      "bossBudgetSeconds": 240,
+      "level": 4,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 4,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 6.15,
+          "attack": 8.35,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        },
+        "stageEnemyScale": [
+          {
+            "hp": 1,
+            "attack": 0.4344444444444444
+          },
+          {
+            "hp": 1,
+            "attack": 0.4344444444444444
+          },
+          {
+            "hp": 1,
+            "attack": 1
+          }
+        ]
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      }
+    },
+    {
+      "id": "plane-wind-nest-cave",
+      "name": "风车旧井",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-wind",
+      "stages": [
+        "plane-wind-nest-cave-1",
+        "plane-wind-nest-cave-2"
+      ],
+      "numericStage": 1,
+      "bossBudgetSeconds": 240,
+      "level": 4,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 4,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-wind",
+        "normalGoals": {
+          "killCount": 10,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 6.15,
+          "attack": 8.35,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        },
+        "stageEnemyScale": [
+          {
+            "hp": 1,
+            "attack": 0.4344444444444444
+          },
+          {
+            "hp": 1,
+            "attack": 1
+          }
+        ]
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      }
+    },
+    {
+      "id": "plane-wind-nest-crypt",
+      "name": "风车地宫",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-wind",
+      "stages": [
+        "plane-wind-nest-crypt-1",
+        "plane-wind-nest-crypt-2"
+      ],
+      "numericStage": 1,
+      "bossBudgetSeconds": 240,
+      "level": 4,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 4,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-wind",
+        "normalGoals": {
+          "killCount": 10,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 6.15,
+          "attack": 8.35,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        },
+        "stageEnemyScale": [
+          {
+            "hp": 1,
+            "attack": 0.4344444444444444
+          },
+          {
+            "hp": 1,
+            "attack": 1
+          }
+        ]
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      }
+    },
+    {
+      "id": "plane-wind-nest-maze",
+      "name": "风车迷宫",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-wind",
+      "stages": [
+        "plane-wind-nest-maze-1",
+        "plane-wind-nest-maze-2"
+      ],
+      "numericStage": 1,
+      "bossBudgetSeconds": 240,
+      "level": 4,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 4,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-wind",
+        "normalGoals": {
+          "killCount": 10,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 6.15,
+          "attack": 8.35,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        },
+        "stageEnemyScale": [
+          {
+            "hp": 1,
+            "attack": 0.4344444444444444
+          },
+          {
+            "hp": 1,
+            "attack": 1
+          }
+        ]
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      }
+    },
+    {
+      "id": "field-wind-2",
+      "name": "沉船货舱",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-wind",
+      "stages": [
+        "ss-dg-wind-2-1",
+        "ss-dg-wind-2-2",
+        "ss-dg-wind-2-3"
+      ],
+      "numericStage": 2,
+      "bossBudgetSeconds": 240,
+      "level": 6,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 6,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 8.9,
+          "attack": 9.4,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        },
+        "stageEnemyScale": [
+          {
+            "hp": 1,
+            "attack": 0.37634601043997024
+          },
+          {
+            "hp": 1,
+            "attack": 0.37634601043997024
+          },
+          {
+            "hp": 1,
+            "attack": 1
+          }
+        ]
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      }
+    },
+    {
+      "id": "field-wind-3",
+      "name": "船坞遗址",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-wind",
+      "stages": [
+        "ss-dg-wind-3-1",
+        "ss-dg-wind-3-2",
+        "ss-dg-wind-3-3"
+      ],
+      "numericStage": 3,
+      "bossBudgetSeconds": 240,
+      "level": 8,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 8,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 13.2,
+          "attack": 9.15,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        }
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      },
+      "hardmode": {
+        "numericStage": 19,
+        "level": 38,
+        "monsterLevel": 40,
+        "enemyScale": {
+          "hp": 0.05,
+          "attack": 1.85
+        },
+        "worldTierScalingFrom": 4
+      }
+    },
+    {
+      "id": "field-mist-1",
+      "name": "雾铃树穴",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-mist",
+      "stages": [
+        "ss-dg-mist-1-1",
+        "ss-dg-mist-1-2",
+        "ss-dg-mist-1-3"
+      ],
+      "numericStage": 4,
+      "bossBudgetSeconds": 240,
+      "level": 10,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 10,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 16.15,
+          "attack": 7.6,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        }
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      }
+    },
+    {
+      "id": "field-mist-2",
+      "name": "废弃邮站",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-mist",
+      "stages": [
+        "ss-dg-mist-2-1",
+        "ss-dg-mist-2-2",
+        "ss-dg-mist-2-3"
+      ],
+      "numericStage": 5,
+      "bossBudgetSeconds": 240,
+      "level": 12,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 12,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 21.55,
+          "attack": 10.15,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        }
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      }
+    },
+    {
+      "id": "field-mist-3",
+      "name": "军需暗库",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-mist",
+      "stages": [
+        "ss-dg-mist-3-1",
+        "ss-dg-mist-3-2",
+        "ss-dg-mist-3-3"
+      ],
+      "numericStage": 6,
+      "bossBudgetSeconds": 240,
+      "level": 15,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 15,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 18.95,
+          "attack": 12.7,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        }
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      },
+      "hardmode": {
+        "numericStage": 20,
+        "level": 38,
+        "monsterLevel": 42,
+        "enemyScale": {
+          "hp": 0.1,
+          "attack": 1.6
+        },
+        "worldTierScalingFrom": 4
+      }
+    },
+    {
+      "id": "field-forge-1",
+      "name": "输能检修道",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-forge",
+      "stages": [
+        "ss-dg-forge-1-1",
+        "ss-dg-forge-1-2",
+        "ss-dg-forge-1-3"
+      ],
+      "numericStage": 7,
+      "bossBudgetSeconds": 240,
+      "level": 16,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 16,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 18.65,
+          "attack": 15.85,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        },
+        "stageEnemyScale": [
+          {
+            "hp": 1,
+            "attack": 0.19820556372008874
+          },
+          {
+            "hp": 1,
+            "attack": 0.19820556372008874
+          },
+          {
+            "hp": 1,
+            "attack": 1
+          }
+        ]
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      }
+    },
+    {
+      "id": "field-forge-2",
+      "name": "冷却井",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-forge",
+      "stages": [
+        "ss-dg-forge-2-1",
+        "ss-dg-forge-2-2",
+        "ss-dg-forge-2-3"
+      ],
+      "numericStage": 8,
+      "bossBudgetSeconds": 240,
+      "level": 18,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 18,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 18.6,
+          "attack": 19.7,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        },
+        "stageEnemyScale": [
+          {
+            "hp": 1,
+            "attack": 0.1883694130940637
+          },
+          {
+            "hp": 1,
+            "attack": 0.1883694130940637
+          },
+          {
+            "hp": 1,
+            "attack": 1
+          }
+        ]
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      }
+    },
+    {
+      "id": "field-forge-3",
+      "name": "炉心遗构",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-forge",
+      "stages": [
+        "ss-dg-forge-3-1",
+        "ss-dg-forge-3-2",
+        "ss-dg-forge-3-3"
+      ],
+      "numericStage": 9,
+      "bossBudgetSeconds": 240,
+      "level": 21,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 21,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 12.3,
+          "attack": 25.15,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        },
+        "stageEnemyScale": [
+          {
+            "hp": 1,
+            "attack": 0.1745912686584461
+          },
+          {
+            "hp": 1,
+            "attack": 0.1745912686584461
+          },
+          {
+            "hp": 1,
+            "attack": 1
+          }
+        ]
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      },
+      "hardmode": {
+        "numericStage": 21,
+        "level": 38,
+        "monsterLevel": 44,
+        "enemyScale": {
+          "hp": 0.1,
+          "attack": 1.65
+        },
+        "worldTierScalingFrom": 4
+      }
+    },
+    {
+      "id": "field-frost-1",
+      "name": "冻舰底舱",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-frost",
+      "stages": [
+        "ss-dg-frost-1-1",
+        "ss-dg-frost-1-2",
+        "ss-dg-frost-1-3"
+      ],
+      "numericStage": 10,
+      "bossBudgetSeconds": 240,
+      "level": 23,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 23,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 29.7,
+          "attack": 26.2,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        }
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      }
+    },
+    {
+      "id": "field-frost-2",
+      "name": "观测冰窟",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-frost",
+      "stages": [
+        "ss-dg-frost-2-1",
+        "ss-dg-frost-2-2",
+        "ss-dg-frost-2-3"
+      ],
+      "numericStage": 11,
+      "bossBudgetSeconds": 240,
+      "level": 25,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 25,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 55.95,
+          "attack": 33.35,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        }
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      }
+    },
+    {
+      "id": "field-frost-3",
+      "name": "星盘残室",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-frost",
+      "stages": [
+        "ss-dg-frost-3-1",
+        "ss-dg-frost-3-2",
+        "ss-dg-frost-3-3"
+      ],
+      "numericStage": 12,
+      "bossBudgetSeconds": 240,
+      "level": 27,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 27,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 20.15,
+          "attack": 39.45,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        }
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      },
+      "hardmode": {
+        "numericStage": 22,
+        "level": 38,
+        "monsterLevel": 46,
+        "enemyScale": {
+          "hp": 0.25,
+          "attack": 1.25
+        },
+        "worldTierScalingFrom": 4
+      }
+    },
+    {
+      "id": "field-rift-1",
+      "name": "沉星密仓",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-rift",
+      "stages": [
+        "ss-dg-rift-1-1",
+        "ss-dg-rift-1-2",
+        "ss-dg-rift-1-3"
+      ],
+      "numericStage": 13,
+      "bossBudgetSeconds": 240,
+      "level": 29,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 29,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 17.3,
+          "attack": 26.6,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        }
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      }
+    },
+    {
+      "id": "field-rift-2",
+      "name": "裂隙炮台",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-rift",
+      "stages": [
+        "ss-dg-rift-2-1",
+        "ss-dg-rift-2-2",
+        "ss-dg-rift-2-3"
+      ],
+      "numericStage": 14,
+      "bossBudgetSeconds": 240,
+      "level": 31,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 31,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 24.7,
+          "attack": 30.85,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        }
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      }
+    },
+    {
+      "id": "field-rift-3",
+      "name": "界桥地窖",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-rift",
+      "stages": [
+        "ss-dg-rift-3-1",
+        "ss-dg-rift-3-2",
+        "ss-dg-rift-3-3"
+      ],
+      "numericStage": 15,
+      "bossBudgetSeconds": 240,
+      "level": 32,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 32,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 38.8,
+          "attack": 36.55,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        }
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      },
+      "hardmode": {
+        "numericStage": 23,
+        "level": 38,
+        "monsterLevel": 48,
+        "enemyScale": {
+          "hp": 0.25,
+          "attack": 0.7
+        },
+        "worldTierScalingFrom": 4,
+        "stageEnemyScale": [
+          {
+            "hp": 1,
+            "attack": 0.10332117074701822
+          },
+          {
+            "hp": 1,
+            "attack": 0.10332117074701822
+          },
+          {
+            "hp": 1,
+            "attack": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "field-dragon-1",
+      "name": "龙骨洞穴",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-dragon",
+      "stages": [
+        "ss-dg-dragon-1-1",
+        "ss-dg-dragon-1-2",
+        "ss-dg-dragon-1-3"
+      ],
+      "numericStage": 16,
+      "bossBudgetSeconds": 240,
+      "level": 34,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 34,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 157.4,
+          "attack": 64.25,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        },
+        "stageEnemyScale": [
+          {
+            "hp": 1,
+            "attack": 0.05328472320543679
+          },
+          {
+            "hp": 1,
+            "attack": 0.05328472320543679
+          },
+          {
+            "hp": 1,
+            "attack": 1
+          }
+        ]
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      }
+    },
+    {
+      "id": "field-dragon-2",
+      "name": "旧祭遗堂",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-dragon",
+      "stages": [
+        "ss-dg-dragon-2-1",
+        "ss-dg-dragon-2-2",
+        "ss-dg-dragon-2-3"
+      ],
+      "numericStage": 17,
+      "bossBudgetSeconds": 240,
+      "level": 36,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 36,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 128.75,
+          "attack": 78.25,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        },
+        "stageEnemyScale": [
+          {
+            "hp": 1,
+            "attack": 0.0749633915496982
+          },
+          {
+            "hp": 1,
+            "attack": 0.0749633915496982
+          },
+          {
+            "hp": 1,
+            "attack": 1
+          }
+        ]
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      }
+    },
+    {
+      "id": "field-dragon-3",
+      "name": "航网机库",
+      "kind": "normal",
+      "profiles": [
+        "realtime",
+        "augments-disabled"
+      ],
+      "area": "ss-map-dragon",
+      "stages": [
+        "ss-dg-dragon-3-1",
+        "ss-dg-dragon-3-2",
+        "ss-dg-dragon-3-3"
+      ],
+      "numericStage": 18,
+      "bossBudgetSeconds": 240,
+      "level": 37,
+      "worldDrops": true,
+      "policy": {
+        "feature": "field-dungeon",
+        "monsterLevel": 37,
+        "timeLimitSeconds": 1800,
+        "returnRegion": "ss-map-port",
+        "normalGoals": {
+          "killCount": 1,
+          "eliteCount": 1
+        },
+        "enemyScale": {
+          "hp": 251.55,
+          "attack": 89.2,
+          "hpPerStage": 0,
+          "attackPerStage": 0
+        },
+        "stageEnemyScale": [
+          {
+            "hp": 1,
+            "attack": 0.05741275326963474
+          },
+          {
+            "hp": 1,
+            "attack": 0.05741275326963474
+          },
+          {
+            "hp": 1,
+            "attack": 1
+          }
+        ]
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 40,
+        "material": 0
+      },
+      "hardmode": {
+        "numericStage": 24,
+        "level": 38,
+        "monsterLevel": 50,
+        "enemyScale": {
+          "hp": 1,
+          "attack": 1
+        },
+        "worldTierScalingFrom": 4
+      }
+    }
+  ],
+  "augments": {
+    "enabled": true,
+    "choices": 3,
+    "rerolls": 1,
+    "rounds": [
+      [
+        {
+          "tier": "silver",
+          "weight": 70
+        },
+        {
+          "tier": "gold",
+          "weight": 30
+        }
+      ],
+      [
+        {
+          "tier": "gold",
+          "weight": 100
+        }
+      ],
+      [
+        {
+          "tier": "gold",
+          "weight": 70
+        },
+        {
+          "tier": "prismatic",
+          "weight": 30
+        }
+      ]
+    ]
+  },
+  "augmentExtra": {
+    "minimumWorldTier": 4,
+    "bossHpRatio": 0.5,
+    "weights": [
+      {
+        "tier": "gold",
+        "weight": 70
+      },
+      {
+        "tier": "prismatic",
+        "weight": 30
+      }
+    ]
+  }
+}

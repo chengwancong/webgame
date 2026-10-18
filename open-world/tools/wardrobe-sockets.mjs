@@ -1,0 +1,9 @@
+import {readFile} from 'node:fs/promises';
+import {join} from 'node:path';
+import {createHash} from 'node:crypto';
+import sharp from 'sharp';
+export async function loadWeaponSockets(assetRoot,shippedSets){
+ const bytes=await readFile(join(assetRoot,'weapon-sockets.json')),data=JSON.parse(bytes);if(data.schemaVersion!==1)throw Error('Unsupported weapon sockets schema');
+ for(const section of ['weaponSockets','handSockets']){for(const id of shippedSets){const base=data[section]?.[id];if(!base)throw Error('Missing '+section+'/'+id);if(section==='handSockets'&&base.attachment!=='front_hand')throw Error('Hand socket must use hand bitmap');const configs=[base,...(base.backHand?[base.backHand]:[])];for(const config of configs){if(!['weapon','front_hand','back_hand'].includes(config.attachment))throw Error('Unknown socket attachment '+id);const {data:rgba,info}=await sharp(join(assetRoot,'sets',id,config.attachment+'.png')).ensureAlpha().raw().toBuffer({resolveWithObject:true});if(JSON.stringify(config.imageSize)!==JSON.stringify([info.width,info.height]))throw Error('Socket image size mismatch '+id);for(const name of ['weapon','muzzle']){const point=config[name];if(!Array.isArray(point)||point.length!==2||point.some(n=>!Number.isFinite(n))||point[0]<0||point[0]>=info.width||point[1]<0||point[1]>=info.height)throw Error('Socket outside attachment '+id+'/'+name);const alpha=rgba[(Math.floor(point[1])*info.width+Math.floor(point[0]))*4+3];if(alpha<32)throw Error('Socket anchored in transparent pixels '+id+'/'+name);}}}for(const id of Object.keys(data[section]))if(!shippedSets.includes(id))throw Error('Socket for unshipped set '+id);}
+ return {weaponSockets:data.weaponSockets,handSockets:data.handSockets,weaponSocketCoordinateSystem:data.coordinateSystem,weaponSocketConfigSha256:createHash('sha256').update(bytes).digest('hex')};
+}

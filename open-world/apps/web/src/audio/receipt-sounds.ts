@@ -1,0 +1,5 @@
+/** 成功回执后触发；按钮音不能冒充强化/分解成功。 */
+export const receiptSounds:readonly [RegExp,string][]=[
+ [/^gear\/unequip$/,'ui/unequip'],[/^gear\/equip$/,'ui/equip-metal'],[/^gear\/.*lock$/,'ui/lock'],[/^gear\/.*salvage/,'ui/salvage-batch'],[/^gear\/.*upgrade/,'ui/forge-success'],[/^gear\/.*(?:reforge|reroll)/,'ui/reforge'],[/^skills\/.*activate/,'ui/skill-learn'],[/^skills\/.*upgrade/,'ui/skill-upgrade'],[/^skills$/,'ui/skill-slot'],[/^progression\/.*reset/,'ui/talent-reset'],[/^progression\//,'ui/talent-add'],[/^appearance/,'ui/outfit'],[/^quest\/.*accept/,'world/quest-accept'],[/^quest\/.*claim/,'stinger/quest-complete'],[/^task\/claim/,'stinger/quest-complete'],[/^stage-keys\/craft/,'cue/pickup-key'],[/^bounty\/claim/,'stinger/quest-complete'],[/^(world|travel)\/.*waypoint/,'world/teleport-activate']];
+
+export function receiptSound(path:string,body:object){if(path==='quest'){const op=(body as {op?:string}).op;return ({accept:'world/quest-accept',complete:'stinger/quest-complete',waypoint:'stinger/discovery',clue:'stinger/clue',talk:'world/dialogue'} as Record<string,string>)[op??''];}return receiptSounds.find(([pattern])=>pattern.test(path))?.[1];}

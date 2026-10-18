@@ -1,0 +1,137 @@
+{
+  "id": "ss-boss-port-vanguard",
+  "native": {
+    "path": "assets/mini-hero/navy/runtime",
+    "version": "4.2.43",
+    "sha256": "92ef889c590476c0eacdbc0f77f1206e35a1c77329867331fbc731a17fa5205a",
+    "skins": [
+      "BODY/knight_epic1",
+      "RIGHTHAND/Sword_TwoHand_Epic1"
+    ],
+    "animations": {
+      "SS_idle": "Wait2",
+      "SS_move": "Run2",
+      "SS_attack": "Attack_TwoHand1",
+      "SS_hurt": "Damage1",
+      "SS_death": "Die",
+      "SS_skill1": "Attack_TwoHand2",
+      "SS_skill2": "Guard2",
+      "SS_skill3": "Run2",
+      "SS_idle_active": "Wait2",
+      "SS_move_active": "Run2",
+      "SS_attack_active": "Attack_TwoHand1",
+      "SS_hurt_active": "Damage1",
+      "SS_death_active": "Die",
+      "SS_skill1_active": "Attack_TwoHand2",
+      "SS_skill2_active": "Guard2",
+      "SS_skill3_active": "Run2",
+      "SS_phaseEnter": "Wait2",
+      "SS_phaseEnd": "Wait2"
+    }
+  },
+  "imagegen": {
+    "source": "assets/starsea/bosses/source/ss-boss-port-vanguard/accessories.png",
+    "sha256": "4d2d6e112a9929502386f92b60309babdb983636705035bde68163240a3ffa0c",
+    "cacheOrigin": "C:/Users/ccc/.codex/generated_images/01a10242-100e-7ba1-959e-b0dce8a0854d/exec-e22641c3-cad1-4b33-90ee-983f733532f0.png",
+    "prompts": "assets/starsea/bosses/source/generation-prompts.md",
+    "tool": "built-in image_gen",
+    "transparent": true,
+    "parts": [
+      {
+        "name": "head",
+        "sourceRect": {
+          "left": 79,
+          "top": 83,
+          "width": 560,
+          "height": 538,
+          "count": 218662
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-port-vanguard/head.png",
+        "sha256": "32b4da4cc37a82e6d0abd60112cd858b1ce4c8c74e0e359b04b60950d362e4d6",
+        "width": 256,
+        "height": 246,
+        "atlas": {
+          "x": 4,
+          "y": 4
+        }
+      },
+      {
+        "name": "core",
+        "sourceRect": {
+          "left": 708,
+          "top": 161,
+          "width": 472,
+          "height": 461,
+          "count": 154538
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-port-vanguard/core.png",
+        "sha256": "b96c4fbcf8834466b15893a72e4da6a7f580c9c8c760cd42a4ddf5ea031a1206",
+        "width": 128,
+        "height": 125,
+        "atlas": {
+          "x": 268,
+          "y": 4
+        }
+      },
+      {
+        "name": "panel-left",
+        "sourceRect": {
+          "left": 206,
+          "top": 771,
+          "width": 261,
+          "height": 346,
+          "count": 48887
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-port-vanguard/panel-left.png",
+        "sha256": "953682154bb5a8ec5d083e9ee55a25a69f90a160c24e2a6c698b2c6ddda703f4",
+        "width": 72,
+        "height": 96,
+        "atlas": {
+          "x": 4,
+          "y": 268
+        }
+      },
+      {
+        "name": "panel-right",
+        "sourceRect": {
+          "left": 795,
+          "top": 772,
+          "width": 243,
+          "height": 348,
+          "count": 48050
+        },
+        "path": "assets/starsea/bosses/parts/ss-boss-port-vanguard/panel-right.png",
+        "sha256": "556f8d87ebcae6671b5b39e790015fb0670deb438c655e6d4ce1b245ef075dcf",
+        "width": 67,
+        "height": 96,
+        "atlas": {
+          "x": 268,
+          "y": 268
+        }
+      }
+    ]
+  },
+  "adjustments": [
+    "选取已验证native骨架和分件；完整原始动作逐帧保留",
+    "原生附件材质tint适配暮界/章节配色",
+    "ImageGen头部与阶段装置绑定原生head/胸部/肩部骨骼",
+    "阶段骨骼动画独立编制；不替代原生身体动作",
+    "共享基础图集通过相对URL引用正式mini-hero目录",
+    "人形首领衣装适配"
+  ],
+  "weaponScale": 0.68,
+  "weaponCategory": "sword",
+  "renderFamily": "sword",
+  "calibration": {
+    "slot": "RIGHTHAND",
+    "pixel": [
+      39.5,
+      12
+    ],
+    "imageSize": [
+      79,
+      243
+    ]
+  },
+  "stage": "护肩核心低亮→展开→高亮→折回；角色轮廓与足点保持不变。"
+}

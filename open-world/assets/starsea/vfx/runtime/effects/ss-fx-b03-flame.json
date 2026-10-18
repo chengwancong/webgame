@@ -1,0 +1,587 @@
+{
+  "id": "ss-fx-b03-flame",
+  "name": "炉心泄焰",
+  "rule": "flame_breath",
+  "runtime": {
+    "kind": "effect",
+    "clips": {
+      "startup": {
+        "kind": "atlas",
+        "sourceClip": "warm-burst",
+        "image": "/art/starsea/vfx/clips/warm-burst/clip.png",
+        "atlas": "/art/starsea/vfx/clips/warm-burst/clip.json",
+        "frames": [
+          "warm-burst/0",
+          "warm-burst/1",
+          "warm-burst/2",
+          "warm-burst/3",
+          "warm-burst/4",
+          "warm-burst/5",
+          "warm-burst/6",
+          "warm-burst/7",
+          "warm-burst/8",
+          "warm-burst/9",
+          "warm-burst/10",
+          "warm-burst/11",
+          "warm-burst/12",
+          "warm-burst/13",
+          "warm-burst/14",
+          "warm-burst/15",
+          "warm-burst/16",
+          "warm-burst/17",
+          "warm-burst/18",
+          "warm-burst/19"
+        ],
+        "fps": 30,
+        "sourceDuration": 0.6333000063896179,
+        "anchor": [
+          0.5074524865848352,
+          0.515120967210305
+        ],
+        "canvas": [
+          512,
+          512
+        ],
+        "nativeFacing": "up",
+        "mount": "weapon",
+        "layer": "front",
+        "size": 22,
+        "tint": "#ffd19c",
+        "blend": "lighter",
+        "loop": true,
+        "retime": null,
+        "source": {
+          "nativeLayer": "126-eff1fsfd",
+          "version": "2.1.27",
+          "sha256": "84b77ac924cbd964b6cb126b3d6a891e45d1afdee6720b286a500acc485e56b5",
+          "mode": "native-layer-adaptation",
+          "originalPath": "G:/webgame/abyss-walker-migration/Q版日式手游SPINE特效300套/126-eff1fsfd/skeleton.json",
+          "adoptedSlots": "See assets/starsea/vfx/evidence/warm-burst-native.json",
+          "adjustments": [
+            "Runtime scale/tint/mirror only; transparent source frames remain registered on one canvas."
+          ]
+        }
+      },
+      "release": {
+        "kind": "atlas",
+        "sourceClip": "flame-release",
+        "image": "/art/starsea/vfx/clips/flame-release/clip.png",
+        "atlas": "/art/starsea/vfx/clips/flame-release/clip.json",
+        "frames": [
+          "flame-release/0",
+          "flame-release/1",
+          "flame-release/2",
+          "flame-release/3",
+          "flame-release/4",
+          "flame-release/5",
+          "flame-release/6",
+          "flame-release/7",
+          "flame-release/8",
+          "flame-release/9",
+          "flame-release/10",
+          "flame-release/11",
+          "flame-release/12",
+          "flame-release/13",
+          "flame-release/14",
+          "flame-release/15",
+          "flame-release/16",
+          "flame-release/17",
+          "flame-release/18",
+          "flame-release/19",
+          "flame-release/20",
+          "flame-release/21",
+          "flame-release/22",
+          "flame-release/23"
+        ],
+        "fps": 30,
+        "sourceDuration": 0.7666000127792358,
+        "anchor": [
+          0.4924638146823948,
+          0.6371432879259236
+        ],
+        "canvas": [
+          512,
+          512
+        ],
+        "nativeFacing": "up",
+        "mount": "weapon",
+        "layer": "front",
+        "size": 102,
+        "tint": "#ffd19c",
+        "blend": "lighter",
+        "loop": false,
+        "retime": {
+          "durationTicks": 8,
+          "reason": "Effect-only release adapted to actual release event; actor source release separately maps frozen windup."
+        },
+        "source": {
+          "nativeLayer": "165-eff39longhuofd",
+          "version": "2.1.27",
+          "sha256": "e638a91eb12183f011a4d3fb96f1dcfa56292caf8616e7d4107a3174d4de0b3f",
+          "mode": "native-layer-adaptation",
+          "originalPath": "G:/webgame/abyss-walker-migration/Q版日式手游SPINE特效300套/165-eff39longhuofd/skeleton.json",
+          "adoptedSlots": "See assets/starsea/vfx/evidence/flame-release-native.json",
+          "adjustments": [
+            "Runtime scale/tint/mirror only; transparent source frames remain registered on one canvas."
+          ]
+        }
+      },
+      "projectile": {
+        "kind": "none",
+        "reason": "No projectile emitted by this rule."
+      },
+      "active": {
+        "kind": "atlas",
+        "sourceClip": "burning",
+        "image": "/art/starsea/vfx/clips/burning/clip.png",
+        "atlas": "/art/starsea/vfx/clips/burning/clip.json",
+        "frames": [
+          "burning/0",
+          "burning/1",
+          "burning/2",
+          "burning/3",
+          "burning/4",
+          "burning/5",
+          "burning/6",
+          "burning/7",
+          "burning/8",
+          "burning/9",
+          "burning/10",
+          "burning/11",
+          "burning/12",
+          "burning/13",
+          "burning/14",
+          "burning/15",
+          "burning/16",
+          "burning/17",
+          "burning/18",
+          "burning/19",
+          "burning/20",
+          "burning/21",
+          "burning/22",
+          "burning/23"
+        ],
+        "fps": 30,
+        "sourceDuration": 0.7666000127792358,
+        "anchor": [
+          0.5,
+          0.42128577032231407
+        ],
+        "canvas": [
+          512,
+          512
+        ],
+        "nativeFacing": "up",
+        "mount": "ground",
+        "layer": "ground",
+        "size": 102,
+        "tint": "#ffd19c",
+        "blend": "lighter",
+        "loop": true,
+        "retime": null,
+        "distribution": "deterministic-inside-rule-shape",
+        "density": 12,
+        "source": {
+          "nativeLayer": "182-eff51dianran",
+          "version": "2.1.27",
+          "sha256": "c595659c9e023f0e485bf8932751daab3de066352d8b24689b6929f62585acdf",
+          "mode": "native-layer-adaptation",
+          "originalPath": "G:/webgame/abyss-walker-migration/Q版日式手游SPINE特效300套/182-eff51dianran/skeleton.json",
+          "adoptedSlots": "See assets/starsea/vfx/evidence/burning-native.json",
+          "adjustments": [
+            "Runtime scale/tint/mirror only; transparent source frames remain registered on one canvas."
+          ]
+        }
+      },
+      "impact": {
+        "kind": "atlas",
+        "sourceClip": "flame-burst",
+        "image": "/art/starsea/vfx/clips/flame-burst/clip.png",
+        "atlas": "/art/starsea/vfx/clips/flame-burst/clip.json",
+        "frames": [
+          "flame-burst/0",
+          "flame-burst/1",
+          "flame-burst/2",
+          "flame-burst/3",
+          "flame-burst/4",
+          "flame-burst/5",
+          "flame-burst/6",
+          "flame-burst/7",
+          "flame-burst/8",
+          "flame-burst/9",
+          "flame-burst/10",
+          "flame-burst/11",
+          "flame-burst/12",
+          "flame-burst/13",
+          "flame-burst/14",
+          "flame-burst/15",
+          "flame-burst/16",
+          "flame-burst/17",
+          "flame-burst/18",
+          "flame-burst/19",
+          "flame-burst/20",
+          "flame-burst/21",
+          "flame-burst/22",
+          "flame-burst/23",
+          "flame-burst/24",
+          "flame-burst/25",
+          "flame-burst/26",
+          "flame-burst/27",
+          "flame-burst/28",
+          "flame-burst/29",
+          "flame-burst/30",
+          "flame-burst/31",
+          "flame-burst/32",
+          "flame-burst/33",
+          "flame-burst/34",
+          "flame-burst/35",
+          "flame-burst/36",
+          "flame-burst/37",
+          "flame-burst/38",
+          "flame-burst/39",
+          "flame-burst/40",
+          "flame-burst/41",
+          "flame-burst/42",
+          "flame-burst/43",
+          "flame-burst/44",
+          "flame-burst/45",
+          "flame-burst/46",
+          "flame-burst/47"
+        ],
+        "fps": 30,
+        "sourceDuration": 1.56659996509552,
+        "anchor": [
+          0.4889583277243159,
+          0.5037083305387146
+        ],
+        "canvas": [
+          512,
+          512
+        ],
+        "nativeFacing": "up",
+        "mount": "hit",
+        "layer": "front",
+        "size": 75,
+        "tint": "#ffd19c",
+        "blend": "lighter",
+        "loop": false,
+        "retime": null,
+        "source": {
+          "nativeLayer": "164-eff39longhuobz",
+          "version": "2.1.27",
+          "sha256": "f12bbca49ef4334c591d188b9d34e04b6d4906001122f9e5f9f6bdd3cba6a180",
+          "mode": "native-layer-adaptation",
+          "originalPath": "G:/webgame/abyss-walker-migration/Q版日式手游SPINE特效300套/164-eff39longhuobz/skeleton.json",
+          "adoptedSlots": "See assets/starsea/vfx/evidence/flame-burst-native.json",
+          "adjustments": [
+            "Omit registered decorative/text slots: zi1,zi6,zi7,zi5,zi2,zi3,zi4,zi8,xian1,xian2,xian3,xian4,xian5,xian9,xian6,xian7,xian8,xian10",
+            "Runtime scale/tint/mirror only; transparent source frames remain registered on one canvas."
+          ]
+        }
+      },
+      "end": {
+        "kind": "atlas",
+        "sourceClip": "burning",
+        "image": "/art/starsea/vfx/clips/burning/clip.png",
+        "atlas": "/art/starsea/vfx/clips/burning/clip.json",
+        "frames": [
+          "burning/0",
+          "burning/1",
+          "burning/2",
+          "burning/3",
+          "burning/4",
+          "burning/5",
+          "burning/6",
+          "burning/7",
+          "burning/8",
+          "burning/9",
+          "burning/10",
+          "burning/11",
+          "burning/12",
+          "burning/13",
+          "burning/14",
+          "burning/15",
+          "burning/16",
+          "burning/17",
+          "burning/18",
+          "burning/19",
+          "burning/20",
+          "burning/21",
+          "burning/22",
+          "burning/23"
+        ],
+        "fps": 30,
+        "sourceDuration": 0.7666000127792358,
+        "anchor": [
+          0.5,
+          0.42128577032231407
+        ],
+        "canvas": [
+          512,
+          512
+        ],
+        "nativeFacing": "up",
+        "mount": "last-stage",
+        "layer": "front",
+        "size": 102,
+        "tint": "#ffd19c",
+        "blend": "lighter",
+        "loop": false,
+        "retime": {
+          "sourceWindow": [
+            0.68,
+            1
+          ],
+          "durationTicks": 12,
+          "reason": "Original decay tail only; cosmetic lifetime independent of damage."
+        },
+        "source": {
+          "nativeLayer": "182-eff51dianran",
+          "version": "2.1.27",
+          "sha256": "c595659c9e023f0e485bf8932751daab3de066352d8b24689b6929f62585acdf",
+          "mode": "native-layer-adaptation",
+          "originalPath": "G:/webgame/abyss-walker-migration/Q版日式手游SPINE特效300套/182-eff51dianran/skeleton.json",
+          "adoptedSlots": "See assets/starsea/vfx/evidence/burning-native.json",
+          "adjustments": [
+            "Runtime scale/tint/mirror only; transparent source frames remain registered on one canvas."
+          ]
+        }
+      },
+      "interrupt": {
+        "kind": "atlas",
+        "sourceClip": "interrupt",
+        "image": "/art/starsea/vfx/clips/interrupt/clip.png",
+        "atlas": "/art/starsea/vfx/clips/interrupt/clip.json",
+        "frames": [
+          "interrupt/0",
+          "interrupt/1",
+          "interrupt/2",
+          "interrupt/3",
+          "interrupt/4",
+          "interrupt/5",
+          "interrupt/6",
+          "interrupt/7",
+          "interrupt/8",
+          "interrupt/9",
+          "interrupt/10",
+          "interrupt/11",
+          "interrupt/12",
+          "interrupt/13",
+          "interrupt/14",
+          "interrupt/15",
+          "interrupt/16",
+          "interrupt/17",
+          "interrupt/18",
+          "interrupt/19",
+          "interrupt/20",
+          "interrupt/21",
+          "interrupt/22",
+          "interrupt/23",
+          "interrupt/24",
+          "interrupt/25",
+          "interrupt/26",
+          "interrupt/27",
+          "interrupt/28",
+          "interrupt/29",
+          "interrupt/30"
+        ],
+        "fps": 30,
+        "sourceDuration": 1,
+        "anchor": [
+          0.48884973153119315,
+          0.87213188047362
+        ],
+        "canvas": [
+          512,
+          512
+        ],
+        "nativeFacing": "up",
+        "mount": "weapon",
+        "layer": "front",
+        "size": 45,
+        "tint": "#ffd19c",
+        "blend": "lighter",
+        "loop": false,
+        "retime": null,
+        "source": {
+          "nativeLayer": "132-eff28daduanfd",
+          "version": "2.1.27",
+          "sha256": "2c15e41b5cdc6fa55a9b789716afe7079c8ea102fb9773e14036084af7ce8be5",
+          "mode": "native-layer-adaptation",
+          "originalPath": "G:/webgame/abyss-walker-migration/Q版日式手游SPINE特效300套/132-eff28daduanfd/skeleton.json",
+          "adoptedSlots": "See assets/starsea/vfx/evidence/interrupt-native.json",
+          "adjustments": [
+            "Omit registered decorative/text slots: zi1,zi2,zi3,xian1,xian9,xian10,xian2,xian3,xian4,xian5,xian6,xian7,xian8",
+            "Runtime scale/tint/mirror only; transparent source frames remain registered on one canvas."
+          ]
+        }
+      },
+      "status": {
+        "kind": "none",
+        "reason": "No referenced persistent status."
+      }
+    },
+    "secondaryClips": {
+      "phase_exhaust": {
+        "kind": "atlas",
+        "sourceClip": "steam",
+        "image": "/art/starsea/vfx/clips/steam/clip.png",
+        "atlas": "/art/starsea/vfx/clips/steam/clip.json",
+        "frames": [
+          "steam/0",
+          "steam/1",
+          "steam/2",
+          "steam/3",
+          "steam/4",
+          "steam/5",
+          "steam/6",
+          "steam/7",
+          "steam/8",
+          "steam/9",
+          "steam/10",
+          "steam/11",
+          "steam/12",
+          "steam/13",
+          "steam/14",
+          "steam/15",
+          "steam/16",
+          "steam/17",
+          "steam/18",
+          "steam/19",
+          "steam/20",
+          "steam/21",
+          "steam/22",
+          "steam/23",
+          "steam/24",
+          "steam/25",
+          "steam/26",
+          "steam/27"
+        ],
+        "fps": 30,
+        "sourceDuration": 0.8999999761581421,
+        "anchor": [
+          0.544313518932015,
+          0.8729433716638075
+        ],
+        "canvas": [
+          512,
+          512
+        ],
+        "mount": "ss_exhaust",
+        "actorId": "ss-boss-core-extractor",
+        "layer": "front",
+        "loop": true,
+        "size": 72,
+        "phaseOffsets": [
+          0,
+          0.45
+        ],
+        "tint": "#91a8b4",
+        "blend": "source-over",
+        "starts": "phase-active",
+        "stops": [
+          "phase-end",
+          "death"
+        ],
+        "source": {
+          "id": "033-1207122",
+          "libraryIndex": 33,
+          "originalPath": "G:/webgame/abyss-walker-migration/Q版日式手游SPINE特效300套/033-1207122/1207122.json",
+          "sha256": "898b461d96fa563585a87b3b1453ad4e00d722db9a4a09051e685fd2c289eb6c",
+          "nativeVersion": "3.7.93",
+          "animation": "animation",
+          "runtimeJson": "/art/starsea/vfx/native/033-1207122/1207122.json",
+          "runtimeAtlas": "/art/starsea/vfx/native/033-1207122/1207122.atlas",
+          "files": [
+            {
+              "path": "assets/starsea/vfx/source/033-1207122/1207122.json",
+              "originalPath": "G:/webgame/abyss-walker-migration/Q版日式手游SPINE特效300套/033-1207122/1207122.json",
+              "sha256": "898b461d96fa563585a87b3b1453ad4e00d722db9a4a09051e685fd2c289eb6c",
+              "bytes": 35499
+            },
+            {
+              "path": "assets/starsea/vfx/source/033-1207122/1207122.atlas",
+              "originalPath": "G:/webgame/abyss-walker-migration/Q版日式手游SPINE特效300套/033-1207122/1207122.atlas",
+              "sha256": "434845f76b2f937f98b9e1c16e1ffbe96e89489fd9590477dbc6dad8aaf5ceb3",
+              "bytes": 2301
+            },
+            {
+              "path": "assets/starsea/vfx/source/033-1207122/1207122.png",
+              "originalPath": "G:/webgame/abyss-walker-migration/Q版日式手游SPINE特效300套/033-1207122/1207122.png",
+              "sha256": "33e920ec57c28199386b93d9252768abd5e5229d5cf7b20aca24a5cdfe67732b",
+              "bytes": 90008
+            }
+          ],
+          "compatibility": {
+            "renderer": "bundled official Spine WebGL 3.6",
+            "method": "Region-only JSON: original setup transforms, bezier/stepped curves, attachment/colour timelines and draw order; no mesh, flips, inheritance exceptions or constraints.",
+            "unsupported": {
+              "attachments": [],
+              "boneFlags": [],
+              "constraints": 0,
+              "flipTimelines": false
+            }
+          },
+          "bones": 20,
+          "slots": 23,
+          "adoption": "Smoke slot only; original attachment/alpha timeline, neutral slot RGB; 2 offset cycles for visible flow; emitter follows actual ss_exhaust bone. No 31st root resource."
+        }
+      }
+    },
+    "timeline": {
+      "tickRate": 30,
+      "parameters": "required resolved instance; no runtime defaults",
+      "reference": {
+        "windup": 25,
+        "delay": 15,
+        "duration": 60,
+        "radius": 4,
+        "namespace": "monsterSkills.flame_breath",
+        "interruptible": false,
+        "note": "Reference only; live resolved instance parameters replace fixture.",
+        "source": {
+          "path": "packages/content/chapter-combat.ts",
+          "sha256": "4d091c869f0927d3debe43ef66f34239d76a4af308ef98c91d6bd1b9a1579b35"
+        }
+      },
+      "events": {
+        "startup": "cast_started / danger_started",
+        "release": "cast_released",
+        "projectile": "real projectile snapshot",
+        "active": "effect_activated / actual zone snapshot / status_changed applied",
+        "impact": "hit_resolved only",
+        "end": "expired / effect-ended",
+        "interrupt": "cast_failed / interrupted",
+        "phase_exhaust": "phase-active until phase-end/death"
+      },
+      "cosmeticExpiryTicks": 12
+    },
+    "mount": {
+      "startup": "weapon",
+      "release": "weapon",
+      "projectile": "independent executor position",
+      "impact": "actual contact point",
+      "active": "fixed ground snapshot or actual buff target"
+    },
+    "geometry": {
+      "source": "resolved instance only",
+      "projection": [
+        32,
+        18
+      ],
+      "circle": "project Euclidean navigation-space circle",
+      "beam": "origin/direction/halfWidth/reach polygon",
+      "failure": "missing/invalid geometry disables warning and reports diagnostic, no radius fallback"
+    },
+    "renderer": "/art/starsea/vfx/renderer.mjs",
+    "fixture": {
+      "actorId": "ss-boss-core-extractor",
+      "windupTicks": 25,
+      "delayTicks": 15,
+      "durationTicks": 60,
+      "radius": 4,
+      "kind": "zone",
+      "source": "reference snapshot only; not new enemy binding"
+    }
+  }
+}

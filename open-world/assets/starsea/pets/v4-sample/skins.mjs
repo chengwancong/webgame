@@ -1,0 +1,22 @@
+import {readFile,writeFile,mkdir} from 'node:fs/promises';import {join} from 'node:path';import {group,out,json,sharp,record} from './pipeline.mjs';import {pets,forms,colors,materialNames} from './definitions.mjs';
+const flows=[{id:'ember',name:'余烬',color:'#df8959',shadow:'#a85035',metal:['#dbaf65','#916339','#fff1ac'],gem:['#f19255','#fff0c9']},{id:'glacier',name:'霜卫',color:'#7dbdce',shadow:'#4c8497',metal:['#c7cbd1','#7c8e9e','#f4f4dc'],gem:['#68c7e4','#e9fdff']}],accessories=[],skins=[];
+await mkdir(join(group,'sources/accessories'),{recursive:true});await mkdir(join(out,'accessories'),{recursive:true});
+for(const flow of flows){const old=await readFile(join(group,'../v3/sources/accessories/badge-'+flow.id+'.svg'),'utf8'),glyph=old.match(/<g fill=.*<\/g>/)[0];
+ for(const type of ['collar','guard','crest','inlay','scarf']){
+  let body;if(type==='collar')body='<path d="M7 9Q32 20 57 9" fill="none" stroke="#3c2b23" stroke-width="5"/><path d="M32 14V25" stroke="#d8b574" stroke-width="3"/>'+`<g transform="translate(11 20) scale(.65)"><circle cx="32" cy="32" r="27" fill="#fff7e6" stroke="#3c2b23" stroke-width="3"/>${glyph}</g>`;
+  if(type==='guard')body=`<path d="M4 17Q32 -1 60 17L52 53L32 62L12 53Z" fill="${flow.metal[0]}" stroke="#3c2b23" stroke-width="2"/><path d="M7 18Q32 1 57 18L54 25Q32 9 10 25Z" fill="${flow.metal[2]}"/><g transform="translate(8 8) scale(.75)">${glyph}</g>`;
+  if(type==='crest')body=`<path d="M3 6L22 18L32 4L42 18L61 6L53 42L32 61L11 42Z" fill="${flow.metal[0]}" stroke="#3c2b23" stroke-width="2"/><path d="M5 9L24 22L32 9L40 22L59 9L52 31L32 49L12 31Z" fill="${flow.metal[2]}"/><g transform="translate(11 12) scale(.65)">${glyph}</g>`;
+  if(type==='inlay')body=`<g transform="translate(10 10) scale(.7)">${glyph.replaceAll('stroke="#3c2b23"','stroke="'+flow.metal[2]+'"')}</g>`;
+  if(type==='scarf')body=(await readFile(join(group,'../v3/sources/accessories/job-scarf.svg'),'utf8')).replace(/^.*?<g/,'<g').replace(/<\/svg>$/,'').replaceAll('#78b9c4',flow.color).replaceAll('#cbb694',flow.shadow);
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 64 64">${body}</svg>`,id=type+'-'+flow.id,src=join(group,'sources/accessories',id+'.svg'),file=join(out,'accessories',id+'.png');await writeFile(src,svg);await sharp(Buffer.from(svg)).png().toFile(file);accessories.push({id,file:'/art/starsea/pets/v4-sample/accessories/'+id+'.png',source:await record(src),output:await record(file),method:'Edited existing PA4 vector emblem/scarf; new collar/guard/crest seating; no skeleton attachment edits'});
+ }
+ for(const pet of pets){const pal=colors(pet);if(pet.tier!=='free'){pal[2]=flow.color;pal[3]=flow.shadow;} // Free flow color ONLY lives on its collar badge.
+  pal.splice(11,3,...flow.metal);pal.splice(14,2,...flow.gem);
+  const type=pet.tier==='free'?'collar':pet.tier==='light'?'guard':pet.style==='A'?'crest':'inlay',height=pet.heights[0],adjust=44/height;
+  const attachments=[{asset:type+'-'+flow.id,socket:'badge',offset:[0,0],displaySize:({collar:8,guard:11,crest:11,inlay:8}[type])*adjust,anchor:[.5,.5],layer:32}];
+  if(pet.tier!=='free')attachments.push({asset:'scarf-'+flow.id,socket:'job',offset:[0,0],displaySize:(pet.tier==='light'?11:pet.style==='A'?18:15)*adjust,anchor:[.5,.3],layer:18});
+  skins.push({id:'pa5-'+pet.key+'-'+flow.id,family:pet.family,style:pet.style??pet.tier,tier:pet.tier,tierName:pet.name,flow:flow.id,flowName:flow.name,profession:'sword',professionName:'剑',island:'dragon',islandName:'龙眠',palette:pal,materialNames,forms:Object.fromEntries(forms.map(f=>[f.key,{base:'ss-pet-'+pet.key+'-'+f.key}])),attachments,effects:pet.tier==='heavy'?[{id:'arc-'+flow.id,socket:'ground',offset:[0,-2],displaySize:58*adjust,aspect:.44,mode:'arc',alpha:.85,layer:-10},{id:flow.id,socket:'body',offset:[-14,7],displaySize:24*adjust,alpha:.85,layer:-5}]:[],emission:pet.tier==='heavy'?{materials:[14,15],blend:'lighter',alpha:.18}:null});
+ }
+}
+const effects=JSON.parse(await readFile(join(out,'effects.json'),'utf8'));for(const flow of flows){const arc={...effects.find(e=>e.id==='arcanum'),id:'arc-'+flow.id,tint:flow.color,mode:'partial arcs'};effects.push(arc);}for(const e of effects)e.alpha=.85;
+await json(join(out,'effects.json'),effects);await json(join(group,'skins.json'),{skins,logicalForms:24});await json(join(out,'skins.json'),{skins,logicalForms:24});await json(join(group,'accessories.json'),accessories);await json(join(out,'accessories.json'),accessories);

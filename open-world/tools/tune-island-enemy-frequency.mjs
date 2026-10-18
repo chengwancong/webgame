@@ -1,0 +1,6 @@
+import fs from 'node:fs';import ts from 'typescript';
+const path='docs/island-enemy-skills-acceptance.json',first=JSON.parse(fs.readFileSync(path)),factors=Object.fromEntries(first.rows.map(r=>[r.island,r.boss.alive?1:Math.ceil(70/r.boss.seconds)]));
+fs.writeFileSync('docs/island-enemy-skills-acceptance-first.json',JSON.stringify(first,null,2)+'\n');
+fs.writeFileSync('packages/content/island-enemy-frequency.json',JSON.stringify({source:'one correction: ceil(target boss TTD / first measured TTD); apply to skill and basic attack cooldown, never remove skills',factors},null,2)+'\n');
+const file='packages/content/monsters.json',raw=fs.readFileSync(file,'utf8'),tree=ts.parseJsonText(file,raw),edits=[];
+function visit(n){if(ts.isObjectLiteralExpression(n)){const props=new Map(n.properties.map(p=>[p.name?.text,p])),id=props.get('id')?.initializer?.text;if(id?.startsWith('ow-boss-')){const factor=factors[id.split('-')[2]];if(factor>1){const ai=props.get('ai').initializer,cooldown=ai.properties.find(p=>p.name.text==='cooldown').initializer;edits.push({a:cooldown.getStart(tree),b:cooldown.end,text:String(Number(cooldown.text)*factor)});}}}ts.forEachChild(n,visit);}visit(tree);let out=raw;for(const e of edits.sort((a,b)=>b.a-a.a))out=out.slice(0,e.a)+e.text+out.slice(e.b);fs.writeFileSync(file,out);
