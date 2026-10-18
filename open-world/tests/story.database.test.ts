@@ -10,7 +10,12 @@ import {World,distance} from '../packages/simulation/index.ts';
 import {lineOfSight} from '../packages/simulation/navigation.ts';
 import type {DungeonView} from '../packages/contracts/index.ts';
 const dsn=process.env.AW_DATABASE_URL;if(!dsn)throw Error('Real PostgreSQL required');
-const config=structuredClone(source);config.runtime.pumpMs=10;config.runtime.stateEveryMs=20;config.runtime.autoTicksPerSlice=6;(config.profiles.realtime as any).mode='simulation';(config.profiles as any)['live-test']={mode:'realtime',disconnect:'retain'};config.definitions.push({...config.definitions.find(d=>d.id==='story-meadow')!,id:'story-meadow-live-test',profiles:['live-test']});const content=resolveDungeonContent(config),pool=poolFor(dsn);let app=createApp(pool,{campaign:'legacy',testLogin:true,dungeons:content}),origin:string;const sockets:WebSocket[]=[];
+const config=structuredClone(source);config.runtime.pumpMs=10;config.runtime.stateEveryMs=20;config.runtime.autoTicksPerSlice=6;
+// Accelerate only this fixture's legacy story chapters. The shared realtime
+// profile must stay realtime for newly registered solo plane instances.
+(config.profiles as any)['story-test-simulation']={...config.profiles.realtime,mode:'simulation'};
+for(const definition of config.definitions)if(storyChapters.some(chapter=>'story-'+chapter.id===definition.id))definition.profiles=definition.profiles.map(profile=>profile==='realtime'?'story-test-simulation':profile);
+(config.profiles as any)['live-test']={mode:'realtime',disconnect:'retain'};config.definitions.push({...config.definitions.find(d=>d.id==='story-meadow')!,id:'story-meadow-live-test',profiles:['live-test']});const content=resolveDungeonContent(config),pool=poolFor(dsn);let app=createApp(pool,{campaign:'legacy',testLogin:true,dungeons:content}),origin:string;const sockets:WebSocket[]=[];
 beforeAll(async()=>{await migrate(pool);await app.listen({host:'127.0.0.1',port:0});origin='http://127.0.0.1:'+(app.server.address() as any).port;});
 afterAll(async()=>{for(const socket of sockets)socket.close();await app.close();await pool.end();});
 const sleep=(ms:number)=>new Promise(r=>setTimeout(r,ms));

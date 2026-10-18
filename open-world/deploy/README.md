@@ -95,7 +95,7 @@ curl https://staging.你的域名/api/health
 
 检查顺序：`pnpm install --frozen-lockfile` → `pnpm exec tsc --noEmit` → `pnpm exec tsx tools/validate-content.ts --metadata-only` → `node tools/ci-tests.mjs`。工作簿测试另装 openpyxl 3.1.5。metadata-only 保留素材登记、哈希一致性与引用校验，默认不带参数的本机校验仍读取并验证真实素材字节。
 
-唯一排除名单是 `tools/ci-test-excludes.json`：原六项，加 lightning-arrow-vfx、vfx-art、vfx-hit-style、vfx-presence（PNG / 图集）和 audio-coverage（WAV）。不排除数据库、规则或长流程回归。测试串行，长日程允许 30 分钟；日志会显示仓库外证据目录。
+唯一排除名单是 `tools/ci-test-excludes.json`：原六项，加 lightning-arrow-vfx、vfx-art、vfx-hit-style、vfx-presence（PNG / 图集）和 audio-coverage（WAV）。不排除数据库、规则或长流程回归。云端使用 3 个独立 PostgreSQL 作业分片，每片内部串行；本机仍单任务串行，长日程允许 30 分钟；日志会显示仓库外证据目录。
 
 本机也运行同一 `ci-tests.mjs`，须由 `tools/runtime.mjs` 的 `startDatabase({temporary:true})` 提供 AW_DATABASE_URL 并在 finally 调用 stop；建议在仓库外 HEAD 文本快照验收，避免旧测试留档影响共享工作区。Windows 工作簿测试使用 AW_PYTHON（runner 默认解析 python.exe），不依赖 WindowsApps 的 python3 商店别名。
 
