@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {buildPlaneStage,planeStageSpecs,planeResource,PLANE_SIGHT_MARGIN} from '../packages/content/plane-scenes.ts';
+import {buildPlaneStage,planeStageSpecs,planeResource,PLANE_SIGHT_MARGIN,PLANE_ISLANDS,PLANE_ISLAND_PARTS,PLANE_FEATURES} from '../packages/content/plane-scenes.ts';
 import {planeMaps} from '../packages/content/open-world/index.ts';
 import {dungeonContent} from '../packages/content/dungeons.ts';
 import {regionById,dungeonRegionInfo} from '../packages/content/index.ts';
@@ -41,7 +41,16 @@ describe('plane scenes (箱庭位面 greybox)',()=>{
    // Blockers sit on their cell centre; 2×2 pillars on the shared corner of their four cells.
    for(const p of map.pieces.filter(p=>p.layer==='blocker'||p.layer==='pillar'))expect('ox'.includes(map.cells[Math.floor(p.y-.5)*map.width+Math.floor(p.x-.5)]),`${map.id} ${p.part} ${p.x},${p.y}`).toBe(true);
    for(const id of map.resources)expect((runtimeResources.get(id) as any)?.runtime.file,id).toBeTruthy();
-   for(const part of ['ground-main','wall-straight','wall-top','backdrop-near'])expect(map.resources).toContain(planeResource(map.kit,part));
+   for(const part of ['ground-main','wall-straight','wall-top','backdrop-near'])expect(map.resources).toContain(planeResource(map.kit,part,map.island));
   }
+ });
+ it('every island dresses every kit: island parts and feature pieces resolve to runtime files, features block a cell',()=>{
+  for(const spec of planeStageSpecs)for(const island of PLANE_ISLANDS){const {map}=buildPlaneStage({...spec,island:'ss-map-'+island});expect(map.island).toBe(island);
+   for(const id of map.resources)expect((runtimeResources.get(id) as any)?.runtime.file,id).toBeTruthy();
+   for(const part of [...PLANE_ISLAND_PARTS])expect((runtimeResources.get(planeResource(map.kit,part,island)) as any)?.runtime.file,`${island} ${map.kit} ${part}`).toBeTruthy();
+   for(const p of map.pieces.filter(p=>PLANE_FEATURES.includes(p.part)))expect(p.layer).toBe('blocker');
+   expect(island==='wind'||Boolean(map.material?.tint),island).toBe(true);}
+  // Across the six stages at least one feature of each kind is placed somewhere.
+  for(const f of PLANE_FEATURES)expect(Object.values(planeMaps).some(m=>m.pieces.some(p=>p.part===f)),f).toBe(true);
  });
 });

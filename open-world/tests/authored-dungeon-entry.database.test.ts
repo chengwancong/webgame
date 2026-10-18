@@ -18,7 +18,8 @@ it('a player enters every authored island dungeon through the real catalogue and
  const character=await request('character',{name:'正式地城准入流程'}),lease=(await request('control',{client_id:randomUUID()})).lease_id;
  const initial=(await pool.query('SELECT state FROM ow_characters WHERE id=$1',[character.id])).rows[0].state as CharacterState,legacy=initial.progress.regions.slice();initial.level=50;await pool.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[initial,initial.id]);
  const snapshot=await request('character'),catalogue=await request('dungeons/catalog');expect(snapshot.progress.regions).toEqual(legacy);
- const regions=new Set(worldTables.islands.map(i=>i.region)),definitions=dungeonContent.definitions.filter(d=>regions.has(d.area)&&d.feature==='field-dungeon');expect(definitions.length).toBeGreaterThan(0);
+ const regions=new Set(worldTables.islands.map(i=>i.region)),definitions=dungeonContent.definitions.filter(d=>regions.has(d.area)&&d.feature==='field-dungeon'&&!d.policy.plane);// Planes open only from their field gate (tests/plane-instance.database.test.ts).
+ expect(definitions.length).toBeGreaterThan(0);
  for(const definition of definitions){expect(snapshot.starsea.islands).toContain(definition.area);const entry=catalogue.entries.find((e:any)=>e.definition.id===definition.id);expect(entry,definition.id).toBeTruthy();expect(entry.eligible,JSON.stringify(entry)).toBe(true);
   const command={command_id:randomUUID(),lease_id:lease,op:'create',dungeon_id:definition.id},created=await request('dungeons/command',command);expect(created.instance.definition.id).toBe(definition.id);expect(await request('dungeons/command',command)).toEqual(created);await request('dungeons/command',{command_id:randomUUID(),lease_id:lease,op:'leave',instance_id:created.instance.id});
  }

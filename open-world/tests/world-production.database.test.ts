@@ -18,7 +18,7 @@ let app=createApp(pool,{testLogin:true,dungeons:false});
 const sizes=Object.fromEntries(Object.entries(worldTables).filter(([k])=>k!=='source').map(([k,rows])=>[k,(rows as any[]).length]));
 beforeAll(async()=>{await owner.query('CREATE SCHEMA '+schema);await migrate(pool);await app.ready();});
 afterAll(async()=>{await app.close();await pool.end();await owner.query('DROP SCHEMA '+schema+' CASCADE');await owner.end();for(const [k,n] of Object.entries(sizes))(worldTables[k as keyof typeof worldTables] as any[]).splice(n);});
-function workbook(path:string){const command="import runpy,json,sys; m=runpy.run_path('tools/config-export.py'); print(json.dumps(m['export_book'](sys.argv[1])[1],ensure_ascii=False))";return loadWorldTables(JSON.parse(execFileSync('python3',['-X','utf8','-c',command,path],{encoding:'utf8',windowsHide:true})));}
+function workbook(path:string){const command="import runpy,json,sys; m=runpy.run_path('tools/config-export.py'); print(json.dumps(m['export_book'](sys.argv[1])[1],ensure_ascii=False))";return loadWorldTables(JSON.parse(execFileSync(process.env.AW_PYTHON??'python3',['-X','utf8','-c',command,path],{encoding:'utf8',windowsHide:true})));}
 it('runs real workbook → exporter → geometry → references → production registry → normal server camp API, with pack and rectangle edits',async()=>{
  const evidence=[];
  for(const [index,path]of ['tests/fixtures/production-two-zone.xlsx','tests/fixtures/production-two-zone-variant.xlsx'].entries()){

@@ -95,7 +95,8 @@ export function createApp(pool:Pool,options:{pacingLab?:PacingLabOptions;logger?
  if(options.production&&options.testLogin)throw Error('Test login cannot be enabled in production.');
  if(options.production&&options.devCheckpoints)throw Error('Dev checkpoints cannot be enabled in production.');
  if(options.production&&options.dungeons===false)throw Error('Production dungeon runtime cannot be disabled.');
- const app=Fastify({logger:options.logger??false,bodyLimit:128*1024});app.register(cookie);
+ // Caddy is on the compose network. Never trust forwarded headers from public peers.
+ const app=Fastify({logger:options.logger??false,bodyLimit:128*1024,trustProxy:['172.16.0.0/12','127.0.0.0/8','::1/128']});app.register(cookie);
  app.register(websocket);
  const origins=new Set(options.origins??['http://127.0.0.1:8612','http://127.0.0.1:8611']);
  app.addHook('onRequest',async(req,reply)=>{if(['POST','DELETE','PUT','PATCH'].includes(req.method)){

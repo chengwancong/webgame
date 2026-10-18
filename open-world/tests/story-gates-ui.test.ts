@@ -10,7 +10,8 @@ describe('story-locked entrances',()=>{
  it('hides locked progression groups and sections for a new character',()=>{
   const groups=visibleProgressionGroups(fresh());
   expect(groups.map(g=>g.id)).toEqual(['talents','paragon','character','reputation']);
-  expect(groups.find(g=>g.id==='reputation')).toMatchObject({name:'区域声望',sections:['reputation']});
+  // Gathering professions are now available independently of the old story gate.
+  expect(groups.find(g=>g.id==='reputation')).toMatchObject({name:'声望专业',sections:['reputation','professions']});
  });
  it('opens sections as the shared rule unlocks them',()=>{
   const groups=visibleProgressionGroups(starsea(['forge','aspects','high']));

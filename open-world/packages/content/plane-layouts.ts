@@ -42,6 +42,8 @@ function caveLine(base:Spec,random:()=>number):Spec{
   return undefined;};
  for(let k=1;k<5;k++){const r=k===4?8+random()*2:10+random()*2.5,prev=halls[k-1],found=reachFrom(prev,r,Math.PI*.9,[7,15],new Set([k-1]),new Set([k-2]))??fail("cave walk");
   heading=found.angle;passages.push(found.path);const to=found.path[2];halls.push({x:to[0],y:to[1],r});}
+ // The way on (next stage, or the exit) is at the far side of the last hall, never back by the entrance.
+ const last=halls[4],way={x:Math.round(last.x+Math.cos(heading)*last.r*.5),y:Math.round(last.y+Math.sin(heading)*last.r*.5)};
  // One dead-end pocket off a middle hall holds the chest.
  const host=1+Math.floor(random()*3);let pocket:Hall|undefined,pocketPath:Pt[]|undefined;
  for(let tries=0;tries<6&&!pocket;tries++){heading=random()*6.283;const found=reachFrom(halls[host],6,Math.PI*.5,[4,9],new Set([host]),new Set([host-1,host]));if(found){pocketPath=found.path;pocket={x:found.path[2][0],y:found.path[2][1],r:6};}}
@@ -49,8 +51,8 @@ function caveLine(base:Spec,random:()=>number):Spec{
  const carve:Carve[]=[];halls.forEach((h,i)=>{carve.push({disk:[round(h.x),round(h.y),round(h.r)]});if(i<passages.length)carve.push({path:passages[i].map(([x,y])=>[round(x),round(y)] as Pt),width:PASSAGE});});
  carve.push({path:pocketPath!.map(([x,y])=>[round(x),round(y)] as Pt),width:PASSAGE-1},{disk:[round(pocket!.x),round(pocket!.y),6]});
  const route:Pt[]=[];passages.forEach(p=>route.push(...p.slice(0,2).map(([x,y])=>[round(x),round(y)] as Pt)));route.push([round(halls[4].x),round(halls[4].y)]);
- const safe={x:Math.round(start[0]),y:Math.round(start[1])},toward=Math.sign(n/2-safe.x)||1;
- return {...base,carve,route,safe,portal:{x:safe.x-2*toward,y:safe.y+2*(Math.sign(n/2-safe.y)||1)},pack:placePacks(base.pack,halls.map(h=>({...h,r:h.r*.7})),random),
+ const safe={x:Math.round(start[0]),y:Math.round(start[1])};
+ return {...base,carve,route,safe,portal:way,pack:placePacks(base.pack,halls.map(h=>({...h,r:h.r*.7})),random),
   chests:base.chests.map(c=>({...c,x:Math.round(pocket!.x),y:Math.round(pocket!.y)}))};
 }
 
@@ -72,7 +74,7 @@ function cryptLine(base:Spec,random:()=>number):Spec{
   const blocked=(x:number,y:number)=>doors.some(d=>{const dx=Math.sign(d.cx-r.cx),dy=Math.sign(d.cy-r.cy);return dx?Math.abs(y+1-r.cy)<4.5&&(dx>0?x>=r.cx:x<r.cx):Math.abs(x+1-r.cx)<4.5&&(dy>0?y>=r.cy:y<r.cy);});
   const step=r.w>=18?5:6;for(let x=x0+3;x<=x0+r.w-5;x+=step)for(const y of [y0+3,y0+r.h-5])if(!blocked(x,y))carve.push({pillars:{x,y,w:0,h:0,step:1}});});
  const halls=rooms.slice(0,5).map(r=>({x:r.cx,y:r.cy,r:Math.min(r.w,r.h)/2-2})),chest=rooms[5];
- return {...base,carve,route:rooms.slice(0,5).map(r=>[r.cx,r.cy] as Pt),safe:{x:rooms[0].cx,y:rooms[0].cy},portal:{x:rooms[0].cx-2,y:rooms[0].cy+2},pack:placePacks(base.pack,halls,random),
+ return {...base,carve,route:rooms.slice(0,5).map(r=>[r.cx,r.cy] as Pt),safe:{x:rooms[0].cx,y:rooms[0].cy},portal:{x:rooms[4].cx,y:rooms[4].cy},pack:placePacks(base.pack,halls,random),
   chests:base.chests.map(c=>({...c,x:chest.cx,y:chest.cy}))};
 }
 
@@ -96,7 +98,9 @@ function mazeLine(base:Spec,random:()=>number,seed:number):Spec{
  const chest=pick([...ends.slice(Math.floor(ends.length/3)),...cells]);
  const room=cells.find(inRoom);if(room!==undefined&&normals.length){taken.push(room);pack.push({...normals.shift()!,center:{x:mid(ri)+cell/2,y:mid(rj)+cell/2},radius:4});}
  normals.forEach((p,i)=>{const spread=cells.filter((_,k)=>k%Math.max(1,normals.length)===i);pack.push({...p,center:pick([...spread,...cells]),radius:Math.min(p.radius,3)});});
- return {...draft,pack,chests:base.chests.map(c=>({...c,...chest}))};
+ // The way on sits in the deepest free cell of the maze.
+ const deep=cells.find(c=>!taken.includes(c))??cells[0];
+ return {...draft,pack,portal:{x:mid(deep%cols),y:mid(Math.floor(deep/cols))},chests:base.chests.map(c=>({...c,...chest}))};
 }
 
 /** Boss floors: an antechamber, one narrow approach and the boss hall, turned to a random side. */
@@ -112,13 +116,15 @@ function bossFloor(base:Spec,random:()=>number):Spec{
   if(base.kit==='crypt'){const w=S-10,[px,py]=box(x0+4,y0+4,w+2,w+2);carve.push({pillars:{x:px,y:py,w,h:w,step:w/4,ring:true}});}
   else{const f=5+Math.floor(random()*3);for(const [fx,fy] of [[6,6],[S-6-f,6],[6,S-6-f],[S-6-f,S-6-f]])carve.push({fill:box(x0+fx,y0+fy,f,f)});}}
  const pack=base.pack.map(p=>p.rank==='boss'?{...p,center:at([C[0]+2,C[1]])}:{...p,center:at([C[0]-6,C[1]+(random()<.5?-4:4)]),radius:Math.min(p.radius,4)});
- const safe=at(entrance),portal=at([entrance[0]-2,entrance[1]+2]);
+ // The exit opens in the boss hall, just short of where the boss stood.
+ const safe=at(entrance),portal=at([C[0]-3,C[1]]);
  return {...base,carve,route:[turn(entrance),turn(C)].map(([x,y])=>[round(x),round(y)] as Pt),safe:{x:Math.round(safe.x),y:Math.round(safe.y)},portal:{x:Math.round(portal.x),y:Math.round(portal.y)},pack,chests:[]};
 }
 
 /** One concrete layout for a run; retries derived seeds until the stage builds and every chest is reachable. */
-export function generatePlaneStage(stageId:string,seed:number){
- const base=planeStageSpecs.find(s=>s.id===stageId);if(!base)throw Error('Unknown plane stage '+stageId);
+/** `island` (review only) dresses the stage as another island's art; it never changes the layout. */
+export function generatePlaneStage(stageId:string,seed:number,island?:string){
+ const authored=planeStageSpecs.find(s=>s.id===stageId);if(!authored)throw Error('Unknown plane stage '+stageId);const base=island?{...authored,island}:authored;
  let last:unknown;
  for(let attempt=0;attempt<24;attempt++){const s=mix(seed,attempt),random=rng(s);
   try{const spec={...(base.boss?bossFloor(base,random):base.kit==='cave'?caveLine(base,random):base.kit==='crypt'?cryptLine(base,random):mazeLine(base,random,s)),seed:s};

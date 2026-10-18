@@ -9,7 +9,7 @@ import {worldTables} from '../../../packages/content/world-tables.ts';
 import {World,distance,type WorldCheckpoint} from '../../../packages/simulation/index.ts';
 import type {StarseaSceneObject} from './starsea-runtime-assets.ts';
 import {api} from './network.ts';
-type Deps={world:()=>World;snapshot:()=>Snapshot|undefined;lease:()=>string;ready:()=>boolean;write:(path:string,body:object)=>Promise<string|undefined>;replace:(world:World)=>void;settle:()=>Promise<unknown>;returned:()=>Promise<unknown>;notice:(text:string)=>void;refresh:()=>void;dungeon:(id:string)=>void;plane:(dungeon:string)=>void};
+type Deps={world:()=>World;snapshot:()=>Snapshot|undefined;lease:()=>string;ready:()=>boolean;write:(path:string,body:object)=>Promise<string|undefined>;replace:(world:World)=>void;settle:()=>Promise<unknown>;returned:()=>Promise<unknown>;notice:(text:string)=>void;refresh:()=>void;dungeon:(id:string)=>void;plane:(dungeon:string,gate:string)=>void};
 /** Displays server-owned instances. All combat movement, completion, cooldowns,
  * reward quantities and phase visibility come from the authoritative response. */
 export class FieldActivities{
@@ -33,7 +33,7 @@ export class FieldActivities{
  private async finish(){const current=this.deps.world(),prior=this.prior;this.current=undefined;this.prior=undefined;if(prior){prior.carrySoloRunState(current);prior.hero.position={...current.hero.position};prior.anchor={...prior.hero.position};prior.setMode('semi');this.deps.replace(prior);}await this.deps.returned();}
  async interact(id:string){if(this.running)return;const object=this.objects().find(o=>o.id===id);if(!object||distance(object.position,this.deps.world().hero.position)>4.5)return;
   if(id.startsWith('field-dungeon:')){this.deps.dungeon(id.slice('field-dungeon:'.length));return;}
-  if(id.startsWith('plane-gate:')){const gate=worldTables.planeGates.find(g=>'plane-gate:'+g.id===id);if(gate)this.deps.plane(gate.plane);return;}
+  if(id.startsWith('plane-gate:')){const gate=worldTables.planeGates.find(g=>'plane-gate:'+g.id===id);if(gate)this.deps.plane(gate.plane,gate.id);return;}
   const kind=id.startsWith('field-event:')?'event':id.startsWith('field-rare:')?'rare':'chest',target=id.slice(id.indexOf(':')+1);await this.deps.settle();const result=await this.deps.write('field/activity/start',{kind,target,region:this.deps.world().region.id,position:{...this.deps.world().hero.position}});if(result!=='success')return;
   const view=await api<{activities:FieldActivityView[]}>('field/activity');this.activities=view.activities;const started=this.activities.find(a=>a.target===target)!;
   if(kind==='chest'){await this.deps.write('field/activity/claim',{instance:started.instance});await this.poll();}else{await this.poll();await this.input({mode:'semi'});}

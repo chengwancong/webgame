@@ -7,6 +7,7 @@ import {groundSize,beamFootprint} from '../apps/web/src/vfx-geometry.ts';
 import {runVfxScenario,vfxScenarios} from './fixtures/vfx-scenarios.ts';
 import historical from './fixtures/vfx-gameplay-before.json';
 import golden from './fixtures/vfx-gameplay-current.json';
+import {prologueFamilies} from '../packages/content/starsea/prologue.ts';
 it('retains current ruleset traces of the 19 skill promises and existing enemy presentations',()=>{
  // Historical inputs predate approved skill range/damage and navigation changes.
  // The historical file remains immutable. Repaired mechanics have outcome and
@@ -17,7 +18,7 @@ it('retains current ruleset traces of the 19 skill promises and existing enemy p
  for(const scenario of vfxScenarios.filter(s=>s.type!=='player'||unchanged.has(s.id)))expect(outcomes(runVfxScenario(World,scenario)),scenario.type+'/'+scenario.id).toEqual(outcomes((golden.scenarios as any)[scenario.type+'/'+scenario.id]));
 });
 it('registers every real skill explicitly and clears only implemented mechanism gaps',()=>{
- expect(Object.keys(vfxProfiles).filter(k=>k.startsWith('player/'))).toHaveLength(skillCatalog.length);
+ expect(Object.keys(vfxProfiles).filter(k=>k.startsWith('player/')).sort()).toEqual([...skillCatalog.map(s=>'player/'+s.id),...prologueFamilies.map(f=>'player/echo_'+f)].sort());
  for(const s of skillCatalog)expect(vfxProfiles['player/'+s.id],s.id).toBeDefined();
  for(const s of Object.keys(monsterSkills))expect(vfxProfiles['monster/'+s]).toBeDefined();
  for(const b of Object.values(chapterBossSkills))for(const s of b.skills)expect(vfxProfiles['boss/'+s.id]).toBeDefined();

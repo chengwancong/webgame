@@ -28,19 +28,21 @@ export function checkResourceReferences(source:unknown,label:string,known:Readon
  }
  visit(source,label);return references;
 }
-export function checkWorldResourceWiring(){
+export function checkWorldResourceWiring({metadataOnly=false}:{metadataOnly?:boolean}={}){
+ // Generated actor/atlas JSON belongs to the deploy-time asset bundle too.
+ const available=(asset:string)=>metadataOnly||existsSync('apps/web/public'+asset.split('?')[0]);
  const known=new Set(runtimeResources.keys()),references=checkResourceReferences(worldTables,'world',known);
  const production=JSON.parse(readFileSync('packages/content/open-world/production.json','utf8'));
  references.push(...checkResourceReferences(production,'production',known));
  for(const file of readdirSync('packages/content/starsea/maps').filter(f=>f.endsWith('.json')))references.push(...checkResourceReferences(JSON.parse(readFileSync('packages/content/starsea/maps/'+file,'utf8')),'starsea/'+file,known));
  const artwork=dungeonContent.definitions.map(definition=>({id:definition.id,path:dungeonArtwork(definition,regionById(definition.area),dungeonArtEntrances)}));
  for(const destination of destinationCatalog())artwork.push({id:destination.region.id,path:destinationArtwork(destination.area)});
- for(const entry of artwork)if(!existsSync('apps/web/public'+entry.path.split('?')[0]))throw Error('Missing dungeon illustration '+entry.id+' '+entry.path);
+ for(const entry of artwork)if(!available(entry.path))throw Error('Missing dungeon illustration '+entry.id+' '+entry.path);
  const actors=[...monsterContent.templates.map(t=>({source:'monster:'+t.id,art:t.art})),...regions.flatMap(r=>r.spawns.map(s=>({source:r.id+'/'+s.id,art:s.art}))),...npcSource.npcs.filter(n=>n.campaign==='starsea').map(n=>({source:'npc:'+n.id,art:n.id}))];
  for(const actor of actors)if(!actorCatalog[actor.art])throw Error('Unregistered actor '+actor.source+' '+actor.art);
  for(const reference of references){
   const runtime=runtimeResources.get(reference.id)!.runtime as Record<string,unknown>;
-  for(const key of ['file','image','atlas','sockets','profile'])if(typeof runtime[key]==='string'&&!existsSync('apps/web/public'+runtime[key]))throw Error('Missing runtime dependency '+reference.id+' '+runtime[key]);
+  for(const key of ['file','image','atlas','sockets','profile'])if(typeof runtime[key]==='string'&&!available(runtime[key]))throw Error('Missing runtime dependency '+reference.id+' '+runtime[key]);
  }
  return {passed:true,islands:worldTables.islands.length,legacyIslands:regions.filter(r=>r.id.startsWith('ss-map-')&&!r.boss&&!r.rest).length,dungeons:dungeonContent.definitions.length,travelDestinations:destinationCatalog().length,resourceReferences:references.length,actorReferences:actors.length,artwork,references};
 }

@@ -94,7 +94,14 @@ function scanJson(file:string):CopyEntry[]{
  const rel=relative(root,file).replaceAll('\\','/'),lines=readFileSync(file,'utf8').split('\n'),out:CopyEntry[]=[];
  const lineOf=(s:string)=>{const needle=JSON.stringify(s).slice(1,-1);const i=lines.findIndex(l=>l.includes(needle));return i+1;};
  const walk=(v:unknown,key:string)=>{if(typeof v==='string'){if(visibleKeys.has(key)&&han.test(v))out.push({source:'config',file:rel,line:lineOf(v),text:v,kind:rel==='apps/api/src/stage-key-pools.json'&&key==='description'?'description':'text',group:/tasks|dialogue|npcs|chapters|props/.test(rel)?'任务/NPC':groupOf(rel)});}else if(Array.isArray(v))v.forEach(x=>walk(x,key));else if(v&&typeof v==='object')for(const [k,x] of Object.entries(v))walk(x,k);};
- walk(JSON.parse(readFileSync(file,'utf8')),'');return out;
+ const data=JSON.parse(readFileSync(file,'utf8'));
+ // The prologue renders card copy and skill names. Its frozen grant contains
+ // internal resolved stats/effect descriptions, which never appear in the UI.
+ if(rel==='packages/content/starsea/prologue.json')for(const family of Object.values(data.families) as any[]){
+  family.granted={skills:family.granted.skills.map((skill:{name:string})=>({name:skill.name}))};
+  family.burst={name:family.burst.name};
+ }
+ walk(data,'');return out;
 }
 const tsUnder=(dir:string):string[]=>readdirSync(dir,{withFileTypes:true}).flatMap(d=>d.isDirectory()?tsUnder(resolve(dir,d.name)):d.name.endsWith('.ts')&&!d.name.endsWith('.test.ts')?[resolve(dir,d.name)]:[]);
 export function collect():CopyEntry[]{

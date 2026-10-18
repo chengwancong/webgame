@@ -72,5 +72,8 @@ it('新图鉴按岛统计配方与图样，旧百工奖励不能重复领取',()
 });
 it('制作列表预览不生成装备也不改变背包，与实际报价一致',()=>{
  for(const recipe of craftRecipes.filter((_,index)=>index%7===0)){const s=character(),p=ensureProgression(s),c=ensureCrafting(s);s.progress.regions.push(...craftRecipes.flatMap(r=>r.island?[r.island]:[]));p.recipes.push(recipe.id);if(recipe.output.pattern)c.patterns.push(recipe.output.pattern);for(const id of Object.keys(recipe.baseCost.materials))p.materials[id]=9999;
- if(recipe.output.kind==='material')p.materials[recipe.output.id!]=0;const action={op:'craft' as const,recipe:recipe.id},before=structuredClone(s),place={atForge:true,storyUnlocked:true,reason:'',maxCraftLevel:60},quote=previewCraft(s,action,place);expect(s).toEqual(before);expect(quote.enabled,recipe.id).toBe(true);const delta=applyCraft(s,action,place);expect(delta.gold).toBe(-quote.cost.gold);}
+ if(recipe.output.kind==='material')p.materials[recipe.output.id!]=0;const action={op:'craft' as const,recipe:recipe.id},place={atForge:true,storyUnlocked:true,reason:'',maxCraftLevel:60};
+ // Fund the actual quote instead of a pre-rebalance hard-coded wallet cap.
+ const unfunded=structuredClone(s),budget=previewCraft(s,action,place);expect(s).toEqual(unfunded);
+ s.gold=Math.max(s.gold,budget.cost.gold);const before=structuredClone(s),quote=previewCraft(s,action,place);expect(s).toEqual(before);expect(quote.enabled,recipe.id).toBe(true);const delta=applyCraft(s,action,place);expect(delta.gold).toBe(-quote.cost.gold);}
 });

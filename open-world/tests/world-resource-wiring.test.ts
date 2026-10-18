@@ -2,7 +2,7 @@ import {expect,it} from 'vitest';
 import {checkResourceReferences,checkWorldResourceWiring} from '../tools/check-world-resource-wiring.ts';
 import {dungeonArtwork} from '../packages/asset-manifest/destination-artwork.ts';
 it('resolves configured resources, illustrations and actors across every island and dungeon',()=>{
- const report=checkWorldResourceWiring();expect(report.passed).toBe(true);expect(report.artwork.every(entry=>entry.path.startsWith('/'))).toBe(true);expect(report.references.every(reference=>reference.id&&reference.path)).toBe(true);
+ const report=checkWorldResourceWiring({metadataOnly:process.env.AW_CI_SOURCE_ONLY==='1'});expect(report.passed).toBe(true);expect(report.artwork.every(entry=>entry.path.startsWith('/'))).toBe(true);expect(report.references.every(reference=>reference.id&&reference.path)).toBe(true);
 });
 it('rejects missing entrance and off-screen actor references instead of accepting the currently visible island',()=>{
  expect(()=>checkResourceReferences({islands:[{resource:'registered'},{spawns:[{artId:'missing'}]}]},'all-islands',new Set(['registered']))).toThrow('all-islands.islands.1.spawns.0.artId = missing');

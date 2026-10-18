@@ -2,17 +2,20 @@
  * Plane scene review (Claude, 2026-10-18): the real WorldScene renders one carved plane stage with its real
  * collision and monsters; no account, no writes. ?stage=<id>&calm=1 (monsters removed). awPlaneWalk walks the
  * hero along points with the real path finder; awPlaneStages lists the stages. &seed=<n> (or seed=random) shows
- * the random run layout for that seed, exactly as a dungeon run would generate it.
+ * the random run layout for that seed, exactly as a dungeon run would generate it. &island=<mist|forge|…>
+ * dresses the stage in another island's parts and material (same layout).
  */
 import Phaser from 'phaser';
 import {planeMaps} from '../../../packages/content/open-world/index.ts';
 import {World} from '../../../packages/simulation/index.ts';
 import {regionById} from '../../../packages/content/index.ts';
 import {generatePlaneStage} from '../../../packages/content/plane-layouts.ts';
+import {buildPlaneStage,planeStageSpecs} from '../../../packages/content/plane-scenes.ts';
 import {WorldScene} from './scene.ts';
 
 const params=new URLSearchParams(location.search),stage=params.get('stage')??'plane-wind-nest-cave-1',seedParam=params.get('seed'),seed=seedParam==='random'?1+Math.floor(Math.random()*2147483646):Number(seedParam)||0;
-const run=seed?generatePlaneStage(stage,seed):undefined,region=run?.region??regionById(stage);console.info('plane layout seed',seed||'authored');
+const island=params.get('island')?'ss-map-'+params.get('island'):undefined,authored=planeStageSpecs.find(s=>s.id===stage)!;
+const run=seed?generatePlaneStage(stage,seed,island):island?buildPlaneStage({...authored,island}):undefined,region=run?.region??regionById(stage);console.info('plane layout seed',seed||'authored');
 const world=new World(region,{hp:1e9,attack:40,armor:0,speed:6,mana:100,regen:10,effects:[]},[],params.get('calm')?[]:structuredClone(region.spawns));world.setMode('manual');
 const bridge={motionReduced:false,world,planeMap:run?.map??planeMaps[stage],rewards:[],panel:'',loggedIn:true,step(){world.step();},interact(){},cast(){},pause(){},open(){},pick(){},sound(){}};
 const scene=new WorldScene(bridge as never);

@@ -1,7 +1,7 @@
 import {craftMaterials,craftRecipes} from '../packages/content/crafting.ts';
 import {effectAtoms} from '../packages/content/effect-atoms.ts';
 import {checkWorldResourceWiring} from './check-world-resource-wiring.ts';
-checkWorldResourceWiring();
+checkWorldResourceWiring({metadataOnly:process.argv.includes('--metadata-only')});
 import {skillTagNames as registeredTags} from '../packages/content/skill-tags.ts';
 import {comboEffectRules} from '../packages/content/weapon-combos.ts';
 import {effectRuleSchema} from '../packages/contracts/effects.ts';
@@ -21,13 +21,21 @@ const catalog={actors:actorCatalog};
 for(const r of regions)for(const s of r.spawns)if(!s.monster)throw Error('Missing resolved monster identity '+r.id+'/'+s.id);
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
+// The source mirror has manifests/JSON but intentionally no bitmap payloads.
+// Explicit opt-in preserves full byte verification for normal local validation.
+const metadataOnly=process.argv.includes('--metadata-only');
+if(metadataOnly)console.log('Metadata-only artwork validation: binary payload checks excluded');
+const artworkHash=(asset:{path:string;sha256:string})=>{
+ if(!/^[0-9a-f]{64}$/.test(asset.sha256))throw Error('Invalid artwork digest '+asset.path);
+ return metadataOnly?asset.sha256:createHash('sha256').update(readFileSync(new URL('../apps/web/public'+asset.path,import.meta.url))).digest('hex');
+};
 import uiManifest from '../packages/asset-manifest/ui.v2.json';
 const inventoryArtIds=['item-tonic-attack','item-tonic-hp','item-skill-book',...progressionConfig.materials.filter(m=>craftMaterials.some(d=>d.id===m.id&&['endgame','legacy'].includes(d.kind))||m.id.startsWith('rubbing-')).map(m=>'item-material-'+m.id)];
 const inventoryArtHashes=new Set<string>();
 for(const id of inventoryArtIds){
  const asset=(uiManifest.assets as Record<string,{kind:string;path:string;size:number[];sha256:string}>)[id];
  if(!asset||asset.kind!=='item'||asset.size.join(',')!=='256,256')throw Error('Missing inventory artwork '+id);
- const sha=createHash('sha256').update(readFileSync(new URL('../apps/web/public'+asset.path,import.meta.url))).digest('hex');
+ const sha=artworkHash(asset);
  if(sha!==asset.sha256||inventoryArtHashes.has(sha))throw Error('Invalid or shared inventory artwork '+id);inventoryArtHashes.add(sha);
 }
 const equipmentLibrary=JSON.parse(readFileSync(new URL('../assets/ui-source/v2/equipment-handdrawn/catalog.json',import.meta.url),'utf8')) as {items:{id:string;sha256:string}[]};
@@ -36,7 +44,7 @@ if(equipmentEntries.size!==324||equipmentLibrary.items.length!==324)throw Error(
 for(const series of ['standard','omega','primal'])for(const direction of ['sword','hammer','axe','staff','hidden','wand'])for(const tier of [1,2,3])for(const slot of ['weapon','armor','helmet','boots','necklace','ring']){
  const id=`gear-${series}-${direction}-t${tier}-${slot}`,entry=equipmentEntries.get(id),asset=(uiManifest.assets as Record<string,{kind:string;path:string;size:number[];sha256:string}>)[id];
  if(!entry||!asset||asset.kind!=='gear'||asset.path!==`/art/ui-v2/equipment-handdrawn/${id}.png`||asset.size.join(',')!=='256,256')throw Error('Missing formal equipment artwork '+id);
- const digest=createHash('sha256').update(readFileSync(new URL('../apps/web/public'+asset.path,import.meta.url))).digest('hex');
+ const digest=artworkHash(asset);
  if(digest!==asset.sha256||digest!==entry.sha256)throw Error('Equipment artwork hash mismatch '+id);
  if(equipmentArtHashes.has(digest))throw Error('Shared equipment artwork '+id);equipmentArtHashes.add(digest);
 }
@@ -45,7 +53,7 @@ for(const r of regions){if(ids.has(r.id))throw Error('Duplicate region '+r.id);i
 for(const r of regions)if(r.next&&!ids.has(r.next))throw Error('Missing connection '+r.next);
 const skillIds=new Set<string>();
 const skillArtHashes=new Set<string>();
-for(const skill of skillCatalog){const asset=(uiManifest.assets as Record<string,{kind:string;path:string;sha256:string}>)['skill-'+skill.id];if(!asset||asset.kind!=='skill')throw Error('Missing formal skill artwork '+skill.id);if(skillArtHashes.has(asset.sha256))throw Error('Shared skill artwork '+skill.id);skillArtHashes.add(asset.sha256);readFileSync(new URL('../apps/web/public'+asset.path,import.meta.url));}
+for(const skill of skillCatalog){const asset=(uiManifest.assets as Record<string,{kind:string;path:string;sha256:string}>)['skill-'+skill.id];if(!asset||asset.kind!=='skill')throw Error('Missing formal skill artwork '+skill.id);if(skillArtHashes.has(asset.sha256))throw Error('Shared skill artwork '+skill.id);skillArtHashes.add(asset.sha256);if(!metadataOnly)readFileSync(new URL('../apps/web/public'+asset.path,import.meta.url));}
 for(const sk of skillCatalog){skillSchema.parse(sk);if((sk.category==='melee'||sk.category==='ranged')!==(sk.weapons.length>0))throw Error('武技必须且只有武技绑定主手武器 '+sk.id);if(!sk.mechanics)throw Error('Missing declared skill mechanics '+sk.id);if(skillIds.has(sk.id)||!(sk.category in skillCategories)||!Number.isInteger(sk.unlockLevel)||sk.unlockLevel<1)throw Error('Invalid skill progression '+sk.id);skillIds.add(sk.id);}
 for(const sk of skillCatalog)if(sk.activation&&(!Number.isInteger(sk.activation.quantity)||sk.activation.quantity<1||!skillBookRewards.some(reward=>reward.skill===sk.id)))throw Error('Invalid book activation '+sk.id);
 for(const source of skillBookRewards)if(!regions.some(region=>region.id===source.boss&&region.boss)||!skillCatalog.some(sk=>sk.id===source.skill&&sk.activation?.type==='book')||source.quantity<1)throw Error('Invalid skill book reward');
@@ -72,18 +80,19 @@ for(const recipe of craftRecipes)for(const id of Object.keys(recipe.baseCost.mat
 for(const [id,actor] of Object.entries(catalog.actors)){
  if(actor.runtimeKind==='native'){
   if(!actor.nativeProfile?.startsWith('/art/'))throw Error('Missing native actor profile '+id);
-  const profile=JSON.parse(readFileSync(new URL('../apps/web/public'+actor.nativeProfile,import.meta.url),'utf8'));
-  if(profile.id&&profile.id!==id){const origin=actor.nativeSourceIdentity&&catalog.actors[actor.nativeSourceIdentity];if(!origin||origin.nativeProfile!==actor.nativeProfile||profile.id!==actor.nativeSourceIdentity)throw Error('Native actor profile identity differs '+id);}
+  if(!metadataOnly){const profile=JSON.parse(readFileSync(new URL('../apps/web/public'+actor.nativeProfile,import.meta.url),'utf8'));
+   if(profile.id&&profile.id!==id){const origin=actor.nativeSourceIdentity&&catalog.actors[actor.nativeSourceIdentity];if(!origin||origin.nativeProfile!==actor.nativeProfile||profile.id!==actor.nativeSourceIdentity)throw Error('Native actor profile identity differs '+id);}}
   if(!(actor.fps>0)||!Object.keys(actor.actions).length)throw Error('Missing native actor actions '+id);
   continue;
  }
  const texture=actor.texture??id;
  const atlasPath=actor.runtimeKind==='atlas'?actor.atlasFile:'/art/'+texture+'.json',imagePath=actor.runtimeKind==='atlas'?actor.atlasImage:'/art/'+texture+'.png';
  if(!atlasPath?.startsWith('/art/')||!imagePath?.startsWith('/art/'))throw Error('Missing declared actor atlas '+id);
- const atlas=JSON.parse(readFileSync(new URL('../apps/web/public'+atlasPath,import.meta.url),'utf8'));
  if(!(actor.fps>0))throw Error('Invalid animation FPS '+id);
- for(const [action,count] of Object.entries(actor.actions))for(let i=0;i<count;i++){const frame=actor.actionFrames?.[action]?.[i]??action+'_'+i;if(!atlas.frames[frame])throw Error('Missing animation frame '+id+'/'+frame);}
- readFileSync(new URL('../apps/web/public'+imagePath,import.meta.url));
+ if(!Object.keys(actor.actions).length)throw Error('Missing actor actions '+id);
+ if(!metadataOnly){const atlas=JSON.parse(readFileSync(new URL('../apps/web/public'+atlasPath,import.meta.url),'utf8'));
+  for(const [action,count] of Object.entries(actor.actions))for(let i=0;i<count;i++){const frame=actor.actionFrames?.[action]?.[i]??action+'_'+i;if(!atlas.frames[frame])throw Error('Missing animation frame '+id+'/'+frame);}}
+ if(!metadataOnly)readFileSync(new URL('../apps/web/public'+imagePath,import.meta.url));
 }
 console.log(JSON.stringify({ok:true,regions:regions.length,skills:skillCatalog.length,actors:Object.keys(catalog.actors).length,progression:{aspects:aspectDefinitions.length,talents:talentDefinitions.length,paragon:paragonDefinitions.length,recipes:craftRecipes.length}}));
 import {worldTables,validateWorldGeometry} from '../packages/content/world-tables.ts';

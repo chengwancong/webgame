@@ -7,6 +7,8 @@ import {worldPhaseVisible} from './world-phase.ts';
 export type PlaneGate=WorldTables['planeGates'][number];
 type Character=Pick<CharacterState,'level'|'starsea'>&{world?:CharacterState['world']};
 type Point={x:number;y:number};
+/** Interact discovery and plane entry trust only an observer position the server recorded this recently. */
+export const PLANE_OBSERVER_MS=3000;
 export class PlaneGateError extends Error{constructor(readonly code:string,message:string){super(message);}}
 /** Read-only view of the stored progress (old saves → empty). */
 export function planeProgress(character:Character):PlaneProgress{return worldProgressSchema.parse(character.world??{}).planes;}

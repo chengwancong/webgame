@@ -26,7 +26,10 @@ it.each(before.rows)('current $id L$level/rank$rank matches versioned parameters
  const events=step(w,before.ticks).filter(e=>['cast_started','cast_released','hit_resolved','status_applied','status_expired'].includes(e.type));expect(digest(combatOutcomeEvents(events))).toBe(golden.find(g=>g.id===sample.id&&g.level===sample.level&&g.rank===sample.rank)!.events);
 });
 it('retains historical material slots while dedicated motifs evolve',()=>{
- for(const old of visuals){const s=skillCatalog.find(s=>s.id===old.id)!;expect(skillSourceClip(s)).toBe(old.source);expect(skillProjectileClip(s)).toBe(old.projectile);const {sourceClip,projectileClip,motif,...profile}=vfxProfile('player/'+s.id);const {motif:oldMotif,...oldProfile}=old.profile;expect(JSON.parse(JSON.stringify(profile))).toEqual(oldProfile);}
+ // P3 moved staff spells from the hand to the authored muzzle; materials and
+ // all other profile properties retain the historical comparison.
+ const muzzle=new Set(['chain','lance','arcane_missile','frost_bolt','lightning_bolt','fireball','petrify']);
+ for(const old of visuals){const s=skillCatalog.find(s=>s.id===old.id)!;expect(skillSourceClip(s)).toBe(old.source);expect(skillProjectileClip(s)).toBe(old.projectile);const {sourceClip,projectileClip,motif,...profile}=vfxProfile('player/'+s.id);const {motif:oldMotif,...oldProfile}=old.profile;expect(JSON.parse(JSON.stringify(profile))).toEqual({...oldProfile,...(muzzle.has(s.id)?{anchor:'muzzle'}:{})});}
  expect(skillCatalog).toHaveLength(83);
 });
 it.each(cases)('%s pays once, hits, applies its configured status and derives the correct element tag',(id,type,status)=>{

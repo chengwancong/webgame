@@ -25,7 +25,7 @@ async function player(){
  const interact=async(id:string)=>request('plane/interact',{command_id:randomUUID(),revision:(await snapshot()).revision,lease_id:lease,permit_id:permit.id,gate:id});
  return {id:created.id,snapshot,report,observer,interact};
 }
-const state=(view:FieldCamps|Snapshot,id=gate.id)=>('world_view' in view?view.world_view:view.worldView)!.planeGates.find(g=>g.id===id);
+const state=(view:FieldCamps|Snapshot,id=gate.id)=>('id' in view?view.worldView:view.world_view)!.planeGates.find(g=>g.id===id);
 it('discovers a gate only from a trusted nearby observer, persists it across restart and keeps other characters hidden',async()=>{
  const a=await player(),b=await player();
  const far=await a.report({x:gate.returnX+40,y:gate.returnY});expect(far.discovered).toEqual([]);expect(state(far)).toEqual({id:gate.id,state:'hidden',clears:0});

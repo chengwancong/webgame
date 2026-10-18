@@ -33,5 +33,6 @@ const enemy=w.enemies.find(n=>n.id===e.id),body=enemy?map[enemy.monster?.templat
  }
  this.environment.update(w.region.id,w.enemies.some(e=>e.boss&&e.alive),w.events.some(e=>e.type==='hit_resolved'),w.tick,this.settings.master,w.hero.position,w.region.landmarks);}
  result(id:string,success:boolean){if(this.results.has(id))return;this.results.add(id);this.play(success?'stinger/victory':'stinger/dungeon-fail');this.play('ui/badge');if(this.results.size>128)this.results.delete(this.results.values().next().value!);}
+ title(){if(this.unlocked)this.environment.title();}
  stop(){this.environment.stop();this.audio.reset();this.world=undefined;this.tick=-1;}
 }

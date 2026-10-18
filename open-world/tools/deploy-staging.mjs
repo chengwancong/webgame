@@ -8,7 +8,7 @@ import {fileURLToPath} from 'node:url';
 const root=path.resolve(fileURLToPath(new URL('../..',import.meta.url)));
 const project=path.join(root,'open-world'),out='G:/webgame/aw-deploy';
 const flags=new Set(process.argv.slice(2));
-const allowed=['--skip-web','--skip-api','--full-web','--no-mirror','--dry-run'];
+const allowed=['--skip-web','--skip-api','--full-web','--no-mirror','--dry-run','--pull-backup'];
 for(const flag of flags)if(!allowed.includes(flag))throw Error(`Unknown option: ${flag}`);
 const dry=flags.has('--dry-run');
 const ssh=process.platform==='win32'?'C:/Program Files/Git/usr/bin/ssh.exe':'ssh';
@@ -24,7 +24,7 @@ const steps=[`Source ${head}; expected client ${expected}`,
  ...(!flags.has('--skip-api')?['Archive HEAD server source; scp; unpack; write SOURCE_COMMIT; compose up -d --build api']:[]),
  ...(!flags.has('--skip-web')?['Build isolated HEAD web source with local public assets using Vite',
  'SHA256 non-js/css/html manifest; upload code or full web-dist; recreate API after full replacement']:[]),
- 'Poll /api/health and require matching client version',...(!flags.has('--no-mirror')?['Push snapshot with tools/cloud-mirror.mjs']:[])];
+ 'Poll /api/health and require matching client version',...(flags.has('--pull-backup')?['Pull latest verified database backup to local backups directory']:[]),...(!flags.has('--no-mirror')?['Push snapshot with tools/cloud-mirror.mjs']:[])];
 for(const step of steps)console.log(step);
 if(dry)process.exit(0);
 mkdirSync(out,{recursive:true});
@@ -83,6 +83,14 @@ try{
   await new Promise(r=>setTimeout(r,2000));
  }
  if(!healthy)throw Error(`Health version mismatch: expected=${expected}, actual=${actual}`);
+ if(flags.has('--pull-backup')){
+  const latest=capture(ssh,['abyss-staging',"find ~/abyss/backups -maxdepth 1 -type f -name 'abyss-*.sql.gz' -printf '%f\\n' | sort | tail -n 1"]);
+  if(!/^abyss-\d{8}T\d{6}Z\.sql\.gz$/.test(latest))throw Error('No valid remote backup found');
+  remote(`gzip -t ~/abyss/backups/${latest}`);
+  const backupDir=path.join(out,'backups');mkdirSync(backupDir,{recursive:true});
+  run(scp,[`abyss-staging:abyss/backups/${latest}`,path.join(backupDir,latest)]);
+  console.log(`Backup downloaded: ${latest}`);
+ }
  if(capture('git',['rev-parse','HEAD'])!==head)throw Error('HEAD changed during deployment; rerun before mirroring');
  if(!flags.has('--no-mirror'))run(process.execPath,[path.join(project,'tools/cloud-mirror.mjs')]);
  console.log(`Deployment verified: ${head}`);

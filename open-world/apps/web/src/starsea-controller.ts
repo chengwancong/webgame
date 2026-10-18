@@ -17,6 +17,10 @@ import type {TriggerRow} from '../../../packages/contracts/task-tables.ts';
 /** 一句台词；说话人为空时按旁白显示。 */
 const spoken=(l:{speaker:string;text:string})=>`<div class="story-spoken">${l.speaker?`<strong>${esc(l.speaker)}</strong>`:''}<p>${esc(l.text)}</p></div>`;
 import {starseaMap} from '../../../packages/content/starsea/index.ts';
+import {worldZoneAt} from '../../../packages/content/world-tables.ts';
+// 到达：进新分区或靠近地标立即上报（发现分区、到达接取靠这两项）；只是换格子时仅为记录位置，限频。
+// 每次写操作都会先补报一轮战斗并换新版本号，逐格上报会把战斗上报和任务/主线/营地刷新都放大。
+const arriveLocationMs=15000;
 /** 任务道具在场景与任务栏里的名字（只影响文字，不影响任务判定）。 */
 const propNames=starseaPropNames;
 const verbOverride=starseaPropHintVerbs;
@@ -71,7 +75,7 @@ export class StarseaController{
   if(step.op==='wave'&&step.need>=2&&step.count*2>=step.need&&step.count<step.need&&this.lastHalf!==key){this.lastHalf=key;this.fire(task.id,'wave_half',t=>t.step===seq);}
  }
 
- private visitKey='';
+ private visitKey='';private visitCell='';private visitAt=0;
  private lastTask='';private lastNight='';private lastFeatures=-1;private lastWave='';private starting='';
  constructor(private deps:Dependencies){}
  get view():StarseaView|undefined{return this.deps.snapshot()?.starseaView;}
@@ -137,7 +141,7 @@ export class StarseaController{
   this.growthStep();
   if(v.opening&&v.step?.map===this.region&&!this.openingPrompted&&!this.popups.length){this.openingPrompted=true;this.talkNpc=v.step.points[0]?.npc??'';this.line=0;this.deps.open('starsea-talk');}
   if(!this.popups.length&&v.routeFork&&distance(this.deps.world().hero.position,v.routeFork)<=2.8&&this.promptedRoute!==v.task?.id){this.promptedRoute=v.task?.id??'';(this.routeError='',this.deps.open('starsea-route'));}
-  if(!this.busy&&!this.deps.world().paused&&isStarseaRegion(this.region)){const at=starseaMap(this.region).landmarks.find(l=>distance(l,this.deps.world().hero.position)<=2.8);const cell=Math.floor(this.deps.world().hero.position.x/8)+':'+Math.floor(this.deps.world().hero.position.y/8);const visit=this.region+':'+cell+':'+(at?.id??'');if(visit!==this.visitKey){this.visitKey=visit;void this.send({op:'arrive',target:at?.id});}}
+  if(!this.busy&&!this.deps.world().paused&&isStarseaRegion(this.region)){const at=starseaMap(this.region).landmarks.find(l=>distance(l,this.deps.world().hero.position)<=2.8);const hero=this.deps.world().hero.position,cell=Math.floor(hero.x/8)+':'+Math.floor(hero.y/8),visit=this.region+':'+(worldZoneAt(this.region,hero)?.id??'')+':'+(at?.id??''),now=Date.now();if(visit!==this.visitKey||cell!==this.visitCell&&now-this.visitAt>=arriveLocationMs){this.visitKey=visit;this.visitCell=cell;this.visitAt=now;void this.send({op:'arrive',target:at?.id});}}
   const key=v.task?.id??'done';
   if(this.lastTask&&key!==this.lastTask){const done=this.lastTask;if(v.task)this.deps.notice('已追踪：'+v.task.title);void done;}
   this.lastTask=key;this.events(v);

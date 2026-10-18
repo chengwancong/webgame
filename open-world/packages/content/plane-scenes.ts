@@ -21,18 +21,30 @@ export type PlaneStageSpec={id:string;name:string;kit:PlaneKit;island:string;the
 type KitSpec={profile:'rock'|'block';wallHeight:number;stub:number;background:string;glow:string;outline:string;shadow:string;lightEvery:number;foot:string[];footEvery:number;blockers:string[];blockerEvery:number;blockerPlace:'open'|'wall'};
 /** World position in cells; `z` lifts the sprite (pixels) onto a wall face. */
 export type PlanePiece={part:string;x:number;y:number;z?:number;mirrorX?:boolean;layer:'pillar'|'prop'|'blocker'|'light'};
-export type PlaneMap={kind:'plane';id:string;name:string;kit:PlaneKit;profile:'rock'|'block';width:number;height:number;wallHeight:number;background:string;glow:string;outline:string;shadow:string;
+export type PlaneMap={kind:'plane';id:string;name:string;kit:PlaneKit;
+ /** Art island key (wind, mist, forge, frost, rift, dragon): picks the island's ground/wall/backdrop and feature pieces. */
+ island:string;
+ /** Island material for the kit-shared parts (props, pillars, lamps): tint multiply, then wash. */
+ material?:PlaneMaterial;profile:'rock'|'block';width:number;height:number;wallHeight:number;background:string;glow:string;outline:string;shadow:string;
  /** Row-major: '#' rock, '.' floor, ',' worn path, 'o' pillar, 'x' blocking prop (both drawn as floor + sprite). */
  cells:string;
  /** Rock elevation in pixels (0 for every non-rock cell), and Chebyshev distance to the nearest non-rock cell. */
  heights:number[];dist:number[];
  pieces:PlanePiece[];lights:{x:number;y:number;z:number}[];resources:string[];landmarks:{id:string;x:number;y:number}[]};
+export type PlaneMaterial={tint?:string;wash?:{color:string;alpha:number}};
 export const PLANE_SIZE=64;
 /** Rock deeper than this many cells from the floor is not drawn: it is the cave dark. */
 export const PLANE_DRAW_DEPTH=6;
 /** Rock in front of floor stays at least this many pixels below the floor's line of sight. */
 export const PLANE_SIGHT_MARGIN=24;
-export const planeResource=(kit:PlaneKit,part:string)=>`ow-art-plane-${kit}-${part}`;
+/** Parts drawn per island (`ow-art-plane-<island>-<kit>-<part>`); every other part is shared by the kit.
+ * An island part not yet painted falls back to the kit's art with the island material (asset manifest). */
+export const PLANE_ISLAND_PARTS:readonly string[]=[...source.islandParts,...source.features];
+/** Island feature pieces: single-cell blocking props that join the kit's blocker pool. */
+export const PLANE_FEATURES:readonly string[]=source.features;
+export const PLANE_ISLANDS=Object.keys(source.islands);
+export const planeIsland=(region:string)=>{const key=region.replace(/^ss-map-/,'');if(!PLANE_ISLANDS.includes(key))throw Error('Unknown plane island '+region);return key;};
+export const planeResource=(kit:PlaneKit,part:string,island?:string)=>island&&PLANE_ISLAND_PARTS.includes(part)?`ow-art-plane-${island}-${kit}-${part}`:`ow-art-plane-${kit}-${part}`;
 const WALL=0,FLOOR=1,PATH=2,PILLAR=3,BLOCK=4;
 
 function rng(seed:number){let a=seed>>>0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
@@ -62,7 +74,7 @@ function carve(spec:PlaneStageSpec,n:number){
 const isRock=(grid:Uint8Array,n:number,x:number,y:number)=>x<0||y<0||x>=n||y>=n||grid[y*n+x]===WALL;
 /** Single-cell blocking props: scattered in open halls (caves) or hugging the back walls (built halls). */
 function placeBlockers(spec:PlaneStageSpec,kit:KitSpec,grid:Uint8Array,n:number){
- const pieces:PlanePiece[]=[],random=rng(spec.seed^0x2545f491),hash=(x:number,y:number)=>((x*2654435761)^(y*40503)^spec.seed)>>>0;
+ const pieces:PlanePiece[]=[],random=rng(spec.seed^0x2545f491),hash=(x:number,y:number)=>((x*2654435761)^(y*40503)^spec.seed)>>>0,pool=[...kit.blockers,...PLANE_FEATURES];
  const keep=[spec.safe,spec.portal,...spec.chests],floorAt=(x:number,y:number)=>{const v=x<0||y<0||x>=n||y>=n?WALL:grid[y*n+x];return v===FLOOR||v===PATH;};
  const clear=(x:number,y:number,r:number)=>{for(let j=-r;j<=r;j++)for(let i=-r;i<=r;i++)if(!floorAt(x+i,y+j))return false;return true;};
  for(let y=1;y<n-1;y++)for(let x=1;x<n-1;x++){
@@ -73,7 +85,7 @@ function placeBlockers(spec:PlaneStageSpec,kit:KitSpec,grid:Uint8Array,n:number)
    // Against the wall, with open floor in front and to both sides, and no other blocker near.
    if(!floorAt(x+dx,y+dy)||!floorAt(x+2*dx,y+2*dy)||!floorAt(x+dy,y+dx)||!floorAt(x-dy,y-dx)||!floorAt(x+dy+dx,y+dx+dy)||!floorAt(x-dy+dx,y-dx+dy))continue;
    let near=false;for(let j=-3;j<=3;j++)for(let i=-3;i<=3;i++){const v=grid[(y+j)*n+x+i];if(v===BLOCK||v===PILLAR)near=true;}if(near)continue;}
-  grid[y*n+x]=BLOCK;pieces.push({part:kit.blockers[Math.floor(random()*kit.blockers.length)],x:x+.5,y:y+.5,mirrorX:random()<.5,layer:'blocker'});
+  grid[y*n+x]=BLOCK;pieces.push({part:pool[Math.floor(random()*pool.length)],x:x+.5,y:y+.5,mirrorX:random()<.5,layer:'blocker'});
  }
  return pieces;
 }
@@ -136,7 +148,8 @@ export function buildPlaneStage(spec:PlaneStageSpec,kits:Record<PlaneKit,KitSpec
  const region:Region={keyChests:structuredClone(spec.chests),id:spec.id,name:spec.name,subtitle:'箱庭位面',width:n,height:n,theme:spec.theme,safe:{...spec.safe},portal:{...spec.portal},boss:spec.boss,auto:true,obstacles:solid,spawns:[],landmarks:[]};
  if(options.spawns!==false)region.spawns=reachableSpawns(spec,region);
  const all=[...pieces,...blockers],parts=new Set(['ground-main','ground-path','wall-straight','wall-top','light-pool','backdrop-near',...all.map(p=>p.part)]);
- const map:PlaneMap={kind:'plane',id:spec.id,name:spec.name,kit:spec.kit,profile:kit.profile,width:n,height:n,wallHeight:kit.wallHeight,background:kit.background,glow:kit.glow,outline:kit.outline,shadow:kit.shadow,cells:Array.from(grid,v=>'#.,ox'[v]).join(''),heights:Array.from(heights),dist:Array.from(dist),pieces:all,lights,resources:[...parts].map(p=>planeResource(spec.kit,p)),landmarks:[]};
+ const island=planeIsland(spec.island),material=(source.islands as Record<string,{material?:PlaneMaterial}>)[island].material;
+ const map:PlaneMap={kind:'plane',id:spec.id,name:spec.name,kit:spec.kit,island,...(material?{material}:{}),profile:kit.profile,width:n,height:n,wallHeight:kit.wallHeight,background:kit.background,glow:kit.glow,outline:kit.outline,shadow:kit.shadow,cells:Array.from(grid,v=>'#.,ox'[v]).join(''),heights:Array.from(heights),dist:Array.from(dist),pieces:all,lights,resources:[...parts].map(p=>planeResource(spec.kit,p,island)),landmarks:[]};
  return {region,map,spec};
 }
 export const planeStageSpecs=source.stages as unknown as PlaneStageSpec[];

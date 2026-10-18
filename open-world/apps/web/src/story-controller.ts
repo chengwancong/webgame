@@ -5,15 +5,17 @@ import {distance,type World} from '../../../packages/simulation/index.ts';
 import {api} from './network.ts';
 import {buttonHtml,panelHeaderHtml,esc,statusBar,statusBadgeHtml} from './ui-components.ts';
 import type {DungeonController} from './dungeon-controller.ts';
+// 与任务页同理：版本号随战斗上报频繁变化，后台跟随刷新至多每 2 秒一次；过期结果先用，到点再补读。
+export const storyRefreshMs=2000;
 type Dependencies={snapshot:()=>Snapshot|undefined;world:()=>World;dungeons:DungeonController;write:(path:string,body:object)=>Promise<unknown>;open:(panel:string)=>void;refresh:()=>void;notice:(message:string)=>void;service:(feature:string)=>void;skill:(id:string)=>void};
 export class StoryController{
- data?:StoryView;selectedNpc='keeper';selectedChapter='';line=0;error='';busy=false;private owner='';private requestedRevision=-1;private loading=false;private generation=0;private pending?:{instance:string;phase:string;target:string};
+ data?:StoryView;selectedNpc='keeper';selectedChapter='';line=0;error='';busy=false;private owner='';private requestedRevision=-1;private loading=false;private generation=0;private loadedAt=-Infinity;private pending?:{instance:string;phase:string;target:string};
  constructor(private deps:Dependencies){}
  resetChapter(){if(this.selectedChapter){this.selectedChapter='';this.requestedRevision=-1;this.line=0;}}
  cancelPending(){this.pending=undefined;}
- sync(){const s=this.deps.snapshot();if(!s)return;if(s.id!==this.owner){this.owner=s.id;this.generation++;this.data=undefined;this.selectedChapter='';this.requestedRevision=-1;this.loading=false;this.pending=undefined;}if(!this.loading&&this.requestedRevision!==s.revision)void this.load();}
- async load(chapter=this.selectedChapter){const owner=this.deps.snapshot()?.id;if(!owner)return;const generation=++this.generation;this.loading=true;this.requestedRevision=this.deps.snapshot()!.revision;
-  try{const data=await api<StoryView>('story'+(chapter?'?chapter='+encodeURIComponent(chapter):''));if(generation!==this.generation||owner!==this.deps.snapshot()?.id)return;if(data.revision<(this.deps.snapshot()?.revision??0)){this.requestedRevision=-1;return;}this.data=data;this.error='';}
+ sync(){const s=this.deps.snapshot();if(!s)return;if(s.id!==this.owner){this.owner=s.id;this.generation++;this.data=undefined;this.selectedChapter='';this.requestedRevision=-1;this.loading=false;this.pending=undefined;this.loadedAt=-Infinity;}if(!this.loading&&this.requestedRevision!==s.revision&&performance.now()-this.loadedAt>=storyRefreshMs)void this.load();}
+ async load(chapter=this.selectedChapter){const owner=this.deps.snapshot()?.id;if(!owner)return;const generation=++this.generation;this.loading=true;this.requestedRevision=this.deps.snapshot()!.revision;this.loadedAt=performance.now();
+  try{const data=await api<StoryView>('story'+(chapter?'?chapter='+encodeURIComponent(chapter):''));if(generation!==this.generation||owner!==this.deps.snapshot()?.id)return;if(data.revision<(this.deps.snapshot()?.revision??0))this.requestedRevision=-1;this.data=data;this.error='';}
   catch(error){if(generation===this.generation){this.error=error instanceof Error?error.message:'主线信息读取失败。';this.requestedRevision=-1;}}
   finally{if(generation===this.generation){this.loading=false;this.deps.refresh();}}
  }

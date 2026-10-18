@@ -24,9 +24,14 @@ export function statusBar(kind: 'hp' | 'mp' | 'neutral', ratio: number, label: s
 }
 
 /** 仅公共按钮发声；各页面不绑定第二套监听器。返回卸载函数供QA复用。 */
+export const uiPanelQuietMs=300;
+/** 一次操作只响一声：不做悬停音；点击后紧跟的面板开关不再叠响，键盘/快捷键开关面板才单独出声。关面板与取消同音。 */
 export function mountUiAudio(play:(key:string)=>void,root:Document=document){
  const resolve=(event:Event)=>event.target instanceof Element?event.target.closest<HTMLButtonElement>('[data-ui="button"]'):null;
- const click=(event:Event)=>{const button=resolve(event);if(!button||button.disabled)return;const action=button.dataset.action??'';play(action==='close'?'ui/cancel':button.getAttribute('role')==='tab'?'ui/tab':'ui/click');};
- const hover=(event:Event)=>{const button=resolve(event);if(button&&!button.disabled&&!(event instanceof MouseEvent&&event.relatedTarget instanceof Node&&button.contains(event.relatedTarget)))play('ui/hover');};
- let panel=root.querySelector('[data-ui=panel-header] h2')?.textContent??'';const observer=new MutationObserver(()=>{const next=root.querySelector('[data-ui=panel-header] h2')?.textContent??'';if(next===panel)return;play(next?'ui/panel-open':'ui/panel-close');panel=next;});observer.observe(root.body,{childList:true,subtree:true});root.addEventListener('click',click);root.addEventListener('pointerover',hover);return ()=>{observer.disconnect();root.removeEventListener('click',click);root.removeEventListener('pointerover',hover);};
+ let clickedAt=-Infinity;
+ const click=(event:Event)=>{const button=resolve(event);if(!button||button.disabled)return;const action=button.dataset.action??'';clickedAt=performance.now();play(action==='close'?'ui/cancel':button.getAttribute('role')==='tab'?'ui/tab':'ui/click');};
+ let panel=root.querySelector('[data-ui=panel-header] h2')?.textContent??'';
+ const observer=new MutationObserver(()=>{const next=root.querySelector('[data-ui=panel-header] h2')?.textContent??'';if(next===panel)return;const opened=!panel&&!!next,closed=!!panel&&!next;panel=next;if(performance.now()-clickedAt<uiPanelQuietMs)return;if(opened)play('ui/panel-open');else if(closed)play('ui/cancel');});
+ observer.observe(root.body,{childList:true,subtree:true});root.addEventListener('click',click);
+ return ()=>{observer.disconnect();root.removeEventListener('click',click);};
 }

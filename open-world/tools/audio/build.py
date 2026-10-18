@@ -16,6 +16,7 @@ from dsp import SR, db, fft_filter, hp_resp, write_wav, normalize_peak, mix, sil
 from benchmarks import TIERS
 from recipes import SOUNDS
 from validation import production_checks  # noqa: E402
+from compress import attach as attach_ogg  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 PUBLIC = ROOT / 'apps/web/public/audio'
@@ -102,6 +103,7 @@ def main():
             wav=[file_of(sound,v) for v in range(sound.variants)]
             formats={ext:[rel(p.with_suffix('.'+suffix)) for p in wav] for ext,suffix in [('opus','opus'),('aac','m4a')] if all(p.with_suffix('.'+suffix).exists() for p in wav)}
             manifest.setdefault(sound.key,{})[sound.stage]=dict(files=[rel(p) for p in wav],formats=formats,tier=sound.tier,wired=sound.wired,source=getattr(sound,'source','synth-placeholder' if sound.key.startswith('voice/') else 'synth'),license=getattr(sound,'license','项目自制程序合成；无第三方录音'),note=sound.note)
+        attach_ogg(manifest)
         MANIFEST.write_text(json.dumps(manifest,ensure_ascii=False,indent=1)+'\n',encoding='utf-8')
         return
     only = next((a.split('=', 1)[1] if '=' in a else sys.argv[sys.argv.index(a) + 1] for a in sys.argv if a.startswith('--only')), None)
@@ -180,6 +182,7 @@ def main():
     for s, v, m, errs in rows:
         print(f"{s.key:28s} {s.stage:7s} {v + 1} {m['peak']:5.1f} {m['punch']:5.1f} {m['low200']:5.2f} {m['harsh']:5.2f} {m['small_loss']:5.1f} {m['dur']:6.2f}  {'OK' if not errs else '✗'}")
     if not check_only:
+        attach_ogg(manifest)  # 运行时压缩版 .ogg，WAV 源保留
         MANIFEST.write_text(json.dumps(manifest, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
         QA.mkdir(parents=True, exist_ok=True)
         (QA / 'metrics.json').write_text(json.dumps([dict(key=s.key, stage=s.stage, v=v + 1, **m, errors=e) for s, v, m, e in rows], ensure_ascii=False, indent=1), encoding='utf-8')

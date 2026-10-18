@@ -267,3 +267,53 @@ ID 格式：`ow-art-plane-entry-<shape>`
 - [ ] 10 张样张及方向说明
 - [ ] 特效选片登记可复查
 - [ ] `README.md`、`art-gaps.md`、`decisions.md`、`progress.md` 写完，并已提交
+
+---
+
+## 9. 第三版：铺量（2026-10-18 晚，覆盖前文冲突处）
+
+前提：Claude 已把场景改成**每局随机布局**，并接好**按岛取图**。本节是这一轮铺量要做的全部美术；第 0 节的执行方式照旧强制。
+进度文件 `docs/reviews/plane-art-20261018/rollout-progress.md`，裁决继续记在 `decisions.md`。
+
+### 9.1 运行时现在怎么取图（Claude 已接好）
+- 每个巢穴阶段属于一个岛（`wind` / `mist` / `forge` / `frost` / `rift` / `dragon`）。
+- **按岛取的件**：`ground-main`、`ground-path`、`wall-straight`、`wall-top`、`backdrop-near`、`feature-1`、`feature-2`，ID 为 `ow-art-plane-<island>-<kit>-<part>`；其余件（摆件、柱、灯、光圈）全岛共用 `ow-art-plane-<kit>-<part>`。
+- 灰盒登记 `packages/asset-manifest/open-world-planes-greybox.v1.json` 现有 163 项：37 个套件件 + 6 岛 × 3 套 × 7 件。前五件岛屿条目带 `aliasOf`。**你没画的岛屿件，运行时自动显示该套件件的当前图，再叠本岛 material**；画了，就按同 ID 换掉，不再叠 material，除非你在登记里自己写了 `runtime.material`。
+- 本岛 material（tint 正片叠底 + wash）写在 `packages/content/plane-scenes.json` 的 `islands`，数值取自你 71fe47e5 里的材质适配；`wind` 不叠色，因为套件件本身就按风栖画。共用件（摆件、柱、灯）在别的岛也叠本岛 material。
+- 接入规则没变：`open-world-assets.ts` 只认 `status: imported` + `registration: greybox-contract-exact`，canvas / anchor / displayWidth 与灰盒 contract 完全一致；不一致直接报错。
+- 复核页：`/plane-review.html?stage=plane-wind-nest-<kit>-<1|2>&island=<island>&seed=<n>&calm=1`，`island` 只换皮不换布局，`seed` 换随机布局。随机布局四个朝向都会出现，左右、前后墙面都要好看。
+
+### 9.2 本轮清单（按顺序做）
+
+| 批 | 内容 | 数量 | 契约 |
+|---|---|---|---|
+| R1 | **套件底图重画**：cave / crypt / maze × `ground-main`、`ground-path`、`wall-straight`、`wall-top`、`light-pool`、`backdrop-near`，即现在 pending 的 18 件 | 18 | 照各自灰盒 contract；注意 maze 墙高已改 **104**，`ow-art-plane-maze-wall-straight` 画布是 128×104；maze 柱保持 128×160（`pillarHeight: 80`），已接入的柱不用重画 |
+| R2 | **特色件按契约重出**：你已画的 36 件 `ow-art-plane-<island>-<kit>-feature-1|2`（528 画布、`fixed-canvas-and-scale`）改成契约尺寸重新导入 | 36 | 96×96、anchor `[0.5,0.85]`、displayWidth 96，与 `prop-m*` 同规：占一格、有碰撞；可见宽 ≤ 64px、高 ≤ 80px、四边 ≥ 2px 透明；能从原图裁切缩放就复用，96 下认不出就重出。它们会随机放在洞穴的空地上，或者贴在地宫 / 迷宫的后墙脚 |
+| R3 | **岛屿地面与远景**：5 个非风栖岛 × 3 套 × `ground-main`、`backdrop-near` | 30 | 同套件件 contract；画本岛材质和氛围（赤炉熔渣地、霜镜冰面、沉星晶砂、龙脊骨土、雾铃湿苔石），并与 R1 同一画风、同一明度 |
+| R4 | **野外入口**：`ow-art-plane-<island>-entry-cave-mouth|crypt-door|maze-gate` 6 岛 × 3，各 2 态（`unsettled` / `cleared`）；`ow-art-plane-entry-portal-base` 2 态（`dormant` / `open`） | 18 + 1 | 入口：画布 256×256、anchor `[0.5,0.88]`、displayWidth 192，两态同画布、同枢轴；底座：192×128、anchor `[0.5,0.6]`、displayWidth 160。这些件 Claude 在 L5 接进野外，接时以本表为准 |
+| R5 | material 微调：看过 6 岛复核页后，如果整体太灰或太脏，只改 `plane-scenes.json` 里 `islands.<island>.material` 的数值，然后运行 `node tools/build-plane-greybox-art.mjs` | — | 只许改这一个字段；改了要在裁决里写明前后数值 |
+| R6（不阻塞，最后做） | 岛屿版 `wall-straight` / `wall-top` / `ground-path`（5 岛 × 3 套 × 3）；秘门、首领门、界石等其余入口；vault / rift 套件；未用件（wall-inner 等） | — | 同套件件 contract；做不完就记进 `art-gaps.md` |
+
+另外，你的校验脚本里抄了一份 contract，maze 的 `wallHeight` 还是 80，`verify-plane-prop-art.mjs` 现在会因此报错。请改成从灰盒登记现读，或者同步成 104。
+
+### 9.3 每批验收（按顺序串行，同一时间只跑一个）
+1. 你自己的构建和校验（`build-plane-*` / `verify-plane-*`）通过；
+2. `npx tsx tools/verify-plane-prop-runtime.ts` 通过（需要的话扩成覆盖岛屿件）；
+3. `npx vitest run tests/plane-scenes.test.ts`，再跑 `npx vitest run tests/plane-layouts.test.ts`；
+4. `npx tsx tools/check-world-resource-wiring.ts` 输出 `"passed":true`；
+5. 可视复核：用复核页按 3 套 × 6 岛各看一个随机 seed，截图只留本地，在进度文件里写看过哪些 URL、有没有 console error。
+
+### 9.4 默认裁决（本轮新增）
+| 歧义 | 裁决 |
+|---|---|
+| 风栖要不要单独画岛屿件 | 不画；风栖用套件件（R1 就是风栖的样子） |
+| 特色件太大，96 塞不下 | 只保留最有辨识度的主体，不缩成看不清的小图；还是不行就重出简化版 |
+| R3 的远景与地面明度不一致 | 以 R1 同套件为准，往它靠 |
+| 入口在野外比例 | 宽约 3 格；cleared 态要比 unsettled 一眼更亮、更安全 |
+| 某件三次不合格 | 保留现状（灰盒或回退），记 `art-gaps.md`，继续 |
+
+### 9.5 硬阻塞与禁止（本轮）
+- 硬阻塞仍以第 6 节为准。另加一条：灰盒 contract 本身画不出（例如尺寸不够），写清楚原因，然后继续其余件。
+- 不改 `plane-scenes.json` 里除 `islands.*.material` 以外的内容，不改场地生成、渲染器、灰盒构建脚本。
+- 原图、截图、`apps/web/public/art/` 下的产物都不提交；提示词、spec、登记表、脚本、进度、裁决文档要提交。
+- 完成定义：R1–R5 全部 `imported`，或者已记进缺口；R6 尽量做；9.3 全部通过；提交时只提交你自己的文件，在提交说明里列出数量。

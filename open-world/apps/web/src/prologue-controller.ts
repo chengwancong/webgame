@@ -63,7 +63,8 @@ export class PrologueController{
  }
  private async choose(family:PrologueFamily){
   if(this.busy||this.phase!=='choose')return;this.busy=true;this.error='';this.render();
-  try{await this.host.command({weapon:family});this.family=family;if(this.skipRequested){await this.close();return;}this.land();}
+  // close() 在 busy 时是空操作：跳过开场时须先释放，否则选完武器面板卡住。
+  try{await this.host.command({weapon:family});this.family=family;if(this.skipRequested){this.busy=false;await this.close();return;}this.land();}
   catch(e){this.error=e instanceof Error?e.message:'选择没有提交成功，请重试。';}
   finally{this.busy=false;this.render();}
  }
@@ -106,7 +107,7 @@ export class PrologueController{
   else if(this.phase==='choose')body=`<div class="prologue-sky prologue-sky--still" aria-hidden="true"></div><div class="prologue-choice" role="group" aria-label="三道回响"><p class="prologue-line">${esc(lines.choose)}</p><div class="prologue-cards">${prologueFamilies.map((k,i)=>{const x=prologueConfig.families[k];return `<button type="button" class="prologue-card" data-action="prologue-choose" data-id="${k}" ${this.busy?'disabled':''}><img src="${skillArt(icons[k])}" alt="" draggable="false"><b>${esc(x.echo)}</b><span class="prologue-weapon">${esc(weaponNames[k])} · 按 ${i+1}</span><span>${esc(x.blurb)}</span></button>`;}).join('')}</div>${this.skipRequested?`<p class="prologue-note">${esc(lines.skipNote)}</p>`:''}</div>`;
   else if(this.phase==='closing')body=`<div class="prologue-sky prologue-sky--still" aria-hidden="true"></div><p class="prologue-line">${this.busy?'正在醒来…':''}</p>`;
   else{const boss=this.battle?.boss;
-   body=`${this.phase==='fade'?'<div class="prologue-fade" aria-hidden="true"></div>':''}<div class="prologue-tag">受控授予 · 开场构筑（结束后收回）</div>${boss&&boss.alive?`<div class="prologue-boss"><b>${esc(prologueConfig.boss.name)}</b><span style="--fill:${Math.max(0,boss.hp/boss.maxHp)}"></span></div>`:''}
+   body=`${this.phase==='fade'?'<div class="prologue-fade" aria-hidden="true"></div>':''}<div class="prologue-tag">回响之力 · 醒来后消散</div>${boss&&boss.alive?`<div class="prologue-boss"><b>${esc(prologueConfig.boss.name)}</b><span style="--fill:${Math.max(0,boss.hp/boss.maxHp)}"></span></div>`:''}
    <div class="prologue-bar ${this.phase==='fade'?'is-fading':''}">${f.grantedSkills.map((id,i)=>`<img class="prologue-skill" style="--i:${i}" src="${skillArt(id)}" alt="${esc(f.granted.skills[i]?.name??id)}" draggable="false">`).join('')}
    <button type="button" class="prologue-burst ${full&&this.phase!=='fade'?'is-full':''}" data-action="prologue-burst" ${full&&this.phase!=='fade'?'':'disabled'} style="--fill:${this.phase==='fade'?0:Math.min(1,energy/prologueConfig.burst.kills)}"><img src="${skillArt(icons[this.family])}" alt="" draggable="false"><span>回响爆发 · ${esc(this.host.interactKey())}</span></button></div>`;}
   const html=`${body}${caption?`<p class="prologue-caption" role="status">${esc(caption)}</p>`:''}${skip}${error}`;

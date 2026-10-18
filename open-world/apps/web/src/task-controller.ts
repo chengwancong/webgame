@@ -5,16 +5,18 @@ import {taskPanel} from './task-panel.ts';
 import {syncMarkup} from './task-dom.ts';
 import {stageBox} from './stage.ts';
 type Write=(path:string,body:object)=>Promise<'success'|'rejected'|'pending'|'busy'|undefined>;
+// 战斗中每轮上报都会换版本号；后台跟随刷新至多每 2 秒一次，过期结果先显示、到点再补读，不在同一轮里连读两次。
+export const taskRefreshMs=2000;
 type Dependencies={snapshot:()=>Snapshot|undefined;blocked:()=>boolean;processing:()=>boolean;refresh:()=>void;write:Write;pending:()=>Promise<string[]>;recover:()=>Promise<void>;navigate:(region:string)=>void;quest?:(op:'track'|'abandon',task:string|null)=>Promise<unknown>};
 export class TaskController{
- ui:TaskUI=initialTaskUI();data?:TaskView;private owner='';private generation=0;private requestedRevision=-1;
+ ui:TaskUI=initialTaskUI();data?:TaskView;private owner='';private generation=0;private requestedRevision=-1;private loadedAt=-Infinity;
  constructor(private deps:Dependencies){}
  private ensureOwner(){const id=this.deps.snapshot()?.id??'';if(id!==this.owner){this.owner=id;this.generation++;this.ui=initialTaskUI();this.ui.loading=true;this.data=undefined;}return id;}
- sync(){const s=this.deps.snapshot();if(s&&(s.id!==this.owner||this.requestedRevision!==s.revision&&!this.ui.loading))void this.load();}
- async load(){const owner=this.ensureOwner();if(!owner)return;const generation=++this.generation;this.requestedRevision=this.deps.snapshot()!.revision;this.ui.loading=true;this.ui.error='';this.deps.refresh();
-  try{let [data,pending]=await Promise.all([api<TaskView>('tasks'),this.deps.pending()]);if(data.revision<(this.deps.snapshot()?.revision??0))data=await api<TaskView>('tasks');
+ sync(){const s=this.deps.snapshot();if(!s)return;if(s.id!==this.owner)void this.load();else if(this.requestedRevision!==s.revision&&!this.ui.loading&&performance.now()-this.loadedAt>=taskRefreshMs)void this.load(true);}
+ async load(background=false){const owner=this.ensureOwner();if(!owner)return;const generation=++this.generation;this.requestedRevision=this.deps.snapshot()!.revision;this.loadedAt=performance.now();this.ui.loading=true;this.ui.error='';this.deps.refresh();
+  try{let [data,pending]=await Promise.all([api<TaskView>('tasks'),this.deps.pending()]);if(!background&&data.revision<(this.deps.snapshot()?.revision??0))data=await api<TaskView>('tasks');
    if(generation!==this.generation||owner!==this.deps.snapshot()?.id)return;
-   if(data.characterId!==owner||data.revision<(this.deps.snapshot()?.revision??0))throw Error('任务状态已更新，请重新读取。');
+   if(data.characterId!==owner||!background&&data.revision<(this.deps.snapshot()?.revision??0))throw Error('任务状态已更新，请重新读取。');if(data.revision<(this.deps.snapshot()?.revision??0))this.requestedRevision=data.revision;
    const recovered=data.archive.find(row=>this.ui.states[row.taskId]==='pending');if(recovered){this.ui.lastTask=recovered.taskId;this.ui.notice=`「${recovered.title}」领奖已确认，已收入档案。`;}this.data=data;const states:TaskUI['states']={};for(const row of data.current){if(pending.includes(row.taskId))states[row.taskId]='pending';else if(this.ui.states[row.taskId]==='failed'&&row.state==='ready')states[row.taskId]='failed';}this.ui.states=states;
   }catch(error){if(generation===this.generation)this.ui.error=error instanceof Error?error.message:'任务信息读取失败。';}
   finally{if(generation===this.generation){this.ui.loading=false;this.deps.refresh();}}

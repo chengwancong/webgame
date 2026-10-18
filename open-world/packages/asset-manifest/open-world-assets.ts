@@ -4,12 +4,22 @@ import planeGreybox from './open-world-planes-greybox.v1.json';
 import planeArt from './open-world-planes.v1.json';
 type RawArt={id:string;name:string;kind:string;category:string;group?:string;runtime:Record<string,any>;actions?:Record<string,any>;states?:unknown;[key:string]:unknown};
 // 正式资源逐件替换；地形、摆放与碰撞仍由灰盒契约负责。
-const planes={assets:planeGreybox.assets.map(g=>{
+type PlaneEntry=(typeof planeGreybox.assets)[number]&{aliasOf?:string;island?:string;runtime:Record<string,any>};
+const painted=(g:PlaneEntry)=>{
  const a=planeArt.assets.find(a=>a.id===g.id);
- if(!a||a.status!=='imported'||a.runtime.registration!=='greybox-contract-exact')return g;
+ if(!a||a.status!=='imported'||a.runtime.registration!=='greybox-contract-exact')return;
  const r=a.runtime,c=g.contract;
  if(r.width!==c.canvas[0]||r.height!==c.canvas[1]||r.displayWidth!==c.displayWidth||JSON.stringify(r.anchor)!==JSON.stringify(c.anchor))throw new Error(`位面美术契约不一致：${g.id}`);
- return {...g,name:a.name,status:a.status,files:a.files,runtime:{...g.runtime,file:r.file}};
+ // Painted art already carries its island look; only a material it declares itself is kept.
+ const {material:_,...base}=g.runtime;return {...g,name:a.name,status:a.status,files:a.files,runtime:{...base,file:r.file,...((r as {material?:unknown}).material?{material:(r as {material?:unknown}).material}:{})}};
+};
+const kitParts=new Map((planeGreybox.assets as PlaneEntry[]).filter(g=>!g.aliasOf).map(g=>[g.id,painted(g)??g]));
+// An unpainted island part shows the kit part's current art (greybox or painted) under the island material.
+const planes={assets:(planeGreybox.assets as PlaneEntry[]).map(g=>{
+ if(!g.aliasOf)return kitParts.get(g.id)!;
+ const own=painted(g);if(own)return own;
+ const kit=kitParts.get(g.aliasOf);if(!kit)throw new Error(`位面岛屿件缺少套件件：${g.id}`);
+ return {...g,status:kit.status,files:kit.files,runtime:{...g.runtime,file:kit.runtime.file}};
 })};
 /** One adapter for the accepted manifests; no asset IDs or actor appearances
  * are selected in runtime code. Source animation/material metadata is retained. */

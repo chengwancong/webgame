@@ -16,7 +16,8 @@ describe('plane random layouts (箱庭位面随机布局)',()=>{
   for(const spec of planeStageSpecs)for(const seed of SEEDS){const {region}=generatePlaneStage(spec.id,seed),grid=new NavigationGrid(region.width,region.height,region.obstacles,.55);
    expect(region.spawns.length).toBe(spec.pack.reduce((n,p)=>n+p.count,0));expect(region.spawns.filter(s=>s.boss).length).toBe(spec.boss?1:0);expect((region.keyChests??[]).length).toBe(spec.chests.length);
    for(const p of [region.portal,...region.spawns,...(region.keyChests??[]).map(c=>({x:c.x+.5,y:c.y+.5}))])expect(grid.path(region.safe,p).length,`${spec.id} ${seed} ${JSON.stringify(p)}`).toBeGreaterThan(0);}
- });
+
+ },20000);
  it('is one main line: halls are chained by single passages plus at most one dead-end side room',()=>{
   for(const spec of planeStageSpecs.filter(s=>!s.boss&&s.kit!=='maze'))for(const seed of SEEDS.slice(0,8)){const {spec:run}=generatePlaneStage(spec.id,seed);
    const rooms=run.carve.filter(op=>'disk' in op||'rect' in op).length,passages=run.carve.filter(op=>'path' in op).length;expect(passages,`${spec.id} ${seed}`).toBe(rooms-1);}

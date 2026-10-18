@@ -20,7 +20,7 @@ import {acceptBounty,abandonBounty,bountyBoard,claimBounty} from '../../../packa
 import {applyXp} from '../../../packages/rules/index.ts';
 import {visibleWorldRows,resolveWorldPhase} from '../../../packages/rules/world-phase.ts';
 import {evaluateUnlocks} from '../../../packages/rules/quest-conditions.ts';
-import {discoverPlaneGates,interactPlaneGate,PlaneGateError} from '../../../packages/rules/plane-gates.ts';
+import {discoverPlaneGates,interactPlaneGate,PlaneGateError,PLANE_OBSERVER_MS} from '../../../packages/rules/plane-gates.ts';
 
 type Identity={account:string;session:string;resume?:string};
 type Command={command_id:string;revision:number;lease_id:string};
@@ -81,7 +81,7 @@ export function registerField(app:FastifyInstance,{write,pool,identity,state,lea
   * permit's last trusted observer (≤ 3 s old), never a client-supplied coordinate. */
  app.post('/api/plane/interact',async req=>{const who=await identity(req),v=z.object({...commandShape,permit_id:z.uuid(),gate:z.string().min(1).max(120)}).strict().parse(req.body);return write(who,v,{...v,operation:'plane.interact'},async(c,s)=>{
   const row=(await c.query('SELECT region,private_data FROM ow_permits WHERE id=$1 AND character=$2',[v.permit_id,s.id])).rows[0];if(!row)fail('PERMIT','战斗授权不存在。');
-  const observer=row.private_data.fieldObserver as {x:number;y:number;at:number}|undefined;if(!observer||Date.now()-observer.at>3000)fail('PLANE_GATE_FAR','请走到入口旁边。');
+  const observer=row.private_data.fieldObserver as {x:number;y:number;at:number}|undefined;if(!observer||Date.now()-observer.at>PLANE_OBSERVER_MS)fail('PLANE_GATE_FAR','请走到入口旁边。');
   try{interactPlaneGate(s,v.gate,row.region,observer!,Date.now());}catch(e){if(e instanceof PlaneGateError)fail(e.code,e.message);throw e;}
   return {};
  });});

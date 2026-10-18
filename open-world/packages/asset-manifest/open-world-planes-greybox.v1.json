@@ -1119,7 +1119,7 @@
      0
     ],
     "displayWidth": 256,
-    "wallHeight": 80,
+    "wallHeight": 104,
     "placement": "tile",
     "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
    },
@@ -1162,7 +1162,7 @@
      0
     ],
     "displayWidth": 256,
-    "wallHeight": 80,
+    "wallHeight": 104,
     "placement": "tile",
     "note": "主路线磨损地面，同 ground-main 的平铺规则"
    },
@@ -1198,30 +1198,30 @@
    "contract": {
     "canvas": [
      128,
-     80
+     104
     ],
     "anchor": [
      0,
      1
     ],
     "displayWidth": 128,
-    "wallHeight": 80,
+    "wallHeight": 104,
     "placement": "texture",
     "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
    },
    "files": [
     {
      "path": "/art/open-world/plane-greybox/maze/wall-straight.png",
-     "sha256": "0652030ca723ede7cbdd4a7b26e681d6873401d8b63e1c305fd954d0dc8c5173",
-     "bytes": 1440,
+     "sha256": "12001fd6678aa717eeeea5c26d30ab1a83fe3b10dba1aa1e04740d184c37334e",
+     "bytes": 1648,
      "width": 128,
-     "height": 80
+     "height": 104
     }
    ],
    "runtime": {
     "file": "/art/open-world/plane-greybox/maze/wall-straight.png",
     "width": 128,
-    "height": 80,
+    "height": 104,
     "anchor": [
      0,
      1
@@ -1247,7 +1247,7 @@
      0
     ],
     "displayWidth": 512,
-    "wallHeight": 80,
+    "wallHeight": 104,
     "placement": "texture",
     "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
    },
@@ -1290,7 +1290,7 @@
      0.46875
     ],
     "displayWidth": 40,
-    "wallHeight": 80,
+    "wallHeight": 104,
     "placement": "face",
     "note": "挂在面向镜头的墙面上，锚点=灯体中心"
    },
@@ -1332,7 +1332,7 @@
      0.5
     ],
     "displayWidth": 256,
-    "wallHeight": 80,
+    "wallHeight": 104,
     "placement": "floor",
     "note": "加色混合的落地光圈，中心锚点"
    },
@@ -1374,7 +1374,7 @@
      0
     ],
     "displayWidth": 1280,
-    "wallHeight": 80,
+    "wallHeight": 104,
     "placement": "screen",
     "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
    },
@@ -1416,7 +1416,7 @@
      0.75
     ],
     "displayWidth": 128,
-    "wallHeight": 80,
+    "wallHeight": 104,
     "placement": "cell",
     "note": "2×2 格柱子，锚点=占地中心；有碰撞，挡人时半透明"
    },
@@ -1458,7 +1458,7 @@
      0.85
     ],
     "displayWidth": 64,
-    "wallHeight": 80,
+    "wallHeight": 104,
     "placement": "cell",
     "note": "挡路摆件：占一格且有碰撞，锚点=格心落地点；挡人时半透明"
    },
@@ -1500,7 +1500,7 @@
      0.85
     ],
     "displayWidth": 64,
-    "wallHeight": 80,
+    "wallHeight": 104,
     "placement": "cell",
     "note": "挡路摆件：占一格且有碰撞，锚点=格心落地点；挡人时半透明"
    },
@@ -1542,7 +1542,7 @@
      0.85
     ],
     "displayWidth": 96,
-    "wallHeight": 80,
+    "wallHeight": 104,
     "placement": "cell",
     "note": "挡路摆件：占一格且有碰撞，锚点=格心落地点；挡人时半透明"
    },
@@ -1565,6 +1565,6303 @@
     ],
     "displayWidth": 96
    }
+  },
+  {
+   "id": "ow-art-plane-wind-cave-ground-main",
+   "name": "位面灰盒 · wind · cave · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/ground-main.png",
+     "sha256": "3eaa90430574908b69e0068436460c2cf5d8310d57a263c33dc19af864d63f1a",
+     "bytes": 40141,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/ground-main.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512
+   },
+   "island": "wind",
+   "aliasOf": "ow-art-plane-cave-ground-main"
+  },
+  {
+   "id": "ow-art-plane-wind-cave-ground-path",
+   "name": "位面灰盒 · wind · cave · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/ground-path.png",
+     "sha256": "3fca4ec642e29718046bfa5bd537289296effab0e160042e64d179308d67b526",
+     "bytes": 31950,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/ground-path.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512
+   },
+   "island": "wind",
+   "aliasOf": "ow-art-plane-cave-ground-path"
+  },
+  {
+   "id": "ow-art-plane-wind-cave-wall-straight",
+   "name": "位面灰盒 · wind · cave · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     256
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 130,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/wall-straight.png",
+     "sha256": "c1b256d2f6c82f59b4da6ed89c33505586c7268c15e524fc4235eacca58d142a",
+     "bytes": 23333,
+     "width": 128,
+     "height": 256
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/wall-straight.png",
+    "width": 128,
+    "height": 256,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128
+   },
+   "island": "wind",
+   "aliasOf": "ow-art-plane-cave-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-wind-cave-wall-top",
+   "name": "位面灰盒 · wind · cave · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/wall-top.png",
+     "sha256": "f5a86483cc4fb2ed9a25255d19a753855155d58f2c838db64da4fe79a9ab2005",
+     "bytes": 20417,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512
+   },
+   "island": "wind",
+   "aliasOf": "ow-art-plane-cave-wall-top"
+  },
+  {
+   "id": "ow-art-plane-wind-cave-backdrop-near",
+   "name": "位面灰盒 · wind · cave · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 130,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/backdrop-near.png",
+     "sha256": "369621ed67582f814393a15e39d4d1ede85d14bc289289ab2d0380203790f991",
+     "bytes": 461986,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280
+   },
+   "island": "wind",
+   "aliasOf": "ow-art-plane-cave-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-wind-cave-feature-1",
+   "name": "位面灰盒 · wind · cave · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "cave",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 130,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/feature-1.png",
+     "sha256": "c09f1b18eaac538c826e0b488d03aa8550f7890a22f2fbd85d75aba9a329f3be",
+     "bytes": 2997,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96
+   },
+   "island": "wind"
+  },
+  {
+   "id": "ow-art-plane-wind-cave-feature-2",
+   "name": "位面灰盒 · wind · cave · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "cave",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 130,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/feature-2.png",
+     "sha256": "f9b046886c0d1754cde6dedf60659ecf04251005ac88b5ea1d2d1726565427da",
+     "bytes": 2525,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96
+   },
+   "island": "wind"
+  },
+  {
+   "id": "ow-art-plane-wind-crypt-ground-main",
+   "name": "位面灰盒 · wind · crypt · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 128,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/ground-main.png",
+     "sha256": "032267979aed699a6102a87df238b70bce598c81222b34e11f2e351a4426ee5d",
+     "bytes": 3675,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/ground-main.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256
+   },
+   "island": "wind",
+   "aliasOf": "ow-art-plane-crypt-ground-main"
+  },
+  {
+   "id": "ow-art-plane-wind-crypt-ground-path",
+   "name": "位面灰盒 · wind · crypt · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 128,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/ground-path.png",
+     "sha256": "f9c09ca2bab38d5ce1b201c65c2a69b214fcd3d49a842d6d4d80569f051199fa",
+     "bytes": 3629,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/ground-path.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256
+   },
+   "island": "wind",
+   "aliasOf": "ow-art-plane-crypt-ground-path"
+  },
+  {
+   "id": "ow-art-plane-wind-crypt-wall-straight",
+   "name": "位面灰盒 · wind · crypt · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     128
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 128,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/wall-straight.png",
+     "sha256": "6c94b1af1d1436476df008489116d8c2071fff1eb630c126d71562fb81154720",
+     "bytes": 975,
+     "width": 128,
+     "height": 128
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/wall-straight.png",
+    "width": 128,
+    "height": 128,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128
+   },
+   "island": "wind",
+   "aliasOf": "ow-art-plane-crypt-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-wind-crypt-wall-top",
+   "name": "位面灰盒 · wind · crypt · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 128,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/wall-top.png",
+     "sha256": "bf6b98f8da669756fe83e4a67bb396213f6f5690f0f4e705575bd4a44d5719f9",
+     "bytes": 18405,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512
+   },
+   "island": "wind",
+   "aliasOf": "ow-art-plane-crypt-wall-top"
+  },
+  {
+   "id": "ow-art-plane-wind-crypt-backdrop-near",
+   "name": "位面灰盒 · wind · crypt · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 128,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/backdrop-near.png",
+     "sha256": "c2946db571fe0444972ed2971b39759d4d9f199e15ef9ca8193acc095441d23a",
+     "bytes": 331199,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280
+   },
+   "island": "wind",
+   "aliasOf": "ow-art-plane-crypt-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-wind-crypt-feature-1",
+   "name": "位面灰盒 · wind · crypt · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "crypt",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 128,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/feature-1.png",
+     "sha256": "f3e70fa0a58d093ec62a278b1253fd66b1e97e0ac9b882fb5a10718072d0ead4",
+     "bytes": 2932,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96
+   },
+   "island": "wind"
+  },
+  {
+   "id": "ow-art-plane-wind-crypt-feature-2",
+   "name": "位面灰盒 · wind · crypt · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "crypt",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 128,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/feature-2.png",
+     "sha256": "97512195b0427df54abb3ed68087ccd08440b22194f9475c2d7335d36303e2ec",
+     "bytes": 2470,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96
+   },
+   "island": "wind"
+  },
+  {
+   "id": "ow-art-plane-wind-maze-ground-main",
+   "name": "位面灰盒 · wind · maze · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 104,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/ground-main.png",
+     "sha256": "ca4d6a8fd9673977c4cca1d7e55e8edc3204a2ba7b125bb16a57e77c25897fbc",
+     "bytes": 3043,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/ground-main.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256
+   },
+   "island": "wind",
+   "aliasOf": "ow-art-plane-maze-ground-main"
+  },
+  {
+   "id": "ow-art-plane-wind-maze-ground-path",
+   "name": "位面灰盒 · wind · maze · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 104,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/ground-path.png",
+     "sha256": "390d3d3f4b067ab80737b68544152aa076de40c464121e3eef8f62b0ccda4a35",
+     "bytes": 2875,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/ground-path.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256
+   },
+   "island": "wind",
+   "aliasOf": "ow-art-plane-maze-ground-path"
+  },
+  {
+   "id": "ow-art-plane-wind-maze-wall-straight",
+   "name": "位面灰盒 · wind · maze · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     104
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 104,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/wall-straight.png",
+     "sha256": "12001fd6678aa717eeeea5c26d30ab1a83fe3b10dba1aa1e04740d184c37334e",
+     "bytes": 1648,
+     "width": 128,
+     "height": 104
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/wall-straight.png",
+    "width": 128,
+    "height": 104,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128
+   },
+   "island": "wind",
+   "aliasOf": "ow-art-plane-maze-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-wind-maze-wall-top",
+   "name": "位面灰盒 · wind · maze · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 104,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/wall-top.png",
+     "sha256": "19e6ecd62e0ce4a6037387aaf8ffd4bb24fb28f4c2c1e4149821259ce617fdf6",
+     "bytes": 18887,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512
+   },
+   "island": "wind",
+   "aliasOf": "ow-art-plane-maze-wall-top"
+  },
+  {
+   "id": "ow-art-plane-wind-maze-backdrop-near",
+   "name": "位面灰盒 · wind · maze · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 104,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/backdrop-near.png",
+     "sha256": "2efae91f9492d37e3f4b173ee41cf6af0613296a6cf9f5eaabcc0090712b5bb9",
+     "bytes": 321273,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280
+   },
+   "island": "wind",
+   "aliasOf": "ow-art-plane-maze-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-wind-maze-feature-1",
+   "name": "位面灰盒 · wind · maze · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "maze",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 104,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/feature-1.png",
+     "sha256": "8ee1b28b7cf63e8c99db47f831ce549173ed28e4c830201fd1fe0d2a49edb360",
+     "bytes": 2882,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96
+   },
+   "island": "wind"
+  },
+  {
+   "id": "ow-art-plane-wind-maze-feature-2",
+   "name": "位面灰盒 · wind · maze · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "maze",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 104,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/feature-2.png",
+     "sha256": "02de209ec9d820e7a77111c5a46122431c620ef9fddeb3c3d4807169ef12fd97",
+     "bytes": 2440,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96
+   },
+   "island": "wind"
+  },
+  {
+   "id": "ow-art-plane-mist-cave-ground-main",
+   "name": "位面灰盒 · mist · cave · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/ground-main.png",
+     "sha256": "3eaa90430574908b69e0068436460c2cf5d8310d57a263c33dc19af864d63f1a",
+     "bytes": 40141,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/ground-main.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist",
+   "aliasOf": "ow-art-plane-cave-ground-main"
+  },
+  {
+   "id": "ow-art-plane-mist-cave-ground-path",
+   "name": "位面灰盒 · mist · cave · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/ground-path.png",
+     "sha256": "3fca4ec642e29718046bfa5bd537289296effab0e160042e64d179308d67b526",
+     "bytes": 31950,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/ground-path.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist",
+   "aliasOf": "ow-art-plane-cave-ground-path"
+  },
+  {
+   "id": "ow-art-plane-mist-cave-wall-straight",
+   "name": "位面灰盒 · mist · cave · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     256
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 130,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/wall-straight.png",
+     "sha256": "c1b256d2f6c82f59b4da6ed89c33505586c7268c15e524fc4235eacca58d142a",
+     "bytes": 23333,
+     "width": 128,
+     "height": 256
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/wall-straight.png",
+    "width": 128,
+    "height": 256,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist",
+   "aliasOf": "ow-art-plane-cave-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-mist-cave-wall-top",
+   "name": "位面灰盒 · mist · cave · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/wall-top.png",
+     "sha256": "f5a86483cc4fb2ed9a25255d19a753855155d58f2c838db64da4fe79a9ab2005",
+     "bytes": 20417,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist",
+   "aliasOf": "ow-art-plane-cave-wall-top"
+  },
+  {
+   "id": "ow-art-plane-mist-cave-backdrop-near",
+   "name": "位面灰盒 · mist · cave · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 130,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/backdrop-near.png",
+     "sha256": "369621ed67582f814393a15e39d4d1ede85d14bc289289ab2d0380203790f991",
+     "bytes": 461986,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist",
+   "aliasOf": "ow-art-plane-cave-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-mist-cave-feature-1",
+   "name": "位面灰盒 · mist · cave · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "cave",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 130,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/feature-1.png",
+     "sha256": "c09f1b18eaac538c826e0b488d03aa8550f7890a22f2fbd85d75aba9a329f3be",
+     "bytes": 2997,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist"
+  },
+  {
+   "id": "ow-art-plane-mist-cave-feature-2",
+   "name": "位面灰盒 · mist · cave · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "cave",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 130,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/feature-2.png",
+     "sha256": "f9b046886c0d1754cde6dedf60659ecf04251005ac88b5ea1d2d1726565427da",
+     "bytes": 2525,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist"
+  },
+  {
+   "id": "ow-art-plane-mist-crypt-ground-main",
+   "name": "位面灰盒 · mist · crypt · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 128,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/ground-main.png",
+     "sha256": "032267979aed699a6102a87df238b70bce598c81222b34e11f2e351a4426ee5d",
+     "bytes": 3675,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/ground-main.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist",
+   "aliasOf": "ow-art-plane-crypt-ground-main"
+  },
+  {
+   "id": "ow-art-plane-mist-crypt-ground-path",
+   "name": "位面灰盒 · mist · crypt · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 128,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/ground-path.png",
+     "sha256": "f9c09ca2bab38d5ce1b201c65c2a69b214fcd3d49a842d6d4d80569f051199fa",
+     "bytes": 3629,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/ground-path.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist",
+   "aliasOf": "ow-art-plane-crypt-ground-path"
+  },
+  {
+   "id": "ow-art-plane-mist-crypt-wall-straight",
+   "name": "位面灰盒 · mist · crypt · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     128
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 128,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/wall-straight.png",
+     "sha256": "6c94b1af1d1436476df008489116d8c2071fff1eb630c126d71562fb81154720",
+     "bytes": 975,
+     "width": 128,
+     "height": 128
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/wall-straight.png",
+    "width": 128,
+    "height": 128,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist",
+   "aliasOf": "ow-art-plane-crypt-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-mist-crypt-wall-top",
+   "name": "位面灰盒 · mist · crypt · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 128,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/wall-top.png",
+     "sha256": "bf6b98f8da669756fe83e4a67bb396213f6f5690f0f4e705575bd4a44d5719f9",
+     "bytes": 18405,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist",
+   "aliasOf": "ow-art-plane-crypt-wall-top"
+  },
+  {
+   "id": "ow-art-plane-mist-crypt-backdrop-near",
+   "name": "位面灰盒 · mist · crypt · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 128,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/backdrop-near.png",
+     "sha256": "c2946db571fe0444972ed2971b39759d4d9f199e15ef9ca8193acc095441d23a",
+     "bytes": 331199,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist",
+   "aliasOf": "ow-art-plane-crypt-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-mist-crypt-feature-1",
+   "name": "位面灰盒 · mist · crypt · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "crypt",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 128,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/feature-1.png",
+     "sha256": "f3e70fa0a58d093ec62a278b1253fd66b1e97e0ac9b882fb5a10718072d0ead4",
+     "bytes": 2932,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist"
+  },
+  {
+   "id": "ow-art-plane-mist-crypt-feature-2",
+   "name": "位面灰盒 · mist · crypt · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "crypt",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 128,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/feature-2.png",
+     "sha256": "97512195b0427df54abb3ed68087ccd08440b22194f9475c2d7335d36303e2ec",
+     "bytes": 2470,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist"
+  },
+  {
+   "id": "ow-art-plane-mist-maze-ground-main",
+   "name": "位面灰盒 · mist · maze · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 104,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/ground-main.png",
+     "sha256": "ca4d6a8fd9673977c4cca1d7e55e8edc3204a2ba7b125bb16a57e77c25897fbc",
+     "bytes": 3043,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/ground-main.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist",
+   "aliasOf": "ow-art-plane-maze-ground-main"
+  },
+  {
+   "id": "ow-art-plane-mist-maze-ground-path",
+   "name": "位面灰盒 · mist · maze · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 104,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/ground-path.png",
+     "sha256": "390d3d3f4b067ab80737b68544152aa076de40c464121e3eef8f62b0ccda4a35",
+     "bytes": 2875,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/ground-path.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist",
+   "aliasOf": "ow-art-plane-maze-ground-path"
+  },
+  {
+   "id": "ow-art-plane-mist-maze-wall-straight",
+   "name": "位面灰盒 · mist · maze · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     104
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 104,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/wall-straight.png",
+     "sha256": "12001fd6678aa717eeeea5c26d30ab1a83fe3b10dba1aa1e04740d184c37334e",
+     "bytes": 1648,
+     "width": 128,
+     "height": 104
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/wall-straight.png",
+    "width": 128,
+    "height": 104,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist",
+   "aliasOf": "ow-art-plane-maze-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-mist-maze-wall-top",
+   "name": "位面灰盒 · mist · maze · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 104,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/wall-top.png",
+     "sha256": "19e6ecd62e0ce4a6037387aaf8ffd4bb24fb28f4c2c1e4149821259ce617fdf6",
+     "bytes": 18887,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist",
+   "aliasOf": "ow-art-plane-maze-wall-top"
+  },
+  {
+   "id": "ow-art-plane-mist-maze-backdrop-near",
+   "name": "位面灰盒 · mist · maze · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 104,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/backdrop-near.png",
+     "sha256": "2efae91f9492d37e3f4b173ee41cf6af0613296a6cf9f5eaabcc0090712b5bb9",
+     "bytes": 321273,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist",
+   "aliasOf": "ow-art-plane-maze-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-mist-maze-feature-1",
+   "name": "位面灰盒 · mist · maze · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "maze",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 104,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/feature-1.png",
+     "sha256": "8ee1b28b7cf63e8c99db47f831ce549173ed28e4c830201fd1fe0d2a49edb360",
+     "bytes": 2882,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist"
+  },
+  {
+   "id": "ow-art-plane-mist-maze-feature-2",
+   "name": "位面灰盒 · mist · maze · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "maze",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 104,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/feature-2.png",
+     "sha256": "02de209ec9d820e7a77111c5a46122431c620ef9fddeb3c3d4807169ef12fd97",
+     "bytes": 2440,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#b8d4ca",
+     "wash": {
+      "color": "#b8d4ca",
+      "alpha": 0.12
+     }
+    }
+   },
+   "island": "mist"
+  },
+  {
+   "id": "ow-art-plane-forge-cave-ground-main",
+   "name": "位面灰盒 · forge · cave · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/ground-main.png",
+     "sha256": "3eaa90430574908b69e0068436460c2cf5d8310d57a263c33dc19af864d63f1a",
+     "bytes": 40141,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/ground-main.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge",
+   "aliasOf": "ow-art-plane-cave-ground-main"
+  },
+  {
+   "id": "ow-art-plane-forge-cave-ground-path",
+   "name": "位面灰盒 · forge · cave · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/ground-path.png",
+     "sha256": "3fca4ec642e29718046bfa5bd537289296effab0e160042e64d179308d67b526",
+     "bytes": 31950,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/ground-path.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge",
+   "aliasOf": "ow-art-plane-cave-ground-path"
+  },
+  {
+   "id": "ow-art-plane-forge-cave-wall-straight",
+   "name": "位面灰盒 · forge · cave · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     256
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 130,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/wall-straight.png",
+     "sha256": "c1b256d2f6c82f59b4da6ed89c33505586c7268c15e524fc4235eacca58d142a",
+     "bytes": 23333,
+     "width": 128,
+     "height": 256
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/wall-straight.png",
+    "width": 128,
+    "height": 256,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge",
+   "aliasOf": "ow-art-plane-cave-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-forge-cave-wall-top",
+   "name": "位面灰盒 · forge · cave · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/wall-top.png",
+     "sha256": "f5a86483cc4fb2ed9a25255d19a753855155d58f2c838db64da4fe79a9ab2005",
+     "bytes": 20417,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge",
+   "aliasOf": "ow-art-plane-cave-wall-top"
+  },
+  {
+   "id": "ow-art-plane-forge-cave-backdrop-near",
+   "name": "位面灰盒 · forge · cave · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 130,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/backdrop-near.png",
+     "sha256": "369621ed67582f814393a15e39d4d1ede85d14bc289289ab2d0380203790f991",
+     "bytes": 461986,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge",
+   "aliasOf": "ow-art-plane-cave-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-forge-cave-feature-1",
+   "name": "位面灰盒 · forge · cave · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "cave",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 130,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/feature-1.png",
+     "sha256": "c09f1b18eaac538c826e0b488d03aa8550f7890a22f2fbd85d75aba9a329f3be",
+     "bytes": 2997,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge"
+  },
+  {
+   "id": "ow-art-plane-forge-cave-feature-2",
+   "name": "位面灰盒 · forge · cave · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "cave",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 130,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/feature-2.png",
+     "sha256": "f9b046886c0d1754cde6dedf60659ecf04251005ac88b5ea1d2d1726565427da",
+     "bytes": 2525,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge"
+  },
+  {
+   "id": "ow-art-plane-forge-crypt-ground-main",
+   "name": "位面灰盒 · forge · crypt · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 128,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/ground-main.png",
+     "sha256": "032267979aed699a6102a87df238b70bce598c81222b34e11f2e351a4426ee5d",
+     "bytes": 3675,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/ground-main.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge",
+   "aliasOf": "ow-art-plane-crypt-ground-main"
+  },
+  {
+   "id": "ow-art-plane-forge-crypt-ground-path",
+   "name": "位面灰盒 · forge · crypt · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 128,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/ground-path.png",
+     "sha256": "f9c09ca2bab38d5ce1b201c65c2a69b214fcd3d49a842d6d4d80569f051199fa",
+     "bytes": 3629,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/ground-path.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge",
+   "aliasOf": "ow-art-plane-crypt-ground-path"
+  },
+  {
+   "id": "ow-art-plane-forge-crypt-wall-straight",
+   "name": "位面灰盒 · forge · crypt · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     128
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 128,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/wall-straight.png",
+     "sha256": "6c94b1af1d1436476df008489116d8c2071fff1eb630c126d71562fb81154720",
+     "bytes": 975,
+     "width": 128,
+     "height": 128
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/wall-straight.png",
+    "width": 128,
+    "height": 128,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge",
+   "aliasOf": "ow-art-plane-crypt-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-forge-crypt-wall-top",
+   "name": "位面灰盒 · forge · crypt · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 128,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/wall-top.png",
+     "sha256": "bf6b98f8da669756fe83e4a67bb396213f6f5690f0f4e705575bd4a44d5719f9",
+     "bytes": 18405,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge",
+   "aliasOf": "ow-art-plane-crypt-wall-top"
+  },
+  {
+   "id": "ow-art-plane-forge-crypt-backdrop-near",
+   "name": "位面灰盒 · forge · crypt · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 128,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/backdrop-near.png",
+     "sha256": "c2946db571fe0444972ed2971b39759d4d9f199e15ef9ca8193acc095441d23a",
+     "bytes": 331199,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge",
+   "aliasOf": "ow-art-plane-crypt-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-forge-crypt-feature-1",
+   "name": "位面灰盒 · forge · crypt · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "crypt",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 128,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/feature-1.png",
+     "sha256": "f3e70fa0a58d093ec62a278b1253fd66b1e97e0ac9b882fb5a10718072d0ead4",
+     "bytes": 2932,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge"
+  },
+  {
+   "id": "ow-art-plane-forge-crypt-feature-2",
+   "name": "位面灰盒 · forge · crypt · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "crypt",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 128,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/feature-2.png",
+     "sha256": "97512195b0427df54abb3ed68087ccd08440b22194f9475c2d7335d36303e2ec",
+     "bytes": 2470,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge"
+  },
+  {
+   "id": "ow-art-plane-forge-maze-ground-main",
+   "name": "位面灰盒 · forge · maze · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 104,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/ground-main.png",
+     "sha256": "ca4d6a8fd9673977c4cca1d7e55e8edc3204a2ba7b125bb16a57e77c25897fbc",
+     "bytes": 3043,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/ground-main.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge",
+   "aliasOf": "ow-art-plane-maze-ground-main"
+  },
+  {
+   "id": "ow-art-plane-forge-maze-ground-path",
+   "name": "位面灰盒 · forge · maze · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 104,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/ground-path.png",
+     "sha256": "390d3d3f4b067ab80737b68544152aa076de40c464121e3eef8f62b0ccda4a35",
+     "bytes": 2875,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/ground-path.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge",
+   "aliasOf": "ow-art-plane-maze-ground-path"
+  },
+  {
+   "id": "ow-art-plane-forge-maze-wall-straight",
+   "name": "位面灰盒 · forge · maze · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     104
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 104,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/wall-straight.png",
+     "sha256": "12001fd6678aa717eeeea5c26d30ab1a83fe3b10dba1aa1e04740d184c37334e",
+     "bytes": 1648,
+     "width": 128,
+     "height": 104
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/wall-straight.png",
+    "width": 128,
+    "height": 104,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge",
+   "aliasOf": "ow-art-plane-maze-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-forge-maze-wall-top",
+   "name": "位面灰盒 · forge · maze · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 104,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/wall-top.png",
+     "sha256": "19e6ecd62e0ce4a6037387aaf8ffd4bb24fb28f4c2c1e4149821259ce617fdf6",
+     "bytes": 18887,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge",
+   "aliasOf": "ow-art-plane-maze-wall-top"
+  },
+  {
+   "id": "ow-art-plane-forge-maze-backdrop-near",
+   "name": "位面灰盒 · forge · maze · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 104,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/backdrop-near.png",
+     "sha256": "2efae91f9492d37e3f4b173ee41cf6af0613296a6cf9f5eaabcc0090712b5bb9",
+     "bytes": 321273,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge",
+   "aliasOf": "ow-art-plane-maze-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-forge-maze-feature-1",
+   "name": "位面灰盒 · forge · maze · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "maze",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 104,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/feature-1.png",
+     "sha256": "8ee1b28b7cf63e8c99db47f831ce549173ed28e4c830201fd1fe0d2a49edb360",
+     "bytes": 2882,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge"
+  },
+  {
+   "id": "ow-art-plane-forge-maze-feature-2",
+   "name": "位面灰盒 · forge · maze · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "maze",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 104,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/feature-2.png",
+     "sha256": "02de209ec9d820e7a77111c5a46122431c620ef9fddeb3c3d4807169ef12fd97",
+     "bytes": 2440,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#e7b392",
+     "wash": {
+      "color": "#ce9b78",
+      "alpha": 0.18
+     }
+    }
+   },
+   "island": "forge"
+  },
+  {
+   "id": "ow-art-plane-frost-cave-ground-main",
+   "name": "位面灰盒 · frost · cave · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/ground-main.png",
+     "sha256": "3eaa90430574908b69e0068436460c2cf5d8310d57a263c33dc19af864d63f1a",
+     "bytes": 40141,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/ground-main.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost",
+   "aliasOf": "ow-art-plane-cave-ground-main"
+  },
+  {
+   "id": "ow-art-plane-frost-cave-ground-path",
+   "name": "位面灰盒 · frost · cave · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/ground-path.png",
+     "sha256": "3fca4ec642e29718046bfa5bd537289296effab0e160042e64d179308d67b526",
+     "bytes": 31950,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/ground-path.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost",
+   "aliasOf": "ow-art-plane-cave-ground-path"
+  },
+  {
+   "id": "ow-art-plane-frost-cave-wall-straight",
+   "name": "位面灰盒 · frost · cave · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     256
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 130,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/wall-straight.png",
+     "sha256": "c1b256d2f6c82f59b4da6ed89c33505586c7268c15e524fc4235eacca58d142a",
+     "bytes": 23333,
+     "width": 128,
+     "height": 256
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/wall-straight.png",
+    "width": 128,
+    "height": 256,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost",
+   "aliasOf": "ow-art-plane-cave-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-frost-cave-wall-top",
+   "name": "位面灰盒 · frost · cave · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/wall-top.png",
+     "sha256": "f5a86483cc4fb2ed9a25255d19a753855155d58f2c838db64da4fe79a9ab2005",
+     "bytes": 20417,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost",
+   "aliasOf": "ow-art-plane-cave-wall-top"
+  },
+  {
+   "id": "ow-art-plane-frost-cave-backdrop-near",
+   "name": "位面灰盒 · frost · cave · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 130,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/backdrop-near.png",
+     "sha256": "369621ed67582f814393a15e39d4d1ede85d14bc289289ab2d0380203790f991",
+     "bytes": 461986,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost",
+   "aliasOf": "ow-art-plane-cave-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-frost-cave-feature-1",
+   "name": "位面灰盒 · frost · cave · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "cave",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 130,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/feature-1.png",
+     "sha256": "c09f1b18eaac538c826e0b488d03aa8550f7890a22f2fbd85d75aba9a329f3be",
+     "bytes": 2997,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost"
+  },
+  {
+   "id": "ow-art-plane-frost-cave-feature-2",
+   "name": "位面灰盒 · frost · cave · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "cave",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 130,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/feature-2.png",
+     "sha256": "f9b046886c0d1754cde6dedf60659ecf04251005ac88b5ea1d2d1726565427da",
+     "bytes": 2525,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost"
+  },
+  {
+   "id": "ow-art-plane-frost-crypt-ground-main",
+   "name": "位面灰盒 · frost · crypt · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 128,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/ground-main.png",
+     "sha256": "032267979aed699a6102a87df238b70bce598c81222b34e11f2e351a4426ee5d",
+     "bytes": 3675,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/ground-main.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost",
+   "aliasOf": "ow-art-plane-crypt-ground-main"
+  },
+  {
+   "id": "ow-art-plane-frost-crypt-ground-path",
+   "name": "位面灰盒 · frost · crypt · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 128,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/ground-path.png",
+     "sha256": "f9c09ca2bab38d5ce1b201c65c2a69b214fcd3d49a842d6d4d80569f051199fa",
+     "bytes": 3629,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/ground-path.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost",
+   "aliasOf": "ow-art-plane-crypt-ground-path"
+  },
+  {
+   "id": "ow-art-plane-frost-crypt-wall-straight",
+   "name": "位面灰盒 · frost · crypt · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     128
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 128,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/wall-straight.png",
+     "sha256": "6c94b1af1d1436476df008489116d8c2071fff1eb630c126d71562fb81154720",
+     "bytes": 975,
+     "width": 128,
+     "height": 128
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/wall-straight.png",
+    "width": 128,
+    "height": 128,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost",
+   "aliasOf": "ow-art-plane-crypt-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-frost-crypt-wall-top",
+   "name": "位面灰盒 · frost · crypt · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 128,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/wall-top.png",
+     "sha256": "bf6b98f8da669756fe83e4a67bb396213f6f5690f0f4e705575bd4a44d5719f9",
+     "bytes": 18405,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost",
+   "aliasOf": "ow-art-plane-crypt-wall-top"
+  },
+  {
+   "id": "ow-art-plane-frost-crypt-backdrop-near",
+   "name": "位面灰盒 · frost · crypt · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 128,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/backdrop-near.png",
+     "sha256": "c2946db571fe0444972ed2971b39759d4d9f199e15ef9ca8193acc095441d23a",
+     "bytes": 331199,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost",
+   "aliasOf": "ow-art-plane-crypt-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-frost-crypt-feature-1",
+   "name": "位面灰盒 · frost · crypt · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "crypt",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 128,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/feature-1.png",
+     "sha256": "f3e70fa0a58d093ec62a278b1253fd66b1e97e0ac9b882fb5a10718072d0ead4",
+     "bytes": 2932,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost"
+  },
+  {
+   "id": "ow-art-plane-frost-crypt-feature-2",
+   "name": "位面灰盒 · frost · crypt · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "crypt",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 128,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/feature-2.png",
+     "sha256": "97512195b0427df54abb3ed68087ccd08440b22194f9475c2d7335d36303e2ec",
+     "bytes": 2470,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost"
+  },
+  {
+   "id": "ow-art-plane-frost-maze-ground-main",
+   "name": "位面灰盒 · frost · maze · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 104,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/ground-main.png",
+     "sha256": "ca4d6a8fd9673977c4cca1d7e55e8edc3204a2ba7b125bb16a57e77c25897fbc",
+     "bytes": 3043,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/ground-main.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost",
+   "aliasOf": "ow-art-plane-maze-ground-main"
+  },
+  {
+   "id": "ow-art-plane-frost-maze-ground-path",
+   "name": "位面灰盒 · frost · maze · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 104,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/ground-path.png",
+     "sha256": "390d3d3f4b067ab80737b68544152aa076de40c464121e3eef8f62b0ccda4a35",
+     "bytes": 2875,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/ground-path.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost",
+   "aliasOf": "ow-art-plane-maze-ground-path"
+  },
+  {
+   "id": "ow-art-plane-frost-maze-wall-straight",
+   "name": "位面灰盒 · frost · maze · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     104
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 104,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/wall-straight.png",
+     "sha256": "12001fd6678aa717eeeea5c26d30ab1a83fe3b10dba1aa1e04740d184c37334e",
+     "bytes": 1648,
+     "width": 128,
+     "height": 104
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/wall-straight.png",
+    "width": 128,
+    "height": 104,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost",
+   "aliasOf": "ow-art-plane-maze-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-frost-maze-wall-top",
+   "name": "位面灰盒 · frost · maze · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 104,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/wall-top.png",
+     "sha256": "19e6ecd62e0ce4a6037387aaf8ffd4bb24fb28f4c2c1e4149821259ce617fdf6",
+     "bytes": 18887,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost",
+   "aliasOf": "ow-art-plane-maze-wall-top"
+  },
+  {
+   "id": "ow-art-plane-frost-maze-backdrop-near",
+   "name": "位面灰盒 · frost · maze · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 104,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/backdrop-near.png",
+     "sha256": "2efae91f9492d37e3f4b173ee41cf6af0613296a6cf9f5eaabcc0090712b5bb9",
+     "bytes": 321273,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost",
+   "aliasOf": "ow-art-plane-maze-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-frost-maze-feature-1",
+   "name": "位面灰盒 · frost · maze · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "maze",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 104,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/feature-1.png",
+     "sha256": "8ee1b28b7cf63e8c99db47f831ce549173ed28e4c830201fd1fe0d2a49edb360",
+     "bytes": 2882,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost"
+  },
+  {
+   "id": "ow-art-plane-frost-maze-feature-2",
+   "name": "位面灰盒 · frost · maze · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "maze",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 104,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/feature-2.png",
+     "sha256": "02de209ec9d820e7a77111c5a46122431c620ef9fddeb3c3d4807169ef12fd97",
+     "bytes": 2440,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#d6e9f5",
+     "wash": {
+      "color": "#d6e9f5",
+      "alpha": 0.38
+     }
+    }
+   },
+   "island": "frost"
+  },
+  {
+   "id": "ow-art-plane-rift-cave-ground-main",
+   "name": "位面灰盒 · rift · cave · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/ground-main.png",
+     "sha256": "3eaa90430574908b69e0068436460c2cf5d8310d57a263c33dc19af864d63f1a",
+     "bytes": 40141,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/ground-main.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift",
+   "aliasOf": "ow-art-plane-cave-ground-main"
+  },
+  {
+   "id": "ow-art-plane-rift-cave-ground-path",
+   "name": "位面灰盒 · rift · cave · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/ground-path.png",
+     "sha256": "3fca4ec642e29718046bfa5bd537289296effab0e160042e64d179308d67b526",
+     "bytes": 31950,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/ground-path.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift",
+   "aliasOf": "ow-art-plane-cave-ground-path"
+  },
+  {
+   "id": "ow-art-plane-rift-cave-wall-straight",
+   "name": "位面灰盒 · rift · cave · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     256
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 130,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/wall-straight.png",
+     "sha256": "c1b256d2f6c82f59b4da6ed89c33505586c7268c15e524fc4235eacca58d142a",
+     "bytes": 23333,
+     "width": 128,
+     "height": 256
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/wall-straight.png",
+    "width": 128,
+    "height": 256,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift",
+   "aliasOf": "ow-art-plane-cave-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-rift-cave-wall-top",
+   "name": "位面灰盒 · rift · cave · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/wall-top.png",
+     "sha256": "f5a86483cc4fb2ed9a25255d19a753855155d58f2c838db64da4fe79a9ab2005",
+     "bytes": 20417,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift",
+   "aliasOf": "ow-art-plane-cave-wall-top"
+  },
+  {
+   "id": "ow-art-plane-rift-cave-backdrop-near",
+   "name": "位面灰盒 · rift · cave · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 130,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/backdrop-near.png",
+     "sha256": "369621ed67582f814393a15e39d4d1ede85d14bc289289ab2d0380203790f991",
+     "bytes": 461986,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift",
+   "aliasOf": "ow-art-plane-cave-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-rift-cave-feature-1",
+   "name": "位面灰盒 · rift · cave · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "cave",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 130,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/feature-1.png",
+     "sha256": "c09f1b18eaac538c826e0b488d03aa8550f7890a22f2fbd85d75aba9a329f3be",
+     "bytes": 2997,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift"
+  },
+  {
+   "id": "ow-art-plane-rift-cave-feature-2",
+   "name": "位面灰盒 · rift · cave · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "cave",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 130,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/feature-2.png",
+     "sha256": "f9b046886c0d1754cde6dedf60659ecf04251005ac88b5ea1d2d1726565427da",
+     "bytes": 2525,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift"
+  },
+  {
+   "id": "ow-art-plane-rift-crypt-ground-main",
+   "name": "位面灰盒 · rift · crypt · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 128,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/ground-main.png",
+     "sha256": "032267979aed699a6102a87df238b70bce598c81222b34e11f2e351a4426ee5d",
+     "bytes": 3675,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/ground-main.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift",
+   "aliasOf": "ow-art-plane-crypt-ground-main"
+  },
+  {
+   "id": "ow-art-plane-rift-crypt-ground-path",
+   "name": "位面灰盒 · rift · crypt · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 128,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/ground-path.png",
+     "sha256": "f9c09ca2bab38d5ce1b201c65c2a69b214fcd3d49a842d6d4d80569f051199fa",
+     "bytes": 3629,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/ground-path.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift",
+   "aliasOf": "ow-art-plane-crypt-ground-path"
+  },
+  {
+   "id": "ow-art-plane-rift-crypt-wall-straight",
+   "name": "位面灰盒 · rift · crypt · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     128
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 128,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/wall-straight.png",
+     "sha256": "6c94b1af1d1436476df008489116d8c2071fff1eb630c126d71562fb81154720",
+     "bytes": 975,
+     "width": 128,
+     "height": 128
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/wall-straight.png",
+    "width": 128,
+    "height": 128,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift",
+   "aliasOf": "ow-art-plane-crypt-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-rift-crypt-wall-top",
+   "name": "位面灰盒 · rift · crypt · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 128,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/wall-top.png",
+     "sha256": "bf6b98f8da669756fe83e4a67bb396213f6f5690f0f4e705575bd4a44d5719f9",
+     "bytes": 18405,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift",
+   "aliasOf": "ow-art-plane-crypt-wall-top"
+  },
+  {
+   "id": "ow-art-plane-rift-crypt-backdrop-near",
+   "name": "位面灰盒 · rift · crypt · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 128,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/backdrop-near.png",
+     "sha256": "c2946db571fe0444972ed2971b39759d4d9f199e15ef9ca8193acc095441d23a",
+     "bytes": 331199,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift",
+   "aliasOf": "ow-art-plane-crypt-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-rift-crypt-feature-1",
+   "name": "位面灰盒 · rift · crypt · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "crypt",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 128,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/feature-1.png",
+     "sha256": "f3e70fa0a58d093ec62a278b1253fd66b1e97e0ac9b882fb5a10718072d0ead4",
+     "bytes": 2932,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift"
+  },
+  {
+   "id": "ow-art-plane-rift-crypt-feature-2",
+   "name": "位面灰盒 · rift · crypt · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "crypt",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 128,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/feature-2.png",
+     "sha256": "97512195b0427df54abb3ed68087ccd08440b22194f9475c2d7335d36303e2ec",
+     "bytes": 2470,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift"
+  },
+  {
+   "id": "ow-art-plane-rift-maze-ground-main",
+   "name": "位面灰盒 · rift · maze · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 104,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/ground-main.png",
+     "sha256": "ca4d6a8fd9673977c4cca1d7e55e8edc3204a2ba7b125bb16a57e77c25897fbc",
+     "bytes": 3043,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/ground-main.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift",
+   "aliasOf": "ow-art-plane-maze-ground-main"
+  },
+  {
+   "id": "ow-art-plane-rift-maze-ground-path",
+   "name": "位面灰盒 · rift · maze · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 104,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/ground-path.png",
+     "sha256": "390d3d3f4b067ab80737b68544152aa076de40c464121e3eef8f62b0ccda4a35",
+     "bytes": 2875,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/ground-path.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift",
+   "aliasOf": "ow-art-plane-maze-ground-path"
+  },
+  {
+   "id": "ow-art-plane-rift-maze-wall-straight",
+   "name": "位面灰盒 · rift · maze · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     104
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 104,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/wall-straight.png",
+     "sha256": "12001fd6678aa717eeeea5c26d30ab1a83fe3b10dba1aa1e04740d184c37334e",
+     "bytes": 1648,
+     "width": 128,
+     "height": 104
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/wall-straight.png",
+    "width": 128,
+    "height": 104,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift",
+   "aliasOf": "ow-art-plane-maze-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-rift-maze-wall-top",
+   "name": "位面灰盒 · rift · maze · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 104,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/wall-top.png",
+     "sha256": "19e6ecd62e0ce4a6037387aaf8ffd4bb24fb28f4c2c1e4149821259ce617fdf6",
+     "bytes": 18887,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift",
+   "aliasOf": "ow-art-plane-maze-wall-top"
+  },
+  {
+   "id": "ow-art-plane-rift-maze-backdrop-near",
+   "name": "位面灰盒 · rift · maze · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 104,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/backdrop-near.png",
+     "sha256": "2efae91f9492d37e3f4b173ee41cf6af0613296a6cf9f5eaabcc0090712b5bb9",
+     "bytes": 321273,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift",
+   "aliasOf": "ow-art-plane-maze-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-rift-maze-feature-1",
+   "name": "位面灰盒 · rift · maze · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "maze",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 104,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/feature-1.png",
+     "sha256": "8ee1b28b7cf63e8c99db47f831ce549173ed28e4c830201fd1fe0d2a49edb360",
+     "bytes": 2882,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift"
+  },
+  {
+   "id": "ow-art-plane-rift-maze-feature-2",
+   "name": "位面灰盒 · rift · maze · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "maze",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 104,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/feature-2.png",
+     "sha256": "02de209ec9d820e7a77111c5a46122431c620ef9fddeb3c3d4807169ef12fd97",
+     "bytes": 2440,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#c8b6d5",
+     "wash": {
+      "color": "#a99abb",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "rift"
+  },
+  {
+   "id": "ow-art-plane-dragon-cave-ground-main",
+   "name": "位面灰盒 · dragon · cave · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/ground-main.png",
+     "sha256": "3eaa90430574908b69e0068436460c2cf5d8310d57a263c33dc19af864d63f1a",
+     "bytes": 40141,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/ground-main.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon",
+   "aliasOf": "ow-art-plane-cave-ground-main"
+  },
+  {
+   "id": "ow-art-plane-dragon-cave-ground-path",
+   "name": "位面灰盒 · dragon · cave · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/ground-path.png",
+     "sha256": "3fca4ec642e29718046bfa5bd537289296effab0e160042e64d179308d67b526",
+     "bytes": 31950,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/ground-path.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon",
+   "aliasOf": "ow-art-plane-cave-ground-path"
+  },
+  {
+   "id": "ow-art-plane-dragon-cave-wall-straight",
+   "name": "位面灰盒 · dragon · cave · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     256
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 130,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/wall-straight.png",
+     "sha256": "c1b256d2f6c82f59b4da6ed89c33505586c7268c15e524fc4235eacca58d142a",
+     "bytes": 23333,
+     "width": 128,
+     "height": 256
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/wall-straight.png",
+    "width": 128,
+    "height": 256,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon",
+   "aliasOf": "ow-art-plane-cave-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-dragon-cave-wall-top",
+   "name": "位面灰盒 · dragon · cave · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 130,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/wall-top.png",
+     "sha256": "f5a86483cc4fb2ed9a25255d19a753855155d58f2c838db64da4fe79a9ab2005",
+     "bytes": 20417,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon",
+   "aliasOf": "ow-art-plane-cave-wall-top"
+  },
+  {
+   "id": "ow-art-plane-dragon-cave-backdrop-near",
+   "name": "位面灰盒 · dragon · cave · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "cave",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 130,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/backdrop-near.png",
+     "sha256": "369621ed67582f814393a15e39d4d1ede85d14bc289289ab2d0380203790f991",
+     "bytes": 461986,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon",
+   "aliasOf": "ow-art-plane-cave-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-dragon-cave-feature-1",
+   "name": "位面灰盒 · dragon · cave · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "cave",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 130,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/feature-1.png",
+     "sha256": "c09f1b18eaac538c826e0b488d03aa8550f7890a22f2fbd85d75aba9a329f3be",
+     "bytes": 2997,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon"
+  },
+  {
+   "id": "ow-art-plane-dragon-cave-feature-2",
+   "name": "位面灰盒 · dragon · cave · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "cave",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 130,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/cave/feature-2.png",
+     "sha256": "f9b046886c0d1754cde6dedf60659ecf04251005ac88b5ea1d2d1726565427da",
+     "bytes": 2525,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/cave/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon"
+  },
+  {
+   "id": "ow-art-plane-dragon-crypt-ground-main",
+   "name": "位面灰盒 · dragon · crypt · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 128,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/ground-main.png",
+     "sha256": "032267979aed699a6102a87df238b70bce598c81222b34e11f2e351a4426ee5d",
+     "bytes": 3675,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/ground-main.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon",
+   "aliasOf": "ow-art-plane-crypt-ground-main"
+  },
+  {
+   "id": "ow-art-plane-dragon-crypt-ground-path",
+   "name": "位面灰盒 · dragon · crypt · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 128,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/ground-path.png",
+     "sha256": "f9c09ca2bab38d5ce1b201c65c2a69b214fcd3d49a842d6d4d80569f051199fa",
+     "bytes": 3629,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/ground-path.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon",
+   "aliasOf": "ow-art-plane-crypt-ground-path"
+  },
+  {
+   "id": "ow-art-plane-dragon-crypt-wall-straight",
+   "name": "位面灰盒 · dragon · crypt · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     128
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 128,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/wall-straight.png",
+     "sha256": "6c94b1af1d1436476df008489116d8c2071fff1eb630c126d71562fb81154720",
+     "bytes": 975,
+     "width": 128,
+     "height": 128
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/wall-straight.png",
+    "width": 128,
+    "height": 128,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon",
+   "aliasOf": "ow-art-plane-crypt-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-dragon-crypt-wall-top",
+   "name": "位面灰盒 · dragon · crypt · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 128,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/wall-top.png",
+     "sha256": "bf6b98f8da669756fe83e4a67bb396213f6f5690f0f4e705575bd4a44d5719f9",
+     "bytes": 18405,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon",
+   "aliasOf": "ow-art-plane-crypt-wall-top"
+  },
+  {
+   "id": "ow-art-plane-dragon-crypt-backdrop-near",
+   "name": "位面灰盒 · dragon · crypt · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "crypt",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 128,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/backdrop-near.png",
+     "sha256": "c2946db571fe0444972ed2971b39759d4d9f199e15ef9ca8193acc095441d23a",
+     "bytes": 331199,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon",
+   "aliasOf": "ow-art-plane-crypt-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-dragon-crypt-feature-1",
+   "name": "位面灰盒 · dragon · crypt · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "crypt",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 128,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/feature-1.png",
+     "sha256": "f3e70fa0a58d093ec62a278b1253fd66b1e97e0ac9b882fb5a10718072d0ead4",
+     "bytes": 2932,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon"
+  },
+  {
+   "id": "ow-art-plane-dragon-crypt-feature-2",
+   "name": "位面灰盒 · dragon · crypt · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "crypt",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 128,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/crypt/feature-2.png",
+     "sha256": "97512195b0427df54abb3ed68087ccd08440b22194f9475c2d7335d36303e2ec",
+     "bytes": 2470,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/crypt/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon"
+  },
+  {
+   "id": "ow-art-plane-dragon-maze-ground-main",
+   "name": "位面灰盒 · dragon · maze · ground-main",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "ground-main",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 104,
+    "placement": "tile",
+    "note": "屏幕空间平铺；地宫/迷宫的石板必须按 64×36 菱形格对齐，图块周期 256×144"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/ground-main.png",
+     "sha256": "ca4d6a8fd9673977c4cca1d7e55e8edc3204a2ba7b125bb16a57e77c25897fbc",
+     "bytes": 3043,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/ground-main.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon",
+   "aliasOf": "ow-art-plane-maze-ground-main"
+  },
+  {
+   "id": "ow-art-plane-dragon-maze-ground-path",
+   "name": "位面灰盒 · dragon · maze · ground-path",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "ground-path",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     256,
+     144
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "wallHeight": 104,
+    "placement": "tile",
+    "note": "主路线磨损地面，同 ground-main 的平铺规则"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/ground-path.png",
+     "sha256": "390d3d3f4b067ab80737b68544152aa076de40c464121e3eef8f62b0ccda4a35",
+     "bytes": 2875,
+     "width": 256,
+     "height": 144
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/ground-path.png",
+    "width": 256,
+    "height": 144,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 256,
+    "tileSize": 256,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon",
+   "aliasOf": "ow-art-plane-maze-ground-path"
+  },
+  {
+   "id": "ow-art-plane-dragon-maze-wall-straight",
+   "name": "位面灰盒 · dragon · maze · wall-straight",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "wall-straight",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     128,
+     104
+    ],
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "wallHeight": 104,
+    "placement": "texture",
+    "note": "正视墙面条带（左右两个 64 宽变体），程序斜切贴到每格的前面和右面（右面压冷色阴影），底行=地面线，向上平铺；cave 高 256 上下无缝（圆块岩石），crypt/maze 高=墙高；岩石/砖块自带深色描边，矮墩只取底部 14px"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/wall-straight.png",
+     "sha256": "12001fd6678aa717eeeea5c26d30ab1a83fe3b10dba1aa1e04740d184c37334e",
+     "bytes": 1648,
+     "width": 128,
+     "height": 104
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/wall-straight.png",
+    "width": 128,
+    "height": 104,
+    "anchor": [
+     0,
+     1
+    ],
+    "displayWidth": 128,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon",
+   "aliasOf": "ow-art-plane-maze-wall-straight"
+  },
+  {
+   "id": "ow-art-plane-dragon-maze-wall-top",
+   "name": "位面灰盒 · dragon · maze · wall-top",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "wall-top",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     512,
+     512
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "wallHeight": 104,
+    "placement": "texture",
+    "note": "墙顶/岩块顶面贴图，无缝，屏幕空间平铺；平涂色块+少量描边裂纹，程序按离地面距离分档压暗到背景色并描轮廓"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/wall-top.png",
+     "sha256": "19e6ecd62e0ce4a6037387aaf8ffd4bb24fb28f4c2c1e4149821259ce617fdf6",
+     "bytes": 18887,
+     "width": 512,
+     "height": 512
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/wall-top.png",
+    "width": 512,
+    "height": 512,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 512,
+    "tileSize": 512,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon",
+   "aliasOf": "ow-art-plane-maze-wall-top"
+  },
+  {
+   "id": "ow-art-plane-dragon-maze-backdrop-near",
+   "name": "位面灰盒 · dragon · maze · backdrop-near",
+   "kind": "ground",
+   "category": "plane-ground",
+   "kit": "maze",
+   "part": "backdrop-near",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     1280,
+     720
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "wallHeight": 104,
+    "placement": "screen",
+    "note": "1280×720 屏幕固定背景：岩体深处，无天空/星/地平线"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/backdrop-near.png",
+     "sha256": "2efae91f9492d37e3f4b173ee41cf6af0613296a6cf9f5eaabcc0090712b5bb9",
+     "bytes": 321273,
+     "width": 1280,
+     "height": 720
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/backdrop-near.png",
+    "width": 1280,
+    "height": 720,
+    "anchor": [
+     0,
+     0
+    ],
+    "displayWidth": 1280,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon",
+   "aliasOf": "ow-art-plane-maze-backdrop-near"
+  },
+  {
+   "id": "ow-art-plane-dragon-maze-feature-1",
+   "name": "位面灰盒 · dragon · maze · feature-1",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "maze",
+   "part": "feature-1",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 104,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/feature-1.png",
+     "sha256": "8ee1b28b7cf63e8c99db47f831ce549173ed28e4c830201fd1fe0d2a49edb360",
+     "bytes": 2882,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/feature-1.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon"
+  },
+  {
+   "id": "ow-art-plane-dragon-maze-feature-2",
+   "name": "位面灰盒 · dragon · maze · feature-2",
+   "kind": "sprite",
+   "category": "plane-kit",
+   "kit": "maze",
+   "part": "feature-2",
+   "status": "greybox",
+   "contract": {
+    "canvas": [
+     96,
+     96
+    ],
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "wallHeight": 104,
+    "placement": "cell",
+    "note": "本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材"
+   },
+   "files": [
+    {
+     "path": "/art/open-world/plane-greybox/maze/feature-2.png",
+     "sha256": "02de209ec9d820e7a77111c5a46122431c620ef9fddeb3c3d4807169ef12fd97",
+     "bytes": 2440,
+     "width": 96,
+     "height": 96
+    }
+   ],
+   "runtime": {
+    "file": "/art/open-world/plane-greybox/maze/feature-2.png",
+    "width": 96,
+    "height": 96,
+    "anchor": [
+     0.5,
+     0.85
+    ],
+    "displayWidth": 96,
+    "material": {
+     "tint": "#e6d5b2",
+     "wash": {
+      "color": "#e6d5b2",
+      "alpha": 0.2
+     }
+    }
+   },
+   "island": "dragon"
   }
  ]
 }

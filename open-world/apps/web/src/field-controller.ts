@@ -11,6 +11,8 @@ import {api} from './network.ts';
 
 /** Re-asks for streamed camp state and saves exploration; the current entry never respawns cleared camps. */
 const pollMs=10000;
+// 战斗上报每轮都换版本号：世界阶段没变时只在距上次读取满 3 秒后补读营地，不逐轮重读。
+const revisionPollMs=3000;
 /** Same reach as other world interactions (quest targets: 4.5 cells server-side). */
 const waypointReach=4;
 /** Engaged enemies this close block waypoint travel on the client. */
@@ -24,7 +26,7 @@ type Deps={world:()=>World;permit:()=>Permit|undefined;snapshot:()=>Snapshot|und
  * The server alone decides camp cycles, waypoint unlocks and travel. */
 export class FieldController{
  private replay?:FieldReplayGoal|null;private replayError='';
- private phase?:WorldPhaseView;private revision=-1;
+ private phase?:WorldPhaseView;private revision=-1;private phaseKey='';private stale=false;
  private key='';private at=0;private pending?:Promise<void>;private error='';
  /** Members the hero killed here: never re-added even if a report is still in flight. */
  private gone=new Set<string>();
@@ -40,13 +42,13 @@ export class FieldController{
   const w=this.deps.world(),p=this.deps.permit(),info=fieldRegionInfo(w.region.id);
   if(w!==this.world){this.world=w;this.replay=undefined;this.replayError='';this.phase=undefined;this.revision=-1;this.gone.clear();this.empty.clear();this.key='';this.zone='';this.autoZone='';this.cell='';this.explored=this.sent=this.saved(w.region.id);}
   if(!info)return;
-  const snapshot=this.deps.snapshot();if(snapshot&&snapshot.revision!==this.revision){this.revision=snapshot.revision;this.phase=snapshot.worldView;this.key='';}
+  const snapshot=this.deps.snapshot();if(snapshot&&snapshot.revision!==this.revision){this.revision=snapshot.revision;this.phase=snapshot.worldView;const phaseKey=JSON.stringify(snapshot.worldView??null);if(phaseKey!==this.phaseKey){this.phaseKey=phaseKey;this.key='';}else this.stale=true;}
   this.reveal(w);this.announce(w);this.roam(w,now);
   if(!p||p.region!==w.region.id||this.pending||!this.deps.ready())return;
   for(const k of w.kills)this.gone.add(k.source_id);
   const key=p.id+':'+Math.floor(w.hero.position.x/info.chunkCells)+','+Math.floor(w.hero.position.y/info.chunkCells);
-  if(key===this.key&&now-this.at<pollMs)return;
-  this.key=key;this.at=now;
+  if(key===this.key&&now-this.at<(this.stale?revisionPollMs:pollMs))return;
+  this.key=key;this.at=now;this.stale=false;
   const position={x:Math.round(w.hero.position.x*10)/10,y:Math.round(w.hero.position.y*10)/10},explored=this.explored;
   this.pending=api<FieldCamps>('field/camps',{lease_id:this.deps.lease(),permit_id:p.id,position,...(explored!==this.sent?{explored}:{})}).then(v=>{this.sent=explored;this.apply(w,v);return this.loadReplay(w);}).catch(e=>{this.error=e instanceof Error?e.message:String(e);this.deps.failed(e);}).finally(()=>{this.pending=undefined;});
  }

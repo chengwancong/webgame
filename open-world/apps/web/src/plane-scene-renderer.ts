@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import type {WorldPhaseView} from '../../../packages/contracts/open-world.ts';
-import {planeResource,PLANE_DRAW_DEPTH,type PlaneMap,type PlanePiece} from '../../../packages/content/plane-scenes.ts';
+import {planeResource,PLANE_DRAW_DEPTH,type PlaneMap,type PlaneMaterial,type PlanePiece} from '../../../packages/content/plane-scenes.ts';
 import {starseaAsset,starseaTexture} from './starsea-runtime-assets.ts';
 import type {Point} from './starsea-assets.ts';
 import {project} from './iso.ts';
@@ -31,7 +31,15 @@ export class PlaneSceneRenderer{
   this.lamps=map.pieces.filter(p=>p.layer==='light').map(p=>({x:p.x,y:p.y,z:p.z??0}));
  }
  private rock(x:number,y:number){const n=this.map.width;return x<0||y<0||x>=n||y>=n||this.map.cells[y*n+x]==='#';}
- private texture(part:string){const asset=starseaAsset(planeResource(this.map.kit,part));if(!asset?.runtime.file)throw Error('Plane part missing '+part);const key=starseaTexture(asset.runtime.file);if(!this.scene.textures.exists(key))throw Error('Unloaded plane texture '+part);return key;}
+ /** The part's texture key, with the island material (tint multiply, then wash) baked in once per resource. */
+ private texture(part:string){const id=planeResource(this.map.kit,part,this.map.island),asset=starseaAsset(id);if(!asset?.runtime.file)throw Error('Plane part missing '+part);const key=starseaTexture(asset.runtime.file);if(!this.scene.textures.exists(key))throw Error('Unloaded plane texture '+part);
+  // Island parts carry their own material (only while they fall back to the kit's art); shared parts take the island's.
+  const own=asset.runtime as typeof asset.runtime&PlaneMaterial,r=id.startsWith(`ow-art-plane-${this.map.island}-`)?own:part==='light-pool'?{}:this.map.material??{};if(!r.tint&&!r.wash)return key;
+  const tinted='plane-material:'+id;if(this.scene.textures.exists(tinted))return tinted;
+  const image=this.scene.textures.get(key).getSourceImage() as HTMLImageElement,c=document.createElement('canvas');c.width=image.width;c.height=image.height;const x=c.getContext('2d')!;x.drawImage(image,0,0);
+  if(r.tint){x.globalCompositeOperation='multiply';x.fillStyle=r.tint;x.fillRect(0,0,c.width,c.height);x.globalCompositeOperation='destination-in';x.drawImage(image,0,0);}
+  if(r.wash){x.globalCompositeOperation='source-atop';x.globalAlpha=r.wash.alpha;x.fillStyle=r.wash.color;x.fillRect(0,0,c.width,c.height);x.globalAlpha=1;}
+  x.globalCompositeOperation='source-over';this.scene.textures.addCanvas(tinted,c);return tinted;}
  private image(part:string){return this.scene.textures.get(this.texture(part)).getSourceImage() as HTMLImageElement;}
  private cell(path:Path2D,x:number,y:number,z=0){[[x,y],[x+1,y],[x+1,y+1],[x,y+1]].forEach(([i,j],k)=>{const p=project({x:i,y:j});k?path.lineTo(p.x,p.y-z):path.moveTo(p.x,p.y-z);});path.closePath();}
  private glow(x:number,y:number,z:number){let g=0;for(const l of this.lamps){const d=Math.hypot(l.x-x,l.y-y,(l.z-z)/36);if(d<5)g+=1-d/5;}return Math.min(1,g);}
@@ -93,8 +101,8 @@ export class PlaneSceneRenderer{
   edge(0,1,level(x,y-1));edge(3,0,level(x-1,y));edge(2,3,ey);edge(1,2,ex);
  }
  private sprite(piece:PlanePiece):Node{
-  const asset=starseaAsset(planeResource(this.map.kit,piece.part));if(!asset?.runtime.file)throw Error('Plane part missing '+piece.part);const r=asset.runtime,p=project(piece),anchor=r.anchor??[.5,1];
-  const image=this.scene.add.image(p.x,p.y-(piece.z??0),starseaTexture(r.file!)).setOrigin(anchor[0],anchor[1]);image.setScale((r.displayWidth??image.width)/image.width).setFlipX(Boolean(piece.mirrorX)).setDepth(p.y+depthOffset[piece.layer]);
+  const asset=starseaAsset(planeResource(this.map.kit,piece.part,this.map.island));if(!asset?.runtime.file)throw Error('Plane part missing '+piece.part);const r=asset.runtime,p=project(piece),anchor=r.anchor??[.5,1];
+  const image=this.scene.add.image(p.x,p.y-(piece.z??0),this.texture(piece.part)).setOrigin(anchor[0],anchor[1]);image.setScale((r.displayWidth??image.width)/image.width).setFlipX(Boolean(piece.mirrorX)).setDepth(p.y+depthOffset[piece.layer]);
   return {image,occludes:piece.layer==='pillar'||piece.layer==='blocker',bounds:image.getBounds()};
  }
  /** True when the foot point stands on a floor cell (used by tests and the walk-through probe). */

@@ -77,7 +77,7 @@ function pillar(kit,H){
  const shadow=body.match(/^<ellipse[^>]*\/>/)[0],o=outlined(kit,body.slice(shadow.length),shadow);return {w,h,anchor:[.5,cy/h],displayWidth:w,svg:svg(w,h,o.body,o.defs)};
 }
 function prop(kit,part){
- const c=palette[kit],big=part.startsWith('prop-m'),w=big?96:64,h=w,cx=w/2,cy=h*.85,r=rand(part.length*13+kit.length);let body=`<ellipse cx="${cx}" cy="${cy}" rx="${w*.32}" ry="${w*.12}" fill="#000" opacity=".16"/>`;
+ const c=palette[kit],big=part.startsWith('prop-m')||part.startsWith('feature-'),w=big?96:64,h=w,cx=w/2,cy=h*.85,r=rand(part.length*13+kit.length);let body=`<ellipse cx="${cx}" cy="${cy}" rx="${w*.32}" ry="${w*.12}" fill="#000" opacity=".16"/>`;
  const crystal=(x,y,s)=>poly([[x-4*s,y],[x-2*s,y-14*s],[x,y-22*s],[x+2.5*s,y-13*s],[x+4*s,y]],c.accent,`stroke="${c.accentDark}" stroke-width="1"`);
  const key=kit+':'+part;
  if(key==='cave:prop-s1')body+=crystal(cx-8,cy,1)+crystal(cx+2,cy,1.4)+crystal(cx+10,cy,.9);
@@ -94,6 +94,9 @@ function prop(kit,part){
  else if(key==='maze:prop-s1')body+=`<ellipse cx="${cx}" cy="${cy-8}" rx="16" ry="10" fill="${c.wallLow}" stroke="${c.wallDark}"/><ellipse cx="${cx-3}" cy="${cy-14}" rx="10" ry="4" fill="${c.moss}"/>`;
  else if(key==='maze:prop-s2')body+=`<path d="M${cx-9} ${cy} L${cx-8} ${cy-28} Q${cx} ${cy-36} ${cx+8} ${cy-28} L${cx+9} ${cy} Z" fill="${c.wallLow}" stroke="${c.wallDark}"/><path d="M${cx} ${cy-24} L${cx+4} ${cy-16} L${cx} ${cy-8} L${cx-4} ${cy-16} Z" fill="${c.accent}"/>`;
  else if(key==='maze:prop-m1')body+=prism(cx,cy,22,10,c.wallLow,c.wall,c.wallDark,c.wallDark)+prism(cx,cy-10,14,34,c.wallLow,c.wall,c.wallDark,c.wallDark)+poly([[cx-14,cy-44],[cx+14,cy-50],[cx+6,cy-56]],c.wall);
+ // Island feature placeholders: same for every island, recoloured by the island material; the painted pieces differ per island.
+ else if(part==='feature-1')body+=prism(cx,cy,24,10,c.wallLow,c.wall,c.wallDark,c.wallDark)+prism(cx,cy-10,15,52,c.wallLow,c.wall,c.wallDark,c.wallDark)+`<polygon points="${cx},${cy-46} ${cx+7},${cy-36} ${cx},${cy-26} ${cx-7},${cy-36}" fill="${c.accent}" stroke="${c.accentDark}"/>`;
+ else if(part==='feature-2')body+=prism(cx,cy-2,32,22,c.wallLow,c.wall,c.wallDark,c.wallDark)+`<circle cx="${cx-10}" cy="${cy-16}" r="5" fill="${c.accent}" stroke="${c.accentDark}"/><circle cx="${cx+10}" cy="${cy-16}" r="5" fill="${c.accent}" stroke="${c.accentDark}"/>`;
  else throw Error('No greybox prop '+key);
  const shadow=body.match(/^<ellipse[^>]*\/>/)[0],o=outlined(kit,body.slice(shadow.length),shadow);return {w,h,anchor:[.5,.85],displayWidth:w,svg:svg(w,h,o.body,o.defs)};
 }
@@ -137,12 +140,14 @@ const contract={
  'pillar':{placement:'cell',note:'2×2 格柱子，锚点=占地中心；有碰撞，挡人时半透明'},
  'backdrop-near':{placement:'screen',note:'1280×720 屏幕固定背景：岩体深处，无天空/星/地平线'},
 };
-const assets=[];
+const assets=[],features=[];
 for(const [kit,spec] of Object.entries(scenes.kits)){
  const H=spec.wallHeight,parts={'ground-main':ground(kit,'ground-main'),'ground-path':ground(kit,'ground-path'),'wall-straight':wallStraight(kit,H),'wall-top':wallTop(kit),'light':light(kit,H),'light-pool':lightPool(kit),'backdrop-near':backdrop(kit)};
- if(spec.profile==='block')parts.pillar=pillar(kit,H);
+ // A kit may keep its pillars lower than its walls (maze: the accepted 128×160 pillar predates the 104px wall).
+ if(spec.profile==='block')parts.pillar=pillar(kit,spec.pillarHeight??H);
  for(const p of spec.foot)parts[p]={...prop(kit,p),role:'foot'};
  for(const p of spec.blockers)parts[p]={...prop(kit,p),role:'blocker'};
+ for(const p of scenes.features)parts[p]={...prop(kit,p),role:'feature'};
  mkdirSync(new URL(`${outDir}/${kit}/`,root),{recursive:true});
  for(const [part,art] of Object.entries(parts)){
   // Noise grounds are mirrored 2×2 so the repeat has no seam (the pattern is tiled in screen space).
@@ -150,11 +155,17 @@ for(const [kit,spec] of Object.entries(scenes.kits)){
    art.svg=null;art.png=await sharp({create:{width:art.w*2,height:art.h*2,channels:4,background:'#0000'}}).composite([{input:half,left:0,top:0},{input:flop,left:art.w,top:0},{input:flip,left:0,top:art.h},{input:both,left:art.w,top:art.h}]).png().toBuffer();art.w*=2;art.h*=2;art.displayWidth=art.w;}
   const png=art.png?await sharp(art.png).png({compressionLevel:9}).toBuffer():await sharp(Buffer.from(art.svg)).png({compressionLevel:9}).toBuffer(),file=`${outDir}/${kit}/${part}.png`;writeFileSync(new URL(file,root),png);
   const ground=part.startsWith('ground-')||part.startsWith('wall-')||part==='backdrop-near',id=`ow-art-plane-${kit}-${part}`,meta=contract[part]??(art.role==='foot'?{placement:'ledge',note:'岩台摆件：立在第一排岩块顶上靠地面一侧，锚点=落地点；无碰撞（不在可走区）'}:{placement:'cell',note:'挡路摆件：占一格且有碰撞，锚点=格心落地点；挡人时半透明'});
-  assets.push({id,name:`位面灰盒 · ${kit} · ${part}`,kind:ground?'ground':'sprite',category:ground?'plane-ground':'plane-kit',kit,part,status:'greybox',
+  (art.role==='feature'?features:assets).push({id,name:`位面灰盒 · ${kit} · ${part}`,kind:ground?'ground':'sprite',category:ground?'plane-ground':'plane-kit',kit,part,status:'greybox',
    contract:{canvas:[art.w,art.h],anchor:art.anchor,displayWidth:art.displayWidth,wallHeight:H,...meta},
    files:[{path:file.replace('apps/web/public',''),sha256:createHash('sha256').update(png).digest('hex'),bytes:png.length,width:art.w,height:art.h}],
    runtime:{file:`${publicBase}/${kit}/${part}.png`,width:art.w,height:art.h,anchor:art.anchor,displayWidth:art.displayWidth,...(part.startsWith('ground-')||art.mirror?{tileSize:art.w}:{})}});
  }
+}
+// Island entries: every island has its own ID for the ground/wall/backdrop parts and the two feature pieces.
+// Until painted they alias the kit part (aliasOf: the manifest adapter follows the kit's accepted art) with the island material.
+for(const [island,{material}] of Object.entries(scenes.islands))for(const kit of Object.keys(scenes.kits))for(const part of [...scenes.islandParts,...scenes.features]){
+ const base=[...assets,...features].find(a=>a.kit===kit&&a.part===part),feature=scenes.features.includes(part);
+ assets.push({...base,id:`ow-art-plane-${island}-${kit}-${part}`,name:`位面灰盒 · ${island} · ${kit} · ${part}`,island,...(feature?{contract:{...base.contract,note:'本岛特色挡路件：占一格且有碰撞，锚点=格心落地点；挡人时半透明；与 prop-m 同尺寸，画本岛题材'}}:{aliasOf:base.id}),runtime:{...base.runtime,...(material?{material}:{})}});
 }
 writeFileSync(new URL('packages/asset-manifest/open-world-planes-greybox.v1.json',root),JSON.stringify({schemaVersion:1,scope:'plane-greybox',note:'灰盒占位：几何契约见 contract；正式图按同 ID、同画布、同锚点替换 runtime.file',assets},null,1)+'\n');
 console.log('plane greybox:',assets.length,'parts');
