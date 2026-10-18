@@ -65,3 +65,16 @@ curl https://staging.你的域名/api/health
   2. `node node_modules/vite/bin/vite.js build --config apps/web/vite.config.ts --outDir G:/webgame/aw-deploy/web-dist --emptyOutDir`；
   3. `tar -cf - -C G:/webgame/aw-deploy/web-dist . | ssh abyss-staging 'tar -xf - -C ~/abyss/open-world/deploy/web-dist.new'`，换名后 `docker compose up -d --force-recreate api`（目录换了 inode，必须重建 api 容器才能看到新文件）。
 - 首次上线占用：api ~500MB、caddy ~56MB、PG ~40MB；镜像 823MB（含 devDependencies）。
+
+### 一键发版
+
+在 open-world 下运行 `node tools/deploy-staging.mjs`。脚本固定 HEAD 服务端和前端源码，前端在仓库外隔离构建；本地 public 素材随构建部署。工作区脏时只警告，不打包未提交源码。Windows 使用 Git 自带 SSH/SCP，别名 abyss-staging。
+
+- `--dry-run`：只显示步骤，不构建、不上传、不推送。
+- `--skip-web` / `--skip-api`：跳过对应部分；仍严格检查实际 client 版本。
+- `--full-web`：强制整包，否则比较仓库外 web-dist-manifest.json 的非 JS/CSS/HTML 文件 SHA256 清单；首次整包。
+- `--no-mirror`：不推代码镜像。
+
+产物在 `G:/webgame/aw-deploy/`，不进 Git。整包换目录后强制重建 API。health 轮询超时或版本不符退出非零并显示预期/实际值；部署期间 HEAD 变化时拒绝推镜像。并发保护使用同目录 deploy-staging.lock；异常终止后先确认没有部署进程，再清理遗留锁。
+
+当前机器使用 SSH 归档部署，不采用上文通用的 git pull 流程。不要在本机运行 pnpm build 的素材生成链。
