@@ -56,6 +56,12 @@ curl https://staging.你的域名/api/health
 带 PG 的服务端与模拟测试、`probe-quest.mjs` 这类对着 API 的自动驾驶。下面这些测试读取 PNG，云端要跳过或等素材进对象存储后再跑：
 `mini-native-renderer`、`native-kit`、`native-skin-composition`、`story-npc-art`、`telegraph-polish`、`wardrobe-icon-content`。
 
-## 未验证
+## 当前测试服（2026-10-18 首次上线）
 
-- 本机没有 Docker，镜像构建尚未实际跑过；推到 GitHub 后可用 Actions 构建一次验证，或在服务器上首次 `up --build` 时验证。
+- 腾讯云轻量 · 东京，Ubuntu 24.04，2核/3.6GB；本机 SSH 别名 `abyss-staging`（用户 `ubuntu`，密钥 `~/.ssh/id_ed25519_abyss`）。
+- 地址 `https://43-165-179-11.sslip.io/`（sslip.io 免费域名，Let's Encrypt 证书）；访问口令只存本机仓库外 `G:\webgame\aw-deploy\staging-credentials.txt`。
+- 实际流程（不经 GitHub，免部署密钥；不跑素材生成步骤，避免改动工作区）：
+  1. `git archive HEAD` 打包 package 清单、`apps/api`、`packages`、`config`、`deploy` → scp 到 `~/abyss` 解包；
+  2. `node node_modules/vite/bin/vite.js build --config apps/web/vite.config.ts --outDir G:/webgame/aw-deploy/web-dist --emptyOutDir`；
+  3. `tar -cf - -C G:/webgame/aw-deploy/web-dist . | ssh abyss-staging 'tar -xf - -C ~/abyss/open-world/deploy/web-dist.new'`，换名后 `docker compose up -d --force-recreate api`（目录换了 inode，必须重建 api 容器才能看到新文件）。
+- 首次上线占用：api ~500MB、caddy ~56MB、PG ~40MB；镜像 823MB（含 devDependencies）。

@@ -102,9 +102,11 @@ A 方向的露天、采石场感被否决：玩家看上去像在户外，不像
 
 | 场景 ID | 套件 | 尺寸 | 说明 |
 |---|---|---|---|
-| `plane-wind-nest-cave-1` / `-2` | cave | 128² / 100² | 五个岩厅（半径 8–15 格）+ 宽 8 格甬道 / 半径 22 的首领深井 |
-| `plane-wind-nest-crypt-1` / `-2` | crypt | 116² / 100² | 方正墓室 + 柱阵 / 46×46 主墓室环柱 |
-| `plane-wind-nest-maze-1` / `-2` | maze | 116² / 100² | 8×8 回廊（走廊宽 8、墙厚 4）/ 核心首领厅 |
+| `plane-wind-nest-cave-1` / `-2` | cave | 128² / 100² | 五个岩厅（半径 8–12 格）单线串联，宽 5 格窄甬道、无环路 / 窄道通往半径 22 的首领深井 |
+| `plane-wind-nest-crypt-1` / `-2` | crypt | 116² / 100² | 五间墓室单线串联（宽 5 格走廊、每厅只有进出两口）/ 46×46 主墓室环柱 |
+| `plane-wind-nest-maze-1` / `-2` | maze | 116² / 100² | 8×8 回廊（走廊宽 6、墙厚 6、墙高 104，只留 2 条环路，其余为分岔和死路）/ 核心首领厅 |
+
+上表是作者版（复核页默认显示）。**正式副本每场随机生成**（`packages/content/plane-layouts.ts`）：表里只提供套件、尺寸、等级和怪物/宝箱数量，布局按本场种子重新铺。普通层仍是一条主线加一个死胡同侧室，首领层的入口方向随机四选一。所以素材不能只按某一种朝向画：墙、灯、摆件在四个方向都要成立。复核页加 `&seed=<数字>` 或 `&seed=random` 可看任意一场。
 
 **怎么看**：本机 vite 开着时打开 `http://127.0.0.1:8612/plane-review.html?stage=<场景ID>&calm=1`（`calm=1` 不刷怪）；控制台有 `awPlaneWalk([{x,y}])`、`awPlaneTeleport(x,y)`、`awPlaneDiagnostics()`。只读静态页，不登录、不调接口。ASCII 布局：`npx tsx tools/plane-scene-preview.ts cave`。
 

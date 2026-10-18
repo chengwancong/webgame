@@ -6,6 +6,7 @@ import {combatAdviceDestination} from './combat-review-view.ts';
 import {FieldAutomationPreferences} from './field-automation-preferences.ts';
 import {newCombatReview,observeCombatReview,currentCombatReview,type CombatReviewRecord} from '../../../packages/simulation/combat-review.ts';
 import {fieldMaps as registeredFieldMaps,planeMaps} from '../../../packages/content/open-world/index.ts';
+import {planeLayoutMap} from '../../../packages/content/plane-layouts.ts';
 import {fieldRegionInfo} from '../../../packages/content/index.ts';
 import {worldTables} from '../../../packages/content/world-tables.ts';
 import {FieldActivities} from './field-activities.ts';
@@ -112,7 +113,7 @@ class GameApp implements ViewBridge {
  /** Render data of field regions; filled only by the QA build's lazy field import. */
  worldPhase(){return this.snapshot?.worldView;}
  get worldMap(){return fieldMaps[this.world.region.id] as StarseaMap|undefined;}
- get planeMap(){return planeMaps[this.world.region.id];}
+ get planeMap(){const r=this.world.region;return r.layoutSeed?planeLayoutMap(r.id,r.layoutSeed):planeMaps[r.id];}
  private travelUI=initialTravelState();
  private travelDropCache=new Map<string,LootPreview>();private travelDropRequests=new Map<string,Promise<LootPreview>>();private travelDropLoading='';private travelDropError='';private travelDropGeneration=0;
  private travelDropTarget='';
