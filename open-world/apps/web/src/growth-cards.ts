@@ -23,7 +23,7 @@ export function growthCards(before:GrowthMark|undefined,s:Snapshot):GrowthCard[]
   const pick=fresh.sort((a,b)=>Number(!skillWeapons[a.id]?.length)-Number(!skillWeapons[b.id]?.length)||a.unlockLevel-b.unlockLevel)[0];
   if(pick)cards.push({title:`新招式 · ${pick.name}`,lines:[{speaker:'',text:pick.description},{speaker:'',text:fresh.length>1?`另有 ${fresh.length-1} 个技能可以激活，去技能页看看。`:'去技能页激活它。'}]});
  }
- for(const id of s.skills.filter(id=>before.equipped&&!before.equipped.includes(id))){if(!cards.some(c=>c.title.includes(nameOf(id))))cards.push({title:`新招式 · ${nameOf(id)}`,lines:[{speaker:'',text:`已自动装配到第 ${s.skills.indexOf(id)+1} 栏。`},{speaker:'',text:skillCatalog.find(k=>k.id===id)?.description??''}]});}
+ for(const id of s.skills.filter(id=>before.equipped&&!before.equipped.includes(id))){const equipped={speaker:'',text:`已自动装配到第 ${s.skills.indexOf(id)+1} 栏。`},existing=cards.find(c=>c.title.includes(nameOf(id)));if(existing)existing.lines.push(equipped);else cards.push({title:`新招式 · ${nameOf(id)}`,lines:[equipped,{speaker:'',text:skillCatalog.find(k=>k.id===id)?.description??''}]});}
  return cards;
 }
 /** 追踪条成长行：下一次找回（G2 钉选目标接在这里）。 */

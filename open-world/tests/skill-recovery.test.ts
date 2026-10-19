@@ -7,6 +7,8 @@ import {applySkillRecovery,grantRouteSkill,skillSlotCount,signatureSealed,skillS
 import {prologueConfig} from '../packages/content/starsea/prologue.ts';
 import {starterSkills,skillCatalog} from '../packages/content/index.ts';
 import type {CharacterState} from '../packages/contracts/index.ts';
+import type {Snapshot} from '../packages/contracts/index.ts';
+import {growthCards,growthMark} from '../apps/web/src/growth-cards.ts';
 // 招牌技找回、技能槽、法术按岛（docs/progression-goal-plan.md §4、§11.3：技能一个一个给）。
 let n=0;const uuid=()=>'00000000-0000-4000-8000-'+String(++n).padStart(12,'0');
 function character(family?:'sword'|'staff'|'hidden'):CharacterState{
@@ -24,6 +26,12 @@ it('new eligible level skills use empty slots without replacing equipped skills 
  const before=[...s.skills],added=equipNewLevelSkills(s,1);expect(added.length).toBeGreaterThan(0);expect(s.skills.slice(0,before.length)).toEqual(before);
  expect(s.skills.length).toBeLessThanOrEqual(skillSlotCount(s));for(const id of added)expect(s.skillRanks[id]).toBe(1);expect(s.gold).toBe(0);expect(s.material).toBe(0);
  const full=character('sword');full.level=8;full.starsea!.islands.push('ss-map-mist');full.skills=['cut','whirl','ward'];expect(equipNewLevelSkills(full,1)).toEqual([]);expect(full.skills).toEqual(['cut','whirl','ward']);
+});
+it('the growth notice explicitly names auto-equipped slots even when a gift card already exists',()=>{
+ const s=character('sword'),snapshot=()=>({...s,...resolveBuild(s),skillRecovery:skillRecoveryView(s),rewards:[],capacity:60}) as Snapshot;
+ const before=growthMark(snapshot());s.level=8;s.starsea!.islands.push('ss-map-mist');const added=equipNewLevelSkills(s,1);expect(added.length).toBeGreaterThan(0);
+ const notices=growthCards(before,snapshot()).flatMap(c=>c.lines.map(l=>l.text)).join('\n');
+ for(const id of added)expect(notices).toContain(`已自动装配到第 ${s.skills.indexOf(id)+1} 栏`);
 });
 
 const choose=(s:CharacterState,choice:'a'|'b')=>{s.starsea!.quests['ss-c01-t04']={step:1,attempt:0,acceptedAt:0,choice};const g={messages:[] as string[]};grantRouteSkill(s,'ss-c01-t04',choice,g);return g.messages;};
