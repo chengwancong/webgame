@@ -1,3 +1,4 @@
+import npcRows from '../config/json/npcs.json';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -18,7 +19,7 @@ export function generateProductionIsland(tables:WorldTables,island:WorldTables['
  const {width,height,region:id,landing:safe}=island,zones=tables.zones.filter(z=>z.region===id),roads=tables.roads.filter(r=>r.region===id),random=seeded(island.seed);
  if(zones.length<2)throw Error('正式生成器至少需要两个分区 '+id);
  const cx=width/2,cy=height/2,[rx,ry]=island.landRadius,land=(p:{x:number;y:number},margin=0)=>((p.x-cx)/(rx-margin))**2+((p.y-cy)/(ry-margin))**2<=1;
- const points=Object.entries(tables).filter(([k])=>!['source','islands','roads','zones','gates'].includes(k)).flatMap(([,rows])=>(rows as any[]).filter(r=>r.region===id).flatMap(r=>r.path??r.spots??[{x:r.x,y:r.y}])).concat([safe]);
+ const points=Object.entries(tables).filter(([k])=>!['source','islands','roads','zones','gates'].includes(k)).flatMap(([,rows])=>(rows as any[]).filter(r=>r.region===id).flatMap(r=>r.path??r.spots??[{x:r.x,y:r.y}])).concat([safe,...npcRows.npcs.filter(n=>n.home_map===id).map(n=>({x:n.x,y:n.y}))]);
  const obstacles:Region['obstacles']=[],coast:{x:number;y:number}[]=[];
  for(let y=0;y<height;y++){const offset=(y+.5-cy)/ry,extent=Math.abs(offset)<1?rx*Math.sqrt(1-offset*offset):0,left=Math.max(0,Math.floor(cx-extent)),right=Math.min(width,Math.ceil(cx+extent));if(left>0)obstacles.push({x:0,y,w:left,h:1});if(right<width)obstacles.push({x:right,y,w:width-right,h:1});if(extent>0&&y%4===0)coast.push({x:left,y},{x:right,y});}
  const nearRoad=(p:{x:number;y:number},pad:number)=>roads.some(r=>r.points.slice(1).some((b,i)=>distanceToSegment(p,r.points[i],b)<r.widthCells/2+pad));
@@ -29,7 +30,11 @@ export function generateProductionIsland(tables:WorldTables,island:WorldTables['
  const nature=byCategory('nature');for(let n=0;n<island.rockCount;n++){let p;for(let t=0;t<200;t++){const q={x:Math.round(2+random()*(width-4)),y:Math.round(2+random()*(height-4))};if(available(q,3)){p=q;break;}}if(!p)throw Error('岛屿无法放置碰撞物 '+id);const blocker={w:.8,h:.8},asset=nature[n%nature.length];obstacles.push({x:p.x-.4,y:p.y-.4,...blocker});scenery.push({id:`${id}:terrain:${n}`,resourceId:asset.id,...p,displayWidth:asset.runtime.displayWidth??90,depthMode:'y',occlusion:'foreground',blocker});}
  const marks=tables.landmarks.filter(l=>l.region===id),region:Region={id,name:island.name,subtitle:'群岛',width,height,theme:island.artIsland,safe,portal:safe,boss:false,auto:true,roam:true,sprint:true,calmRegen:.03,aggroRadius:8,activationRadius:40,obstacles,spawns:[],landmarks:marks.map(m=>({name:m.key??m.id,x:m.x,y:m.y,kind:m.kind}))};
  const bossEntry=marks.find(m=>m.kind==='boss');if(bossEntry)region.bossPortal={x:bossEntry.x,y:bossEntry.y};
- const grid=new NavigationGrid(width,height,obstacles,.55);let walkableCells=0;for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(grid.walkable({x:x+.5,y:y+.5}))walkableCells++;
+ const grid=new NavigationGrid(width,height,obstacles,.55);
+ // Return interaction sits on the safe plaza edge furthest from authored camp territory.
+ const camps=tables.camps.filter(c=>c.region===id),clearance=(p:{x:number;y:number})=>Math.min(...camps.map(c=>Math.hypot(c.x-p.x,c.y-p.y)-c.radius));
+ const returns=[safe,...Array.from({length:8},(_,i)=>({x:safe.x+Math.round(Math.cos(i*Math.PI/4)*6),y:safe.y+Math.round(Math.sin(i*Math.PI/4)*6)}))].filter(p=>grid.walkable(p));
+ region.portal={...returns.sort((a,b)=>clearance(b)-clearance(a))[0]};let walkableCells=0;for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(grid.walkable({x:x+.5,y:y+.5}))walkableCells++;
  const walkableRatio=walkableCells/(width*height);if(walkableRatio<.55||walkableRatio>.65)throw Error('正式岛可走比例不在55–65% '+id+' '+walkableRatio);
  if(!grid.walkable(safe))throw Error('登陆点不可走 '+id);for(const p of points)if(!grid.walkable(p)||Math.hypot(p.x-safe.x,p.y-safe.y)>.1&&!grid.path(safe,p).length)throw Error('岛上点位不可达 '+id+' '+JSON.stringify(p));
  const ground=byCategory('ground'),boundary=byCategory('boundary'),roadPool=byCategory('road'),surface=(resource:string)=>roadPool.some(a=>a.id===resource)||ground.some(a=>a.id===resource);

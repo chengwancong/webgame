@@ -54,4 +54,10 @@ describe('hero appearance renderer switching',()=>{
   expect(await hero.setAppearance(appearance('sword',5))).toBe(true);expect(fixture.requests).toHaveLength(1);expect(hero.diagnostics().revision).toBe(5);
   const pending=hero.setAppearance(appearance('bow'));hero.destroy();fixture.requests[1].resolve(true);expect(await pending).toBe(false);expect(hero.ready).toBe(false);expect(fixture.requests.every(r=>r.destroyed)).toBe(true);
  });
+ it('a blank combat frame never replaces the last visible outfit pixels',async()=>{
+  let alpha=255;vi.stubGlobal('document',{createElement:()=>({width:64,height:64,getContext:()=>({drawImage(){},clearRect(){},getImageData:()=>({data:new Uint8ClampedArray([0,0,0,alpha])})})})});
+  const draw=vi.fn(),output={width:64,height:64,getContext:()=>({drawImage:draw,clearRect(){},getImageData:()=>({data:new Uint8ClampedArray([0,0,0,255])})})} as unknown as HTMLCanvasElement;
+  const hero=new HeroPreview(output),first=hero.setAppearance(appearance('sword'));fixture.requests[0].resolve(true);await first;const count=draw.mock.calls.length;
+  alpha=0;expect(hero.render({action:'attack',clock:.2,facing:1})).toBe(false);expect(draw).toHaveBeenCalledTimes(count);expect(hero.ready).toBe(true);hero.destroy();
+ });
 });

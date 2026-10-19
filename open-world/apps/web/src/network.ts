@@ -1,11 +1,25 @@
 import {validateResponse,type Snapshot,type Permit,type Receipt} from '../../../packages/contracts/index.ts';
 export class ApiFailure extends Error{constructor(public code:string,message:string,public status:number){super(message);}}
-export async function api<T>(path:string,body?:unknown,resumeLease?:string):Promise<T>{
- const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),10000);
- try{const response=await fetch('/api/'+path,{method:body===undefined?'GET':'POST',credentials:'same-origin',headers:body===undefined?{}:{'Content-Type':'application/json',...(resumeLease?{'X-AW-Resume-Lease':resumeLease}:{})},body:body===undefined?undefined:JSON.stringify(body),signal:controller.signal});
- const v=await response.json();if(!response.ok)throw new ApiFailure(v.code,v.message,response.status);
+// location.origin 不带 user:pass@：地址栏含口令时，相对路径 fetch 会被浏览器直接拒绝（测试服 Basic Auth）。
+const apiUrl=(path:string)=>(typeof location==='undefined'?'':location.origin)+'/api/'+path;
+// 角色快照较大，资源加载高峰时 10 秒不够；只读请求超时或断线自动再试一次。
+const timeoutMs=20000;
+async function once<T>(path:string,body?:unknown,resumeLease?:string):Promise<T>{
+ const controller=new AbortController();let timedOut=false;const timer=setTimeout(()=>{timedOut=true;controller.abort();},timeoutMs);
+ try{const response=await fetch(apiUrl(path),{method:body===undefined?'GET':'POST',credentials:'same-origin',headers:body===undefined?{}:{'Content-Type':'application/json',...(resumeLease?{'X-AW-Resume-Lease':resumeLease}:{})},body:body===undefined?undefined:JSON.stringify(body),signal:controller.signal});
+ const v=await response.json().catch(()=>undefined);
+ if(!response.ok){
+  if(v?.code)throw new ApiFailure(v.code,v.message,response.status);
+  if(response.status===401||response.status===403)throw new ApiFailure('GATE','测试服认证未通过（HTTP '+response.status+'），请重新打开页面并输入测试服口令。',response.status);
+  throw new ApiFailure('SERVER','游戏服务暂时不可用（HTTP '+response.status+'），请稍后恢复连接。',response.status);
+ }
+ if(v===undefined)throw new ApiFailure('SERVER','服务器返回内容无法读取，请稍后恢复连接。',response.status);
  try{return validateResponse(path,v) as T;}catch(error){console.error('API response validation failed',path,error);throw new ApiFailure('PROTOCOL','服务器返回了不兼容的数据，请刷新页面后恢复连接。',409);}
- }catch(e){if(e instanceof ApiFailure)throw e;throw new ApiFailure('NETWORK','连接中断，请恢复连接后继续。',0);}finally{clearTimeout(timer);}
+ }catch(e){if(e instanceof ApiFailure)throw e;if(timedOut)throw new ApiFailure('NETWORK','服务器响应超时，请恢复连接后继续。',0);throw new ApiFailure('NETWORK','连接中断，请恢复连接后继续。',0);}finally{clearTimeout(timer);}
+}
+export async function api<T>(path:string,body?:unknown,resumeLease?:string):Promise<T>{
+ try{return await once<T>(path,body,resumeLease);}
+ catch(e){if(body!==undefined||!(e instanceof ApiFailure)||e.code!=='NETWORK')throw e;return once<T>(path);}
 }
 const OUTBOX='aw-open-world-outbox';
 const outboxFailure=(message:string,cause:unknown)=>{const error=new ApiFailure('NETWORK',message,0);error.cause=cause;return error;};

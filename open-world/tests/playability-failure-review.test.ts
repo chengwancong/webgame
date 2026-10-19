@@ -5,6 +5,11 @@ import {regionById} from '../packages/content/index.ts';
 import {newDungeonMeasurement,observeDungeonTick,dungeonDiagnostic} from '../apps/api/src/dungeon-diagnostics.ts';
 import {newCombatReview,observeCombatReview,resolveCombatReview,currentCombatReview} from '../packages/simulation/combat-review.ts';
 import {dungeonDiagnosticSchema} from '../packages/contracts/dungeons.ts';
+it('BUG-23 sums every received hit while keeping only a short recent-hit explanation',()=>{
+ const w=new World(regionById('meadow'),{hp:100,attack:1,armor:0,speed:6,mana:30,regen:0,effects:[]},[],[]),m=newCombatReview();
+ for(let tick=1;tick<=8;tick++){w.tick=tick;observeCombatReview(m,w,[{type:'hit_resolved',id:w.playerId,sourceId:'enemy',amount:10,position:{x:0,y:0},tick}]);observeCombatReview(m,w);}
+ const review=resolveCombatReview(m,w.playerId);expect(review.totalTaken).toBe(80);expect(review.fatal?.damage).toBe(10);expect(review.recent).toHaveLength(4);
+});
 it('front-room defeat records actual injury, keeps one record per tick across restore and offers actionable sources',()=>{
  const r={...regionById('meadow'),obstacles:[],safe:{x:10,y:10},spawns:[]},spawn={...regionById('meadow').spawns[0],id:'front-elite',name:'前段精英',x:11,y:10,elite:true,attack:100};let w=new World(r,{hp:10000,attack:1,armor:0,speed:6,mana:30,regen:0,effects:[]},[],[spawn],[],41),m=newDungeonMeasurement(0);w.setMode('manual');
  for(let n=0;n<150;n++){w.step();observeDungeonTick(m,w);const once=JSON.stringify(m);observeDungeonTick(m,w);expect(JSON.stringify(m)).toBe(once);if(n===74){w=World.restore(w.exportCheckpoint());m=JSON.parse(JSON.stringify(m));}}

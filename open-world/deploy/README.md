@@ -104,3 +104,11 @@ curl https://staging.你的域名/api/health
 API 多阶段镜像只保留生产依赖和独立的 tsx 4.21.0；不包含 TypeScript、Vitest、Playwright 或 Electron。实测 docker images 磁盘占用 567MB（原 824MB），压缩内容约 113MB；Node 直接加载 tsx loader 运行源码。
 
 Grok 的持久会话、独立账号、开场选武器与问题记录提示词见 `docs/cloud-20261018/grok-跑测指南.md`。当前线上有并行会话的客户端覆盖层，后续 HEAD 发版前核对服务器 `deploy/SOURCE_MANIFEST.json`；本轮未代提交这些工作区改动。
+
+## Grok 修复批次发布补充（2026-10-19）
+
+`deploy-staging.mjs` 现在先在仓库外构建固定 HEAD，Windows 本机预览按停止→构建→恢复执行。通过远端实际文件 SHA256 选择差异包（gzip），不因少量素材变化重传整个 1GB 目录。所有源码、差异清单、build-info.json 和健康检查留在仓库外 `aw-deploy/release-*`。
+
+激活前校验传输 SHA256、HEAD、远端 SOURCE_COMMIT，以及候选 API 镜像与客户端的 client/protocol/rules/assets/db；客户端入口随同一源码切换。远端使用 flock，本地使用独占部署锁。API 停止后构建，验证候选版本，再切换源码/网页并恢复；失败恢复旧目录和镜像，不删除数据库卷。旧版本保留在服务器 `previous-release-*`，当前构建记录在网页 build-info.json。
+
+`--skip-api` 仍要求现有 API 与新客户端版本一致；`--skip-web` 要求当前网页 build-info.json 与候选版本一致，不能用它单独引入不兼容 API。`--pull-backup` 和默认文本镜像推送保留。发布前先提交本批源码；未提交内容不会进入源码归档。

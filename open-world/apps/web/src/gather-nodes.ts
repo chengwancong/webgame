@@ -1,3 +1,4 @@
+import {interactionReach,gatheredInRegion} from '../../../packages/rules/world-interactions.ts';
 import type {Receipt,Snapshot} from '../../../packages/contracts/index.ts';
 import {worldTables} from '../../../packages/content/world-tables.ts';
 import {distance,type World} from '../../../packages/simulation/index.ts';
@@ -5,7 +6,7 @@ import {starseaAsset,type StarseaSceneObject} from './starsea-runtime-assets.ts'
 import {islandOrder,materialName} from './crafting-model.ts';
 
 /** Server limit for both manual and route gathering (packages/rules/crafting-gather.ts). */
-export const gatherReach=2;
+export const gatherReach=interactionReach.gather;
 type Write=(path:string,body:object)=>Promise<'success'|'rejected'|'pending'|'busy'|undefined>;
 type Deps={world:()=>World;snapshot:()=>Snapshot|undefined;ready:()=>boolean;write:Write;notice:(text:string)=>void;lastReceipt:()=>Receipt|undefined};
 type Node=(typeof worldTables.objects)[number];
@@ -30,10 +31,10 @@ export class GatherNodes{
  nodes():Node[]{
   const s=this.deps.snapshot(),w=this.deps.world();if(!s)return [];
   const region=w.region.id,visible=s.worldView?new Set(s.worldView.objects.filter(o=>o.kind==='gather').map(o=>o.id)):undefined,field=s.field;
-  const done=new Set(field?.region===region?field.gathered:[]);
+  const done=gatheredInRegion(s,region);
   return worldTables.objects.filter(o=>o.kind==='gather'&&o.region===region&&o.material&&(visible?visible.has(o.id):!o.when&&!o.until)&&!done.has(o.id));
  }
- objects():StarseaSceneObject[]{return this.nodes().map(n=>({id:'gather:'+n.id,artId:gatherArt(n),position:{x:n.x,y:n.y},name:materialName(n.material!),label:'采集',enabled:true}));}
+ objects():StarseaSceneObject[]{return this.nodes().map(n=>({id:'gather:'+n.id,artId:gatherArt(n),position:{x:n.x,y:n.y},name:materialName(n.material!),label:'采集',reach:gatherReach,enabled:true}));}
  /** Remaining / total for the current region, for the minimap caption. */
  count(){const w=this.deps.world(),total=worldTables.objects.filter(o=>o.kind==='gather'&&o.region===w.region.id).length;return {left:total?this.nodes().length:0,total};}
  nearest(){const p=this.deps.world().hero.position;return this.nodes().filter(n=>distance(n,p)<=gatherReach).sort((a,b)=>distance(a,p)-distance(b,p))[0];}

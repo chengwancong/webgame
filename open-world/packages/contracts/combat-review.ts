@@ -28,6 +28,7 @@ export const combatAdviceSchema=z.object({
 export type CombatAdvice=z.infer<typeof combatAdviceSchema>;
 
 export const combatReviewSchema=z.object({
+  totalTaken:z.number().nonnegative().optional(),
   fatal:combatFatalHitSchema.nullable(),
   advice:z.array(combatAdviceSchema).max(3),
   /** Older hits before the killing blow; collapsed, never the main line. */

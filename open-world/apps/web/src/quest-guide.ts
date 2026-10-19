@@ -1,3 +1,4 @@
+import {placeHudRect,screenReservations} from './hud-avoidance.ts';
 import Phaser from 'phaser';
 import type {World} from '../../../packages/simulation/index.ts';
 import {resolvedToken} from './ui/tokens.ts';
@@ -38,7 +39,7 @@ export class QuestGuide{
   if(this.wrapWidth!==wrapWidth){this.wrapWidth=wrapWidth;this.text.setWordWrapWidth(this.wrapWidth,true);}
   this.text.setText(`${target.label} · ${Math.round(dist)} 格`);
   const label=guideLabelPosition({x:ex-Math.cos(angle)*110,y:ey-Math.sin(angle)*44,width,height,labelWidth:this.text.width,labelHeight:this.text.height,inset});
-  this.text.setPosition(origin.x+label.x,origin.y+label.y).setVisible(true);
+  const free=placeHudRect({x:label.x-this.text.width/2,y:label.y-this.text.height/2,width:this.text.width,height:this.text.height},screenReservations(this.scene).map(r=>({x:r.x/cam.zoom,y:r.y/cam.zoom,width:r.width/cam.zoom,height:r.height/cam.zoom})),{x:0,y:0,width,height},inset);if(free)this.text.setPosition(origin.x+free.x+this.text.width/2,origin.y+free.y+this.text.height/2).setVisible(true);
  }
  destroy(){this.beacon.destroy();this.pointer.destroy();this.text.destroy();}
 }

@@ -1,8 +1,10 @@
 import {readFileSync} from 'node:fs';
 import {propItems} from './plane-kits/props-contract-spec.mjs';
+import {rolloutItems,statePrompt} from './plane-kits/rollout-spec.mjs';
 const propContracts=JSON.parse(readFileSync(new URL('../../packages/asset-manifest/open-world-planes-greybox.v1.json',import.meta.url),'utf8')).assets;
 export const planeVersion='open-world-planes-20261018-v1';
 export const contract=JSON.parse(readFileSync(new URL('./plane-kits/id-contract.json',import.meta.url),'utf8'));
+for(const p of rolloutItems)if(!contract.assets.some(a=>a.id===p.id))contract.assets.push({id:p.id,name:p.name,kit:p.kit,island:p.island,part:p.part,kind:'ground',category:'ground',states:p.states,placeholderAssetId:'ow-art-stone'});
 export const kitNames={cave:'洞穴',crypt:'地宫',maze:'废弃迷宫',vault:'秘室',rift:'裂隙',entry:'野外入口',fx:'特效'};
 export const kitThemes={cave:'浅褐湿岩、钟乳石、发光蓝晶、暖色火把',crypt:'浅灰石砖、描金纹饰、柱列、石棺、蓝色长明灯',maze:'灰绿苔墙、藤蔓、碎瓦、断拱与温暖天光',vault:'奶白石砖、暖金宝光、黄铜齿轮与精巧机关',rift:'浅紫悬浮岩岛、星屑、青蓝晶石、明亮星海'};
 export const featureThemes={
@@ -17,6 +19,10 @@ const names={'ground-main':'主地表','ground-detail':'细节地表','ground-pa
 const propThemes={cave:['钟乳岩柱','蓝晶巨簇','矿车残骸','湿岩堆','断矿轨','低矮石笋','晶矿筐','蓝晶碎块','圆卵石','滴水石','矿灯'],crypt:['描金石棺','残缺祭柱','碑墙残段','柱础','石供盆','碎碑','方形灯台','石砖堆','铭文碎片','小供杯','石铃'],maze:['倒塌石拱','藤架','苔墙残段','碎瓦堆','苔石台','断栏','枯井台','藤芽','陶片堆','圆苔石','碎砖'],vault:['宝箱台','大齿轮机关','封印柱','金砖堆','齿轮座','封印盘','铜制秤台','散落齿轮','小金锭','机关销','宝石匣']};
 const propKeys=['l1','l2','l3','m1','m2','m3','m4','s1','s2','s3','s4'];
 export const planeAssets=contract.assets.map(a=>{
+ const inheritedRoll=rolloutItems.find(p=>p.id===a.baseId);
+ if(inheritedRoll)return {...a,sourceMode:'registered-material-adaptation',source:`assets/open-world/plane-kits/source/rollout/${a.baseId}.png`,canvas:inheritedRoll.contract.canvas,anchor:inheritedRoll.contract.anchor,displayWidth:inheritedRoll.contract.displayWidth,contract:inheritedRoll.contract};
+ const roll=rolloutItems.find(p=>p.id===a.id);
+ if(roll){const sprite=['R2','R4'].includes(roll.batch),mask=roll.part==='light-pool',kind=sprite?'sprite':mask?'mask':roll.part==='backdrop-near'?'ambient':'ground';const result={...a,name:roll.name,subject:roll.name,placeholderAssetId:a.placeholderAssetId??'ow-art-stone',sourceMode:'imagegen',source:roll.states.length>1?roll.sources[roll.states[0]].replace('-'+roll.states[0]+'.png','.png'):roll.sources.default,states:roll.states,kind,category:sprite?'nature':mask?'mask':kind==='ambient'?'ambient':'ground',canvas:roll.contract.canvas,anchor:roll.contract.anchor,displayWidth:roll.contract.displayWidth,contract:roll.contract};delete result.baseId;delete result.material;return result;}
  const prop=propItems.find(p=>p.id===a.id);
  if(prop){const c=propContracts.find(g=>g.id===a.id).contract;return {...a,name:prop.name,subject:prop.subject,sourceMode:'imagegen',source:prop.source,canvas:c.canvas,anchor:c.anchor,displayWidth:c.displayWidth,contract:c};}
  let subject=names[a.part]??a.part;
@@ -30,6 +36,7 @@ export const planeAssets=contract.assets.map(a=>{
 export const style='奶白浅金、明亮卡通手绘，圆润大轮廓、少量清晰色面、柔和深色描边，左上柔光，暗部为蓝紫或灰绿；等距投影[32,18]，同五岛户外美术；不恐怖、不用大面积深棕或纯黑，不写字，不加水印。';
 const stateText={closed:'闭合封住入口',open:'打开露出通道或裂开，保留底座位置',off:'手柄未拉下',on:'手柄已拉下',up:'压板抬起',down:'压板按下',active:'裂隙开启，浅青蓝核心',cooldown:'冷却时微弱余辉',idle:'完整守护核心',damaged:'外壳局部开裂，核心仍完整',unsettled:'未平定，灯未亮、浅爪痕',cleared:'已平定，暖火把点亮、爪痕消失、少量花草',hidden:'秘密隐藏，普通外表只有细微线索',found:'秘密发现，破开并露出小门洞',sealed:'界石封闭',dormant:'底座休眠',default:'默认完整造型'};
 export function promptFor(a,state){
+ const roll=rolloutItems.find(p=>p.id===a.id);if(roll)return {id:a.id,state,tool:'内置image_gen',useCase:'stylized-concept',transparent_background:['R2','R4'].includes(roll.batch)||roll.part==='light-pool',output:roll.sources[state],prompt:statePrompt(roll,state),status:'queued'};
  const prop=propItems.find(p=>p.id===a.id);
  if(prop)return {id:a.id,state,tool:'内置image_gen',useCase:'stylized-concept',transparent_background:true,output:prop.source,prompt:prop.prompt,status:'queued'};
  const material={cave:'温暖浅米褐石灰岩',crypt:'奶白浅灰石砖，极少浅金纹饰',maze:'浅灰绿石砖、稀疏柔绿苔痕',vault:'奶白石砖与浅金黄铜',rift:'浅紫灰岩、青蓝晶质'}[a.kit]??'奶白浅金石材';

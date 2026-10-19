@@ -22,9 +22,10 @@ export function SetBonusTooltip(set:GearSet,progress:EquippedSetInfo|undefined){
  return `<section class="gear-set-bonuses" aria-label="套装加成">${sectionTitleHtml(set.name,{actionsHtml:progress?pipsHtml({value:progress.count,max:progress.total,label:set.name+'套装件数'}):statusBadgeHtml('待核对','warning')})}${set.bonuses.map(bonus=>{const active=progress?.activeBonuses.includes(bonus.pieces)??false;return `<div class="gear-set-bonus ${active?'active':'inactive'}"><span>${bonus.pieces} 件</span><p>${esc(progress?.bonusDescriptions?.[String(bonus.pieces)]??bonus.description)}</p>${progress?pipsHtml({value:active?bonus.pieces:0,max:bonus.pieces,label:`${bonus.pieces}件加成，${active?'已激活':'未激活'}`}):statusBadgeHtml('待核对','warning')}</div>`;}).join('')}</section>`;
 }
 export function gearSetLabel(gear:Gear){return gear.setId?`<div class="gear-set-label"><span>套装</span><b>${esc(gear.setName??gear.setId)}</b></div><p class="gear-set-unavailable">套装进度暂不可用</p>`:'';}
-export function gearSetDetails(gear:Gear,sets:EquippedSetInfo[]|undefined){
+export function gearSetDetails(gear:Gear,sets:EquippedSetInfo[]|undefined,projected?:EquippedSetInfo[]){
  if(!gear.setId)return '';const definition=getGearSet(gear.setId);if(!definition)return gearSetLabel(gear);
- const progress=sets?.find(set=>set.setId===gearSetIdentity(gear))??(sets?{setId:definition.id,setName:definition.name,count:0,total:definition.id.startsWith('set-')?6:definition.pieces.length,activeBonuses:[]}:undefined);
+ const preview=projected?.find(set=>set.setId===gearSetIdentity(gear));const progress=sets?.find(set=>set.setId===gearSetIdentity(gear))??(preview?{...preview,count:0,activeBonuses:[]}:(sets?{setId:definition.id,setName:definition.name,count:0,total:definition.id.startsWith('set-')?6:definition.pieces.length,activeBonuses:[]}:undefined));
+ if(definition.id.startsWith('set-')&&!progress?.bonusDescriptions)return gearSetLabel(gear);
  return SetBonusTooltip({...definition,name:gear.setName&&gear.setName!==definition.name?gear.setName+' · '+definition.name:definition.name},progress);
 }
 export function gearSetChanges(current:EquippedSetInfo[]|undefined,next:EquippedSetInfo[]|undefined){

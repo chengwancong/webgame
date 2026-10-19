@@ -4,7 +4,7 @@ import type {Skill} from '../../../../packages/contracts/index.ts';
 import type {RuleTelemetry} from '../damage-breakdown-model.ts';
 import type {Gear,Snapshot,Stats} from '../../../../packages/contracts/index.ts';
 import {affixDisplayValue} from '../../../../packages/contracts/affix-units.ts';
-import {combatNumerics} from '../../../../packages/rules/combat-numerics.ts';
+import {mainStatValues} from '../../../../packages/rules/main-stat-values.ts';
 import {effectText} from '../../../../packages/content/index.ts';
 import {skillTagLabel} from '../../../../packages/content/skill-tags.ts';
 import {formatBig} from '../../../../packages/content/big-number.ts';
@@ -17,8 +17,8 @@ import {type SlotMark,statIcon,sectionTitleHtml,esc,buttonHtml,itemSlot,panelHea
 import {equipmentPartLabels,runtimeSlotForPart,type GearSlotFilter} from '../equipment-slots.ts';
 export type CharacterPanelOptions={chooserOpen:boolean;detailsOpen:boolean;blocked:boolean;recovering?:boolean;damage?:{stats:Stats;skills:Skill[];telemetry:RuleTelemetry|null;sourceNames?:Record<string,string>}};
 /** Main stat after reinforcement, mirroring `mainStatContribution` in packages/rules/main-stats.ts. Legacy gear without a main stat has none. */
-export function gearMainStat(gear:Gear){return gear.mainStat?{stat:gear.mainStat.stat,value:Math.round(gear.mainStat.value*(1+combatNumerics.reinforcement.primaryRatioPerRank*gear.rank)*1e6)/1e6}:undefined;}
-const mainStatText=(stat:string,value:number)=>affixDisplayValue(stat,Math.round(value*10)/10);
+export function gearMainStat(gear:Gear){const value=mainStatValues(gear);return value?{stat:value.stat,value:value.effective}:undefined;}
+export const mainStatText=(stat:string,value:number)=>affixDisplayValue(stat,value);
 /** Worn first, then candidates sharing the worn main stat by value, then the rest. */
 export function characterSelection(snapshot:Snapshot,part:Exclude<GearSlotFilter,''>,selected:string){const slot=runtimeSlotForPart(part),worn=(gear:{id:string})=>Boolean(slot&&snapshot.equipment[slot]===gear.id),base=gearMainStat(snapshot.gear.find(gear=>slot&&snapshot.equipment[slot]===gear.id)??({} as Gear)),rank=(gear:Gear)=>{const main=gearMainStat(gear);return worn(gear)?Infinity:main&&base&&main.stat===base.stat?main.value:-Infinity;},items=filterGear(snapshot.gear,'',part).sort((a,b)=>rank(b)-rank(a)||0);return {items,selected:items.find(gear=>gear.id===selected)??items.find(gear=>slot&&snapshot.equipment[slot]===gear.id)??items[0]};}
 const number=(value:unknown)=>typeof value==='number'&&Number.isFinite(value)?String(Math.round(value*100)/100):'—';

@@ -36,6 +36,15 @@ async function launch(){app=createApp(pool,{campaign:'legacy',testLogin:true,dun
 // never submit client-authored kills; the restored server still executes ticks.
 async function restoreFixture(id:string,edit:(saved:any,w:World)=>void){await app.close();const saved=(await pool.query('SELECT data FROM ow_dungeons WHERE id=$1',[id])).rows[0].data,w=World.restore(saved.battle);edit(saved,w);saved.battle=w.exportCheckpoint();saved.tick=w.tick;saved.startedAt=new Date(Date.now()-saved.tick/saved.tickRate*1000).toISOString();await pool.query('UPDATE ow_dungeons SET data=$2 WHERE id=$1',[id,saved]);await launch();}
 async function beginSolo(p:Awaited<ReturnType<typeof player>>,definition:string){const result=await p.command('create',{dungeon_id:definition});expect(result.status).toBe(200);const id=result.body.instance.id,c=await connect(p,id);await p.command('ready',{instance_id:id});expect((await p.command('start',{instance_id:id})).status).toBe(200);return {id,c};}
+it('BUG-37 failed loading has an explicit result and leaving releases the field permit lock without charging',async()=>{
+ const p=await player(),created=await p.command('create',{dungeon_id:'qa-load'}),id=created.body.instance.id;
+ expect((await p.command('ready',{instance_id:id})).body.code).toBe('DUNGEON_CONNECTION');
+ await until(async()=>['abandoned','closed'].includes((await p.request('dungeons/'+id+'/result')).body.instance.status));
+ const result=(await p.request('dungeons/'+id+'/result')).body.instance;expect(result.reason).toContain('加载');expect(result.self.charged).toBe(false);
+ expect((await p.command('return',{instance_id:id})).status).toBe(200);
+ expect((await p.request('permit',{lease_id:p.lease,region:'meadow'})).status).toBe(200);
+ expect((await p.request('character')).body.gold).toBe(10000);
+});
 async function beginParty(definition='qa-rescue'){const a=await player(),b=await player(),created=await a.command('create',{dungeon_id:definition}),id=created.body.instance.id;await b.command('join',{instance_id:id});const ca=await connect(a,id),cb=await connect(b,id);await a.command('ready',{instance_id:id});await b.command('ready',{instance_id:id});expect((await a.command('start',{instance_id:id})).status).toBe(200);return {a,b,id,ca,cb};}
 it('creates, loads, freezes configuration and awards the real boss once without a client kill report',async()=>{
  const p=await player(),created=await p.command('create',{dungeon_id:'trial-meadow'});expect(created.status).toBe(200);const id=created.body.instance.id;expect(created.body.instance.status).toBe('loading');const c=await connect(p,id);expect(c.frame.self!.connected).toBe(true);expect((await p.command('ready',{instance_id:id})).status).toBe(200);expect((await p.command('start',{instance_id:id})).status).toBe(200);

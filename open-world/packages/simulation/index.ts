@@ -128,12 +128,12 @@ export class World {
  const skill=this.skills.find(s=>s.id===id);
  if(skill&&this.stats.weapon!==undefined&&!permitsWeapon(skill.weapons,this.stats.weapon))return this.failure(skill,'weapon');
  if(skill?.mechanics)return this.castDeclared(skill,target,position);
- const s=this.skills.find(s=>s.id===id);if(!s||this.paused||this.hero.hp<=0||(this.cooldowns[id]??0)>this.tick||this.hero.mana<s.cost||this.pending.length)return false;
- if(['single','projectile','chain','dash','zone'].includes(s.kind)&&(!target||distance(this.hero.position,target.position)>s.range))return false;
- if(s.kind==='area'&&(!target||distance(this.hero.position,target.position)>s.radius))return false;
- if(s.kind==='projectile'&&target&&!lineOfSight(this.region,this.hero.position,target.position))return false;
- if(s.kind==='heal'&&this.hero.hp>this.stats.hp*.8)return false;
- if(s.kind==='shield'&&this.hero.shield>0)return false;
+ const s=this.skills.find(s=>s.id===id);if(!s)return this.failure(s,'unknown');if(this.paused)return this.failure(s,'paused');if(this.hero.hp<=0)return this.failure(s,'dead');if((this.cooldowns[id]??0)>this.tick)return this.failure(s,'cooldown');if(this.hero.mana<s.cost)return this.failure(s,'resource');if(this.pending.length)return this.failure(s,'busy');
+ if(['single','projectile','chain','dash','zone'].includes(s.kind)&&(!target||distance(this.hero.position,target.position)>s.range))return this.failure(s,target?'range':'target');
+ if(s.kind==='area'&&(!target||distance(this.hero.position,target.position)>s.radius))return this.failure(s,target?'range':'target');
+ if(s.kind==='projectile'&&target&&!lineOfSight(this.region,this.hero.position,target.position))return this.failure(s,'blocked');
+ if(s.kind==='heal'&&this.hero.hp>this.stats.hp*.8)return this.failure(s,'unneeded');
+ if(s.kind==='shield'&&this.hero.shield>0)return this.failure(s,'unneeded');
  if(this.region.sprint&&s.kind!=='heal'&&s.kind!=='shield'&&(s.damage>0||target?.alive))this.combatAt=this.tick;this.hero.mana-=s.cost;this.conditionClock.manaSpent+=s.cost;this.cooldowns[id]=this.tick+Math.max(1,Math.round(s.cooldown*(1-Math.max(0,Math.min(.75,this.stats.cdr??0)))));this.hero.action=s.kind==='single'?'attack':'skill';this.hero.actionUntil=this.tick+s.windup+8;
  if(target)this.hero.facing=screenFacing(this.hero.position,target.position,this.hero.facing);
  const vfx:VfxOrigin={castId:++this.vfxSerial,sourceId:this.playerId,targetId:target?.id,vfxKey:'player/'+id};

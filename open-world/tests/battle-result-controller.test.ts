@@ -17,6 +17,15 @@ it('loads island phase progress through the additive read endpoint',async()=>{
  request.mockResolvedValueOnce({success:true}).mockResolvedValueOnce({phase_progress:{phase:'tide',completed:5,total:6,remaining:['龙眠岛']}});
  const {c}=controller();await c.start('permit','ss-map-boss-6','success');expect(c.phase).toBe('ready');expect(request).toHaveBeenCalledWith('combat/results/permit/progress');expect(c.data?.phase_progress?.completed).toBe(5);
 });
+it('restored result recovers before returning and never clears saved loot when recovery remains blocked',async()=>{
+ localStorage.setItem('aw-battle-result',JSON.stringify({character:'player',permit:'permit',region:'meadow',outcome:'failure'}));
+ let blocked=false;const order:string[]=[],returnSafe=vi.fn(async()=>{order.push('safe');return true;});
+ const recover=vi.fn(async()=>{order.push('recover');});
+ const c=new BattleResultController({character:()=> 'player',settle:async()=>{},blocked:()=>blocked,recover,returnSafe,refresh:()=>{}});
+ request.mockResolvedValue({success:false});expect(c.restore()).toBe(true);await c.load(false);blocked=true;
+ await c.return();expect(order).toEqual(['recover']);expect(returnSafe).not.toHaveBeenCalled();expect(c.context).toBeDefined();
+ recover.mockImplementationOnce(async()=>{order.push('recover');blocked=false;});await c.return();expect(order).toEqual(['recover','recover','safe']);expect(c.context).toBeUndefined();
+});
 it('a missing phase read never overwrites confirmed loot or prevents returning',async()=>{
  request.mockResolvedValueOnce({success:true,gear:[{id:'saved'}]}).mockRejectedValueOnce(Error('phase read unavailable'));
  const {c,returnSafe}=controller();await c.start('permit','ss-map-boss-6','success');expect(c.phase).toBe('ready');expect(c.data?.gear).toEqual([{id:'saved'}]);expect(c.error).toContain('首领进度请到航图查看');await c.return();expect(returnSafe).toHaveBeenCalledOnce();

@@ -1,3 +1,4 @@
+import {vitalsDisplay} from './vitals-display.ts';
 import {seaDifficultyHtml,type SeaDifficultyView} from './sea-difficulty-view.ts';
 import {bountyHtml,type BountyView} from './bounty-view.ts';
 import {ShieldBarTracker} from './shield-feedback.ts';
@@ -167,11 +168,11 @@ export function updateHud(h:PresentationModel) {
         return;
     }
     t.style.visibility = "visible";
-    const e = h.snapshot, i = h.world, d = Math.max(0, Math.min(1, i.hero.hp / i.stats.hp)), n = $("#vitals");
+    const e = h.snapshot, i = h.world, vitals=vitalsDisplay(i,e,Boolean(h.dungeonRunning)), d = Math.max(0, Math.min(1, vitals.hp / vitals.maxHp)), n = $("#vitals");
     n.querySelector<HTMLElement>(".who") || (n.innerHTML = `<button class="who character-entry" type="button" data-action="panel" data-id="character" aria-label="打开人物"><img src="${h.portraitURL || art("portrait-bust")}" alt="角色外观"><div class="identity"><b class="hero-name"></b><small>Lv. <span class="num hero-level"></span></small></div></button><div class="bars"><div class="meter hp" role="meter" aria-label="生命" aria-valuemin="0"><i></i><span class="shield-band"></span><span class="numv num"></span></div><div class="meter mp" role="meter" aria-label="能量" aria-valuemin="0"><i></i><span class="numv num"></span></div></div><div class="chips"><span class="chip shield" data-tip='{"title":"护盾","note":"优先于生命承受伤害"}'></span></div>`);
     const r = n.querySelector<HTMLElement>(".hero-name")!;
     r.textContent = e.name, r.title = e.name, n.querySelector<HTMLElement>(".hero-level")!.textContent = String(e.level);
-    for (const [P, I, D] of [["hp", Math.ceil(i.hero.hp), i.stats.hp], ["mp", Math.floor(i.hero.mana), i.stats.mana]] as const) {
+    for (const [P, I, D] of [["hp", vitals.hp, vitals.maxHp], ["mp", vitals.mana, vitals.maxMana]] as const) {
         const G = n.querySelector<HTMLElement>(".meter." + P)!;
         G.querySelector<HTMLElement>("i")!.style.transform = `scaleX(${Math.max(0, Math.min(1, I / D))})`, G.querySelector<HTMLElement>(".numv")!.textContent = `${I} / ${D}`, G.setAttribute("aria-valuenow", String(I)), G.setAttribute("aria-valuemax", String(D)), G.dataset.tip = JSON.stringify({ title: P === "hp" ? d <= .3 ? "生命过低" : "生命" : "能量", rows: [["当前", `${I} / ${D}`], ...P === "hp" && i.hero.shield ? [["护盾", String(i.hero.shield)]] : []], ...P === "hp" && d <= .3 ? { why: "寻找安全点或使用回复手段" } : {} });
     }

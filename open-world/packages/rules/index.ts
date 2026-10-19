@@ -6,7 +6,7 @@ import {resolvedHardmodeGrowth} from './hardmode-growth.ts';
 import {collectBuildParts,applyBuildParts,applyAttributeSkill,type BuildParts} from './build-parts.ts';
 import {mainStatContribution} from './main-stats.ts';
 import {numericStat} from '../contracts/stats.ts';
-import {mainHandWeapon,mainHandAffinity,skillWeaponAllowed,skillWeaponRequirement} from './skill-weapon-access.ts';
+import {mainHandWeapon,mainHandAffinity,skillWeaponAllowed,skillWeaponRequirement,rememberWeaponSkills} from './skill-weapon-access.ts';
 import {weaponAffinityPower} from '../content/skill-weapons.ts';
 import {resolveWeaponCombos} from './weapon-combos.ts';
 import {primaryReinforcement} from './combat-numerics.ts';
@@ -135,7 +135,14 @@ export function resolveBuild(s:CharacterState,selection:import('../contracts/bui
 }
 // 1–50 comes from docs/balance-30h-design.md §2.1; uncapped levels keep growing 14% per level.
 export function xpThreshold(level:number){const table=progressionCurve.thresholds;return level<=table.length?table[Math.max(1,level)-1]:Math.round(table.at(-1)!*1.14**(level-table.length));}
-export function applyXp(s:CharacterState,amount:number){applyParagonXp(s,amount);s.xp+=amount;while(s.level<progressionLevelCap(s)&&s.xp>=xpThreshold(s.level)){s.xp-=xpThreshold(s.level);s.level++;s.build++;}}
+export function equipNewLevelSkills(s:CharacterState,previousLevel:number){
+ const added:string[]=[];if(!s.starsea||s.starsea.prologue?.done===false||s.level<=previousLevel)return added;
+ for(const q of resolveSkillAccess(s).filter(q=>!q.activated&&q.eligible&&q.weaponCompatible&&['level','island'].includes(q.activation.type)&&q.unlockLevel>previousLevel).sort((a,b)=>a.unlockLevel-b.unlockLevel)){
+  if(s.skills.length>=skillSlotCount(s))break;s.skillRanks[q.id]=1;s.skills.push(q.id);added.push(q.id);
+ }
+ if(added.length){rememberWeaponSkills(s);s.build++;}return added;
+}
+export function applyXp(s:CharacterState,amount:number){const before=s.level;applyParagonXp(s,amount);s.xp+=amount;while(s.level<progressionLevelCap(s)&&s.xp>=xpThreshold(s.level)){s.xp-=xpThreshold(s.level);s.level++;s.build++;}equipNewLevelSkills(s,before);}
 // Equipment uses gold and enhancement stones; skills use gold only.
 export function upgradeCost(rank:number){return {gold:35+rank*25,material:2+rank};}
 export function skillUpgradeCost(rank:number){return {gold:35+rank*25,material:0};}

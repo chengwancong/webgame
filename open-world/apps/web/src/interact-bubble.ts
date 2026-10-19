@@ -1,3 +1,4 @@
+import {placeWorldRect} from './hud-avoidance.ts';
 import Phaser from 'phaser';
 import {resolvedToken} from './ui/tokens.ts';
 import {worldTextResolution} from './ui/world-text.ts';
@@ -6,7 +7,7 @@ type Vec={x:number;y:number};
 const project=(p:Vec)=>({x:(p.x-p.y)*32,y:(p.x+p.y)*18});
 export class InteractBubble{
  private box:Phaser.GameObjects.Graphics;private key:Phaser.GameObjects.Text;private text:Phaser.GameObjects.Text;
- constructor(scene:Phaser.Scene){
+ constructor(private scene:Phaser.Scene){
   const font=resolvedToken('Font.Family');
   this.box=scene.add.graphics().setDepth(9500);
   this.key=scene.add.text(0,0,'E',{resolution:worldTextResolution(),fontFamily:font,fontSize:'18px',fontStyle:'bold',color:'#412402'}).setOrigin(.5).setDepth(9501);
@@ -18,7 +19,7 @@ export class InteractBubble{
   const shown=Boolean(prompt);this.box.clear();this.key.setVisible(shown);this.text.setVisible(shown);if(!prompt)return;
   const foot=project(prompt),bob=Math.sin(tick/30*Math.PI*1.6)*3,bottom=(anchorTop??foot.y-90)-10+bob;
   this.key.setText(keyLabel);this.text.setText(prompt.text);
-  const keySize=30,pad=10,gap=8,width=pad+Math.max(keySize,this.key.width+12)+gap+this.text.width+pad,height=keySize+pad,left=Math.round(foot.x-width/2),top=Math.round(bottom-height);
+  const keySize=30,pad=10,gap=8,width=pad+Math.max(keySize,this.key.width+12)+gap+this.text.width+pad,height=keySize+pad;const free=placeWorldRect(this.scene,{x:Math.round(foot.x-width/2),y:Math.round(bottom-height),width,height},[],Infinity);if(!free){this.key.setVisible(false);this.text.setVisible(false);return;}const left=free.x,top=free.y;
   this.box.fillStyle(0x2a1d0e,.25).fillRoundedRect(left+2,top+3,width,height,10);
   this.box.fillStyle(0xfdf8ec,1).fillRoundedRect(left,top,width,height,10).lineStyle(2,0xd9a92e,1).strokeRoundedRect(left,top,width,height,10);
   this.box.fillStyle(0xfdf8ec,1).fillTriangle(foot.x-8,top+height-1,foot.x+8,top+height-1,foot.x,top+height+9);

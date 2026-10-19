@@ -25,7 +25,7 @@ export class BattleResultController{
    if(!starseaBossMaps.includes(this.context.region))try{this.keyProgress=(await api<{progress:StageKeyProgress|null}>('stage-keys')).progress;}catch{this.keyProgress=undefined;}
    if(this.context.outcome==='failure'&&this.context.review){
     const review=this.context.review;
-    try{this.context.review=combatReviewSchema.parse(await api<CombatReview>('combat/review',{permit:this.context.permit,fatal:review.fatal,recent:review.recent}));localStorage.setItem('aw-battle-result',JSON.stringify(this.context));}
+    try{this.context.review={...combatReviewSchema.parse(await api<CombatReview>('combat/review',{permit:this.context.permit,fatal:review.fatal,recent:review.recent})),...(review.totalTaken===undefined?{}:{totalTaken:review.totalTaken})};localStorage.setItem('aw-battle-result',JSON.stringify(this.context));}
     catch{this.context.review={...review,advice:[]};this.error='建议暂未读到，回港整备后再来。';}
    }
    if(this.context.outcome==='success'&&!this.data.success)throw Error('通关记录正在保存，请恢复连接后查看。');
@@ -38,7 +38,7 @@ export class BattleResultController{
   if(this.phase==='offline')await this.load(true);
   if(!['ready','return-error'].includes(this.phase))return;
   this.pending=true;this.phase='returning';this.deps.refresh();
-  try{if(this.deps.blocked())await this.deps.recover();if(!await this.deps.returnSafe())throw Error('返回失败，请重试。');this.context=undefined;this.data=undefined;localStorage.removeItem('aw-battle-result');}
+  try{if(this.deps.blocked())await this.deps.recover();if(this.deps.blocked())throw Error('连接尚未恢复，请重试返回；已确认收获保留。');if(!await this.deps.returnSafe())throw Error('返回失败，请重试。');this.context=undefined;this.data=undefined;localStorage.removeItem('aw-battle-result');}
   catch(error){this.phase='return-error';this.error=error instanceof Error?error.message:'返回失败，请重试。';}
   finally{this.pending=false;this.deps.refresh();}
  }

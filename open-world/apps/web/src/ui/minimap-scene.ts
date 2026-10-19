@@ -45,7 +45,7 @@ function layout(map:StarseaMap){
  const edges:Placed[]=[],place=(d:Parameters<typeof sprite>[0]&{x:number;y:number})=>{const s=sprite(d);return s?{sprite:s,x:d.x,y:d.y}:undefined;};
  for(const piece of islandEdges(map)){const e=place(piece);if(e)edges.push(e);}
  const depth=(d:StarseaMap['decorations'][number])=>d.depthMode==='ground'?-1e9:d.x+d.y;
- const decorations=[...map.decorations,...mapScatter(map).filter(s=>s.kind!=='flower'&&s.kind!=='tuft')].sort((a,b)=>depth(a)-depth(b)).map(d=>{const p=place(d);return p&&'kind' in d?{...p,natural:true}:p;}).filter((p):p is Placed=>Boolean(p));
+ const decorations=[...map.decorations,...mapScatter(map).filter(s=>s.kind!=='flower'&&s.kind!=='tuft')].sort((a,b)=>depth(a)-depth(b)).map((d):Placed|undefined=>{const p=place(d);return p?{...p,natural:'kind' in d||!map.landmarks.some(l=>l.x===d.x&&l.y===d.y)}:undefined;}).filter((p):p is Placed=>Boolean(p));
  l={edges,decorations};layouts.set(map,l);return l;
 }
 export type SceneView={k:number;ox:number;oy:number;density:number;width:number;height:number;

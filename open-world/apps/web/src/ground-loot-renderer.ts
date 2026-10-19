@@ -1,3 +1,4 @@
+import {placeWorldRect} from './hud-avoidance.ts';
 import {emitAudioPresentation} from './audio/presentation-events.ts';
 import Phaser from 'phaser';
 import type {Reward,GearQuality} from '../../../packages/contracts/index.ts';
@@ -30,7 +31,7 @@ export class GroundLootRenderer{
     const image=this.scene.add.image(0,-s/2-7,this.scene.textures.exists(key)?key:'__WHITE').setDisplaySize(s,s).setVisible(this.scene.textures.exists(key));
     const label=this.scene.add.text(0,parseFloat(resolvedToken('Space.1')),r.gear.name.length>6?r.gear.name.slice(0,5)+'…':r.gear.name,{fontFamily:resolvedToken('Font.Family'),fontSize:resolvedToken('Font.Size.Caption'),fontStyle:resolvedToken('Font.Weight.Medium'),color:resolvedToken(colors[quality]),stroke:resolvedToken('Color.World.Ink'),strokeThickness:parseFloat(resolvedToken('Border.FocusWidth'))}).setResolution(worldTextResolution()).setOrigin(.5,0);const fullLabel=r.gear.name,shortLabel=label.text;label.setData('full-name',fullLabel);
     const node=this.scene.add.container(x,y,[image,label]).setData('ground-reward-id',r.id).setData('ground-icon',groundLootArt(r)).setData('ground-thumbnail',groundLootTexture(r));node.setInteractive(new Phaser.Geom.Rectangle(-Math.max(s/2+8,label.width/2),-s-15,Math.max(s+16,label.width),s+45),Phaser.Geom.Rectangle.Contains);node.input!.cursor='pointer';node.on('pointerover',()=>label.setText(fullLabel));node.on('pointerout',()=>label.setText(shortLabel));const animate=this.primed&&!this.reduced();d={id:r.id,node,image,label,key,quality,born:animate?now:undefined,fromX:(r.position.x-r.position.y)*32,fromY:(r.position.x+r.position.y)*18-24};if(animate)label.setAlpha(0);this.drops.set(r.id,d);if(this.primed&&!animate)emitAudioPresentation({kind:'loot-landed',id:r.id,quality});
-   }this.place(d,x,y,now);if(!d.image.visible&&this.scene.textures.exists(d.key))d.image.setTexture(d.key).setDisplaySize(size(),size()).setVisible(true);
+   }this.place(d,x,y,now);d.label.setPosition(0,parseFloat(resolvedToken('Space.1')));const bounds=d.label.getBounds(),next=placeWorldRect(this.scene,bounds);d.label.setVisible(Boolean(next));if(next)d.label.setPosition(d.label.x+next.x-bounds.x,d.label.y+next.y-bounds.y);if(!d.image.visible&&this.scene.textures.exists(d.key))d.image.setTexture(d.key).setDisplaySize(size(),size()).setVisible(true);
   }
   this.primed=true;
   this.ghosts=this.ghosts.filter(g=>{const t=(now-g.start)/PICKUP;if(t>=1||!hero){g.node.destroy(true);return false;}

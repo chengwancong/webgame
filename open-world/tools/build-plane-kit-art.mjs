@@ -3,6 +3,8 @@ import {resolve,join,relative} from 'node:path';
 import {createHash} from 'node:crypto';
 import sharp from 'sharp';
 import {buildPlaneProps} from './build-plane-prop-art.mjs';
+import {buildPlaneRollout} from './build-plane-rollout-art.mjs';
+import {rolloutItems} from '../assets/open-world/plane-kits/rollout-spec.mjs';
 import {planeVersion,planeAssets,promptFor,kitThemes,style} from '../assets/open-world/plane-kits-spec.mjs';
 const root=resolve(import.meta.dirname,'..'),group=join(root,'assets/open-world/plane-kits'),pub=join(root,'apps/web/public/art/open-world/plane-kits');
 const sha=b=>createHash('sha256').update(b).digest('hex'),rel=p=>relative(root,p).replaceAll('\\','/');
@@ -29,7 +31,7 @@ async function publish(source,a,isOriginal,rect){
 for(const a of planeAssets){
  if(a.kind==='spine-fx'){const selection=fx.assets.find(x=>x.id===a.id);manifest.assets.push({...a,sourceMode:'registered-spine-selection',source:{mode:'registered-spine-selection'},files:selection?.files??[],runtime:{kind:'spine-fx',candidates:selection?.candidates??[],integrated:false},status:selection?.candidates?.length?'selected':'placeholder',accepted:false,...(selection?{selectionNote:selection.note}:{})});continue;}
  if(a.baseId){const base=manifest.assets.find(x=>x.id===a.baseId);if(!base)throw Error('适配缺少基础ID：'+a.id);manifest.assets.push({...a,source:{mode:'registered-material-adaptation',assetId:base.id,path:base.source.path,sha256:base.source.sha256},files:base.files,runtime:{...base.runtime,material:a.material},status:base.status,accepted:false});continue;}
- const prompts=a.states.map(s=>promptFor(a,s));for(const p of prompts){queue.push(p);const path=join(root,p.output.replace('.png','.json'));await json(path,p);}
+ const prompts=a.states.map(s=>promptFor(a,s));for(const p of prompts){queue.push(p);const path=join(root,p.output.replace('.png','.json'));if(!(rolloutItems.find(i=>i.id===a.id)?.reuseSource&&await exists(path)))await json(path,p);}
  const donor=library.find(x=>x.id===a.placeholderAssetId);if(!donor?.runtime?.file)throw Error('占位来源不存在：'+a.id);
  const donorPath=join(root,'apps/web/public'+donor.runtime.file);
  const approved=[];for(const p of prompts){const path=join(root,p.output);approved.push(await exists(path)&&review.sources?.[p.output]?.sha256===sha(await readFile(path))&&review.sources[p.output].accepted===true);}
@@ -52,4 +54,5 @@ await json(join(group,'generation-queue.json'),{schemaVersion:1,version:planeVer
 for(const p of [join(group,'manifest.json'),join(pub,'manifest.json'),join(root,'packages/asset-manifest/open-world-planes.v1.json')])await json(p,manifest);
 console.log(JSON.stringify(manifest.counts));
 await buildPlaneProps({requireAll:false});
+await buildPlaneRollout({allowMissing:true});
 if(manifest.pending.length&&!process.argv.includes('--allow-pending'))throw Error(`正式美术未齐：${manifest.pending.length}项占位；不能宣称完整美术构建通过。`);

@@ -3,19 +3,23 @@ import {openWorldRuntimeAssets} from '../packages/asset-manifest/open-world-asse
 import grey from '../packages/asset-manifest/open-world-planes-greybox.v1.json';
 import art from '../packages/asset-manifest/open-world-planes.v1.json';
 import {generatePlaneStage} from '../packages/content/plane-layouts.ts';
-let changed=0;
+import {planeResource} from '../packages/content/plane-scenes.ts';
+let changed=0,aliases=0;
 for(const g of grey.assets){
  const a=art.assets.find(a=>a.id===g.id);
  const runtime=openWorldRuntimeAssets.find(a=>a.id===g.id)!.runtime;
- const replaced=a?.runtime.registration==='greybox-contract-exact';
- assert.equal(runtime.file,replaced?a.runtime.file:g.runtime.file,g.id+' 文件解析');
+ const replaced=a?.status==='imported'&&a.runtime.registration==='greybox-contract-exact';
+ const alias=(g as {aliasOf?:string}).aliasOf,base=alias?art.assets.find(a=>a.id===alias):undefined;
+ const inherited=!replaced&&base?.status==='imported'&&base.runtime.registration==='greybox-contract-exact';
+ assert.equal(runtime.file,replaced?a.runtime.file:inherited?base.runtime.file:g.runtime.file,g.id+' 文件解析');
  assert.deepEqual(runtime.anchor,g.contract.anchor,g.id+' 锚点');
  assert.equal(runtime.displayWidth,g.contract.displayWidth,g.id+' 显示宽');
  assert.equal(runtime.width,g.contract.canvas[0]);assert.equal(runtime.height,g.contract.canvas[1]);
  if(replaced)changed++;
+ if(inherited)aliases++;
 }
-assert.equal(changed,19);
-console.log(JSON.stringify({passed:true,replaced:changed,unchanged:grey.assets.length-changed}));
+assert.ok(changed>=19,'保留已交付的19件');
+console.log(JSON.stringify({passed:true,replaced:changed,paintedAliases:aliases,greybox:grey.assets.length-changed-aliases,total:grey.assets.length}));
 
 // 随机场地复核四侧摆放；不把仅面向镜头两侧挂灯的现行规则误作四向灯图。
 const seeds=process.argv.slice(2).map(Number);
@@ -29,7 +33,7 @@ for(const kit of ['cave','crypt','maze'] as const){
   const cell=(x:number,y:number)=>x<0||y<0||x>=n||y>=map.height?'#':map.cells[y*n+x];
   for(let y=0;y<map.height;y++)for(let x=0;x<n;x++)if(cell(x,y)==='#')for(const [d,dx,dy] of directions)if('.,'.includes(cell(x+dx,y+dy)))walls.add(d);
   for(const p of map.pieces){
-   const id=`ow-art-plane-${kit}-${p.part}`,a=openWorldRuntimeAssets.find(a=>a.id===id);
+   const id=planeResource(kit,p.part,map.island),a=openWorldRuntimeAssets.find(a=>a.id===id);
    assert.ok(a?.runtime.file,id+' 随机摆放缺图');parts.add(p.part);
    if(p.layer==='prop'){
     const fx=p.x%1,fy=p.y%1;
@@ -45,9 +49,14 @@ for(const kit of ['cave','crypt','maze'] as const){
  else assert.deepEqual([...blockerWalls].sort(),['-x','-y'],kit+' 现行后两侧靠墙摆件覆盖');
  assert.deepEqual([...lights].sort(),['+x','+y'],kit+' 面向镜头的两侧挂灯');
  assert.equal(mirror.size,2,kit+' 原向与镜像');
- const expected=art.assets.filter(a=>a.kit===kit&&a.runtime.registration==='greybox-contract-exact').map(a=>a.part);
+ const expected=[...new Set(art.assets.filter(a=>a.kit===kit&&a.kind==='sprite'&&a.runtime.registration==='greybox-contract-exact').map(a=>a.part))];
  const notPlaced=expected.filter(part=>!parts.has(part));
  // 当前 maze 随机 carve 不放独立柱；保留资源交付，不修改地图来制造覆盖。
  assert.ok(notPlaced.every(part=>kit==='maze'&&part==='pillar'),kit+' 随机场地缺少预期摆件 '+notPlaced.join(','));
  console.log(JSON.stringify({kit,seeds,wallSides:[...walls].sort(),ledgeSides:[...ledges].sort(),blockerWallSides:[...blockerWalls].sort(),lampFaces:[...lights].sort(),mirroredVariants:[...mirror],parts:[...parts].sort(),notPlaced}));
 }
+for(const island of ['wind','mist','forge','frost','rift','dragon'])for(const kit of ['cave','crypt','maze'] as const){
+ const {map}=generatePlaneStage(`plane-wind-nest-${kit}-1`,seeds[0],'ss-map-'+island);
+ for(const id of map.resources)assert.ok(openWorldRuntimeAssets.find(a=>a.id===id)?.runtime.file,`${island}/${kit} 未登记 ${id}`);
+}
+console.log(JSON.stringify({passed:true,islandKitPairs:18}));

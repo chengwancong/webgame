@@ -9,7 +9,7 @@ type Painter=WardrobePreview|MiniNativePreview;
 
 /** Commit a complete outfit atomically, keeping the last working outfit during loading. */
 export class HeroPreview {
- private painter?:Painter;private loading?:Painter;private requested='';private generation=0;private dead=false;
+ private painter?:Painter;private painterCanvas?:HTMLCanvasElement;private loading?:Painter;private requested='';private generation=0;private dead=false;
  private pending=false;private errors:string[]=[];private retryAfter=0;private dirty=false;private lastState?:WardrobeRenderState;
  constructor(readonly canvas:HTMLCanvasElement,private options?:Partial<{height:number;footX:number;footY:number;fitBounds:boolean}>){ }
  async setAppearance(appearance:ResolvedAppearance):Promise<boolean>{
@@ -21,7 +21,8 @@ export class HeroPreview {
   }
   this.requested=key;const generation=++this.generation;this.pending=true;
   this.loading?.destroy();
-  const next:Painter=miniSupportsAppearance(appearance)?new MiniNativePreview(this.canvas,this.options):new WardrobePreview(this.canvas,this.options);
+  const nextCanvas=document.createElement('canvas');nextCanvas.width=this.canvas.width;nextCanvas.height=this.canvas.height;
+  const next:Painter=miniSupportsAppearance(appearance)?new MiniNativePreview(nextCanvas,this.options):new WardrobePreview(nextCanvas,this.options);
   this.loading=next;
   try{
    const loaded=await next.setAppearance(appearance);
@@ -35,12 +36,13 @@ export class HeroPreview {
    backup.getContext('2d')!.drawImage(this.canvas,0,0);
    try{
     if(!next.render({action:'idle',clock:0,facing:this.lastState?.facing??-1})||next.diagnostics().errors.length)throw Error('First outfit frame failed to render');
-    const pixels=ctx.getImageData(0,0,this.canvas.width,this.canvas.height).data;
+    const pixels=nextCanvas.getContext('2d')!.getImageData(0,0,nextCanvas.width,nextCanvas.height).data;
     let visible=false;for(let i=3;i<pixels.length;i+=4)if(pixels[i]>16){visible=true;break;}
     if(!visible)throw Error('First outfit frame is empty');
     if(this.lastState){next.render(this.lastState);if(next.diagnostics().errors.length)throw Error('Current outfit pose failed to render');}
    }catch(error){ctx.clearRect(0,0,this.canvas.width,this.canvas.height);ctx.drawImage(backup,0,0);throw error;}
-   this.painter?.destroy();this.painter=next;this.loading=undefined;this.pending=false;this.dirty=true;return true;
+   ctx.clearRect(0,0,this.canvas.width,this.canvas.height);ctx.drawImage(nextCanvas,0,0);
+   this.painter?.destroy();this.painter=next;this.painterCanvas=nextCanvas;this.loading=undefined;this.pending=false;this.dirty=true;return true;
   }catch(error){
    next.destroy();if(generation!==this.generation||this.dead)return false;
    this.loading=undefined;this.pending=false;this.retryAfter=Date.now()+5000;
@@ -48,7 +50,13 @@ export class HeroPreview {
    console.error('[hero-appearance] Previous outfit retained',error);return false;
   }
  }
- render(state:WardrobeRenderState){this.lastState={...state,cast:state.cast?{...state.cast}:undefined};const changed=this.painter?.render(state)??false,result=changed||this.dirty;this.dirty=false;return result;}
+ render(state:WardrobeRenderState){
+  this.lastState={...state,cast:state.cast?{...state.cast}:undefined};const changed=this.painter?.render(state)??false;
+  if(changed&&this.painterCanvas){const pixels=this.painterCanvas.getContext('2d')!.getImageData(0,0,this.canvas.width,this.canvas.height).data;let visible=false;for(let i=3;i<pixels.length;i+=4)if(pixels[i]>16){visible=true;break;}
+   if(!visible)return false;const ctx=this.canvas.getContext('2d')!;ctx.clearRect(0,0,this.canvas.width,this.canvas.height);ctx.drawImage(this.painterCanvas,0,0);
+  }
+  const result=changed||this.dirty;this.dirty=false;return result;
+ }
  actionDuration(action:WardrobeAction){return this.painter?.actionDuration(action);}
  socket(name:SocketName,frame?:string){return this.painter?.socket(name,frame);}
  drawPortrait(target:HTMLCanvasElement){return this.painter?.drawPortrait(target)??false;}

@@ -218,7 +218,14 @@ export class WorldScene extends Phaser.Scene {
   for(const object of this.bridge.starSea?.()?.objects??[])resources.add(object.artId);
   const missing=[...resources].some(id=>{const asset=starseaAsset(id);if(!asset)throw Error('Unregistered region resource '+id);const r=asset.runtime;return r.kind==='atlas'?!this.textures.exists(asset.id):r.kind==='prop'&&r.file?!this.textures.exists('starsea-file:'+r.file):r.kind==='effect'&&(r as any).texture?!this.textures.exists('starsea-file:'+(r as any).texture):false;});
   const create=()=>{if(generation!==this.regionGeneration)return;createStarseaAnimations(this);if(plane)this.planeScene=new PlaneSceneRenderer(this,plane);else this.starSeaWorld=new StarseaWorldRenderer(this,region,map);if(!map||!fieldRegionInfo(region)?.qa)this.starSeaStory=new StarseaStoryRenderer(this,this.nativeBudget);this.loadingRegion=false;};
-  if(!missing){create();return;}this.loadingRegion=true;preloadStarseaRuntimeAssets(this,[...resources]);this.load.once(Phaser.Loader.Events.COMPLETE,create);this.load.start();
+  if(!missing){create();return;}this.loadingRegion=true;
+  const status=this.add.text(this.scale.width/2,this.scale.height/2,'正在载入场景 · 0%',{fontFamily:resolvedToken('Font.Family'),fontSize:resolvedToken('Font.Size.Body'),color:resolvedToken('Color.TextPrimary'),backgroundColor:resolvedToken('Color.PanelInset'),padding:{x:12,y:8}}).setOrigin(.5).setScrollFactor(0).setDepth(30000);
+  let preview:Phaser.GameObjects.Image|undefined;
+  const progress=(n:number)=>{if(generation===this.regionGeneration&&status.active)status.setText('正在载入场景 · '+Math.round(n*100)+'%');};
+  const finish=()=>{this.load.off(Phaser.Loader.Events.PROGRESS,progress);status.destroy();preview?.destroy();create();};
+  const remaining=()=>{if(generation!==this.regionGeneration){status.destroy();return;}const ground=map&&starseaAsset(map.groundResource);const file=ground?.runtime.file,key=file?'starsea-file:'+file:'';if(key&&this.textures.exists(key))preview=this.add.image(this.scale.width/2,this.scale.height/2,key).setDisplaySize(this.scale.width,this.scale.height).setScrollFactor(0).setDepth(-10000);
+   preloadStarseaRuntimeAssets(this,[...resources]);this.load.on(Phaser.Loader.Events.PROGRESS,progress);this.load.once(Phaser.Loader.Events.COMPLETE,finish);this.load.start();};
+  if(map){preloadStarseaRuntimeAssets(this,[map.groundResource,map.backdropResource]);this.load.once(Phaser.Loader.Events.COMPLETE,()=>{setTimeout(remaining,0);});this.load.start();}else remaining();
  }
  update(_time:number,delta:number){
  this.renderNow=performance.now();
@@ -262,7 +269,7 @@ export class WorldScene extends Phaser.Scene {
  }
  for(const child of (this.children?.list??[])){if(child instanceof Phaser.GameObjects.Image&&child.getData('occluder')){const b=child.getBounds();const hidden=b.contains(p.x,p.y-35)&&child.depth>p.y;child.setAlpha(hidden?.42:1);}}
  this.fieldEventEffects??=new FieldEventEffects(this);this.fieldEventEffects.draw(this.starSeaView?.effects??[],world.tick);
- if(this.starSeaStory)this.starSeaStory.draw(this.starSeaView?.objects??starseaPortObjects(this.starSeaWorld?.mapData),world.tick);else if(this.bridge.storyObjects){this.storyRenderer??=new StoryRenderer(this);this.storyRenderer.draw(this.bridge.storyObjects(),this.bridge.storyEncounter?.(),world.tick);}
+ if(this.starSeaStory)this.starSeaStory.draw(this.starSeaView?.objects??starseaPortObjects(this.starSeaWorld?.mapData),world.tick,world.hero.position);else if(this.bridge.storyObjects){this.storyRenderer??=new StoryRenderer(this);this.storyRenderer.draw(this.bridge.storyObjects(),this.bridge.storyEncounter?.(),world.tick);}
  if(this.starSeaView?.guide||this.questGuide){this.questGuide??=new QuestGuide(this);const guide=this.starSeaView?.guide,near=this.starSeaView?.prompt;this.questGuide.draw(world,guide,Boolean(guide&&near&&Math.hypot(guide.x-near.x,guide.y-near.y)<1.5));}
  const prompt=this.starSeaView?.prompt;if(prompt||this.interactBubble){this.interactBubble??=new InteractBubble(this);this.interactBubble.draw(prompt,this.bridge.interactKey?.()??'E',world.tick,prompt?.objectId?this.starSeaStory?.labelTop(prompt.objectId):undefined);}
  this.drawEffects(world);
@@ -288,7 +295,7 @@ export class WorldScene extends Phaser.Scene {
  if(hero)a.shadow.setPosition(p.x+motion.x,p.y+motion.groundY+2);
  if(hero&&activeCast&&this.bridge.world.tick<=activeCast.end){
   const cast=activeCast,elapsed=this.feedback.animationAge(id,cast.started,this.bridge.world.tick+this.accumulator/(1000/30));
-  a.sprite.anims.stop();a.sprite.setFrame(cast.action+'_'+heroAnimationFrame(cast.action,elapsed,cast.windup,8));a.action=cast.action;
+  a.sprite.anims.stop();const castFrame=cast.action+'_'+heroAnimationFrame(cast.action,elapsed,cast.windup,8);if(a.sprite.texture.has(castFrame))a.sprite.setFrame(castFrame);a.action=cast.action;
  }else if(this.bridge.world.paused||this.feedback.state(id,this.bridge.world.tick).paused)a.sprite.anims.pause();else a.sprite.anims.resume();
  if(hero&&a.wardrobe){
   const appearance=this.bridge.appearanceForActor?.(id)??this.bridge.resolvedAppearance;

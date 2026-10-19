@@ -37,6 +37,7 @@ export function validateWorldGeometry(data:WorldTables,maps:Region[],refs:{templ
   const points=item.path??item.spots??[{x:item.x,y:item.y}];
   for(const p of points){if(p.x<zone.rect.x||p.x>=zone.rect.x+zone.rect.w||p.y<zone.rect.y||p.y>=zone.rect.y+zone.rect.h)throw Error('物件不在所属分区 '+item.id);
    if(!walkable(map,p,.55))throw Error('世界物件落在碰撞体 '+item.id);
+   if(table==='objects'&&item.kind==='gather'){const approaches=Array.from({length:8},(_,i)=>({x:p.x+Math.cos(i*Math.PI/4)*1.5,y:p.y+Math.sin(i*Math.PI/4)*1.5})).filter(q=>walkable(map,q,.55));if(approaches.length<4)throw Error('采集点缺少安全接近格 '+item.id);}
    if(!findPath(map,map.safe,p,.55).length&&Math.hypot(map.safe.x-p.x,map.safe.y-p.y)>.1)throw Error('登陆点无法到达 '+item.id);
    if(['camps','dungeonEntrances','planeGates','events','chests','rares','patrols'].includes(table)&&Math.hypot(map.safe.x-p.x,map.safe.y-p.y)<=6+(item.radius??0))throw Error('世界玩法物件落在登陆安全区 '+item.id);
   }

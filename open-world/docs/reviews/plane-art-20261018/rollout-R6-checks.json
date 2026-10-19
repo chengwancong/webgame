@@ -1,0 +1,50 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "command": "node tools/build-plane-rollout-art.mjs --batch=R6",
+      "exitCode": 0,
+      "seconds": 3.347
+    },
+    {
+      "command": "node tools/verify-plane-rollout-art.mjs --batch=R6",
+      "exitCode": 0,
+      "seconds": 1.013
+    },
+    {
+      "command": "node tools/verify-plane-rollout-art.mjs --allow-pending",
+      "exitCode": 0,
+      "seconds": 3.111
+    },
+    {
+      "command": "node tools/verify-plane-prop-art.mjs",
+      "exitCode": 0,
+      "seconds": 0.374
+    },
+    {
+      "command": "node tools/verify-plane-kit-art.mjs --allow-pending",
+      "exitCode": 0,
+      "seconds": 3.602
+    },
+    {
+      "command": "npx tsx tools/verify-plane-prop-runtime.ts",
+      "exitCode": 0,
+      "seconds": 3.025
+    },
+    {
+      "command": "npx vitest run tests/plane-scenes.test.ts",
+      "exitCode": 0,
+      "seconds": 5.435
+    },
+    {
+      "command": "npx vitest run tests/plane-layouts.test.ts",
+      "exitCode": 0,
+      "seconds": 8.588
+    },
+    {
+      "command": "npx tsx tools/check-world-resource-wiring.ts",
+      "exitCode": 0,
+      "seconds": 1.705
+    }
+  ]
+}

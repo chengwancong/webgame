@@ -1,3 +1,4 @@
+import {interactionReach} from '../../../packages/rules/world-interactions.ts';
 import {consumeCraftKills} from '../../../packages/rules/crafting-consumables.ts';
 import type {FastifyInstance} from 'fastify';
 import type {Pool,PoolClient} from 'pg';
@@ -74,7 +75,7 @@ export function registerFieldActivities(app:FastifyInstance,ctx:Context){
    if(old?.status==='running')return {};if(old?.settled&&v.kind==='chest')fail('CHEST_CLAIMED','宝箱已经打开。');if(old&&Date.now()<old.cooldownUntil)fail('ACTIVITY_COOLDOWN','这个目标尚在冷却。');
    if((await c.query("SELECT 1 FROM ow_field_activities WHERE character=$1 AND status='running'",[s.id])).rowCount)fail('ACTIVITY_BUSY','请先结束当前世界活动。');
    const attempt=(old?.attempt??0)+1,position=v.kind==='rare'?(definition as Rare).spots[(attempt-1)%(definition as Rare).spots.length]:{x:(definition as Event).x,y:(definition as Event).y};
-   if(distance(v.position,position)>4.5||!walkable(regionById(v.region),v.position))fail('ACTIVITY_DISTANCE','请走到世界目标旁。');
+   if(distance(v.position,position)>interactionReach.activity||!walkable(regionById(v.region),v.position))fail('ACTIVITY_DISTANCE','请走到世界目标旁。');
    const zone=characterWorldTables(s).zones.find(z=>z.id===definition!.zone)!,tier=activeWorldTier(s),difficulty=tierDifficulty(tier),currency=tierReward(tier,starseaKillReward(zone.levelBand[1],'normal',s.level,v.region,Boolean(s.starsea?.hardmode))),data:FieldActivity={spawnRadius:v.kind==='event'?Math.max(3,(definition as Event).radius-4):undefined,worldTier:tier,difficulty,eliteAffixes:worldTier(tier).eliteAffixes,instance:randomUUID(),character:s.id,target:v.target,region:v.region,kind:v.kind,name:'name' in definition!?String(definition!.name):'宝箱',status:v.kind==='chest'?'success':'running',startedAt:Date.now(),cooldownUntil:0,attempt,definition:structuredClone(definition!),level:zone.levelBand[1],position:{...position},waves:0,waveCount:v.kind==='event'?(definition as Event).waves.length:v.kind==='rare'?1:0,tick:0,seed:randomInt(1,2147483647),reason:'',settled:false,lastInputAt:Date.now(),renderEvents:[],loot:freezeFieldLoot(definition!.loot,currency),battle:null};
    if(v.kind!=='chest'){
     const build=resolveBuild(s),world=new World({...regionById(v.region),sprint:Boolean(regionById(v.region).sprint&&s.starsea?.features.includes('sprint'))},build.stats,build.resolvedSkills,[],[],data.seed);world.hero.position={...position};world.anchor={...position};if(v.kind==='event'){world.radius=Math.max(3,(definition as Event).radius-4);world.autoBounds={center:{...position},radius:Math.max(2,(definition as Event).radius-2)};}world.setMode('auto');

@@ -19,7 +19,7 @@ export function combatFatalHitHtml(fatal:CombatFatalHit|null|undefined){
  if(!fatal)return '<p class="ui-caption">没记下这一击，回港整备再来。</p>';
  const moveArt:Record<string,string>={'物理':'cut','火焰':'ember','冰霜':'frost','闪电':'chain','暗影':'dark_arrow','毒素':'poison_arrow','奥术':'bolt','真实':'lance'};
  const tags=fatal.statuses.map(s=>`<span class="review-fatal__tag">${esc(s)}</span>`).join('');
- return `<div class="review-fatal"><img class="review-fatal__art" src="${skillArt(moveArt[fatal.damageType]??'cut')}" alt="${esc(fatal.damageType)}招式"><div class="review-fatal__copy"><div class="review-fatal__line"><b>${esc(fatal.enemy)} · ${esc(fatal.skill)}</b><span class="review-fatal__damage">${esc(fatal.damageType)} ${fatal.damage}</span>${tags}</div><p>${esc(fatal.hint)}</p></div></div>`;
+ return `<div class="review-fatal"><img class="review-fatal__art" src="${skillArt(moveArt[fatal.damageType]??'cut')}" alt="${esc(fatal.damageType)}招式"><div class="review-fatal__copy"><div class="review-fatal__line"><b>最后一击 · ${esc(fatal.enemy)} · ${esc(fatal.skill)}</b><span class="review-fatal__damage">${esc(fatal.damageType)} ${fatal.damage}</span>${tags}</div><p>${esc(fatal.hint)}</p></div></div>`;
 }
 export function combatAdviceHtml(advice:readonly CombatAdvice[]){
  if(!advice.length)return '';
@@ -36,5 +36,5 @@ export function combatReviewHtml(review:CombatReview,key?:KeyProgressView|null,t
  const earlier=review.recent.length?`<details class="review-earlier"><summary>之前还挨了 ${review.recent.length} 下</summary><ul>${review.recent.map(line=>`<li>${esc(line)}</li>`).join('')}</ul></details>`:'';
  // 赢了就没有“致命一击”这一行，只留钥匙进度和建议。
  const failed=defeated,hit=failed?combatFatalHitHtml(review.fatal):'';
- return `<section class="dungeon-diagnostic" aria-label="战斗回顾">${sectionTitleHtml(title)}${hit}${failed&&review.gap?`<p class="ui-caption review-gap">${esc(review.gap)}</p>`:''}${failed?earlier+combatAdviceHtml(review.advice):''}${combatKeyProgressHtml(key)}</section>`;
+ return `<section class="dungeon-diagnostic" aria-label="战斗回顾">${sectionTitleHtml(title)}${failed&&review.totalTaken!==undefined?statRowHtml({label:'本场累计承受伤害',value:Math.round(review.totalTaken)}):''}${hit}${failed&&review.gap?`<p class="ui-caption review-gap">${esc(review.gap)}</p>`:''}${failed?earlier+combatAdviceHtml(review.advice):''}${combatKeyProgressHtml(key)}</section>`;
 }

@@ -1,3 +1,4 @@
+import {mainStatValues} from './main-stat-values.ts';
 import {gearWeaponType} from './weapon-skills.ts';
 import {randomInt} from 'node:crypto';
 import type {Gear} from '../contracts/index.ts';
@@ -17,6 +18,5 @@ export function assignMainStat(g:Gear,ilvl:number,random:AffixRandom={int:random
 export function mainStatContribution(g:Gear){
  if(!g.mainStat)return;
  if(g.rank>gearMaxRank(g,5))throw Error('Invalid main-stat reinforcement rank');
- const enhancement=Math.round(g.mainStat.value*combatNumerics.reinforcement.primaryRatioPerRank*g.rank*1e6)/1e6;
- return {stat:g.mainStat.stat,base:g.mainStat.value,enhancement,effective:Math.round((g.mainStat.value+enhancement)*1e6)/1e6};
+ return mainStatValues(g);
 }

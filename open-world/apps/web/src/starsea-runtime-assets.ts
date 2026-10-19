@@ -9,7 +9,7 @@ import {runtimeResources} from '../../../packages/asset-manifest/runtime-resourc
 import {registerLoadedActorAnimations} from './loaded-actor-animations.ts';
 
 export type StarseaPhase='default'|'phase-enter'|'phase-active'|'phase-end';
-export type StarseaSceneObject={id:string;artId:string;position:Point;state?:string;enabled?:boolean;label?:string;name?:string;npcId?:string;action?:string;facing?:number;phase?:StarseaPhase;actionStartedTick?:number};
+export type StarseaSceneObject={id:string;artId:string;position:Point;reach?:number;state?:string;enabled?:boolean;label?:string;name?:string;npcId?:string;action?:string;facing?:number;phase?:StarseaPhase;actionStartedTick?:number};
 export type StarseaSceneActor={id:string;artId?:string;position?:Point;state?:string;enabled?:boolean;label?:string;npcId?:string;action?:string;skillId?:string;phase?:StarseaPhase;actionStartedTick?:number;phaseStartedTick?:number;cast?:{elapsed:number;windup:number;recovery:number}};
 export type StarseaSceneView={effects?:readonly import('./field-event-effects.ts').FieldEventEffect[];guide?:{x:number;y:number;label:string};prompt?:{x:number;y:number;text:string;objectId?:string};objects?:readonly StarseaSceneObject[];actors?:readonly StarseaSceneActor[]};
 export type SceneVariant={id:string;file:string;anchor?:[number,number];displayWidth?:number;mirrorX?:boolean};

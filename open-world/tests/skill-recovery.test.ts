@@ -1,5 +1,5 @@
 import {it,expect} from 'vitest';
-import {makeGear,resolveBuild,resolveSkillAccess} from '../packages/rules/index.ts';
+import {makeGear,resolveBuild,resolveSkillAccess,equipNewLevelSkills} from '../packages/rules/index.ts';
 import {makeStarseaStarterWeapon} from '../packages/rules/starsea-starter.ts';
 import {newStarseaState} from '../packages/rules/starsea.ts';
 import {choosePrologueWeapon,finishPrologue} from '../packages/rules/starsea-prologue.ts';
@@ -19,6 +19,12 @@ function character(family?:'sword'|'staff'|'hidden'):CharacterState{
 const finish=(s:CharacterState,task:string)=>{s.starsea!.done.push(task);const g={messages:[] as string[]};applySkillRecovery(s,task,g);return g.messages;};
 const live=(s:CharacterState)=>resolveBuild(s).resolvedSkills.map(k=>k.id);
 const access=(s:CharacterState,id:string)=>resolveSkillAccess(s).find(q=>q.id===id)!;
+it('new eligible level skills use empty slots without replacing equipped skills or spending resources',()=>{
+ const s=character('sword');s.level=8;s.starsea!.islands.push('ss-map-mist');
+ const before=[...s.skills],added=equipNewLevelSkills(s,1);expect(added.length).toBeGreaterThan(0);expect(s.skills.slice(0,before.length)).toEqual(before);
+ expect(s.skills.length).toBeLessThanOrEqual(skillSlotCount(s));for(const id of added)expect(s.skillRanks[id]).toBe(1);expect(s.gold).toBe(0);expect(s.material).toBe(0);
+ const full=character('sword');full.level=8;full.starsea!.islands.push('ss-map-mist');full.skills=['cut','whirl','ward'];expect(equipNewLevelSkills(full,1)).toEqual([]);expect(full.skills).toEqual(['cut','whirl','ward']);
+});
 
 const choose=(s:CharacterState,choice:'a'|'b')=>{s.starsea!.quests['ss-c01-t04']={step:1,attempt:0,acceptedAt:0,choice};const g={messages:[] as string[]};grantRouteSkill(s,'ss-c01-t04',choice,g);return g.messages;};
 it('sword: one skill at a time — cut, whirl, ward, route gift with slot 4, vortex blade swaps ward out',()=>{
