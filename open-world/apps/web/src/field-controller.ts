@@ -1,4 +1,5 @@
 import type {FieldReplayGoal} from '../../../packages/contracts/replay-pilots.ts';
+import {nearestWalkable} from './landing-nudge.ts';
 import type {WorldPhaseView} from '../../../packages/contracts/open-world.ts';
 import type {FieldCamps,Permit,Snapshot} from '../../../packages/contracts/index.ts';
 import {fieldRegionInfo} from '../../../packages/content/index.ts';
@@ -85,7 +86,7 @@ export class FieldController{
   return this.guided;
  }
  /** Move the local hero after the server accepted the travel. */
- arrive(id:string){const w=this.deps.world(),target=worldTables.waypoints.filter(w=>this.phase?.waypoints.includes(w.id)??(!w.when&&!w.until)).find(x=>x.id===id&&x.region===w.region.id);if(!target)return;w.setMode(w.mode);w.hero.position={x:target.x,y:target.y};w.anchor={...w.hero.position};this.key='';}
+ arrive(id:string){const w=this.deps.world(),target=worldTables.waypoints.filter(w=>this.phase?.waypoints.includes(w.id)??(!w.when&&!w.until)).find(x=>x.id===id&&x.region===w.region.id);if(!target)return;w.setMode(w.mode);w.hero.position=nearestWalkable(w.region,{x:target.x,y:target.y});w.anchor={...w.hero.position};this.key='';}
  private saved(region:string){return this.deps.snapshot()?.world?.exploration?.[region]??'';}
  private reveal(w:World){
   const cell=Math.floor(w.hero.position.x/8)+','+Math.floor(w.hero.position.y/8);if(cell===this.cell)return;this.cell=cell;

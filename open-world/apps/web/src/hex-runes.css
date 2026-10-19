@@ -1,0 +1,24 @@
+/* HEX sockets (U-01) under the paperdoll plus the HEX tip art. Character-only; the shared slot primitive is untouched. */
+.hex-slot-row{display:flex;justify-content:center;gap:var(--space-3);padding:var(--space-2) var(--space-4);flex:0 0 auto;border-top:var(--border-width) solid var(--color-border-subtle)}
+.hex-slot-row>.hex-slot{position:relative;display:grid;grid-template-columns:var(--size-icon-slot) minmax(0,1fr);align-items:center;gap:var(--space-2);width:178px;min-height:64px;padding:var(--space-1) var(--space-2);text-align:left;border:var(--border-width) solid var(--color-border);border-radius:var(--radius-slot);background:var(--item-surface,var(--color-panel-raised))}
+.hex-slot-row>.hex-slot:hover:not(:disabled){border-color:var(--quality-color,var(--color-border-strong))}
+.hex-slot-row>.hex-slot[aria-pressed=true]{border-color:var(--color-highlight);box-shadow:inset 0 0 0 var(--border-width) var(--color-highlight)}
+.hex-slot-row>.hex-slot.empty{border-style:dashed;background:var(--color-panel-inset)}
+.hex-slot-row>.hex-slot.is-locked{border-style:dashed;background:var(--color-panel-inset);opacity:.62;cursor:not-allowed}
+.hex-slot-art{display:grid;place-items:center;width:var(--size-icon-slot);height:var(--size-icon-slot)}
+.hex-slot-art>.hex-rune-icon{width:100%;height:100%}
+.hex-slot.empty .hex-slot-art,.hex-slot.is-locked .hex-slot-art{opacity:.45;filter:grayscale(1)}
+.hex-slot-copy{display:flex;flex-direction:column;min-width:0}
+.hex-slot-copy small{position:static;inset:auto;font-size:var(--font-size-micro);color:var(--color-text-secondary);text-align:left}
+.hex-slot-copy b{overflow:hidden;font-size:var(--font-size-caption);font-weight:var(--font-weight-bold);line-height:var(--font-line-heading);white-space:nowrap;text-overflow:ellipsis;color:var(--color-text-primary)}
+.hex-slot.empty .hex-slot-copy b,.hex-slot.is-locked .hex-slot-copy b{font-weight:var(--font-weight-semibold);color:var(--color-text-secondary)}
+.equip-tip-art.hex-tip-art{padding:var(--space-1)}
+.hex-tip-art>.hex-rune-icon{width:100%;height:100%}
+/* Inside the paperdoll footer the row sits left of the legacy core entry; the footer grows past its 60px basis to fit 64px sockets. */
+.character-paper-footer:has(>.hex-slot-row){flex-basis:auto}
+.character-paper-footer>.hex-slot-row{padding:0;border-top:0;justify-content:flex-start;min-width:0}
+/* Socket chooser: reuses the character chooser columns; the art cell is the hex icon instead of a gear sprite. */
+.hex-candidate .hex-slot-art{width:40px;height:40px;flex:none}
+.hex-candidate.is-under-level{opacity:.7}
+.hex-chooser-actions{display:flex;align-items:center;gap:var(--space-2);margin-top:var(--space-2)}
+.hex-chooser-hint{margin:0;color:var(--color-text-secondary)}

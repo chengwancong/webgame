@@ -1,9 +1,10 @@
 {$AW_DOMAIN} {
 	encode zstd gzip
-	# 测试服整站口令：挡住外人与爬虫；/api/health 留给监控与跑测探活。
-	@gated not path /api/health
-	basic_auth @gated {
-		{$AW_GATE_USER} {$AW_GATE_HASH}
+	# Site verification removed at the user's request. Old links return to the game.
+	handle /__gate/* {
+		redir * / 303
 	}
-	reverse_proxy api:8611
+	handle {
+		reverse_proxy api:8611
+	}
 }

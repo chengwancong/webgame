@@ -40,17 +40,18 @@ import {KillSpoils,type SpoilItem} from './kill-spoils.ts';
 import {settings} from '../../../packages/content/index.ts';
 import {lineOfSight} from '../../../packages/simulation/navigation.ts';
 import type {ResolvedAppearance} from '../../../packages/contracts/appearance.ts';
-import {preloadStarseaRuntimeAssets,createStarseaAnimations,StarseaNativeActor,StarseaNativeBudget,starseaAsset,starseaAtlasFrame,starseaAtlasSocket,type StarseaSceneView,type StarseaPhase} from './starsea-runtime-assets.ts';
+import {preloadStarseaRuntimeAssets,starseaRuntimeMissing,createStarseaAnimations,StarseaNativeActor,StarseaNativeBudget,starseaAsset,starseaAtlasFrame,starseaAtlasSocket,type StarseaSceneView,type StarseaPhase} from './starsea-runtime-assets.ts';
 import {gatherArt} from './gather-nodes.ts';
 import {edgeResources} from './island-edge.ts';
 import {PlaneSceneRenderer} from './plane-scene-renderer.ts';
 import type {PlaneMap} from '../../../packages/content/plane-scenes.ts';
-import {StarseaWorldRenderer,type StarseaMap} from './starsea-world-renderer.ts';
+import {StarseaWorldRenderer,loadStarseaMap,type StarseaMap} from './starsea-world-renderer.ts';
 import {inWorldViewport,cameraView,screenOrigin} from './world-chunks.ts';
 import {STAGE,setStageBackdrop} from './stage.ts';
 import {StarseaStoryRenderer,starseaPortObjects} from './starsea-story-renderer.ts';
 import {QuestGuide} from './quest-guide.ts';
 import {InteractBubble} from './interact-bubble.ts';
+import {worldLabels} from './hud-avoidance.ts';
 import {project,unproject} from './iso.ts';
 export type {StarseaSceneView,StarseaSceneObject,StarseaSceneActor} from './starsea-runtime-assets.ts';
 const catalog={actors:actorCatalog};
@@ -62,7 +63,7 @@ export class WorldScene extends Phaser.Scene {
  private soundEvents=new CombatSoundEvents();private chapterEffects?:ChapterEffects;private skillEffects?:EffectPresenter;private effectFactory?:ViewBridge['effectFactory'];private vignette?:Phaser.GameObjects.Graphics;private feedback=new HitFeedback(()=>this.bridge.motionReduced);
  private heroCast?:{skill:string;action:'attack'|'skill';started:number;windup:number;end:number;target?:Vec};
  private warningUI?:WarningUI;private storyRenderer?:StoryRenderer;
- private fieldEventEffects?:FieldEventEffects;private loadingRegion=false;private regionGeneration=0;
+ private fieldEventEffects?:FieldEventEffects;private loadingRegion=false;private regionGeneration=0;private fetchedMaps=new Map<string,StarseaMap|undefined>();
  private starSeaWorld?:StarseaWorldRenderer;private planeScene?:PlaneSceneRenderer;private starSeaStory?:StarseaStoryRenderer;private starSeaView?:StarseaSceneView;private questGuide?:QuestGuide;private interactBubble?:InteractBubble;private nativeBudget=new StarseaNativeBudget();
  private enemyCasts=new Map<string,{skill:string;started:number;windup:number;end:number}>();
  private pendingInteraction?:{world:World;point:Vec;range:number;valid:()=>boolean;action:()=>void};
@@ -211,22 +212,29 @@ export class WorldScene extends Phaser.Scene {
  if(this.bridge.planeMap||this.bridge.worldMap||this.regionId.startsWith('ss-map-'))this.loadRegionLayers();
  }
  private loadRegionLayers(){
-  const generation=++this.regionGeneration,plane=this.bridge.planeMap,map=plane?undefined:this.bridge.worldMap,region=this.bridge.world.region.id,resources=new Set<string>(plane?plane.resources:map?[map.groundResource,map.backdropResource,map.boundary.resourceId,...edgeResources(map),...map.roads.map(r=>r.resource),...map.decorations.map(d=>d.resourceId),...dressingResources(map)]:[]);
+  const generation=++this.regionGeneration,plane=this.bridge.planeMap,region=this.bridge.world.region.id,map=plane?undefined:this.bridge.worldMap??this.fetchedMaps.get(region),resources=new Set<string>(plane?plane.resources:map?[map.groundResource,map.backdropResource,map.boundary.resourceId,...edgeResources(map),...map.roads.map(r=>r.resource),...map.decorations.map(d=>d.resourceId),...dressingResources(map)]:[]);
+  // 首领房等地图不在静态 fieldMaps 里：先取回地图再按完整清单加载，期间保持加载锁，不让本地战斗在相机底色上开打（Grok：首领房暗绿空洞）。
+  if(!plane&&!map&&!this.fetchedMaps.has(region)&&this.regionId.startsWith('ss-map-')&&starseaAsset(region)?.runtime.kind==='map'){this.loadingRegion=true;
+   const wait=this.add.text(this.scale.width/2,this.scale.height/2,'正在载入场景 · 0%',{fontFamily:resolvedToken('Font.Family'),fontSize:resolvedToken('Font.Size.Body'),color:resolvedToken('Color.TextPrimary'),backgroundColor:resolvedToken('Color.PanelInset'),padding:{x:12,y:8}}).setOrigin(.5).setScrollFactor(0).setDepth(30000);
+   void loadStarseaMap(region).then(m=>{wait.destroy();if(generation!==this.regionGeneration)return;this.fetchedMaps.set(region,m);this.loadRegionLayers();},error=>{wait.destroy();if(generation!==this.regionGeneration)return;console.error('[scene] map load failed',error);this.fetchedMaps.set(region,undefined);this.loadingRegion=false;this.loadRegionLayers();});
+   return;}
   for(const [key,rows]of Object.entries(worldTables))if(key!=='source')for(const row of rows as any[])if(row.region===region){for(const id of [row.kind==='gather'?gatherArt(row):row.resource,row.openResource,row.activeResource,row.cooldownResource,row.startEffect,row.successEffect,row.failureEffect,row.prop])if(id)resources.add(id);const templates=[...(row.pack??[]),...(row.guards??[]),...(row.waves?.flat()??[]),...(row.template?[{template:row.template}]:[])];for(const spec of templates){const art=this.bridge.world.rules.monsters.templates.find(t=>t.id===spec.template)?.art;if(art)resources.add(art);}}
   for(const spawn of this.bridge.world.region.spawns)if(spawn.art)resources.add(spawn.art);
   for(const enemy of this.bridge.world.enemies)if(enemy.art)resources.add(enemy.art);
   for(const chest of this.bridge.world.region.keyChests??[]){resources.add(chest.resource);resources.add(chest.openResource);}
   for(const object of this.bridge.starSea?.()?.objects??[])resources.add(object.artId);
-  const missing=[...resources].some(id=>{const asset=starseaAsset(id);if(!asset)throw Error('Unregistered region resource '+id);const r=asset.runtime;return r.kind==='atlas'?!this.textures.exists(asset.id):r.kind==='prop'&&r.file?!this.textures.exists('starsea-file:'+r.file):r.kind==='effect'&&(r as any).texture?!this.textures.exists('starsea-file:'+(r as any).texture):false;});
+  const missing=starseaRuntimeMissing(this,[...resources]);
   const create=()=>{if(generation!==this.regionGeneration)return;createStarseaAnimations(this);if(plane)this.planeScene=new PlaneSceneRenderer(this,plane);else this.starSeaWorld=new StarseaWorldRenderer(this,region,map);if(!map||!fieldRegionInfo(region)?.qa)this.starSeaStory=new StarseaStoryRenderer(this,this.nativeBudget);this.loadingRegion=false;};
   if(!missing){create();return;}this.loadingRegion=true;
   const status=this.add.text(this.scale.width/2,this.scale.height/2,'正在载入场景 · 0%',{fontFamily:resolvedToken('Font.Family'),fontSize:resolvedToken('Font.Size.Body'),color:resolvedToken('Color.TextPrimary'),backgroundColor:resolvedToken('Color.PanelInset'),padding:{x:12,y:8}}).setOrigin(.5).setScrollFactor(0).setDepth(30000);
   let preview:Phaser.GameObjects.Image|undefined;
-  const progress=(n:number)=>{if(generation===this.regionGeneration&&status.active)status.setText('正在载入场景 · '+Math.round(n*100)+'%');};
+  // 两段加载合成一个进度：地面与远景占前 30%，其余贴图占后 70%；第一段也要走数字，不再停在 0%（Grok：沉星棕屏 0%）。
+  let base=0,span=map?.3:1;
+  const progress=(n:number)=>{if(generation===this.regionGeneration&&status.active)status.setText('正在载入场景 · '+Math.round((base+n*span)*100)+'%');};
   const finish=()=>{this.load.off(Phaser.Loader.Events.PROGRESS,progress);status.destroy();preview?.destroy();create();};
   const remaining=()=>{if(generation!==this.regionGeneration){status.destroy();return;}const ground=map&&starseaAsset(map.groundResource);const file=ground?.runtime.file,key=file?'starsea-file:'+file:'';if(key&&this.textures.exists(key))preview=this.add.image(this.scale.width/2,this.scale.height/2,key).setDisplaySize(this.scale.width,this.scale.height).setScrollFactor(0).setDepth(-10000);
-   preloadStarseaRuntimeAssets(this,[...resources]);this.load.on(Phaser.Loader.Events.PROGRESS,progress);this.load.once(Phaser.Loader.Events.COMPLETE,finish);this.load.start();};
-  if(map){preloadStarseaRuntimeAssets(this,[map.groundResource,map.backdropResource]);this.load.once(Phaser.Loader.Events.COMPLETE,()=>{setTimeout(remaining,0);});this.load.start();}else remaining();
+   if(map){base=.3;span=.7;progress(0);}preloadStarseaRuntimeAssets(this,[...resources]);this.load.on(Phaser.Loader.Events.PROGRESS,progress);this.load.once(Phaser.Loader.Events.COMPLETE,finish);this.load.start();};
+  if(map){preloadStarseaRuntimeAssets(this,[map.groundResource,map.backdropResource]);this.load.on(Phaser.Loader.Events.PROGRESS,progress);this.load.once(Phaser.Loader.Events.COMPLETE,()=>{this.load.off(Phaser.Loader.Events.PROGRESS,progress);setTimeout(remaining,0);});this.load.start();}else remaining();
  }
  update(_time:number,delta:number){
  this.renderNow=performance.now();
@@ -278,7 +286,7 @@ export class WorldScene extends Phaser.Scene {
  if(this.warningUI){
    this.warningUI.render(world);
  }
- this.syncLoot();this.renderTimes.push(performance.now()-renderStart);if(this.renderTimes.length>600)this.renderTimes.shift();this.frames.push(delta);if(this.frames.length>600)this.frames.shift();this.debugFrame++;
+ this.syncLoot();worldLabels(this).flush();this.renderTimes.push(performance.now()-renderStart);if(this.renderTimes.length>600)this.renderTimes.shift();this.frames.push(delta);if(this.frames.length>600)this.frames.shift();this.debugFrame++;
  if(import.meta.env.DEV&&this.debugFrame%60===0)this.game.canvas.dataset.artDiagnostics=JSON.stringify({region:world.region.id,hero:{position:world.hero.position,frame:this.actors.get('hero')?.wardrobe?.frameName},environment:environment.version,story:this.storyRenderer?.diagnostics(),spoils:this.spoils?.diagnostics(),metrics:this.metrics()});
  }
  private interpolate(id:string,pos:Vec){if(this.bridge.authoritativeWorld)return this.networkMotion.position(id,pos,this.renderNow);const previous=this.previous.get(id);if(!previous)return pos;const a=this.accumulator/(1000/30);return {x:previous.x+(pos.x-previous.x)*a,y:previous.y+(pos.y-previous.y)*a};}
@@ -346,8 +354,11 @@ export class WorldScene extends Phaser.Scene {
  /** Affix tags: one tinted pill per affix, centred above the bar (bottom edge at `bottom`). */
  private syncAffixTags(a:ActorView,affixes:readonly string[],x:number,bottom:number,depthY:number){
   const key=affixes.join('|');if(a.tagKey!==key){for(const tag of a.tags??[])tag.destroy();a.tagKey=key;a.tags=affixes.map(affix=>this.add.text(0,0,(eliteAffixes as Record<string,{name:string}>)[affix]?.name??affix,{resolution:worldTextResolution(),fontFamily:resolvedToken('Font.Family'),fontSize:resolvedToken('Font.Size.Micro'),fontStyle:'bold',color:resolvedToken('Color.World.Ink')}).setOrigin(.5,1).setData('affix',affix));}
-  const tags=a.tags??[];if(!tags.length)return;const pad=5,gap=3,widths=tags.map(t=>t.width+pad*2),total=widths.reduce((n,w)=>n+w,0)+gap*(tags.length-1);let left=x-total/2;
-  for(const [i,tag] of tags.entries()){const w=widths[i],h=tag.height+2,cx=left+w/2;this.health!.fillStyle(uiColor(affixColor(tag.getData('affix'))),.95).fillRoundedRect(left,bottom-h,w,h,h/2);this.health!.lineStyle(1,uiColor('Color.World.Ink'),.55).strokeRoundedRect(left,bottom-h,w,h,h/2);tag.setPosition(Math.round(cx),Math.round(bottom-1)).setDepth(9001+depthY*1e-6).setVisible(true);left+=w+gap;}
+  const tags=a.tags??[];if(!tags.length)return;const pad=5,gap=3,widths=tags.map(t=>t.width+pad*2),total=widths.reduce((n,w)=>n+w,0)+gap*(tags.length-1),height=Math.max(...tags.map(t=>t.height+2));
+  // 精英词缀作为一组世界标签参与本帧避让（方案 §2.3）：只在血条正上方让位，进入 HUD 保留区就隐藏。
+  for(const tag of tags)tag.setVisible(false);
+  worldLabels(this).submit({id:'affix:'+key+':'+Math.round(x)+':'+Math.round(bottom),bounds:{x:x-total/2,y:bottom-height,width:total,height},priority:30,apply:(visible,lift)=>{if(!visible||!this.health)return;let left=x-total/2;const base=bottom-lift;
+   for(const [i,tag] of tags.entries()){if(!tag.active)continue;const w=widths[i],h=tag.height+2,cx=left+w/2;this.health.fillStyle(uiColor(affixColor(tag.getData('affix'))),.95).fillRoundedRect(left,base-h,w,h,h/2);this.health.lineStyle(1,uiColor('Color.World.Ink'),.55).strokeRoundedRect(left,base-h,w,h,h/2);tag.setPosition(Math.round(cx),Math.round(base-1)).setDepth(9001+depthY*1e-6).setVisible(true);left+=w+gap;}}});
  }
  private consume(world:World){for(const event of world.events)if(event.type==='cast_started'&&event.id!=='hero'&&world.players.has(event.id)&&event.skill)this.partyCasts.set(event.id,{skill:event.skill,action:skillEmitter(event.skill)?.action==='projectile'||event.skill==='cut'?'attack':'skill',started:event.tick,windup:event.windup??1,end:event.tick+(event.windup??1)+8});for(const event of world.events)if(event.type==='cast_started'&&event.id==='hero'&&event.skill){const skill=world.skills.find(s=>s.id===event.skill)!,emitter=skillEmitter(skill.id);const attack=emitter?emitter.action==='projectile':['single','area','dash'].includes(skill.kind)&&!['cleave','ground_slam','nova'].includes(skill.id);this.heroCast={skill:event.skill,action:attack?'attack':'skill',started:event.tick,windup:event.windup??1,end:event.tick+(event.windup??1)+8,target:event.target};}
  this.feedback.consume(world);

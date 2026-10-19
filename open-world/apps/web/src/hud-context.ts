@@ -23,7 +23,8 @@ export function hudStatusHtml(s:Pick<Snapshot,'gear'|'capacity'>,context:HudCont
  if(s.gear.length>=s.capacity){const action=context==='field'?'camp-sort':'panel',label=context==='field'?'回港整理':'行囊',note=context==='home'?'整理装备后再出发':context==='dungeon'?'副本继续，结束后回港整理':'拾取已暂停，先回港整理';return `<div class="hud-inventory-notice"><div><strong>背包满了 <span class="num">${s.gear.length}/${s.capacity}</span></strong>${buttonHtml(context==='home'?'整理':label,{action,id:action==='panel'?'bag':'town',size:'compact',variant:'secondary',disabled:processing})}</div><small>${note}</small></div>`;}
  return context==='field'&&stopReason?`<div class="hud-combat-notice">${esc(stopReason)}</div>`:'';
 }
-export const hudGoalLabel=(goal:string,fallback='查看下一步 →')=>Array.from(goal).length>14?fallback:goal;
+// 追踪条只有一行：长目标截到第一个分句（或 13 字）加省略号，完整文字在 title 与任务页；不再整句换成“查看下一步”（Grok BUG-66）。
+export const hudGoalLabel=(goal:string,_fallback?:string)=>{const c=Array.from(goal.trim());if(c.length<=14)return c.join('');const cut=c.findIndex((ch,i)=>i>=4&&i<=13&&'，。；、：,;'.includes(ch));return c.slice(0,cut>0?cut:13).join('')+'…';};
 // 归途主线已下线（老角色迁入星潮海），追踪栏只列任务。
 /** 追踪条的成长目标行（钉选装备、下一次找回），docs/progression-goal-plan.md §3：与任务合计最多三行。 */
 export type TrackerGoal={kind:string;title:string;goal:string;action:string;id:string;full?:boolean};

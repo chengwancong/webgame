@@ -38,6 +38,11 @@ export function minimapGround(region:{theme:string;presentationKey?:string},map?
  return mixHex(hexRgb(color),[255,255,255],.12);
 }
 const heroTrail=new WeakMap<HTMLCanvasElement,{x:number;y:number;a:number}>();
+/** 地面平均色的相对亮度超过 0.55 时返回正片叠底的不透明度（0～0.45），暗底岛返回 0。 */
+export function minimapExposureShade(hex?:string){
+ if(!hex||!/^#[0-9a-f]{6}$/i.test(hex))return 0;const v=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255),l=.2126*v[0]+.7152*v[1]+.0722*v[2];
+ return l<=.55?0:Math.min(.45,(l-.55)*1.6+.12);
+}
 export function radarProjection(hero:IsoPoint,size=192,radius=RADAR_RADIUS_CELLS,padding=2):MapProjection{
  const center=project(hero),scale=(size/2-padding)/(radius*32*Math.SQRT2);
  return {scale,x:size/2-center.x*scale,y:size/2-center.y*scale,width:size,height:size,padding};
@@ -134,6 +139,9 @@ export function paintMinimap(canvas:HTMLCanvasElement,world:World,options:{mode?
   }else{const layer=radarLayer(canvas,map,scale,density);if(layer){ctx.drawImage(layer.canvas,Math.round((projection.x+layer.left)*density)/density,Math.round((projection.y+layer.top)*density)/density,layer.width,layer.height);scene=true;}}
   ctx.setTransform(density,0,0,density,0,0);
  }
+ // 亮底岛（赤炉沙地、霜镜雪地）缩成小图后发白：按地面平均亮度压一层正片叠底，只罩岛内（Grok：小地图过曝）。
+ const shade=scene?minimapExposureShade(artColor(minimapArtFiles(region,map).ground)):0;
+ if(shade>0){ctx.save();polygon();ctx.clip();ctx.globalCompositeOperation='multiply';ctx.fillStyle=`rgba(96,88,80,${shade})`;ctx.fillRect(0,0,size,height);ctx.restore();}
  // Flat fallback: regions without a sealed map, or the moment before the ground material decodes.
  if(!scene&&terrain.source!=='loading'){
   const files=minimapArtFiles(region,map),roadColor=artColor(files.road),cliffColor=artColor(files.cliff);

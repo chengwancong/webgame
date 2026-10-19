@@ -9,7 +9,9 @@ export class WarningUI{
   const track=document.createElement('div');track.setAttribute('aria-hidden','true');track.className='warning-ui-track';this.fill=document.createElement('div');this.fill.className='warning-ui-fill';track.append(this.fill);this.container.append(this.title,this.detail,track);parent.append(this.container);
  }
  render(w:World){
-  const cast=w.bossCasts.filter(c=>(!c.resolved||c.interrupted)&&c.expires>w.tick).sort((a,b)=>(a.skill==='ultimate'?-1:0)-(b.skill==='ultimate'?-1:0)||a.ends-b.ends)[0];
+  // 施法者已死亡/离场，或读条结束 1 秒仍未结算：不再挂警告（Grok：「敌方施法 · N」整场不消）。
+  const alive=(id:string)=>w.enemies.some(e=>e.id===id&&e.alive&&e.hp>0);
+  const cast=w.bossCasts.filter(c=>(!c.resolved||c.interrupted)&&c.expires>w.tick&&alive(c.owner)&&w.tick<=c.ends+30).sort((a,b)=>(a.skill==='ultimate'?-1:0)-(b.skill==='ultimate'?-1:0)||a.ends-b.ends)[0];
   if(!cast||w.hero.hp<=0){this.container.style.display='none';return;}
   const owner=w.enemies.find(e=>e.id===cast.owner),definition=owner?getBossDefinition(owner.art)?.skills.find(s=>s.id===cast.skill):undefined;
   const text=cast.interrupted?'施法已打断':(definition?.name??'敌方施法')+' · '+Math.max(1,Math.ceil((cast.ends-w.tick)/30));

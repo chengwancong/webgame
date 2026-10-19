@@ -65,7 +65,7 @@ export class SkillEffects{
    // These casts already own their main and contact layers. Status labels and
    // persistent markers remain; a generic status slash would obscure the weapon.
    if(event.type==='status_changed'&&physicalSpec('player/'+event.skill))continue;
-   const impact=event.type==='hit_resolved'&&(event.amount??0)>0,cast=event.type==='cast_started'||event.type==='cast_released'||event.type==='effect_triggered'&&!!event.vfxKey?.startsWith('combo/')||event.type==='status_changed'&&event.change==='applied'||event.type==='healed'&&!!event.amount||event.type==='revived';const surface=event.type==='effect_activated';if(!impact&&!cast&&!surface)continue;
+   const impact=event.type==='hit_resolved'&&(event.amount??0)>0,cast=event.type==='cast_started'||event.type==='cast_released'||event.type==='effect_triggered'&&!!(event.vfxKey?.startsWith('combo/')||event.vfxKey?.startsWith('hex/'))||event.type==='status_changed'&&event.change==='applied'||event.type==='healed'&&!!event.amount||event.type==='revived';const surface=event.type==='effect_activated';if(!impact&&!cast&&!surface)continue;
    const key=event.vfxKey??(!impact&&event.skill&&event.id==='hero'?'player/'+event.skill:'system/damage'),raw=this.profile(key);if(!raw)continue;const p=enemyPresentation(raw,w.enemies.find(n=>n.id===(event.sourceId??event.id)));
    const monster=monsterSkills[event.skill??''];if(event.type==='cast_started'&&key.startsWith('monster/')&&monster?.kind==='zone')this.telegraphs.set(group(event),{started:event.tick,ends:event.tick+(event.windup??monster.windup)+(monster.delay||25)-1});
    const stage=surface?'surface':impact?'impact':event.type==='cast_started'?'windup':'release';

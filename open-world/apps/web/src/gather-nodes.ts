@@ -37,11 +37,18 @@ export class GatherNodes{
  objects():StarseaSceneObject[]{return this.nodes().map(n=>({id:'gather:'+n.id,artId:gatherArt(n),position:{x:n.x,y:n.y},name:materialName(n.material!),label:'采集',reach:gatherReach,enabled:true}));}
  /** Remaining / total for the current region, for the minimap caption. */
  count(){const w=this.deps.world(),total=worldTables.objects.filter(o=>o.kind==='gather'&&o.region===w.region.id).length;return {left:total?this.nodes().length:0,total};}
- nearest(){const p=this.deps.world().hero.position;return this.nodes().filter(n=>distance(n,p)<=gatherReach).sort((a,b)=>distance(a,p)-distance(b,p))[0];}
+ /** 采集请求在途时节点视为冷却中，交互提示与 E 一起让出。 */
+ busy(){return this.pending;}
+ nearest(radius:number=gatherReach){const p=this.deps.world().hero.position;return this.nodes().filter(n=>distance(n,p)<=radius).sort((a,b)=>distance(a,p)-distance(b,p))[0];}
+ /** 高石堆/灌木的画面顶部比脚下锚点偏北 2～3 格，玩家常站在“画面上”按 E：交给调用方走过去，到达后自动采一次（Grok：站在精灵上按 E 无效）。 */
+ private queued?:{id:string;world:World};
+ queue(id:string){this.queued={id,world:this.deps.world()};}
 
  /** Full auto: gather whatever the route already passes within reach; never steers the hero. */
  step(){
   const w=this.deps.world();if(w!==this.world){this.world=w;this.tried.clear();}
+  const q=this.queued;if(q){const node=q.world===w?this.nodes().find(n=>n.id===q.id):undefined;
+   if(!node||distance(node,w.hero.position)>8)this.queued=undefined;else if(!this.pending&&distance(node,w.hero.position)<=gatherReach){this.queued=undefined;void this.gather(node.id,'manual');}}
   if(w.mode!=='auto'||w.paused||this.pending||!this.deps.ready())return;
   const p=w.hero.position,node=this.nodes().find(n=>!this.tried.has(n.id)&&distance(n,p)<=gatherReach);
   if(node){this.tried.add(node.id);void this.gather(node.id,'route');}

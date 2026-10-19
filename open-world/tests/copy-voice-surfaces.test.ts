@@ -54,7 +54,7 @@ it('armor and weapon advice select the actual intended forge slot',()=>{
 });
 it('long authored HUD goals stay available in the tooltip and task page',()=>{
  const goal='回港整理应答名录，确认契约与召唤石的记录用途。';
- expect(hudGoalLabel(goal).length).toBeLessThanOrEqual(14);expect(hudGoalLabel('前往风栖岛')).toBe('前往风栖岛');
+ expect(hudGoalLabel(goal)).toBe('回港整理应答名录…');expect(Array.from(hudGoalLabel('沿着灰烬河谷一路向北走到尽头的熔炉边')).length).toBe(14);expect(hudGoalLabel('前往风栖岛')).toBe('前往风栖岛');
  const html=questTrackerHtml({current:[{id:'q',title:'解读旧航约',typeName:'支线',goal,note:'',current:0,total:1,state:'active'}]} as TaskView);
- expect(html).toContain('title="'+goal+'"');expect(html).toContain('查看任务目标 →');expect(html).toContain('data-action="hud-task-open"');
+ expect(html).toContain('title="'+goal+'"');expect(html).toContain('回港整理应答名录…');expect(html).not.toContain('查看任务目标 →');expect(html).toContain('data-action="hud-task-open"');
 });

@@ -11,7 +11,7 @@ import {registerLoadedActorAnimations} from './loaded-actor-animations.ts';
 export type StarseaPhase='default'|'phase-enter'|'phase-active'|'phase-end';
 export type StarseaSceneObject={id:string;artId:string;position:Point;reach?:number;state?:string;enabled?:boolean;label?:string;name?:string;npcId?:string;action?:string;facing?:number;phase?:StarseaPhase;actionStartedTick?:number};
 export type StarseaSceneActor={id:string;artId?:string;position?:Point;state?:string;enabled?:boolean;label?:string;npcId?:string;action?:string;skillId?:string;phase?:StarseaPhase;actionStartedTick?:number;phaseStartedTick?:number;cast?:{elapsed:number;windup:number;recovery:number}};
-export type StarseaSceneView={effects?:readonly import('./field-event-effects.ts').FieldEventEffect[];guide?:{x:number;y:number;label:string};prompt?:{x:number;y:number;text:string;objectId?:string};objects?:readonly StarseaSceneObject[];actors?:readonly StarseaSceneActor[]};
+export type StarseaSceneView={effects?:readonly import('./field-event-effects.ts').FieldEventEffect[];guide?:{x:number;y:number;label:string;arrow?:boolean};prompt?:{x:number;y:number;text:string;objectId?:string};objects?:readonly StarseaSceneObject[];actors?:readonly StarseaSceneActor[]};
 export type SceneVariant={id:string;file:string;anchor?:[number,number];displayWidth?:number;mirrorX?:boolean};
 export type RuntimeAsset=Asset&{runtime:Asset['runtime']&{variants?:SceneVariant[];tileSize?:number;tint?:string;wash?:{color:string;alpha:number};parallax?:number}};
 const legacyRuntimeAssets=bundle.assets as unknown as RuntimeAsset[];
@@ -32,6 +32,13 @@ export function preloadStarseaRuntimeAssets(scene:Phaser.Scene,additional:readon
   if(r.kind==='prop'){if(r.file)files.add(r.file);for(const variant of r.variants??[])files.add(variant.file);for(const state of Object.values(r.states??{}))if(state.file)files.add(state.file);}
  }
  for(const file of files)if(!scene.textures.exists(starseaTexture(file)))scene.load.image(starseaTexture(file),file);
+}
+/** 与 preloadStarseaRuntimeAssets 同一口径判断还缺哪些贴图：道具的变体/状态图、特效贴图都算，避免地面只有变体时漏判、先建场景出现空地（Grok：首领房暗绿空洞）。 */
+export function starseaRuntimeMissing(scene:Phaser.Scene,ids:readonly string[]){
+ return ids.some(id=>{const asset=starseaAssets.get(id);if(!asset)throw Error('Unregistered region resource '+id);const r=asset.runtime;
+  if(r.kind==='atlas')return !scene.textures.exists(asset.id);
+  const files=r.kind==='effect'?[(r as any).texture]:r.kind==='prop'?[r.file,...(r.variants??[]).map(v=>v.file),...Object.values(r.states??{}).map(s=>s.file)]:[];
+  return files.some(f=>f&&!scene.textures.exists(starseaTexture(f)));});
 }
 export function createStarseaAnimations(scene:Phaser.Scene){registerLoadedActorAnimations(scene,starseaAssets.values());}
 export function starseaAtlasFrame(id:string,action:string,clock:number){const r=starseaAsset(id)?.runtime,clip=r?.actions?.[action];if(!clip)return;const index=Math.max(0,Math.floor(clock*clip.fps));return clip.frames[clip.loop?index%clip.frames.length:Math.min(index,clip.frames.length-1)];}

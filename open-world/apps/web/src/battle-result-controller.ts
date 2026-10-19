@@ -38,7 +38,8 @@ export class BattleResultController{
   if(this.phase==='offline')await this.load(true);
   if(!['ready','return-error'].includes(this.phase))return;
   this.pending=true;this.phase='returning';this.deps.refresh();
-  try{if(this.deps.blocked())await this.deps.recover();if(this.deps.blocked())throw Error('连接尚未恢复，请重试返回；已确认收获保留。');if(!await this.deps.returnSafe())throw Error('返回失败，请重试。');this.context=undefined;this.data=undefined;localStorage.removeItem('aw-battle-result');}
+  try{if(this.deps.blocked())await this.deps.recover();if(this.deps.blocked())throw Error('连接还没恢复，回港没走成。收获已保留，稍后再点「回港整备」即可。');
+   if(!await this.deps.returnSafe())throw Error('回港没走成（网络抖动）。收获已保留，再点一次「回港整备」即可。');this.context=undefined;this.data=undefined;localStorage.removeItem('aw-battle-result');}
   catch(error){this.phase='return-error';this.error=error instanceof Error?error.message:'返回失败，请重试。';}
   finally{this.pending=false;this.deps.refresh();}
  }

@@ -29,6 +29,8 @@ import {art,skillArt} from './ui-assets.ts';
 import {hudIcon,hudMenuIcon} from './hud-icons.ts';
 import {nativeCoinHtml,updateNativeCoin} from './ui/native-coin.ts';
 import {TooltipController} from './tooltip-controller.ts';
+import {renderHexRuneTip} from './hex-rune-tip.ts';
+import type {HexSlot,HexTipPayload} from './hex-rune-slots.ts';
 import {GearCard} from './components/GearCard.ts';
 import {qualityLabels as qualityName} from './components/gear-metadata.ts';
 import {virtualizeInventory} from './components/virtual-inventory.ts';
@@ -45,7 +47,7 @@ import {gearSlotLabels as slotName,equipmentPartLabels,type GearSlotFilter} from
 import {gearAffixes,gearSetLabel,gearSetDetails,gearQuality,qualityLabels} from './components/gear-metadata.ts';
 import {renderTravel,travelHeader,initialTravelState,type TravelState,type TravelDropView} from './travel-browser.ts';
 
-export type PresentationModel={autoPreferences?:Pick<World,'radius'|'targetPriority'|'avoidElite'|'autoSkills'>;bounty?:BountyView;fieldMap?:FieldMapView;seaDifficulty?:SeaDifficultyView;seaTierPick?:number;hudModeOpen?:boolean;story?:StoryView;taskData?:TaskView;dungeonId?:string;dungeonBusy?:boolean;allyTarget?:{hp:number;maxHp:number;shield:number;position:{x:number;y:number};range:number};portraitURL?:string;figureURL?:string;appearance?:AppearanceUI;appearanceDirty?:boolean;accountOnly?:boolean;authReady?:boolean;authConnecting?:boolean;authError?:string;authReload?:boolean;world:World;snapshot?:Snapshot;loggedIn:boolean;panel:string;confirm:''|'salvage'|'dungeon-exit';confirmId:string;feed:string[];blocked:boolean;userPaused:boolean;processing:boolean;selected:string;skillFocus:string;skillCategory:SkillSchool|'all';skillTags?:string[];skillQuery?:string;skillFilter?:'all'|'active'|'eligible';skillLocked?:boolean;frozenSkills?:Skill[];skillOperation:''|'activate'|'upgrade'|'equip'|'unequip';skillOperationId:string;skillStatus:''|'success'|'error'|'pending';skillMessage:string;lastError:string;volume:number;reduced:boolean;autoPickup?:boolean;fieldReturnRegion?:string;dungeonRunning?:boolean;dungeonConnected?:boolean;binding?:string;bindingMessage?:string;bagTab:'bag'|'rewards';bag:BagUI;characterPart:Exclude<GearSlotFilter,''>;characterChooserOpen:boolean;characterDetailsOpen:boolean;slotFilter:GearSlotFilter;qualityFilter:GearQuality|'';trackerOpen:boolean;bindings:Record<string,string>;onSelect(id:string):void;previewGear(id:string):Promise<GrowthPreview>;previewGearTip(id:string):Promise<GearTip>;noticeError(e:unknown):void;onConfirm(action:string,id:string):void;onCancelConfirm():void};
+export type PresentationModel={autoPreferences?:Pick<World,'radius'|'targetPriority'|'avoidElite'|'autoSkills'>;bounty?:BountyView;fieldMap?:FieldMapView;seaDifficulty?:SeaDifficultyView;seaTierPick?:number;hudModeOpen?:boolean;story?:StoryView;taskData?:TaskView;dungeonId?:string;dungeonBusy?:boolean;allyTarget?:{hp:number;maxHp:number;shield:number;position:{x:number;y:number};range:number};portraitURL?:string;figureURL?:string;appearance?:AppearanceUI;appearanceDirty?:boolean;accountOnly?:boolean;authReady?:boolean;authConnecting?:boolean;authError?:string;authReload?:boolean;world:World;snapshot?:Snapshot;loggedIn:boolean;panel:string;confirm:''|'salvage'|'dungeon-exit';confirmId:string;feed:string[];blocked:boolean;userPaused:boolean;processing:boolean;selected:string;skillFocus:string;skillCategory:SkillSchool|'all';skillTags?:string[];skillQuery?:string;skillFilter?:'all'|'active'|'eligible';skillLocked?:boolean;frozenSkills?:Skill[];skillOperation:''|'activate'|'upgrade'|'equip'|'unequip';skillOperationId:string;skillStatus:''|'success'|'error'|'pending';skillMessage:string;lastError:string;volume:number;reduced:boolean;autoPickup?:boolean;fieldReturnRegion?:string;dungeonRunning?:boolean;dungeonConnected?:boolean;binding?:string;bindingMessage?:string;bagTab:'bag'|'rewards';bag:BagUI;characterPart:Exclude<GearSlotFilter,''>;characterChooserOpen:boolean;hexChooser?:{slot:HexSlot;selected:string};characterDetailsOpen:boolean;slotFilter:GearSlotFilter;qualityFilter:GearQuality|'';trackerOpen:boolean;bindings:Record<string,string>;onSelect(id:string):void;previewGear(id:string):Promise<GrowthPreview>;previewGearTip(id:string):Promise<GearTip>;noticeError(e:unknown):void;onConfirm(action:string,id:string):void;onCancelConfirm():void};
 
 const $=(selector:string)=>document.querySelector(selector) as HTMLElement;
 const esc=(s:unknown)=>String(s).replace(/[&<>"']/g,v=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[v]!));
@@ -65,10 +67,11 @@ const hudMarkup=new WeakMap<Element,string>();
 function setHudMarkup(node:Element,html:string){if(hudMarkup.get(node)===html)return;node.innerHTML=html;hudMarkup.set(node,html);}
 
 
-type TipData=ItemTipData;
+type TipData=ItemTipData|HexTipPayload;
 const tooltipController=new TooltipController((target,tip)=>{
  const raw=target.dataset.tip;if(!raw)return;
  let data:TipData;try{data=JSON.parse(raw);}catch{tip.style.display='none';return;}
+ if('hex' in data){tip.className='equipment-tip hex-tip';tip.innerHTML=renderHexRuneTip(data.hex.rune,data.hex.state);return;}
  if(data.item){tip.className='item-tip';tip.innerHTML=renderItemTip(target,data);return;}
  tip.innerHTML=`<b>${esc(data.title)}</b>${(data.rows??[]).map(([label,value])=>`<div class="row"><span>${esc(label)}</span><span class="num">${esc(value)}</span></div>`).join('')}`
   +(data.note?`<div class="dim">${esc(data.note)}</div>`:'')+(data.why?`<div class="why">${esc(data.why)}</div>`:'');
@@ -101,6 +104,8 @@ export function mountHud(){
   <div class="feed" id="feed"></div>
   <div id="hintbox"></div>
   <div id="pausebox"></div>`;
+  // 恢复连接层挂到 body 上，由弹窗栈决定它浮在结算层之上（hud.css #pausebox）。
+  document.body.append($('#pausebox'));
   document.body.insertAdjacentHTML('beforeend','<div id="tooltip" role="tooltip"></div>');
   const mini=$('#minimapbox');mini.classList.add('clickable');mini.dataset.action='panel';mini.dataset.id='region-map';mini.setAttribute('role','button');mini.setAttribute('aria-label','展开区域地图');mini.tabIndex=0;mini.addEventListener('wheel',event=>{event.preventDefault();stepRadarZoom(event.deltaY<0?1:-1);},{passive:false});mini.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();mini.click();}});
   bindTips(document.body);
@@ -260,7 +265,7 @@ export function renderPanel(view:PresentationModel&{crafting?:CraftingUI;travel?
   }
   else if(view.panel==='character'){
     title='人物';const selection=characterSelection(s,view.characterPart,view.selected);gearToPreview=view.characterChooserOpen?selection.selected:undefined;if(gearToPreview)view.onSelect(gearToPreview.id);
-    body=CharacterPanel(s,view.characterPart,view.selected,view.figureURL,view.processing||view.blocked,{chooserOpen:view.characterChooserOpen,detailsOpen:view.characterDetailsOpen,blocked:view.blocked,recovering:view.processing,damage:{stats:view.world.enemies.length>0?view.world.stats:s.stats,skills:view.world.enemies.length>0?view.world.skills:s.resolvedSkills,telemetry:view.world.enemies.length>0?view.world.effectStats:null}});
+    body=CharacterPanel(s,view.characterPart,view.selected,view.figureURL,view.processing||view.blocked,{chooserOpen:view.characterChooserOpen,hexChooser:view.hexChooser,detailsOpen:view.characterDetailsOpen,blocked:view.blocked,recovering:view.processing,damage:{stats:view.world.enemies.length>0?view.world.stats:s.stats,skills:view.world.enemies.length>0?view.world.skills:s.resolvedSkills,telemetry:view.world.enemies.length>0?view.world.effectStats:null}});
   }
   else if(view.panel==='forge'){title='拾星港工坊';const craft=view.crafting,tabs=craft?craftingTabsHtml(craft):'';if(!craft||craft.tab==='upgrade'){const gear=forgeSelection(s,view.selected);gearToPreview=gear;if(gear)view.onSelect(gear.id);body=tabs+ForgePanel(s,gear,Boolean(view.processing||view.blocked));}else body=tabs+CraftingPanel(s,craft,Boolean(view.processing||view.blocked));}
   else if(view.panel==='skills'){title='技能';body=renderSkills({...view,snapshot:s});}

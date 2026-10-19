@@ -29,9 +29,14 @@ export function GearDetails(gear:Gear,snapshot:Snapshot,context:GearDetailsConte
  ${context==='character'?`<div class="cmp" data-gear="${esc(gear.id)}"><div class="cmp-attributes">${stateBlockHtml({kind:'loading',title:'读取换装对比',message:'正在核对你的属性变化。',compact:true})}</div></div>`:''}${context==='bag'?quoteArea:''}
  </div><div class="actions bag-detail-actions">${context==='forge'?buttonHtml('强化',{action:'upgrade',id:gear.id,variant:'primary',size:'action',disabled:true,className:'bag-primary',attributes:{'data-gear-quote-operation':'upgrade'}})+`<div class="bag-secondary-actions">${buttonHtml(gear.locked?'解除锁定':'锁定',{action:'lock',id:gear.id,variant:'secondary',size:'compact',className:'ui-button--dense',disabled:busy})}</div>`:buttonHtml(context==='bag'?'前往人物换装':worn?'卸下':snapshot.equipment[gear.slot]?'替换':'装备',{action:context==='bag'?'bag-character':worn?'unequip':'equip',id:gear.id,variant:'primary',size:'action',disabled:busy,className:'bag-primary'})+`<div class="bag-secondary-actions">${buttonHtml(gear.locked?'解除锁定':'锁定',{action:'lock',id:gear.id,variant:'secondary',size:'compact',className:'ui-button--dense',disabled:busy})}${buttonHtml('分解',{action:'salvage-confirm',id:gear.id,variant:'secondary',size:'compact',className:'ui-button--dense',disabled:true,attributes:{'data-gear-quote-operation':'salvage'}})}</div>`}</div></aside>`;
 }
+const detailRequests=new Map<string,Promise<[GrowthPreview,GearTip]>>();
 export function loadGearDetails(gear:Gear,snapshot:Snapshot,options:{busy:boolean;preview:(id:string)=>Promise<GrowthPreview>;tip:(id:string)=>Promise<GearTip>;error:(error:unknown)=>void}){
  const token=beginPreview(gear.id,snapshot.revision);
- void Promise.all([options.preview(gear.id),options.tip(gear.id)]).then(([quote,details])=>{
+ // 面板每次重绘都会重新调用这里；同一件装备、同一 revision 复用在途/已完成的请求，
+ // 否则频繁重绘会不断作废上一个请求，主属性永远停在“读取中…”（Grok：背包/人物/工坊悬停）。
+ const key=gear.id+'@'+snapshot.revision;let request=detailRequests.get(key);
+ if(!request){request=Promise.all([options.preview(gear.id),options.tip(gear.id)]);detailRequests.set(key,request);request.catch(()=>detailRequests.delete(key));while(detailRequests.size>24)detailRequests.delete(detailRequests.keys().next().value!);}
+ void request.then(([quote,details])=>{
   if(!previewStillCurrent(token)||quote.revision!==snapshot.revision||details.revision!==snapshot.revision||quote.gear_id!==gear.id||details.gear.id!==gear.id)return;
   const node=document.querySelector<HTMLElement>('#preview');if(!node||node.dataset.gear!==gear.id)return;
   node.dataset.seq=String(token.seq);node.dataset.revision=String(token.revision);node.dataset.generation=String(token.generation);node.setAttribute('aria-busy','false');

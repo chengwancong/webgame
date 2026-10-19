@@ -48,7 +48,7 @@ try{
  }else if(api){
   const current=JSON.parse(readRemote('cat ~/abyss/open-world/deploy/web-dist/build-info.json'));assertReleaseVersions(current.versions,expectedVersions);
  }
- if(api){const archive=path.join(artifact,'server-src.tgz'),files=['package.json','pnpm-lock.yaml','pnpm-workspace.yaml','tsconfig.json','.dockerignore','apps/api','apps/web/package.json','apps/desktop/package.json','packages','config','deploy'].map(p=>'open-world/'+p);run('git',['archive','--format=tar.gz','--output='+archive,head,...files]);run(scp,[archive,`abyss-staging:/tmp/${release}.server.tgz`]);if(readRemote(`sha256sum /tmp/${release}.server.tgz`).split(/\s/)[0]!==await hash(archive))throw Error('Server archive checksum mismatch');}
+ if(api){const archive=path.join(artifact,'server-src.tgz'),files=['package.json','pnpm-lock.yaml','pnpm-workspace.yaml','tsconfig.json','.dockerignore','apps/api','apps/web/package.json','apps/web/src/ui/tokens.css','apps/desktop/package.json','packages','config','deploy'].map(p=>'open-world/'+p);run('git',['archive','--format=tar.gz','--output='+archive,head,...files]);run(scp,[archive,`abyss-staging:/tmp/${release}.server.tgz`]);if(readRemote(`sha256sum /tmp/${release}.server.tgz`).split(/\s/)[0]!==await hash(archive))throw Error('Server archive checksum mismatch');}
  if(api||web){
   if(capture('git',['rev-parse','HEAD'])!==head)throw Error('HEAD changed; activation cancelled');
   if(readRemote('cat ~/abyss/SOURCE_COMMIT 2>/dev/null || true')!==before)throw Error('Another release changed the API; activation cancelled');
@@ -78,6 +78,7 @@ rollback() {
   docker tag abyss-staging-api:before-${release} abyss-staging-api:latest
   cd /home/ubuntu/abyss/open-world/deploy
   docker compose up -d --no-build --force-recreate api
+  docker compose up -d --no-deps --no-build --force-recreate caddy
  fi
  exit "$code"
 }
@@ -96,6 +97,7 @@ switched=1
 cd /home/ubuntu/abyss/open-world/deploy
 echo "RESTORE $(date -Is)"
 docker compose up -d --no-build --force-recreate api
+${api?'docker compose up -d --no-deps --no-build --force-recreate caddy':''}
 for n in $(seq 1 40); do
  if docker compose exec -T api node --input-type=module -e ${quote(healthCheck)}; then
   ${api?`printf '%s\\n' '${head}' > /home/ubuntu/abyss/SOURCE_COMMIT`:''}

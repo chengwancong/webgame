@@ -12,7 +12,10 @@ import {buttonHtml,panelHeaderHtml,helpHtml,esc,statusBar,statusBadgeHtml} from 
 import {questHudHeader,questHudButton} from './ui/quest-tracker.ts';
 import {starseaPropVerbs,starseaPropNames,starseaPropHintVerbs,starseaSpeaker} from '../../../packages/rules/starsea.ts';
 import {npcs as npcRows,taskById,triggers as triggerRows,dialogueLines} from '../../../packages/content/task-tables.ts';
-import {questParameters,steps as stepRows} from '../../../packages/content/task-tables.ts';
+import {steps as stepRows} from '../../../packages/content/task-tables.ts';
+import {objectivePhase,objectivePhaseCopy,type ObjectivePhase} from './objective-phase.ts';
+/** 进入该距离（格）即视为近身：不画头顶箭头、追踪条不给距离。 */
+const objectiveEngageRadius=6;
 import type {QuestOp} from '../../../packages/rules/starsea.ts';
 import type {TriggerRow} from '../../../packages/contracts/task-tables.ts';
 /** 一句台词；说话人为空时按旁白显示。 */
@@ -28,7 +31,7 @@ const verbOverride=starseaPropHintVerbs;
 const thing=(p?:StarseaPoint)=>p?.prop&&propNames[p.prop]?propNames[p.prop]:p?.label??'目标';
 const verb=(p?:StarseaPoint)=>p?.prop?verbOverride[p.prop]??starseaPropVerbs[p.prop]??'调查':'调查';
 type SceneGoal={x:number;y:number;label:string};
-type Dependencies={go?:(p:{x:number;y:number})=>void;sceneGoal?:()=>SceneGoal|undefined;sceneAction?:()=>boolean;settle:()=>Promise<unknown>;snapshot:()=>Snapshot|undefined;world:()=>World;write:(path:string,body:object)=>Promise<string|undefined>;travel:(region:string)=>Promise<boolean>;open:(panel:string)=>void;refresh:()=>void;notice:(message:string)=>void;lastError:()=>string;ensurePermit:()=>Promise<void>;service:(npc:string)=>void;panel:()=>string};
+type Dependencies={go?:(p:{x:number;y:number})=>void;sceneGoal?:()=>SceneGoal|undefined;sceneAction?:()=>boolean;settle:()=>Promise<unknown>;snapshot:()=>Snapshot|undefined;world:()=>World;write:(path:string,body:object)=>Promise<string|undefined>;travel:(region:string)=>Promise<boolean>;open:(panel:string)=>void;refresh:()=>void;notice:(message:string)=>void;card?:(text:string)=>void;lastError:()=>string;ensurePermit:()=>Promise<void>;service:(npc:string)=>void;panel:()=>string};
 /** 港口 NPC 的服务按钮（NPC.xlsx 服务按钮 / 服务功能 / 服务面板）。 */
 const serviceNpcs=new Map(npcRows.filter(n=>n.campaign==='starsea'&&n.service_panel).map(n=>[n.id,n]));
 const services:Record<string,string>=Object.fromEntries([...serviceNpcs.values()].map(n=>[n.id,n.service_label??n.name]));
@@ -57,7 +60,7 @@ export class StarseaController{
  private mark(id:string){const s=this.seen();s.add(id);try{localStorage.setItem(this.seenKey(),JSON.stringify([...s]));}catch{/* 本机存储不可用时只在本次会话内去重 */}}
  private linesOf(group:string){return dialogueLines(group,{player:this.deps.snapshot()?.name??'你',conditions:this.view?.conditions}).map(l=>({speaker:starseaSpeaker(l.speaker),text:l.text}));}
  /** 找回、开槽、登岛、升级新招式的卡片，排在任务完成对白之后。 */
- private growthStep(){const s=this.deps.snapshot();if(!s||s.starsea?.prologue?.done===false)return;if(this.growth?.id!==s.id){this.growth={id:s.id,mark:growthMark(s)};return;}const cards=growthCards(this.growth.mark,s);if(cards.length)this.deps.notice(cards.map(card=>card.title+'：'+card.lines.map(l=>l.text).join(' ')).join('\n'));this.growth.mark=growthMark(s);}
+ private growthStep(){const s=this.deps.snapshot();if(!s||s.starsea?.prologue?.done===false)return;if(this.growth?.id!==s.id){this.growth={id:s.id,mark:growthMark(s)};return;}const cards=growthCards(this.growth.mark,s);for(const card of cards){const text=card.title+'：'+card.lines.map(l=>l.text).join(' ');if(this.deps.card)this.deps.card(text);else this.deps.notice(text);}this.growth.mark=growthMark(s);}
  private popup(title:string,lines:{speaker:string;text:string}[]){if(!lines.length)return;this.popups.push({title,lines});if(this.popups.length===1){this.line=0;this.deps.open('starsea-talk');}}
  /** 弹窗被关闭（右上角、Esc 或切到别的面板）时丢掉当前这条，面板空闲后继续播下一条。 */
  private popupClosed(){if(!this.popups.length)return;const panel=this.deps.panel();if(this.popupShown&&panel!=='starsea-talk'){this.popupShown=false;this.popups.shift();this.line=0;}if(this.popups.length&&!panel){this.line=0;this.deps.open('starsea-talk');}}
@@ -245,8 +248,10 @@ export class StarseaController{
 /** 任务栏“下一步”：一句短话，路线交给场景里的光点和箭头。 */
  private nextAction(step:NonNullable<StarseaView['step']>,here:boolean){
   const p=step.points[0];
-  if(step.op==='boss'){if(here)return step.label;const island=this.view?.islands.find(i=>i.boss===step.map);return (island&&island.map!==this.region?'去'+island.name+'，':'')+'到首领门挑战'+step.label.replace(/^击败/,'');}
-  if(!here)return (step.map===starseaHub?'回拾星港，':'去'+step.mapName+'，')+this.doText(step,p);
+  // 跨岛只写“出航 · 前往X”（方案 §2.4），到岛后再给具体做什么。
+  const voyage=(island:string,name:string)=>objectivePhaseCopy('voyage',{name:'',island,islandName:name,currentIsland:this.region,distance:0,engageRadius:0,fighting:false,defeated:false}).line;
+  if(step.op==='boss'){if(here)return step.label;const island=this.view?.islands.find(i=>i.boss===step.map);if(island&&island.map!==this.region)return voyage(island.map,island.name);return '到首领门挑战'+step.label.replace(/^击败/,'');}
+  if(!here)return voyage(step.map,step.map===starseaHub?'拾星港':step.mapName);
   return this.doText(step,p);
  }
  /** 一句话写清「去哪、做什么、做几次」。 */
@@ -261,8 +266,17 @@ export class StarseaController{
  renderRoute(host:HTMLElement){const v=this.view;if(!v?.routes)return;host.classList.add('open');host.innerHTML=`<section class="panel story-dialogue starsea-chart" role="dialog" aria-modal="true" aria-label="选择突击路线">${panelHeaderHtml('两条进港路')}<p>选择后本章路线锁定，回港会记录你的选择。</p>${this.routeError?`<p class="ui-warning" role="alert">${esc(this.routeError)}</p>${this.lastResult==='pending'?buttonHtml('恢复连接',{action:'recover',variant:'secondary',size:'compact'}):''}`:''}<div class="starsea-chart-list">${v.routes.map(r=>`<section class="starsea-chart-row"><div><h3>${esc(r.name)}</h3><p>敌人：${esc(r.enemies.join('、'))}</p><p>${esc(r.risk)}</p></div>${buttonHtml('选择'+r.name,{action:'starsea-route-pick',id:r.id,variant:'primary',busy:this.busy})}</section>`).join('')}</div></section>`;}
  /** 场景引路目标：本图任务点；不在任务地图时指向首领门、码头或回港飞艇。 */
  private go(p:{x:number;y:number}){if(this.deps.go)this.deps.go(p);else this.deps.world().go(p);}
- private sceneGuide(){const w=this.deps.world(),boss=w.region.boss?w.enemies.find(e=>e.alive&&e.boss):undefined;if(boss)return {...boss.position,label:(boss.engaged||boss.hp<boss.maxHp?'击败首领：'+(boss.name??'首领'):questParameters.boss_approach.replace('{boss}',boss.name??'首领'))};return this.deps.sceneGoal?.();}
- guide(){
+ private sceneGuide(){const w=this.deps.world(),boss=w.region.boss?w.enemies.find(e=>e.alive&&e.boss):undefined;if(boss){const p=this.phaseOf(boss.position,boss.name??'首领',Boolean(boss.engaged)||boss.hp<boss.maxHp,'defeat');return {...boss.position,label:p.line,arrow:p.arrow,distance:p.distance};}return this.deps.sceneGoal?.();}
+ private phaseKey='';private phaseState?:ObjectivePhase;
+ /** 同岛目标阶段（docs/hud-arbitration-plan.md §2.4）：前往→近身/交战；回滞避免文案闪。 */
+ private phaseOf(at:{x:number;y:number},name:string,fighting=false,verb:'defeat'|'reach'='reach'){
+  const w=this.deps.world(),key=w.region.id+':'+name;if(key!==this.phaseKey){this.phaseKey=key;this.phaseState=undefined;}
+  const input={name,island:w.region.id,islandName:'',currentIsland:w.region.id,distance:distance(at,w.hero.position),engageRadius:objectiveEngageRadius,fighting,defeated:false,verb};
+  this.phaseState=objectivePhase(input,this.phaseState);return objectivePhaseCopy(this.phaseState,input);
+ }
+ /** 世界引路：跨岛不给目标（只在追踪条写出航）；近身后不画箭头；距离数字只给追踪条。 */
+ guide(){const g:{x:number;y:number;label:string;arrow?:boolean;distance?:number}|undefined=this.rawGuide();if(!g||g.arrow!==undefined)return g;const p=this.phaseOf(g,g.label);return {...g,arrow:p.arrow,distance:p.distance};}
+ private rawGuide(){
   const scene=this.sceneGuide();if(scene)return scene;
   const v=this.view,step=this.waveStep??v?.step,r=this.deps.world().region;if(!v||!isStarseaRegion(r.id))return undefined;if(!step){const near=v.recommend;if(!near)return;return near.map===r.id&&near.point?{...near.point,label:near.label}:undefined;}
   if(step.map===r.id){const p=step===this.waveStep?step.points[0]:this.target();if(!p)return undefined;const d=step.defense&&this.defending?this.deps.world().defense:null;
@@ -326,7 +340,7 @@ export class StarseaController{
  }
  renderHud(loggedIn:boolean){
   let hud=document.getElementById('starsea-hud');if(!hud){hud=document.createElement('aside');hud.id='starsea-hud';hud.setAttribute('aria-label','星潮海任务');document.body.append(hud);}const v=this.view;hud.hidden=!loggedIn||!v;document.body.dataset.starseaActive=String(!hud.hidden);if(!v||hud.hidden)return;
-  const scene=this.sceneGuide(),step=this.waveStep??v.step;const label=scene?.label??(step?this.nextAction(step,step.map===this.region):v.recommend?.label??'');this.paintHud(hud,(label?`<div class="quest-track-line"><small>${scene?'当前场景':v.task?'任务':v.recommend?.kind==='stage'?'当前目标':'附近'}</small><span title="${esc(label)}">${esc(hudGoalLabel(label))}</span>${questHudButton('→',{action:'starsea-goto'})}</div>`:'')+this.goalLines(scene));
+  const scene=this.sceneGuide(),step=this.waveStep??v.step,dist=this.guide()?.distance,distanceLabel=dist?`<em class="quest-track-distance num">${dist} 格</em>`:'';const label=scene?.label??(step?this.nextAction(step,step.map===this.region):v.recommend?.label??'');this.paintHud(hud,(label?`<div class="quest-track-line"><small>${scene?'当前场景':v.task?'任务':v.recommend?.kind==='stage'?'当前目标':'附近'}</small><span title="${esc(label)}">${esc(hudGoalLabel(label))}</span>${distanceLabel}${questHudButton('→',{action:'starsea-goto'})}</div>`:'')+this.goalLines(scene));
  }
  /** 任务行下面最多两行养成目标（钉选装备 / 换代 / 找回），与 #tracker 同源；场景演出时不出（docs/progression-goal-plan.md §3）。 */
  private goalLines(scene:unknown){const s=this.deps.snapshot();if(scene||!s)return '';return trackerGoals(s).slice(0,2).map(g=>`<div class="quest-track-line is-goal"><small>${esc(g.kind)}</small><span title="${esc(g.goal)}"><b>${esc(g.title)}</b><em>${esc(g.goal)}</em></span>${questHudButton('→',{action:g.action,id:g.id})}</div>`).join('');}

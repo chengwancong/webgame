@@ -1,5 +1,44 @@
 # 测试服部署方案（阶段 1）
 
+## 当前入口：已取消站点验证
+
+2026-10-19 用户明确要求去掉整站验证。当前首页直接提供游戏账号登录和建角流程；Basic Auth、网页口令、访问 Cookie 与邀请链接不再是访问前提。
+旧 `/__gate/*` 链接全部 303 跳转首页。Compose 不再启动 web-gate，旧签发/入口发布脚本已停用；游戏 API、数据库和游戏账号登录逻辑不变。
+正常发版沿用当前 Caddyfile/compose.yaml，不会重新启用站点验证。下方网页认证、邀请和 Basic Auth 段落仅为历史记录，不作为当前操作指引。
+
+## 网页访问入口（2026-10-19）
+
+### 无需表单的一次性邀请
+
+当测试工具的安全登录流程仍无法提交表单，可执行 `node tools/issue-web-gate-invite.mjs` 生成一次性访问链接。
+签发接口仅容器 loopback 可达，且需要部署签名密钥；不经公网暴露。链接含 256 位随机凭据，30 分钟内只能兑换一次，兑换后获得同样的 12 小时站点 Cookie，再走原游戏账号登录。
+链接仅交给对应测试者，不先替对方打开，不写入公共日志或报告。服务重启会使尚未兑换的链接失效，过期或已使用返回 410；可重新签发。
+服务仅保存邀请哈希与截止时间，兑换同步消费防止并发重复使用；响应不缓存，立即跳转到不含凭据的首页，并禁止携带邀请来源。
+这只是站点访问授权，不创建游戏账号，不修改角色和存档；未持有链接或站点凭据的请求继续被保护。
+
+测试服访问验证现采用普通网页表单，入口 `https://43-165-179-11.sslip.io/__gate/login`。
+沿用原站点访问用户名和口令，Caddy 内网 bcrypt 校验后签发 12 小时的 Secure、HttpOnly、SameSite=Lax、host-only Cookie。
+完成访问验证后才进入原游戏账号登录和建角流程。未验证的 API、素材、实时连接仍受保护；仅健康接口和访问验证页公开。
+原先主动发送 Basic Authorization 的浏览器和 API 客户端保持兼容。新浏览器不会被要求处理原生 Basic Auth 弹窗。
+
+`web-gate` 是独立无状态服务，不修改游戏 API、数据库、角色或版本；签名密钥 `AW_GATE_SESSION_KEY` 存在服务器 `.env`，不可入库。
+口令哈希或签名密钥轮换后须重新创建 web-gate 容器（口令变化还需更新 Caddy），旧访问 Cookie 失效。
+网页入口错误口令、过期表单显示普通 HTML 错误；登录 POST 检查 Origin 和 CSRF，按来源限制每分钟 10 次尝试。
+容器内部验证端口 8081 不映射到公网。拒绝 API 时返回 401 JSON，无 Basic 挑战头。
+
+入口独立发布：在 open-world 下先执行 `node tools/deploy-web-gate.mjs --check-only`，提交限定文件后执行 `node tools/deploy-web-gate.mjs`。
+发布使用共享本机/远端部署锁、源码 SHA256、独立真实 Caddy 检查、配置备份与失败回滚；不重建 API 或数据库。Caddy 正常通过 reload 切换，若检测到旧目录挂载则仅重建 Caddy 修正挂载。
+仅游戏发版不需要重建入口服务；修改入口代码或配置时必须使用独立发布命令。常规发版归档包含构建入口所需的公共 UI token CSS。
+候选检查使用随机临时口令和真实 bcrypt 校验，不 mock 认证；候选容器不开放宿主机端口。
+原始发布证据在仓库外 `G:/webgame/aw-deploy/web-gate-*` 和服务器 `~/abyss/gate-releases/web-gate-*`。
+
+回滚本次入口：在服务器选定对应 release 目录，将 `Caddyfile.before` 内容写回现有 Caddyfile（保留挂载 inode），恢复 `compose.yaml.before`，
+运行 `docker compose up -d --no-deps --no-build --force-recreate caddy`，确保旧目录替换遗留的挂载也恢复。
+若回滚前已有旧 web-gate 镜像，恢复 `abyss-staging-web-gate:before-<release>` 的 latest 标签并单独重建 web-gate。
+首次回滚到 Basic Auth 时无需停止 API/数据库；闲置 gate 容器可在确认旧入口恢复后移除。
+
+以下首次部署历史段落描述旧 Basic Auth 方案，以本节和当前 compose/Caddyfile 为准。
+
 ## 组成
 
 | 部分 | 去向 | 说明 |

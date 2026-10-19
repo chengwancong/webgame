@@ -69,6 +69,8 @@ BUG-31（采完不再显示“E 采集”）；BUG-55（超距不显示“打开
 ### B4 HUD 与布局
 用一个通用避让模块（见裁决）解决 BUG-30（顶栏误显示“青玉法衣”，先查来源）、BUG-36、BUG-41、BUG-50、BUG-53（出航/回港清掉掉落 Toast）、BUG-54（跨岛目标不画在角色身上，改为指向航图）；另修 BUG-56（赤炉区域小地图过曝）、BUG-52（锁定岛文案分行）、BUG-26（aria-label 与可见文字一致）。
 
+> **2026-10-19 补充（Claude）**：通用模块已由 Claude 写好，**B4 不要另写**，按 `docs/hud-arbitration-plan.md` 的规则修：Toast 用 `apps/web/src/ui/toast-queue.ts`（出航/回港/进出副本调 `clearScene()`），世界标签用 `ui/world-label-layout.ts`，B2 的 BUG-24/47 用 `objective-phase.ts`、`ui/overlay-stack.ts` 的规则（战斗中信息卡排队、不暂停）。回归测试 `tests/hud-arbitration.test.ts`。若本批来不及接入，就只按规则修文案/显隐，接入由 Claude 在 B6 之后统一做。
+
 ### B5 数值显示一致性
 BUG-39、BUG-42、BUG-43、BUG-44、BUG-45（见裁决）。加一个测试：装备卡面与详情面板对同一件装备给出相同数值。
 

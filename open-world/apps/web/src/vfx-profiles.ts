@@ -42,6 +42,10 @@ for(const [namespace,rows] of [['player',player],['monster',monsters],['boss',bo
 if(vfxProfiles['player/staff_cyclone'])vfxProfiles['player/staff_cyclone'].motif='staff-wheel';
  vfxProfiles['system/damage']={...vfxProfiles['monster/basic-melee'],key:'system/damage'};
 vfxProfiles['system/burn']={...vfxProfiles['player/ember'],key:'system/burn'};
+// HEX 海克斯符文效果：复用同元素技能的链/区域表现（D02 hex-gear-20261019/d02-sample-spec.md）。
+vfxProfiles['hex/chain-lightning']={...vfxProfiles['player/chain'],key:'hex/chain-lightning'};
+vfxProfiles['hex/chain-lightning-slow']={...vfxProfiles['player/frost'],key:'hex/chain-lightning-slow'};
+vfxProfiles['hex/chain-lightning-shock']={...vfxProfiles['player/chain'],key:'hex/chain-lightning-shock',element:'storm' as VfxElement};
 // 状态类连携（施加与持续伤害事件的 vfxKey 为 combo/<规则 id>）沿用同元素技能的表现。
 for(const [rule,base] of [['innate-staff-ignite','ember'],['innate-wand-shock','chain'],['aspect-combo-bloodblade','execute'],['aspect-combo-sunder','war_cry'],['aspect-combo-venomedge','poison_arrow']] as const)vfxProfiles['combo/'+rule]={...vfxProfiles['player/'+base],key:'combo/'+rule};
 for(const id of ['basic-melee','basic-ranged','basic-area'])vfxProfiles['boss/'+id]={...vfxProfiles['monster/'+id],key:'boss/'+id,power:2,size:vfxProfiles['monster/'+id].size*1.25};

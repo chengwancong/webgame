@@ -9,13 +9,17 @@ import {effectText} from '../../../../packages/content/index.ts';
 import {skillTagLabel} from '../../../../packages/content/skill-tags.ts';
 import {formatBig} from '../../../../packages/content/big-number.ts';
 import {CharacterPaperdoll} from './CharacterPaperdoll.ts';
+import type {HexRuneView} from '../hex-rune-tip.ts';
+import type {HexSlot} from '../hex-rune-slots.ts';
+import {HexRuneChooser} from '../hex-rune-chooser.ts';
+import {hexChooserItemsFromSnapshot} from '../hex-rune-view.ts';
 import {GearDetails} from './GearDetails.ts';
 import {filterGear} from './GearFilter.ts';
 import {gearAffixes,gearQuality,qualityLabels} from './gear-metadata.ts';
 import {art} from '../ui-assets.ts';
 import {type SlotMark,statIcon,sectionTitleHtml,esc,buttonHtml,itemSlot,panelHeaderHtml,statusBadgeHtml,stateBlockHtml,statRowHtml} from '../ui-components.ts';
 import {equipmentPartLabels,runtimeSlotForPart,type GearSlotFilter} from '../equipment-slots.ts';
-export type CharacterPanelOptions={chooserOpen:boolean;detailsOpen:boolean;blocked:boolean;recovering?:boolean;damage?:{stats:Stats;skills:Skill[];telemetry:RuleTelemetry|null;sourceNames?:Record<string,string>}};
+export type CharacterPanelOptions={chooserOpen:boolean;detailsOpen:boolean;blocked:boolean;recovering?:boolean;damage?:{stats:Stats;skills:Skill[];telemetry:RuleTelemetry|null;sourceNames?:Record<string,string>};hexCatalog?:Record<string,HexRuneView>;hexChooser?:{slot:HexSlot;selected:string}};
 /** Main stat after reinforcement, mirroring `mainStatContribution` in packages/rules/main-stats.ts. Legacy gear without a main stat has none. */
 export function gearMainStat(gear:Gear){const value=mainStatValues(gear);return value?{stat:value.stat,value:value.effective}:undefined;}
 export const mainStatText=(stat:string,value:number)=>affixDisplayValue(stat,value);
@@ -59,6 +63,13 @@ function swapView(snapshot:Snapshot,part:Exclude<GearSlotFilter,''>,selected:str
  const detail=selection.selected?GearDetails(selection.selected,snapshot,'character',busy):`<aside class="character-empty">${stateBlockHtml({kind:'empty',title:label+'未装备',message:'当前没有该部位的可穿戴装备。',compact:true})}</aside>`;
  return `<section class="character-chooser" role="region" aria-label="${label}装备候选">${panelHeaderHtml('更换'+label,{level:'section',closeAction:'character-chooser-close',closeLabel:'收起换装'})}<div class="character-candidate-hint">${sectionTitleHtml('候选',{count:`${selection.items.length} 件`})}${worn?'<small>▲▼ 为主属性与穿戴中相比</small>':''}</div><div class="character-candidate-grid" data-character-scroll="candidates-${part}">${rows}</div></section><section class="character-compare${pair?' has-pair':''}" aria-label="装备对比">${pair?wornCard(worn!)+'<span class="character-compare-arrow" aria-hidden="true">→</span>':''}${detail}</section>`;
 }
+/** HEX socket chooser (HEX-F01) takes the gear swap view's place; only with a non-empty catalog, so it stays inert before HEX-B02. */
+function hexChooserView(snapshot:Snapshot,options:CharacterPanelOptions,busy:boolean){
+ const chooser=options.hexChooser,catalog=options.hexCatalog??{};
+ if(!chooser||!Object.keys(catalog).length)return '';
+ return HexRuneChooser({slot:chooser.slot,selected:chooser.selected||undefined,level:snapshot.level,items:hexChooserItemsFromSnapshot(snapshot,catalog),catalog,busy});
+}
 export function CharacterPanel(snapshot:Snapshot,part:Exclude<GearSlotFilter,''>,selected:string,figureURL:string|undefined,busy:boolean,options:CharacterPanelOptions={chooserOpen:false,detailsOpen:true,blocked:false}){
- return `<div class="character-panel${options.chooserOpen?' is-swapping':''}"><section class="character-paperdoll${options.chooserOpen?' chooser-open':''}" aria-label="人物与装备">${CharacterPaperdoll(snapshot,options.chooserOpen?part:'',figureURL)}</section>${options.chooserOpen?swapView(snapshot,part,selected,busy):summary(snapshot,options)}<footer class="character-footer">${options.blocked?`<span role="status">${statusBadgeHtml('连接待恢复，装备与属性待同步','warning',{variant:'inline'})}</span>${buttonHtml('恢复连接',{action:'recover',size:'compact',variant:'secondary',busy:options.recovering,busyLabel:'正在恢复…'})}`:''}</footer></div>`;
+ const hex=hexChooserView(snapshot,options,busy),swapping=options.chooserOpen||Boolean(hex);
+ return `<div class="character-panel${swapping?' is-swapping':''}"><section class="character-paperdoll${swapping?' chooser-open':''}" aria-label="人物与装备">${CharacterPaperdoll(snapshot,options.chooserOpen&&!hex?part:'',figureURL,options.hexCatalog,hex?options.hexChooser!.slot:'',busy)}</section>${hex||(options.chooserOpen?swapView(snapshot,part,selected,busy):summary(snapshot,options))}<footer class="character-footer">${options.blocked?`<span role="status">${statusBadgeHtml('连接待恢复，装备与属性待同步','warning',{variant:'inline'})}</span>${buttonHtml('恢复连接',{action:'recover',size:'compact',variant:'secondary',busy:options.recovering,busyLabel:'正在恢复…'})}`:''}</footer></div>`;
 }
