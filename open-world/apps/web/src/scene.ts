@@ -1,3 +1,4 @@
+import {interactionReach} from '../../../packages/rules/world-interactions.ts';
 import {CombatSoundEvents,type SoundDispatch} from './audio/combat-sound-events.ts';
 import {dressingResources} from './world-dressing.ts';
 import {FieldEventEffects} from './field-event-effects.ts';
@@ -102,7 +103,7 @@ export class WorldScene extends Phaser.Scene {
  this.input.on('pointerdown',(pointer:Phaser.Input.Pointer,over:Phaser.GameObjects.GameObject[])=>{
    if(this.bridge.panel||!this.bridge.loggedIn)return;
    this.pendingInteraction=undefined;
-   const starId=over?.find(o=>o.getData('starsea-object-id'))?.getData('starsea-object-id');if(starId){const object=this.starSeaStory?.object(starId);if(object&&object.enabled!==false&&this.bridge.starSeaInteract)this.walkToInteraction(object.position,2.8,()=>this.starSeaStory?.object(starId)?.enabled!==false,()=>this.bridge.starSeaInteract?.(starId));return;}
+   const starId=over?.find(o=>o.getData('starsea-object-id'))?.getData('starsea-object-id');if(starId){const object=this.starSeaStory?.object(starId);if(object&&object.enabled!==false&&this.bridge.starSeaInteract)this.walkToInteraction(object.position,object.reach??interactionReach.story,()=>this.starSeaStory?.object(starId)?.enabled!==false,()=>this.bridge.starSeaInteract?.(starId));return;}
    const storyTarget=over?.find(o=>o.getData('story-object-id'))?.getData('story-object-id');if(storyTarget){this.bridge.storyInteract?.(storyTarget);return;}
    const point=unproject({x:pointer.worldX,y:pointer.worldY});if(this.bridge.castAt?.(point))return;if(this.bridge.authoritativeWorld){const portal=this.bridge.world.region.portal;if(portal&&Math.hypot(portal.x-point.x,portal.y-point.y)<4){this.walkToInteraction(portal,4);return;}const enemy=this.bridge.world.enemies.find(e=>e.alive&&Math.hypot(e.position.x-point.x,e.position.y-point.y)<1.2);if(enemy){this.bridge.selectEnemy?.(enemy.id);this.bridge.cast(0);}else this.bridge.go?.(point);return;}
    const w=this.bridge.world;

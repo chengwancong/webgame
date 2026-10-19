@@ -51,7 +51,7 @@ export class GatherNodes{
   if(distance(node,w.hero.position)>gatherReach){if(mode==='manual')this.deps.notice('再走近一点采集。');return;}
   this.pending=true;
   try{
-   const result=await this.deps.write('field/gather',{region:w.region.id,node:node.id,position:{x:Math.round(w.hero.position.x*10)/10,y:Math.round(w.hero.position.y*10)/10},mode});
+   const result=await this.deps.write('field/gather',{region:w.region.id,node:node.id,position:{...w.hero.position},mode});
    const delta=result==='success'?this.deps.lastReceipt()?.delta:undefined,gained=Object.entries(delta?.materials??{}).filter(([,n])=>n>0);
    if(gained.length)this.deps.notice('采集 '+gained.map(([m,n])=>`${materialName(m)} ×${n}`).join('、'));
   }finally{this.pending=false;}
