@@ -3,7 +3,7 @@ export {currencyIconHtml,resourceAmountHtml} from './ui/currency.ts';
 
 import {marksHtml,type SlotMark,type NodeState} from './ui/graphics.ts';
 export {pipsHtml,meterHtml,marksHtml,deltaHtml,rewardStripHtml,emptySlotHtml,timerHtml,ringHtml,pageDotsHtml,helpHtml} from './ui/graphics.ts';
-export {iconHtml,statIcon,iconNames} from './ui/icons.ts';
+export {iconHtml,statIcon,statPlateHtml,iconNames,sealEmblem} from './ui/icons.ts';
 export type {SlotMark,NodeState} from './ui/graphics.ts';
 import {escapeHtml as esc} from './ui/primitives.ts';
 export {esc};

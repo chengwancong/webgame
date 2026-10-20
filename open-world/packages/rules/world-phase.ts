@@ -14,8 +14,9 @@ export function resolveWorldPhase(character:Pick<CharacterState,'level'|'starsea
  const publicRows=<T extends WorldPhase&{_row:number}>(rows:readonly T[])=>visibleWorldRows(character,rows).map(({when,until,_row,...row})=>row);
  return {zones:publicRows(characterWorldTables(character,tables).zones),camps:ids('camps'),waypoints:ids('waypoints'),gates:ids('gates'),landmarks:ids('landmarks'),events:ids('events'),chests:ids('chests'),rares:ids('rares'),patrols:ids('patrols'),dungeonEntrances:ids('dungeonEntrances'),planeGates:resolvePlaneGates(character,now,tables),outposts:publicRows(tables.outposts),objects:publicRows(tables.objects),merchants:publicRows(tables.merchants)};
 }
-export function resolveNpcPhase(character:Pick<CharacterState,'level'|'starsea'>,rows:readonly (WorldPhase&{npc:string;map:string;x:number;y:number})[]){
- const found=new Map<string,{npc:string;map:string;x:number;y:number}>();
- for(const row of visibleWorldRows(character,rows)){if(found.has(row.npc))throw Error('人物相位同时命中两个站位 '+row.npc);found.set(row.npc,{npc:row.npc,map:row.map,x:row.x,y:row.y});}
+export function resolveNpcPhase(character:Pick<CharacterState,'level'|'starsea'>,rows:readonly (WorldPhase&{npc:string;map:string;x:number;y:number;priority?:number})[]){
+ const found=new Map<string,{npc:string;map:string;x:number;y:number;priority?:number}>(),visible=visibleWorldRows(character,rows),priorities=new Map<string,number>();
+ for(const row of visible)priorities.set(row.npc,Math.max(priorities.get(row.npc)??0,row.priority??0));
+ for(const row of visible){if((row.priority??0)!==priorities.get(row.npc))continue;if(found.has(row.npc))throw Error('人物相位同时命中两个站位 '+row.npc);found.set(row.npc,{npc:row.npc,map:row.map,x:row.x,y:row.y,...(row.priority?{priority:row.priority}:{})});}
  return [...found.values()];
 }

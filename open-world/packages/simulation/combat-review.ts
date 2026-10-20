@@ -2,12 +2,12 @@ import type {World,CombatEvent} from './index.ts';
 import type {CombatAdvice,CombatFatalHit,CombatHitKind,CombatReview} from '../contracts/combat-review.ts';
 import type {DamageType,StatusKind} from '../contracts/skill-mechanics.ts';
 import {deathCause,selectCombatAdvice} from '../rules/combat-advice.ts';
-import {damageTypeLabels,skillHint,statusLabelList} from '../content/combat-hints.ts';
+import {damageTypeLabels,skillHint,statusLabelList,statusLabels} from '../content/combat-hints.ts';
 export type {CombatReview,CombatFatalHit,CombatAdvice};
 /** The killing blow and the hits before it, resolved from executor events only. */
 export type CombatReviewHit={source:string;skill:string;amount:number;kind:CombatHitKind;damageType:DamageType;statuses:StatusKind[];hint:string};
-export type CombatReviewRecord={lastTick:number;totals?:Record<string,number>;recent:Record<string,CombatReviewHit[]>};
-export const newCombatReview=():CombatReviewRecord=>({lastTick:-1,totals:{},recent:{}});
+export type CombatReviewRecord={lastTick:number;source?:'client'|'server';totals?:Record<string,number>;recent:Record<string,CombatReviewHit[]>};
+export const newCombatReview=(source:'client'|'server'='client'):CombatReviewRecord=>({lastTick:-1,source,totals:{},recent:{}});
 function sourceLabel(w:World,event:CombatEvent){const source=w.enemies.find(e=>e.id===event.sourceId);return source?.name??(event.sourceId===w.playerId?'自身效果':event.sourceId&&w.players.has(event.sourceId)?'队友效果':'来源未记录');}
 type SkillInfo={name:string;kind:CombatHitKind;damageType:DamageType;statuses:StatusKind[];hint:string};
 const bossKind=(kind:string):CombatHitKind=>kind==='ultimate'?'beam':(['melee','projectile','zone','beam','trap','summon','buff','teleport'] as const).includes(kind as CombatHitKind)?kind as CombatHitKind:'zone';
@@ -21,6 +21,12 @@ function skillInfo(w:World,event:CombatEvent):SkillInfo{
  }
  const own=w.skills.find(s=>s.id===id);
  if(own)return {name:own.name,kind:'zone',damageType:'pure',statuses:[],hint:'来自你自己的技能，走开点'};
+ // A periodic executor hit need not retain an authored skill definition (for example a restored DOT).
+ // Keep the actual status/type instead of mislabelling it as a physical basic attack.
+ if(event.category==='periodic'){
+  const damageType=event.damageType??'physical';
+  return {name:event.status?`${statusLabels[event.status]}持续伤害`:'持续伤害',kind:'zone',damageType,statuses:event.status?[event.status]:[],hint:skillHint({kind:'zone',damageType})};
+ }
  const basic=basicAttacks[id]??{name:'普通攻击',kind:'melee' as CombatHitKind};
  return {...basic,damageType:'physical',statuses:[],hint:skillHint(basic)};
 }
@@ -29,9 +35,10 @@ export function observeCombatReview(m:CombatReviewRecord,w:World,events:readonly
  if(w.tick<=m.lastTick)return;m.lastTick=w.tick;
  for(const e of events){if(e.type!=='hit_resolved'||!(e.amount!>0))continue;
   if(!(e.id===w.playerId||w.players.has(e.id)))continue;
-  const totals=m.totals??={};totals[e.id]=(totals[e.id]??0)+e.amount!;
+  const amount=Math.round(e.amount!),totals=m.totals??={};totals[e.id]=(totals[e.id]??0)+amount;
   const info=skillInfo(w,e),recent=m.recent[e.id]??=[];
-  recent.push({source:sourceLabel(w,e),skill:info.name,amount:e.amount!,kind:info.kind,damageType:e.damageType??info.damageType,statuses:info.statuses,hint:info.hint});
+  const statuses=[...new Set([...info.statuses,...(e.status?[e.status]:[])])].slice(0,4);
+  recent.push({source:sourceLabel(w,e),skill:info.name,amount,kind:info.kind,damageType:e.damageType??info.damageType,statuses,hint:info.hint});
   if(recent.length>5)recent.shift();
  }
 }
@@ -42,7 +49,8 @@ function fatalHit(h:CombatReviewHit):CombatFatalHit{
 export function resolveCombatReview(m:CombatReviewRecord|undefined,character:string,outputShort=false):CombatReview{
  const hits=m?.recent[character]??[],last=hits.at(-1);
  if(!last)return {fatal:null,advice:outputShort?selectCombatAdvice('output',true):[],recent:[]};
- return {totalTaken:Math.round(m?.totals?.[character]??hits.reduce((n,h)=>n+h.amount,0)),fatal:fatalHit(last),advice:selectCombatAdvice(deathCause(last),outputShort),recent:hits.slice(0,-1).reverse().map(h=>`${h.source} · ${h.skill}：${Math.round(h.amount)} 伤害`)};
+ const retained=hits.reduce((n,h)=>n+Math.round(h.amount),0),totalTaken=Math.round(m?.totals?.[character]??retained);
+ return {totalTaken,omittedTaken:Math.max(0,totalTaken-retained),...(m?.source?{source:m.source}:{}),fatal:fatalHit(last),advice:selectCombatAdvice(deathCause(last),outputShort),recent:hits.slice(0,-1).reverse().map(h=>`${h.source} · ${h.skill}：${Math.round(h.amount)} 伤害`)};
 }
 /** A later scene cannot borrow events from the previously loaded executor. */
 export function currentCombatReview(m:CombatReviewRecord|undefined,recordedWorld:World|undefined,w:World){return recordedWorld===w?resolveCombatReview(m,w.playerId):undefined;}

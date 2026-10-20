@@ -7,6 +7,7 @@ import {projectFx} from './skill-fx-layout.ts';
 import {groundSize} from './vfx-geometry.ts';
 import {resolvedToken,type TokenName} from './ui/tokens.ts';
 import {storyNpcAppearance} from './story-appearance.ts';
+import {worldLabels} from './hud-avoidance.ts';
 import environment from '../../../packages/asset-manifest/environment.v2.json';
 export function preloadStoryClues(scene:Phaser.Scene){for(const [chapter,asset]of Object.entries(environment.reusedClues))scene.load.image('story-clue-'+chapter,asset.path);}
 const color=(id:TokenName)=>parseInt(resolvedToken(id).slice(1),16);let serial=0;
@@ -21,18 +22,17 @@ export class StoryRenderer{
   const label=this.scene.add.text(0,0,'',{resolution:worldTextResolution(),fontFamily:resolvedToken('Font.Family'),fontSize:resolvedToken('Font.Size.Caption'),color:resolvedToken('Color.TextPrimary'),backgroundColor:resolvedToken('Color.PanelInset'),align:'center',padding:{x:6,y:4}}).setOrigin(0,0).setInteractive().setData('story-object-id',object.id);
   return {image,label,shadow,texture,painter,source:object.npcId??(object.kind==='clue'?'clue:'+chapter:object.kind)};
  }
- draw(objects:StoryObject[],encounter:StoryEncounterView|undefined,clock:number){const used=new Set(objects.map(o=>o.id));for(const [id,n] of this.nodes)if(!used.has(id)){this.remove(n);this.nodes.delete(id);}this.ground.clear();const placed=this.scene.children.list.filter(o=>o.getData?.('world-label')&&(o as Phaser.GameObjects.Text).visible).map(o=>(o as Phaser.GameObjects.Text).getBounds());
+ draw(objects:StoryObject[],encounter:StoryEncounterView|undefined,clock:number){const used=new Set(objects.map(o=>o.id));for(const [id,n] of this.nodes)if(!used.has(id)){this.remove(n);this.nodes.delete(id);}this.ground.clear();
   for(const object of objects){const chapter=encounter?.chapter??'meadow',source=object.npcId??(object.kind==='clue'?'clue:'+chapter:object.kind);let node=this.nodes.get(object.id);if(node&&node.source!==source){this.remove(node);this.nodes.delete(object.id);node=undefined;}if(!node){node=this.create(object,chapter);this.nodes.set(object.id,node);}const point=projectFx(object.position),visible=this.scene.cameras.main.worldView.contains(point.x,point.y);node.image.setVisible(visible&&(!node.painter||node.painter.ready));node.shadow.setVisible(visible);node.label.setVisible(visible);if(!visible)continue;
    if(object.kind==='beacon')node.image.setTint((encounter?encounter.defendActive||encounter.readyForBoss:object.state==='lit')?0xffffff:0x98a4ae);
    if(node.last&&Math.hypot(point.x-node.last.x,point.y-node.last.y)>.1){node.movingUntil=clock+6;node.facing=point.x>=node.last.x?1:-1;}node.last={...point};
-   if(node.painter?.render({action:clock<(node.movingUntil??0)?'move':'idle',clock:clock/30,facing:node.facing??-1}))node.texture!.refresh();node.image.setPosition(point.x,point.y).setDepth(point.y+(node.painter?2:1));node.shadow.setPosition(point.x,point.y+2).setDepth(point.y-1);node.label.setText(object.name===object.label?object.name:object.name+'\n'+object.label);this.placeLabel(node.label,point.x,point.y-(node.painter?108:node.image.displayHeight+10),placed);node.label.setDepth(point.y+4).setColor(resolvedToken(object.enabled?'Color.Highlight':'Color.TextDisabled'));
+   if(node.painter?.render({action:clock<(node.movingUntil??0)?'move':'idle',clock:clock/30,facing:node.facing??-1}))node.texture!.refresh();node.image.setPosition(point.x,point.y).setDepth(point.y+(node.painter?2:1));node.shadow.setPosition(point.x,point.y+2).setDepth(point.y-1);node.label.setText(object.name===object.label?object.name:object.name+'\n'+object.label);this.placeLabel(node.label,object,point.x,point.y-(node.painter?108:node.image.displayHeight+10));node.label.setDepth(point.y+4);const color=resolvedToken(object.enabled?'Color.Highlight':'Color.TextDisabled');if(node.label.style.color!==color)node.label.setColor(color);
    if(object.kind==='beacon'){this.ground.setDepth(point.y-2);if(encounter){const d=groundSize(4);this.ground.fillStyle(color('Color.Success'),.08).fillEllipse(point.x,point.y,d.width,d.height).lineStyle(2,color(encounter.contested?'Color.Warning':'Color.Success'),.8).strokeEllipse(point.x,point.y,d.width,d.height);}}
   }
  }
- /** Keeps story labels on whole pixels and lifts them above any world label they would cover. */
- private placeLabel(label:Phaser.GameObjects.Text,centerX:number,bottom:number,placed:Phaser.Geom.Rectangle[]){const gap=4;let x=Math.round(centerX-label.width/2),y=Math.round(bottom-label.height);
-  for(let pass=0;pass<4;pass++){const hit=placed.find(r=>x<r.right&&x+label.width>r.x&&y<r.bottom&&y+label.height>r.y);if(!hit)break;y=Math.floor(hit.y-gap-label.height);}
-  label.setPosition(x,y);placed.push(new Phaser.Geom.Rectangle(x,y,label.width,label.height));}
+ /** 整像素落位后交给世界标签仲裁（docs/hud-arbitration-plan.md §2.3）：可交互的先放，让不开或进 HUD 保留区就隐藏。 */
+ private placeLabel(label:Phaser.GameObjects.Text,object:StoryObject,centerX:number,bottom:number){label.setPosition(Math.round(centerX-label.width/2),Math.round(bottom-label.height));
+  worldLabels(this.scene).submit({id:'legacy-story:'+object.id,bounds:label.getBounds(),priority:object.enabled?10:20,apply:(visible,lift)=>{label.setVisible(visible);if(visible&&lift)label.y=Math.round(label.y-lift);}});}
  private remove(node:Node){node.painter?.destroy();node.image.destroy();node.shadow.destroy();node.label.destroy();if(node.texture)this.scene.textures.remove(node.texture.key);}
  destroy(){for(const node of this.nodes.values())this.remove(node);this.nodes.clear();this.ground.destroy();}
  diagnostics(){return {objects:this.nodes.size,npcs:[...this.nodes.values()].filter(n=>n.painter).map(n=>n.painter!.diagnostics())};}

@@ -38,6 +38,22 @@ it('skipping without a choice keeps the sword',async()=>{
  const p=await player(),done=await p.send({finish:true});expect(done.status).toBe(200);const s=done.body.snapshot as Snapshot;
  expect(s.starsea!.prologue).toEqual({weapon:'sword',done:true});expect(weaponOf(s)).toEqual(weaponOf(p.s));expect(s.skills).toEqual(p.s.skills);expect(s.build).toBe(p.s.build);
 });
+it('GROW-03 persists authored landing overrides through the real quest/permit/receipt path',async()=>{
+ const p=await player();expect((await p.send({finish:true})).status).toBe(200);
+ const permit=await p.request('permit',{lease_id:p.lease,region:'ss-map-wind'});expect(permit.status,JSON.stringify(permit.body)).toBe(200);
+ const before=(await p.request('character')).body as Snapshot;
+ const input={command_id:randomUUID(),revision:before.revision,lease_id:p.lease,op:'start',task:'ss-c01-t01',region:'ss-map-wind'};
+ const started=await p.request('quest',input);expect(started.status,JSON.stringify(started.body)).toBe(200);
+ expect(started.body.snapshot.starsea.wave.spawns.map((m:any)=>[m.hp,m.attack])).toEqual([[680,12],[680,12]]);
+ const permitData=(await pool.query('SELECT data FROM ow_permits WHERE id=$1',[permit.body.id])).rows[0].data;
+ expect(permitData.spawns.filter((m:any)=>m.id.startsWith('q:ss-c01-t01:')).map((m:any)=>[m.hp,m.attack])).toEqual([[680,12],[680,12]]);
+ const saved=(await pool.query('SELECT state FROM ow_characters WHERE id=$1',[p.s.id])).rows[0].state;
+ expect(saved.starsea.wave.spawns.map((m:any)=>[m.hp,m.attack])).toEqual([[680,12],[680,12]]);
+ expect(saved.gold).toBe(before.gold);expect(saved.xp).toBe(before.xp);
+ expect((await p.request('quest',input)).body).toEqual(started.body);
+ expect((await pool.query('SELECT count(*)::int n FROM ow_ledger WHERE character=$1 AND command=$2',[p.s.id,input.command_id])).rows[0].n).toBe(1);
+ expect((await p.request('character')).body.starsea.wave).toEqual(saved.starsea.wave);
+});
 it('the hidden kit is usable with its weapon',async()=>{
  const p=await player(),r=await p.send({weapon:'hidden',finish:true});expect(r.status).toBe(200);const s=r.body.snapshot as Snapshot;
  expect(weaponOf(s).base).toBe('standard-hidden-t1-weapon');expect(s.resolvedSkills.map(k=>k.id)).toEqual(['throwing_knife']);expect(s.skillRecovery?.sealed).toContain('fan_of_knives');// 群攻招封存，落点求生后找回

@@ -7,6 +7,7 @@ import type {DamageType,StatusKind} from '../../../packages/contracts/skill-mech
 import {damageTypeLabels,statusLabels} from '../../../packages/content/combat-hints.ts';
 import {deathCause,selectCombatAdvice} from '../../../packages/rules/combat-advice.ts';
 import {gapDiagnosis} from '../../../packages/rules/gap-diagnosis.ts';
+import {maxCraftLevel} from './crafting-service.ts';
 
 /** Island combat runs in the client executor. Its observed hit can request advice,
  * but cannot grant anything or choose its own recommended actions. */
@@ -18,7 +19,7 @@ export function registerCombatReview(app:FastifyInstance,ctx:{pool:Pool;identity
   const damageType=Object.entries(damageTypeLabels).find(([,label])=>label===v.fatal?.damageType)?.[0] as DamageType|undefined;
   const statuses=v.fatal?.statuses.flatMap(label=>Object.entries(statusLabels).filter(([,value])=>value===label).map(([kind])=>kind as StatusKind))??[];
   const advice=selectCombatAdvice(v.fatal?deathCause({kind:v.fatal.kind,damageType,statuses}):'unknown');
-  const gap=gapDiagnosis(s,{damageType});
+  const gap=gapDiagnosis(s,{damageType,maxCraftLevel:await maxCraftLevel(ctx.pool,s)});
   return combatReviewSchema.parse({fatal:v.fatal,recent:v.recent,advice,...(gap?{gap}:{})});
  });
 }

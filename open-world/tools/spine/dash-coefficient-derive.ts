@@ -11,6 +11,12 @@ import {applySpinePlan,type SpineChange} from './apply.ts';
 import {spineSchemas} from './schemas.ts';
 import coefficients from '../../packages/content/skill-coefficients.json';
 import {skillCatalog} from '../../packages/content/index.ts';
+if(process.argv.includes('--grow01')){
+ if(process.argv.includes('--apply')||process.env.FREE_BASIC)throw Error('GROW-01 isolated derivation does not use legacy apply or FREE_BASIC');
+ const index=process.argv.indexOf('--output');if(index<0||!process.argv[index+1])throw Error('GROW-01 requires --output evidence path');
+ await (await import('./grow01-derive.ts')).deriveGrow01(process.argv[index+1]);
+ process.exit(0);
+}
 /** FREE_BASIC=1：飞刀耗能 3 → 0，与斩击、杖击一致（只在内存里改，看能量是不是根因）。 */
 if(process.env.FREE_BASIC){const k=skillCatalog.find(s=>s.id==='throwing_knife')!;k.cost=0;}
 type Family='sword'|'hidden';

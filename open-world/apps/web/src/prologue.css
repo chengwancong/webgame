@@ -40,3 +40,12 @@ body.prologue-active #hud,body.prologue-active #story-hud,body.prologue-active #
 .prologue-fade{position:absolute;inset:0;backdrop-filter:grayscale(1);background:#0d141c40;animation:prologue-fade 4s var(--motion-ease) both}
 @keyframes prologue-fade{from{backdrop-filter:grayscale(0);background:#0d141c00}to{backdrop-filter:grayscale(1);background:#0d141c66}}
 html[data-motion-reduced="true"] .prologue-rift,html[data-motion-reduced="true"] .prologue-faller,html[data-motion-reduced="true"] .prologue-burst.is-full img,html[data-motion-reduced="true"] .prologue-fade{animation:none}
+
+/* UX-A04 镜头坠落 canvas（#prologue-fx 铺在 #prologue 下面）、选卡预演 */
+#prologue-fx{position:absolute;inset:0;width:100%;height:100%;z-index:39;pointer-events:none}
+.prologue-sky--clear{background:none;pointer-events:none}
+.prologue-sky--still{animation:prologue-sky-in .6s var(--motion-ease) both}
+@keyframes prologue-sky-in{from{opacity:0}to{opacity:1}}
+.prologue-demo{width:224px;height:72px;border-radius:var(--radius-slot);border:1px solid var(--color-primary-border);background:#101820}
+html[data-motion-reduced="true"] .prologue-sky--still{animation:none}
+@media(prefers-reduced-motion:reduce){.prologue-sky--still{animation:none}}

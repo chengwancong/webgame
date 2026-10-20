@@ -19,7 +19,7 @@ export class BagController{
   const quote=this.ui.batch,s=this.snapshot();if(!quote?.gear.length||!s||this.ui.busy||this.blocked())return;
   if(this.ui.batchOwner!==s.id||quote.revision!==s.revision){this.ui.batch=undefined;this.ui.error='库存已更新，请重新预览并确认。';this.refresh();return;}
   this.ui.busy=true;this.refresh();
-  try{const result=await this.write('gear/salvage-batch',{gear_ids:quote.gear.map(g=>g.id)});this.ui.batch=undefined;this.ui.status=result==='pending'?'pending':result==='success'?'success':'';this.ui.message=result==='success'?`已分解 ${quote.gear.length} 件装备，获得 ${quote.material} 强化石。请主动重新开启全自动。`:result==='pending'?'分解结果待确认，请恢复连接核对库存。':'分解未提交，请重新预览。';}
+  try{const result=await this.write('gear/salvage-batch',{gear_ids:quote.gear.map(g=>g.id)});this.ui.batch=undefined;this.ui.status=result==='pending'?'pending':result==='success'?'success':'';this.ui.message=result==='success'?`已分解 ${quote.gear.length} 件装备，获得 ${quote.material} 强化石。`:result==='pending'?'分解结果待确认，请恢复连接核对库存。':'分解未提交，请重新预览。';}
   finally{this.ui.busy=false;this.refresh();}
  }
  async load(){

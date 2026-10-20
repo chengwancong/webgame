@@ -23,5 +23,6 @@
 .panel[data-panel=region-map] .region-map-actions .ui-button__labels{white-space:normal}
 
 /* Keep two readable columns despite fractional text widths at the fixed 720p stage. */
-.panel[data-panel=region-map]{width:calc(var(--space-16)*6 + var(--space-8))}
+/* 512 格量产岛在 448px 里缩成一小团、标记全挤在登陆角（Grok BUG-56）：区域图放宽到 640px。 */
+.panel[data-panel=region-map]{width:calc(var(--space-16)*10)}
 .panel[data-panel=region-map] .region-map-actions>.ui-button{flex:1 1 calc(50% - var(--space-2));word-break:normal}

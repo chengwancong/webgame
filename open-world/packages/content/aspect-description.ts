@@ -1,6 +1,6 @@
 const mechanismNames:Record<string,string>={'ember-burn':'燃烧强化','burning-hit':'燃烧追击','ember-shield':'余烬护盾','cold-hit':'寒冷追击','frost-guard':'寒霜反击','dash-strike':'位移强化','moving-evasion':'移动闪避','crowd-area':'群敌增伤','whirl-armor':'旋风破甲','whirl-guard':'旋风护体','bleeding-hit':'群敌流血追击','crowd-evasion':'群敌闪避','tempo-recovery':'节拍恢复','mana-shield':'耗蓝护盾','block-counter':'格挡反击','shield-guard':'护盾减伤','healthy-hit':'高生命追击','opening-critical':'先手暴伤','elite-shield':'猎杀护盾','dash-nova':'落点冲击','block-shield':'格挡护盾','kill-refund':'连杀恢复'};
 const actionNames:Record<string,string>={status:'燃烧强化',spread:'余火扩散',nova:'破盾爆发',buff:'节拍强化',cooldown:'猎杀恢复'};
-import type {EffectRule, EffectAction} from '../contracts/effects.ts';
+import {fieldStatusStrength,type EffectRule,type EffectAction} from '../contracts/effects.ts';
 import type {Condition} from '../contracts/conditions.ts';
 import type {NewAspect} from './aspect-description-types.ts';
 import {statLabels} from '../contracts/stats.ts';
@@ -35,32 +35,39 @@ export function describeCondition(c:Condition,center:'self'|'target'='self'):str
 }
 function actionText(a:EffectAction,passive:boolean):string{
  switch(a.type){
- case 'amplify':return '伤害增加'+percent(a.ratio)+(a.against.length?'，仅对'+a.against.map(statusName).join('或')+'目标':'');
+ case 'homing':return '从自身发出'+a.count+'枚追踪弹，每枚造成攻击'+percent(a.ratio)+'的'+damageNames[a.damageType]+'伤害；只追踪原目标，目标死亡则追最近敌人，无目标则消失'+(a.status?'，命中施加'+statusName(a.status.kind)+percent(a.status.strength)+'，持续'+seconds(a.status.duration):'');
+ case 'mark':return '为目标挂上印记，持续'+seconds(a.duration);
+ case 'unmark':return '消耗目标的印记';
+ case 'amplify':return '伤害增加'+percent(a.ratio)+(a.targetMissingHp?'，额外增加目标缺失生命比例的'+percent(a.targetMissingHp.coefficient)+'，上限'+percent(a.targetMissingHp.cap):'')+(a.against.length?'，仅对'+a.against.map(statusName).join('或')+'目标':'');
  case 'reduce':return '受到伤害减少'+percent(a.ratio);
- case 'spread':return '把你施加的'+a.statuses.map(statusName).join('、')+'扩散给'+n(a.radius)+'格内最多'+a.count+'个敌人';
+ case 'spread':return a.seed?'对目标周围'+n(a.radius)+'格内最多'+a.count+'个其他敌人施加'+statusName(a.seed.kind)+' '+seconds(a.seed.duration):'把你施加的'+a.statuses.map(statusName).join('、')+'扩散给'+n(a.radius)+'格内最多'+a.count+'个敌人';
  case 'shield':return '护盾取现有值与'+({maxHp:'最大生命',maxMana:'最大能量',attack:'攻击',hit:'本次命中伤害',shield:'护盾',armor:'护甲',cost:'能量消耗'})[a.ref]+percent(a.ratio)+'的较高值，至少持续'+seconds(a.duration);
  case 'nova':return '对'+(a.at==='target'&&a.radius===0&&a.maxTargets===1?'攻击者':(a.at==='self'?'你周围':'目标周围')+n(a.radius)+'格敌人')+'造成'+({shield:'本次护盾的历史最高值',hit:'本次命中伤害',attack:'攻击',maxHp:'目标最大生命',maxMana:'最大能量',armor:'护甲',cost:'能量消耗'})[a.ref]+percent(a.ratio)+'的'+({physical:'物理',cold:'冰霜',fire:'火焰',lightning:'雷电',arcane:'奥术',shadow:'暗影',poison:'毒素',pure:'真实'})[a.damageType]+'伤害'+(a.status?'，施加'+statusName(a.status.kind)+' '+seconds(a.status.duration)+''+(a.status.strength?'（强度'+percent(a.status.strength)+'）':''):'');
  case 'status':return '施加'+statusName(a.status)+' '+seconds(a.duration)+(a.strength?'，强度'+percent(a.strength):'')+(a.ratio?'，附加伤害'+percent(a.ratio):'');
+ case 'status_remove':return '移除目标的'+a.statuses.map(statusName).join('、');
+ case 'blink':return '向远离8格内敌人中心的方向位移'+n(a.distance)+'格，遇障碍停止';
  case 'refund':return a.mode==='longest'?'当前冷却最长的技能返还剩余冷却'+percent(a.fraction??0):'当前技能冷却缩短'+seconds(a.ticks??0);
  case 'cooldown':return (a.mode==='all'?'所有技能':'其他技能')+'冷却'+(a.reset?'全部重置':a.fraction?'缩短'+percent(a.fraction):'缩短'+seconds(a.ticks??0));
- case 'buff':if(a.flags?.immortal&&a.mods.reviveRatio!==undefined)return '免于死亡，并恢复'+percent(a.mods.reviveRatio)+'最大生命';return Object.entries(a.mods).map(([k,v])=>(statNames[k]??statLabels[k]??k)+'增加'+percent(v)).join('，')+(a.flags?.forceCrit?'，必定暴击':'')+(a.consume?'，作用于'+({nextCast:'下一次施法',nextHit:'下一次直接命中',nextMelee:'下一次近战命中'})[a.consume]:'')+(passive?'':'，持续'+seconds(a.duration))+'，最多'+a.maxStacks+'层'+(a.echoOnConsume?'，消耗后'+seconds(a.echoOnConsume.delay)+'重放'+percent(a.echoOnConsume.ratio)+'伤害':'');
+ case 'buff':if(a.flags?.immortal&&a.mods.reviveRatio!==undefined)return '免于死亡，并恢复'+percent(a.mods.reviveRatio)+'最大生命';return Object.entries(a.mods).map(([k,v])=>(statNames[k]??statLabels[k]??k)+'增加'+percent(v)).join('，')+(a.flags?.forceCrit?'，必定暴击':'')+(a.consume?'，作用于'+({nextCast:'下一次施法',nextHit:'下一次直接命中',nextMelee:'下一次近战命中',nextBasicHit:'下一次普攻命中',nextSkillHit:'下一次技能命中',nextSkillCast:'下一次技能施放'})[a.consume]:'')+(a.untilCombatEnd?'，持续到战斗结束':passive?'':'，持续'+seconds(a.duration))+'，最多'+a.maxStacks+'层'+(a.echoOnConsume?'，消耗后'+seconds(a.echoOnConsume.delay)+'重放'+percent(a.echoOnConsume.ratio)+'伤害':'');
  case 'shards':return '发出'+a.count+'枚碎片，每枚造成'+percent(a.ratio)+'伤害，射程'+n(a.range)+'格';
  case 'echo':return seconds(a.delay)+'后重放'+(a.skill==='slot1'?'第一栏技能':'当前技能')+'，造成'+percent(a.ratio)+'伤害'+(a.retarget?'，重新选择目标':'');
  case 'heal':return '回复'+percent(a.ratio)+({maxHp:'最大生命',maxMana:'最大能量',hit:'本次命中伤害',shield:'护盾',armor:'护甲',attack:'攻击',cost:'能量消耗'})[a.ref]+(a.overflowShield?'，溢出回复的'+percent(a.overflowShield)+'转为护盾':'');
  case 'mana':return '回复'+percent(a.ratio)+'最大能量'+(a.flat?'及'+n(a.flat)+'点能量':'');
- case 'field':return '形成'+n(a.radius)+'格'+(a.orbit?'环绕领域':'领域')+'，持续'+seconds(a.duration)+'，每'+seconds(a.interval)+'造成'+percent(a.ratio)+'的'+damageNames[a.damageType]+'伤害'+(a.projectiles?'，共'+a.projectiles+'枚环绕体':'')+(a.pull?'，牵引强度'+n(a.pull):'');
- case 'detonate':return '引爆'+a.statuses.map(statusName).join('、')+'，造成剩余持续伤害的'+percent(a.ratio)+(a.radius?'，半径'+n(a.radius)+'格':'')+(a.remove?'，消耗对应状态':'，保留对应状态');
+ case 'field':return '形成'+n(a.radius)+'格'+(a.orbit?'环绕领域':'领域')+'，持续'+seconds(a.duration)+(a.ratio?'，每'+seconds(a.interval)+'造成'+percent(a.ratio)+'的'+damageNames[a.damageType]+'伤害':'')+(a.statuses?.length?'，施加'+a.statuses.map(kind=>statusName(kind)+(kind==='slow'?'（移动速度降低'+percent(fieldStatusStrength)+'）':'')).join('、'):'')+(a.projectiles?'，共'+a.projectiles+'枚环绕体':'')+(a.pull?'，牵引强度'+n(a.pull):'');
+ case 'detonate':return '引爆'+a.statuses.map(statusName).join('、')+'，造成'+(a.budget==='perTarget'?'各目标自身':'')+'剩余持续伤害的'+percent(a.ratio)+(a.radius?'，半径'+n(a.radius)+'格':'')+(a.remove?'，消耗对应状态':'，保留对应状态');
  case 'extend':return '延长'+(a.statuses?.map(statusName).join('、')??a.buff??'增益')+seconds(a.duration)+'，最多'+seconds(a.max)+(a.maxMode==='bonus'?'额外时长':'总时长');
- case 'arc':return '传导到最多'+a.count+'个目标，射程'+n(a.range)+'格，伤害'+percent(a.ratio)+'，每次传导保留'+percent(a.decay)+'伤害';
+ case 'arc':return '传导到最多'+a.count+'个目标，射程'+n(a.range)+'格，伤害'+percent(a.ratio)+'，每次传导保留'+percent(a.decay)+'伤害'+(a.status?'；每次传导命中且目标存活时施加'+statusName(a.status.kind)+(a.status.kind==='slow'?'（移动速度降低'+percent(a.status.strength)+'）':a.status.kind==='shock'?'（受到伤害提高'+percent(a.status.strength)+'）':a.status.strength?'（强度'+percent(a.status.strength)+'）':'')+'，持续'+seconds(a.status.duration)+'，不附加给原始目标':'');
  default:throw Error('尚无中文描述生成器：'+String((a as {type:string}).type));
  }
 }
 export function describeAspectRule(rule:EffectRule):string{
- const trigger=({passive:'',hit:'命中时',crit:'暴击时',kill:'击杀时',dash:'位移后',hurt:'受击时',block:'格挡时',dodge:'闪避时',shield_break:'护盾破裂时',shield_gain:'获得护盾时',kill_elite:'击杀精英或首领时',cast:'施放时',status_apply:'施加状态时',zone_end:'领域结束时',low_hp:'低生命时',lethal:'承受致命伤害时',combat_start:'进入战斗时',mana_empty:'能量耗尽时',nth:'每'+n(rule.every??1)+'次'+({hit:'命中',cast:'施法',crit:'暴击',kill:'击杀'})[rule.count??'hit']+'时',moved:'每移动'+n(rule.every??1)+'格时',interval:(rule.startReady?'进入战斗立即就绪，之后':'')+'每'+seconds(rule.every??0),mana_spent:'每累计消耗'+n(rule.every??0)+'点能量时'} as Record<string,string>)[rule.trigger];
+ if(rule.trigger==='nHits')return describeAspectRule({...rule,trigger:'hit'}).replace('命中时',seconds(rule.window??0)+'内命中'+n(rule.every??1)+'次'+(rule.distinctSources?'不同来源':'')+'时');
+ const trigger=({passive:'',hit:'命中时',crit:'暴击时',kill:'击杀时',dash:'位移后',hurt:'受击时',block:'格挡时',dodge:'闪避时',shield_break:'护盾破裂时',shield_gain:'获得护盾时',kill_elite:'击杀精英或首领时',cast:'施放时',status_apply:'施加状态时',zone_end:'领域结束时',low_hp:'低生命时',lethal:'承受致命伤害时',combat_start:'进入战斗时',mana_empty:'能量耗尽时',nth:'每'+n(rule.every??1)+'次'+(rule.countScope==='target'?'对同一目标':'')+({hit:'命中',cast:'施法',crit:'暴击',kill:'击杀'})[rule.count??'hit']+'时',moved:'每移动'+n(rule.every??1)+'格时',interval:(rule.startReady?'进入战斗立即就绪，之后':'')+'每'+seconds(rule.every??0),mana_spent:'每累计消耗'+n(rule.every??0)+'点能量时'} as Record<string,string>)[rule.trigger];
  if(trigger===undefined)throw Error('尚无中文触发描述：'+rule.trigger);
  const center=rule.trigger==='hit'||rule.trigger==='kill'?'target':'self';
- const condition=rule.when.map(c=>describeCondition(c,center)).join('且'),filter=[rule.filter.skills?.map(s=>skillNames[s]??s).join('、'),rule.filter.statusKinds?.map(statusName).join('或'),rule.filter.categories?.map(c=>({direct:'直接命中',periodic:'持续伤害',derived:'追加伤害'})[c]).join('或')].filter(Boolean).join('的');
- return [condition,filter,trigger].filter(Boolean).join('，')+'：'+actionText(rule.action,rule.trigger==='passive').replace('本次命中伤害',rule.trigger==='block'?'格挡抵消的护甲减免前伤害':'本次命中伤害')+([rule.chance===1?'':'触发率'+percent(rule.chance),rule.icd===0?'':'触发间隔'+seconds(rule.icd)].filter(Boolean).length?'（'+[rule.chance===1?'':'触发率'+percent(rule.chance),rule.icd===0?'':'触发间隔'+seconds(rule.icd)].filter(Boolean).join('，')+'）':'')+(rule.maxTriggers?'，本局最多触发'+rule.maxTriggers+'次':'')+'。';
+ const condition=rule.when.map(c=>describeCondition(c,center)).join('且'),filter=[rule.filter.attackSources?.map(s=>({basic:'普攻',cast:'技能',proc:'间接伤害',untyped:'未分类来源'})[s]).join('或'),rule.filter.skills?.map(s=>skillNames[s]??s).join('、'),rule.filter.statusKinds?.map(statusName).join('或'),rule.filter.categories?.map(c=>({direct:'直接命中',periodic:'持续伤害',derived:'追加伤害'})[c]).join('或')].filter(Boolean).join('的');
+ const main=[condition,filter,trigger].filter(Boolean).join('，')+'：'+actionText(rule.action,rule.trigger==='passive').replace('本次命中伤害',rule.trigger==='block'?'格挡抵消的护甲减免前伤害':'本次命中伤害')+([rule.chance===1?'':'触发率'+percent(rule.chance),rule.icd===0?'':'触发间隔'+seconds(rule.icd)].filter(Boolean).length?'（'+[rule.chance===1?'':'触发率'+percent(rule.chance),rule.icd===0?'':'触发间隔'+seconds(rule.icd)].filter(Boolean).join('，')+'）':'')+(rule.maxTriggers?'，本局最多触发'+rule.maxTriggers+'次':'')+'。';
+ return main+(rule.after?.map(a=>actionText(a,false)+'。').join('')??'')+(rule.consumeEffects?.length?'消耗此增益时：'+rule.consumeEffects.map(a=>actionText(a,false)).join('；')+'。':'');
 }
 /** 唯一描述来源。内容写入、推导与测试共用参数，禁用手写平衡文案。 */
 export function generateAspectDescription(aspect:NewAspect):string{

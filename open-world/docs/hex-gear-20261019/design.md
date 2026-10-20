@@ -148,7 +148,7 @@ HEX 散件的机制**必须映射到现有 `EffectRule` 体系**：
 - **原作参考**：ARAM「Glacial Augment」——攻击减速敌人
 - **本作改编**：受到近战攻击时，对攻击者施加冰冻减速
 - **触发**：`hurt`，概率 40%，ICD 90 ticks（3秒）
-- **动作**：`status`，状态 `chill`，持续 60 ticks（2秒），强度 30%
+- **动作**：`status`，状态 `slow`（原稿 chill 非现行枚举，2026-10-19 更正），持续 60 ticks（2秒），强度 30%
 - **条件**：无（近战/远程均触发，或后续限定 `distance lt 3`）
 - **组合提示**：近战怪包围时自动减速
 
@@ -174,7 +174,7 @@ HEX 散件的机制**必须映射到现有 `EffectRule` 体系**：
 - **原作参考**：组合灵感——消耗异常状态造成爆发伤害
 - **本作改编**：命中携带 2 种以上异常状态的敌人时，引爆所有异常造成额外伤害
 - **触发**：`hit`，概率 100%，ICD 180 ticks（6秒）
-- **动作**：`detonate`，statuses 全异常（burn/poison/bleed/chill/shock/vulnerable/armor_down），伤害比 50%，remove false（不消耗状态），radius 0
+- **动作**：`detonate`，statuses 全异常（burn/poison/bleed/slow/shock/vulnerable/armor_down），伤害比 50%，remove false（不消耗状态），radius 0
 - **条件**：目标至少有 2 种异常——用 `target_status` + `any` 组合条件
 - **实现说明**：需组合多个 `target_status` 条件判断堆叠数量，可能需简化为"命中中毒或灼烧的敌人"
 - **组合提示**：与铭纹元素原子深度联动的核心 HEX

@@ -15,11 +15,11 @@ try{
  await primary.click();await page.locator('#ds-controls [data-ui=button][aria-busy=true]').waitFor();assert(await primary.isDisabled());assert.deepEqual(await rect(primary),normal);await page.waitForFunction(()=>document.querySelector('#ds-controls [data-ui=button]').getAttribute('aria-busy')==='false');
  await page.locator('[data-action=demo-tab][data-id=melee]').focus();await page.keyboard.press('ArrowRight');assert.equal(await page.locator('[data-action=demo-tab][aria-selected=true]').getAttribute('data-id'),'ranged');await page.keyboard.press('End');assert.equal(await page.locator('[data-action=demo-tab][aria-selected=true]').getAttribute('data-id'),'support');
  await page.locator('[data-action=demo-confirm]').click();await page.locator('[data-ui=confirmation]').waitFor();await page.keyboard.press('Tab');assert(await page.evaluate(()=>Boolean(document.activeElement.closest('.ui-confirm'))));await page.keyboard.press('Escape');assert.equal(await page.locator('[data-ui=confirmation]').count(),0);assert.equal(await page.evaluate(()=>document.activeElement.dataset.action),'demo-confirm');
- assert((await page.locator('[data-availability=unknown]').innerText()).includes('—'));assert((await page.locator('[data-availability=short]').first().innerText()).includes('数量不足'));
+ assert((await page.locator('[data-availability=unknown]').innerText()).includes('—'));assert((await page.locator('[data-availability=short]').first().innerText()).includes('还缺'));
  report.checks.push('Variable font range, equal action sizes, hover/focus/busy geometry, tab keyboard navigation, zero/missing/large resource values');
  for(const theme of ['dark','light'])for(const viewport of [{width:1280,height:800},{width:768,height:1024},{width:375,height:812}]){
   await page.setViewportSize(viewport);await page.locator('#ui-theme').selectOption(theme);await page.evaluate(()=>document.fonts.ready);
-  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+  const pageOverflow=await page.evaluate(()=>{const w=innerWidth;return document.documentElement.scrollWidth<=w+1?[]:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>w+1).slice(0,6).map(e=>String((e.className?.baseVal??e.className)||e.tagName)+' '+(e.closest('section[id]')?.id??''));});assert.deepEqual(pageOverflow,[],`horizontal overflow ${theme} ${viewport.width}`);
   const overflow=await page.locator('.ds-panel,.ui-button,.ui-cost').evaluateAll(elements=>elements.filter(e=>{const r=e.getBoundingClientRect();return r.left<0||r.right>innerWidth+1;}).map(e=>e.className));assert.deepEqual(overflow,[]);
   await page.mouse.move(1,1);await page.screenshot({path:resolve(out,`components-${theme}-${viewport.width}.png`),fullPage:true});
  }

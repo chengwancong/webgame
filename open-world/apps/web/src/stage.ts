@@ -14,8 +14,14 @@ function measure():StageLayout{
  return {scale,render,x:Math.round((w-STAGE.width*scale)/2),y:Math.round((h-STAGE.height*scale)/2)};
 }
 
+/** 窗口小于 960×540 时文字会缩到难以阅读：给一条不挡操作、几秒后自行淡出的提示（UX-A08）。 */
+const SMALL_SCALE=.75;let smallHint:HTMLElement|undefined;
+function updateSmallHint(small:boolean){
+ if(small&&!smallHint){smallHint=document.createElement('div');smallHint.id='stage-small-hint';smallHint.setAttribute('role','status');smallHint.textContent='窗口较小，文字会偏小；建议放大到 960×540 以上。';document.documentElement.appendChild(smallHint);}
+ else if(!small&&smallHint){smallHint.remove();smallHint=undefined;}
+}
 function apply(){
- layout=measure();const root=document.documentElement.style;
+ layout=measure();const root=document.documentElement.style;updateSmallHint(layout.scale<SMALL_SCALE);
  root.setProperty('--stage-scale',String(layout.scale));root.setProperty('--stage-x',layout.x+'px');root.setProperty('--stage-y',layout.y+'px');
  for(const listener of listeners)listener(layout);
 }

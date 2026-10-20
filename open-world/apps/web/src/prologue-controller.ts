@@ -10,6 +10,7 @@ import type {Snapshot,Vec} from '../../../packages/contracts/index.ts';
 import {buttonHtml} from './ui-components.ts';
 import {escapeHtml as esc} from './ui/primitives.ts';
 import {skillArt} from './ui-assets.ts';
+import {startFall,type FallHandle,FALL_MS,FALL_IMPACT,paintDemoStills,playDemo} from './prologue-fx.ts';
 import './prologue.css';
 
 export type PrologueHost={
@@ -33,13 +34,14 @@ export class PrologueController{
  phase:Phase='idle';
  private battle?:PrologueBattle;private family:PrologueFamily='sword';private clock=0;private phaseAt=0;
  private caption='';private captionUntil=0;private busy=false;private error='';private skipRequested=false;
- private root?:HTMLElement;private lastHtml='';
+ private root?:HTMLElement;private lastHtml='';private fall?:FallHandle;private fallStopTimer=0;
  constructor(private host:PrologueHost){}
  get active(){return this.phase!=='idle';}
  static pending(s?:Snapshot){return s?.starsea?.prologue?.done===false;}
  start(){
   const p=this.host.snapshot()?.starsea?.prologue;if(!p||p.done)return false;
   document.body.classList.add('prologue-active');this.root=document.getElementById('prologue')??document.body.appendChild(Object.assign(document.createElement('div'),{id:'prologue'}));
+  this.root.onpointerover=e=>this.previewCard(e.target);this.root.addEventListener('focusin',e=>this.previewCard(e.target));
   this.root.onclick=e=>{const t=(e.target as HTMLElement).closest<HTMLElement>('[data-action]');if(t)void this.action(t.dataset.action!,t.dataset.id??'');};
   if(p.weapon){this.family=p.weapon;this.land();}else this.go('fall');
   this.render();return true;
@@ -52,7 +54,9 @@ export class PrologueController{
   if([bindings.bag,bindings.skills,bindings.pause,'Escape',...Object.keys(bindings).filter(k=>k.startsWith('skill')).map(k=>bindings[k])].includes(event.code)){event.preventDefault();return true;}
   return false;
  }
- private go(phase:Phase){this.log.push(`${this.clock}:${this.phase}->${phase}`);this.phase=phase;this.phaseAt=this.clock;this.render();}
+ private previewCard(target:EventTarget|null){if(this.phase!=='choose')return;const card=(target as HTMLElement|null)?.closest?.<HTMLElement>('.prologue-card');const canvas=card?.querySelector<HTMLCanvasElement>('canvas.prologue-demo');if(canvas)playDemo(canvas,this.host.motionReduced());}
+ private stopFall(delay=0){const h=this.fall;this.fall=undefined;if(!h)return;clearTimeout(this.fallStopTimer);if(delay>0)this.fallStopTimer=window.setTimeout(()=>h.stop(),delay);else h.stop();}
+ private go(phase:Phase){this.log.push(`${this.clock}:${this.phase}->${phase}`);const leaving=this.phase==='fall'&&phase!=='fall';this.phase=phase;this.phaseAt=this.clock;if(phase==='fall'&&this.root?.parentElement&&!this.fall)this.fall=startFall(this.root.parentElement,this.host.motionReduced());if(leaving)this.stopFall(700);this.render();}
  private keyed(text:string){return text.replaceAll('{key}',this.host.interactKey());}
  private say(text:string,seconds=3.5){this.caption=text;this.captionUntil=this.clock+seconds*T;}
  private async action(action:string,id:string){
@@ -82,7 +86,8 @@ export class PrologueController{
  /** 宿主每个逻辑帧调用；move 为已换算到世界坐标的方向键输入。战斗本身在 PrologueBattle（与巨兽血量推导共用）。 */
  step(move:Vec){
   if(!this.active)return;this.clock++;const b=this.battle,age=this.clock-this.phaseAt;
-  if(this.phase==='fall'&&age>=8*T)this.go('choose');
+  if(this.phase==='fall'&&age===Math.round(FALL_MS/1000*FALL_IMPACT*T)&&!this.host.motionReduced())this.host.shake(10,500);
+  if(this.phase==='fall'&&age>=FALL_MS/1000*T)this.go('choose');
   if(!b||['idle','fall','choose','closing'].includes(this.phase)){this.renderLive();return;}
   b.step(move);
   if(b.phase==='done')void this.close();
@@ -90,7 +95,7 @@ export class PrologueController{
  }
  private queueBurst(){if(['waves','boss'].includes(this.phase))this.battle?.queueBurst();}
  private async close(){
-  if(this.busy)return;this.log.push(`${this.clock}:close@${this.phase}`);this.busy=true;this.phase='closing';this.error='';this.render();
+  if(this.busy)return;this.log.push(`${this.clock}:close@${this.phase}`);this.busy=true;this.phase='closing';this.error='';this.stopFall();this.render();
   try{await this.host.command({finish:true});}catch(e){this.error=e instanceof Error?e.message:'没有连上服务器，请重试。';this.busy=false;this.render();return;}
   this.busy=false;this.phase='idle';this.battle=undefined;document.body.classList.remove('prologue-active');this.root?.replaceChildren();this.lastHtml='';await this.host.finished();
  }
@@ -103,14 +108,14 @@ export class PrologueController{
   const skip=this.phase!=='closing'&&this.phase!=='fade'?buttonHtml('跳过开场',{action:'prologue-skip',variant:'secondary',size:'compact',className:'prologue-skip',disabled:this.busy}):'';
   const error=this.error?`<div class="prologue-error" role="alert">${esc(this.error)} ${buttonHtml('重试',{action:'prologue-retry',size:'compact'})}</div>`:'';
   let body='';
-  if(this.phase==='fall')body=`<div class="prologue-sky" aria-hidden="true"><i class="prologue-rift"></i><i class="prologue-faller"></i></div><p class="prologue-line">${esc(lines.fall)}</p>`;
-  else if(this.phase==='choose')body=`<div class="prologue-sky prologue-sky--still" aria-hidden="true"></div><div class="prologue-choice" role="group" aria-label="三道回响"><p class="prologue-line">${esc(lines.choose)}</p><div class="prologue-cards">${prologueFamilies.map((k,i)=>{const x=prologueConfig.families[k];return `<button type="button" class="prologue-card" data-action="prologue-choose" data-id="${k}" ${this.busy?'disabled':''}><img src="${skillArt(icons[k])}" alt="" draggable="false"><b>${esc(x.echo)}</b><span class="prologue-weapon">${esc(weaponNames[k])} · 按 ${i+1}</span><span>${esc(x.blurb)}</span></button>`;}).join('')}</div>${this.skipRequested?`<p class="prologue-note">${esc(lines.skipNote)}</p>`:''}</div>`;
+  if(this.phase==='fall')body=`<div class="prologue-sky prologue-sky--clear" aria-hidden="true"></div><p class="prologue-line">${esc(lines.fall)}</p>`;
+  else if(this.phase==='choose')body=`<div class="prologue-sky prologue-sky--still" aria-hidden="true"></div><div class="prologue-choice" role="group" aria-label="三道回响"><p class="prologue-line">${esc(lines.choose)}</p><div class="prologue-cards">${prologueFamilies.map((k,i)=>{const x=prologueConfig.families[k];return `<button type="button" class="prologue-card" data-action="prologue-choose" data-id="${k}" ${this.busy?'disabled':''}><img src="${skillArt(icons[k])}" alt="" draggable="false"><b>${esc(x.echo)}</b><canvas class="prologue-demo" width="224" height="72" data-family="${k}" aria-hidden="true"></canvas><span class="prologue-weapon">${esc(weaponNames[k])} · 按 ${i+1}</span><span>${esc(x.blurb)}</span></button>`;}).join('')}</div>${this.skipRequested?`<p class="prologue-note">${esc(lines.skipNote)}</p>`:''}</div>`;
   else if(this.phase==='closing')body=`<div class="prologue-sky prologue-sky--still" aria-hidden="true"></div><p class="prologue-line">${this.busy?'正在醒来…':''}</p>`;
   else{const boss=this.battle?.boss;
    body=`${this.phase==='fade'?'<div class="prologue-fade" aria-hidden="true"></div>':''}<div class="prologue-tag">回响之力 · 醒来后消散</div>${boss&&boss.alive?`<div class="prologue-boss"><b>${esc(prologueConfig.boss.name)}</b><span style="--fill:${Math.max(0,boss.hp/boss.maxHp)}"></span></div>`:''}
    <div class="prologue-bar ${this.phase==='fade'?'is-fading':''}">${f.grantedSkills.map((id,i)=>`<img class="prologue-skill" style="--i:${i}" src="${skillArt(id)}" alt="${esc(f.granted.skills[i]?.name??id)}" draggable="false">`).join('')}
    <button type="button" class="prologue-burst ${full&&this.phase!=='fade'?'is-full':''}" data-action="prologue-burst" ${full&&this.phase!=='fade'?'':'disabled'} style="--fill:${this.phase==='fade'?0:Math.min(1,energy/prologueConfig.burst.kills)}"><img src="${skillArt(icons[this.family])}" alt="" draggable="false"><span>回响爆发 · ${esc(this.host.interactKey())}</span></button></div>`;}
   const html=`${body}${caption?`<p class="prologue-caption" role="status">${esc(caption)}</p>`:''}${skip}${error}`;
-  if(html!==this.lastHtml){root.innerHTML=html;this.lastHtml=html;}
+  if(html!==this.lastHtml){root.innerHTML=html;this.lastHtml=html;if(this.phase==='choose')paintDemoStills(root);}
  }
 }

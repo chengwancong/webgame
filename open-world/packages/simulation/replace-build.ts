@@ -7,5 +7,9 @@ export function replaceCombatBuild(world:World,build:{stats:Stats;skills:Skill[]
  const stats=statsSchema.parse(structuredClone(build.stats)),skills=build.skills.map(s=>skillSchema.parse(structuredClone(s)));
  if(new Set(skills.map(s=>s.id)).size!==skills.length)throw Error('Duplicate resolved skill');
  if(world.players.size?!world.players.has(playerId):playerId!==world.playerId)throw Error('Combat player not found');
- world.forPlayer(playerId,()=>{world.stats=stats;world.skills=skills;world.hero.hp=Math.min(world.hero.hp,stats.hp);world.hero.mana=Math.min(world.hero.mana,stats.mana);});
+ world.forPlayer(playerId,()=>{
+  const removed=(world.stats.rules??[]).filter(r=>r.id.startsWith('hex-')&&!(stats.rules??[]).some(next=>next.id===r.id&&next.source===r.source)).map(r=>r.id);
+  world.removeHexEffects(removed);
+  world.stats=stats;world.skills=skills;world.hero.hp=Math.min(world.hero.hp,stats.hp);world.hero.mana=Math.min(world.hero.mana,stats.mana);
+ });
 }

@@ -1,4 +1,6 @@
 import {observeFieldReplay,fieldReplayView} from './field-replay-service.ts';
+import {parseFieldFreeze,type FieldFreeze} from '../../../packages/contracts/field-freeze.ts';
+import type {CampCycle} from './world-camps.ts';
 import {patrolCamp,patrolSpawns} from '../../../packages/rules/world-patrols.ts';
 import type {FastifyInstance} from 'fastify';
 import type {Pool,PoolClient} from 'pg';
@@ -24,7 +26,7 @@ import {discoverPlaneGates,interactPlaneGate,PlaneGateError,PLANE_OBSERVER_MS} f
 
 type Identity={account:string;session:string;resume?:string};
 type Command={command_id:string;revision:number;lease_id:string};
-type Context={write:(who:Identity,input:Command,body:unknown,fn:(c:PoolClient,s:CharacterState)=>Promise<{delta?:Receipt['delta'];questCompletions?:{id:string;xp:number;gold:number}[]}>)=>Promise<Receipt>;pool:Pool;identity:(req:unknown)=>Promise<Identity>;state:(c:Pool|PoolClient,who:Identity,lock?:boolean)=>Promise<CharacterState>;lease:(c:Pool|PoolClient,s:CharacterState,who:Identity,id:string)=>Promise<void>;fail:(code:string,message:string,status?:number)=>never;transaction:<T>(pool:Pool,fn:(c:PoolClient)=>Promise<T>)=>Promise<T>};
+type Context={fieldFreeze?:Readonly<FieldFreeze>;write:(who:Identity,input:Command,body:unknown,fn:(c:PoolClient,s:CharacterState)=>Promise<{delta?:Receipt['delta'];questCompletions?:{id:string;xp:number;gold:number}[]}>)=>Promise<Receipt>;pool:Pool;identity:(req:unknown)=>Promise<Identity>;state:(c:Pool|PoolClient,who:Identity,lock?:boolean)=>Promise<CharacterState>;lease:(c:Pool|PoolClient,s:CharacterState,who:Identity,id:string)=>Promise<void>;fail:(code:string,message:string,status?:number)=>never;transaction:<T>(pool:Pool,fn:(c:PoolClient)=>Promise<T>)=>Promise<T>};
 const vec=z.object({x:z.number().finite(),y:z.number().finite()}).strict();
 const commandShape={command_id:z.uuid(),revision:z.number().int().nonnegative(),lease_id:z.uuid()};
 /** Same reach as waypoint activation and tier switching beside an outpost. */
@@ -45,7 +47,7 @@ export async function markClearedCamps(c:PoolClient,character:string,region:stri
  }
 }
 
-export function registerField(app:FastifyInstance,{write,pool,identity,state,lease,fail,transaction}:Context){
+export function registerField(app:FastifyInstance,{write,pool,identity,state,lease,fail,transaction,fieldFreeze=parseFieldFreeze()}:Context){
  app.get('/api/field/replay-goal',async req=>{const s=await state(pool,await identity(req)),v=z.object({region:z.string().min(1).max(120)}).strict().parse(req.query),row=(await pool.query('SELECT private_data FROM ow_permits WHERE character=$1 AND region=$2 ORDER BY cycle DESC LIMIT 1',[s.id,v.region])).rows[0];return {goal:row?fieldReplayView(row.private_data):null};});
  /** Camps around the observer: current frozen cycle plus live members. The server
   * alone decides refreshes (all killed + 90 s + observer > 36 cells away). */
@@ -62,7 +64,10 @@ export function registerField(app:FastifyInstance,{write,pool,identity,state,lea
   for(const camp of new Map(campsNear(allCamps,row.region,v.position,info.chunkCells).map(c=>[c.id,c])).values()){
    // An implausible jump keeps current cycles: it is observed from the camp centre.
    const observer=trusted?v.position:{x:camp.x,y:camp.y};
-   const cycle=await currentCampCycle(c,s.id,camp,observer,n=>{const seed=randomInt(1,2147483647);return {camp:camp.id,cycle:n,rules:versions.rules,tier,seed,spawns:patrols.some(p=>p.id===camp.id)?patrolSpawns(region,tables,patrols.find(p=>p.id===camp.id)!,n,difficulty,worldTier(tier).eliteAffixes,seed):campSpawns(region,tables,camp,n,difficulty,{range:worldTier(tier).eliteAffixes,seed})};});
+   const patrol=patrols.find(p=>p.id===camp.id),frozen=patrol?fieldFreeze.patrols:fieldFreeze.camps;
+   // Existing cycles remain readable/settleable, but never allocate or refresh a frozen system.
+   const cycle:CampCycle|undefined=frozen?(await c.query('SELECT data FROM ow_camp_cycles WHERE character=$1 AND region=$2 AND camp=$3 ORDER BY cycle DESC LIMIT 1',[s.id,camp.region,camp.id])).rows[0]?.data:await currentCampCycle(c,s.id,camp,observer,n=>{const seed=randomInt(1,2147483647);return {camp:camp.id,cycle:n,rules:versions.rules,tier,seed,spawns:patrol?patrolSpawns(region,tables,patrol,n,difficulty,worldTier(tier).eliteAffixes,seed):campSpawns(region,tables,camp,n,difficulty,{range:worldTier(tier).eliteAffixes,seed})};});
+   if(!cycle)continue;
    const killed=new Set((await c.query('SELECT source FROM ow_kills WHERE character=$1 AND source=ANY($2::text[])',[s.id,cycle.spawns.map(m=>m.id)])).rows.map(r=>r.source));
    const live=cycle.spawns.filter(m=>!killed.has(m.id));for(const m of live)if(!known.has(m.id)){row.data.spawns.push(m);known.add(m.id);}
    camps.push({id:camp.id,zone:camp.zone,x:camp.x,y:camp.y,radius:camp.radius,cycle:cycle.cycle,spawns:live});
@@ -72,8 +77,8 @@ export function registerField(app:FastifyInstance,{write,pool,identity,state,lea
   // client bitmap is OR-merged as reported; the observer's own cell is always revealed.
   // Plane gates (F1): proximity discovery only from a trusted observer position; fact gates light up from world facts.
   const discovered=discoverPlaneGates(s,row.region,trusted?v.position:{x:Infinity,y:Infinity},now);
-  const world=worldProgressSchema.parse(s.world??{}),before=world.exploration[row.region]??'';let explored=revealExploration(before,region.width,region.height,v.position);
-  if(v.explored!==undefined)try{explored=mergeExploration(explored,v.explored,region.width,region.height);}catch{fail('EXPLORATION','探索记录格式不正确。');}
+  const world=worldProgressSchema.parse(s.world??{}),before=world.exploration[row.region]??'';let explored=fieldFreeze.exploration?before:revealExploration(before,region.width,region.height,v.position);
+  if(!fieldFreeze.exploration&&v.explored!==undefined)try{explored=mergeExploration(explored,v.explored,region.width,region.height);}catch{fail('EXPLORATION','探索记录格式不正确。');}
   if(explored!==before||discovered.length){world.exploration[row.region]=explored;s.world=world;await c.query("UPDATE ow_characters SET state=jsonb_set(state,'{world}',$1::jsonb,true) WHERE id=$2",[world,s.id]);}
   return {world_view:resolveWorldPhase(s,undefined,now),region:row.region,chunk_cells:info.chunkCells,camps,explored,discovered} satisfies FieldCamps;
  });});
@@ -99,6 +104,7 @@ export function registerField(app:FastifyInstance,{write,pool,identity,state,lea
  /** Outpost bounty board (content plan §6.3): stand beside an activated outpost of the
   * zone; empty and cooled-down slots are filled from that zone's pool by the server. */
  app.post('/api/bounty/board',async req=>{const who=await identity(req),v=z.object({...commandShape,region:z.string().min(1).max(120),position:vec}).strict().parse(req.body);return write(who,v,{...v,operation:'bounty.board'},async(_c,s)=>{
+  if(fieldFreeze.bounties)fail('FIELD_FROZEN','该野外功能暂时停用。',409);
   const st=s.starsea;if(!st)return fail('STARSEA','星潮海尚未开放。');evaluateUnlocks(s);if(!st.features.includes('bounty'))fail('FEATURE_LOCKED','悬赏板尚未开放。');
   const outpost=visibleWorldRows(s,worldTables.waypoints).find(w=>w.kind==='outpost'&&w.region===v.region&&Math.hypot(w.x-v.position.x,w.y-v.position.y)<=boardReach);if(!outpost)return fail('BOUNTY_PLACE','请走到前哨悬赏板旁。');
   if(!st.waypoints.includes(outpost.id))fail('WAYPOINT_LOCKED','先激活这座前哨。');
@@ -109,10 +115,10 @@ export function registerField(app:FastifyInstance,{write,pool,identity,state,lea
   // Gold/material from the row, xp from the counted kills; no gear. Same transaction as the receipt.
   const {row,reward}=claimBounty(s.starsea!,id,Date.now(),fail);s.gold+=reward.gold;s.material+=reward.material;applyXp(s,reward.xp);
   return {delta:{gold:reward.gold,xp:reward.xp,material:reward.material},questCompletions:[{id:row.id,xp:reward.xp,gold:reward.gold}]};}]] as const)
-  app.post('/api/bounty/'+op,async req=>{const who=await identity(req),v=z.object({...commandShape,instance:z.uuid()}).strict().parse(req.body);return write(who,v,{...v,operation:'bounty.'+op},async(_c,s)=>{if(!s.starsea)fail('STARSEA','星潮海尚未开放。');return run(s,v.instance);});});
+  app.post('/api/bounty/'+op,async req=>{const who=await identity(req),v=z.object({...commandShape,instance:z.uuid()}).strict().parse(req.body);return write(who,v,{...v,operation:'bounty.'+op},async(_c,s)=>{if(op==='accept'&&fieldFreeze.bounties)fail('FIELD_FROZEN','该野外功能暂时停用。',409);if(!s.starsea)fail('STARSEA','星潮海尚未开放。');return run(s,v.instance);});});
  /** Free travel between unlocked waypoints of the current field map. Refused in
   * dungeons and while a quest wave is still fighting here; a full bag is allowed. */
- app.post('/api/travel/waypoint',async req=>{const who=await identity(req),v=z.object({command_id:z.uuid(),revision:z.number().int().nonnegative(),lease_id:z.uuid(),permit_id:z.uuid(),waypoint:z.string().min(1).max(120)}).strict().parse(req.body);return write(who,v,{...v,operation:'travel.waypoint'},async(c,s)=>{evaluateUnlocks(s);if(!s.starsea?.features.includes('waypoint'))fail('FEATURE_LOCKED','先触碰航标开启传送。');
+ app.post('/api/travel/waypoint',async req=>{const who=await identity(req),v=z.object({command_id:z.uuid(),revision:z.number().int().nonnegative(),lease_id:z.uuid(),permit_id:z.uuid(),waypoint:z.string().min(1).max(120)}).strict().parse(req.body);return write(who,v,{...v,operation:'travel.waypoint'},async(c,s)=>{if(fieldFreeze.waypoints)fail('FIELD_FROZEN','该野外功能暂时停用。',409);evaluateUnlocks(s);if(!s.starsea?.features.includes('waypoint'))fail('FEATURE_LOCKED','先触碰航标开启传送。');
   if((await c.query('SELECT 1 FROM ow_dungeon_members WHERE character=$1 AND active',[s.id])).rowCount)fail('DUNGEON_ACTIVE','副本中不能使用航标传送。');
   const row=(await c.query('SELECT * FROM ow_permits WHERE id=$1 AND character=$2 FOR UPDATE',[v.permit_id,s.id])).rows[0];if(!row)fail('PERMIT','战斗授权不存在。');
   if(row.data.rules!==versions.rules)fail('RULESET','战斗规则已更新，请重新出发。');if(new Date(row.expires).getTime()+30000<Date.now())fail('EXPIRED','战斗授权已过期，请恢复连接。');

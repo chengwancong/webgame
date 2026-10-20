@@ -15,6 +15,7 @@ async function run(args,env={}){const childEnv={...process.env,...env};if(Object
 try{
  await run(['tools/world-graybox.mjs']);
  await run(['tools/build-ui-tokens.mjs','--check']);
+ await run(['--import','tsx','tools/spine/cli.ts','check','--out='+resolve(evidence,'numeric-spine-check')]);
  await run(['node_modules/typescript/bin/tsc','--noEmit']);await run(['node_modules/tsx/dist/cli.mjs','tools/validate-content.ts']);await run(['node_modules/vite/bin/vite.js','build','--config','apps/web/vite.config.ts']);database=await startDatabase({temporary:true});
  await run(['node_modules/vitest/vitest.mjs','run'],{AW_DATABASE_URL:database.dsn});
  const log=await open(resolve(database.work,'api.log'),'w');server=spawn(process.execPath,['--import','tsx','apps/api/src/main.ts'],{cwd:root,env:{...process.env,AW_DATABASE_URL:database.dsn,AW_API_PORT:'8611'},stdio:['ignore',log.fd,log.fd]});await log.close();await registerApi(database,server);await waitFor('http://127.0.0.1:8611/api/health',server);

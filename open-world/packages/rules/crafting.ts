@@ -6,13 +6,15 @@ import {craftRecipes,craftMaterials,craftFacilities,craftFacilityCost,craftMaste
 import {ensureProgression,assignGearAspect} from './deep-progression.ts';
 import {settings} from '../content/index.ts';
 import {makeGearByBase,gearBases} from './index.ts';
-import {applyItemPower} from './item-power.ts';
+import {applyItemPower,scaleItemAffixes} from './item-power.ts';
+import {affixDisplayValue} from '../contracts/affix-units.ts';
 import {generateGearAffixes,gearAffixConfig,maxAffixTierForItemLevel,type AffixRandom} from './affix-generator.ts';
 import {equipmentItems} from '../content/equipment-catalog.ts';
 import {gearWeaponType,mainHandWeapon,gearWeaponAffinity,type WeaponAffinity} from './weapon-skills.ts';
 import {freezeItemRules,issueCombatGear} from './item-issuance.ts';
 import {statDefinition} from '../contracts/stats.ts';
 import {starseaFactionByMap} from '../content/starsea/reputation.ts';
+import {guaranteedAffixPool as guaranteedPool,generateGuaranteedAffix} from './guaranteed-affix.ts';
 
 export class CraftError extends Error{constructor(public code:string,message:string){super(message);}}
 function need(condition:unknown,code:string,message:string):asserts condition{if(!condition)throw new CraftError(code,message);}
@@ -32,6 +34,13 @@ const quantity=(s:CharacterState,id:string)=>id==='enhance_stone'?s.material:s.p
 export type CraftPlace={atForge:boolean;reason:string;storyUnlocked:boolean;maxCraftLevel?:number};
 type Plan={cost:CraftPreview['cost'];output:CraftPreview['output'];recipe?:typeof craftRecipes[number];material?:{id:string;count:number};facility?:{id:string;level:number};gear?:Gear;template?:typeof gearBases[number];guaranteedStat?:string;affinity?:WeaponAffinity};
 const round=(n:number)=>Math.round(n*1e6)/1e6;
+/** The preview and roll share the same eligible tiers, including the low-level fallback. */
+function guaranteedPreview(stat:string,level:number){
+ const {pool,scaled}=guaranteedPool(stat,level),name=gearAffixConfig.names[stat as keyof typeof gearAffixConfig.names];
+ const values=pool.flatMap(row=>[row.minValue,row.maxValue].map(value=>{const affix={id:'preview',name,stat:row.stat,value,tier:row.tier,description:''};return scaled?scaleItemAffixes([affix],level)[0].value:value;}));
+ const min=affixDisplayValue(stat,Math.min(...values)),max=affixDisplayValue(stat,Math.max(...values));
+ return `${name} +${min}${min===max?'':'～'+max}`;
+}
 function guaranteedStat(element:string|undefined,tendency:string|undefined,slot:string|undefined){
  const candidates=element?[element+'Damage',element+'Resist']:slot==='weapon'?[craftPolicy.tendencyStats[(tendency??'martial') as 'martial'|'spell']]:[];
  return candidates.find(stat=>gearAffixConfig.pool.some(row=>row.stat===stat));
@@ -53,7 +62,7 @@ function plan(s:CharacterState,a:CraftAction):Plan{
   const template=r.output.kind==='gear'?templateFor(s,r,a):undefined,tendency=a.tendency??(r.output.repair&&template?.slot==='weapon'?(['staff','wand'].includes(gearWeaponType(template)!)?'spell':'martial'):undefined),stat=r.category==='pattern'?undefined:guaranteedStat(a.element,tendency,template?.slot),level=r.output.level;
   const primary=gearAffixConfig.mainStats.find(row=>row.slot===template?.slot)?.stat??(template?.attack?'attack':template?.armor?'armor':undefined),quality=gearAffixConfig.quality[r.output.quality??'rare'];
   const pool=gearAffixConfig.pool.filter(row=>row.tier<=(level?maxAffixTierForItemLevel(level):3)&&quality.tiers.includes(row.tier)&&row.stat!==primary&&row.stat!==stat&&(!template||statDefinition(row.stat)!.slots.includes(template.slot))),weights=new Map<string,number>();for(const row of pool)weights.set(row.stat,(weights.get(row.stat)??0)+1);
-  return {cost,recipe:r,template,guaranteedStat:stat,affinity:tendency as WeaponAffinity|undefined,output:{kind:r.output.kind,name:template?.name??r.name,icon:template?(equipmentItems.find(i=>i.id===template.base)?.iconId??'gear-'+template.base):craftMaterials.find(m=>m.id===r.output.id)?.icon??craftPolicy.defaultIcon,count:n*(r.output.count??1),...(r.output.kind==='gear'?{quality:r.output.quality,level,...(r.output.repair?{}:{fineChance:craftingFineChance(s,r.profession)}),affixPool:[...weights].map(([stat,weight])=>({label:gearAffixConfig.names[stat as keyof typeof gearAffixConfig.names],weight})),...(stat?{guaranteedAffix:gearAffixConfig.names[stat as keyof typeof gearAffixConfig.names]}:{})}:{})}};
+  return {cost,recipe:r,template,guaranteedStat:stat,affinity:tendency as WeaponAffinity|undefined,output:{kind:r.output.kind,name:template?.name??r.name,icon:template?(equipmentItems.find(i=>i.id===template.base)?.iconId??'gear-'+template.base):craftMaterials.find(m=>m.id===r.output.id)?.icon??craftPolicy.defaultIcon,count:n*(r.output.count??1),...(r.output.kind==='gear'?{quality:r.output.quality,level,...(r.output.repair?{}:{fineChance:craftingFineChance(s,r.profession)}),affixPool:[...weights].map(([stat,weight])=>({label:gearAffixConfig.names[stat as keyof typeof gearAffixConfig.names],weight})),...(stat?{guaranteedAffix:guaranteedPreview(stat,level??1)}:{})}:{})}};
  }
  if(a.op==='refine'||a.op==='exchange'){
   const m=craftMaterials.find(m=>m.id===(a.op==='refine'?a.from:a.to));need(m,'CRAFT_UNKNOWN',craftText.unknownMaterial);
@@ -113,8 +122,7 @@ export function applyCraft(s:CharacterState,input:CraftAction,place:CraftPlace,r
    const g=makeGearByBase(p.template!.base,id);g.quality=r.output.quality??'rare';applyItemPower(g,r.output.level??1);
    const frozen=freezeItemRules(),primary=frozen.affixes.mainStats.find(row=>row.slot===g.slot);if(primary)frozen.affixes.mainStats=[primary];issueCombatGear(g,g.ilvl!,3,copy.level,false,frozen,rng);
    if(p.guaranteedStat){
-    const candidates=frozen.affixes.pool.filter(row=>row.stat===p.guaranteedStat),allowed=candidates.filter(row=>row.tier<=maxAffixTierForItemLevel(g.ilvl!)),minimum=candidates.sort((a,b)=>a.tier-b.tier)[0];
-    const forced={...frozen.affixes,pool:allowed.length?allowed:[{...minimum,maxValue:minimum.minValue}],quality:{...frozen.affixes.quality,magic:{count:[1,1] as [number,number],tiers:frozen.affixes.quality.rare.tiers}}},affix=generateGearAffixes({quality:'magic',slot:g.slot,...(allowed.length?{ilvl:g.ilvl}:{})},3,rng,forced)[0];
+    const affix=generateGuaranteedAffix(g,p.guaranteedStat,rng,frozen.affixes);
     need(affix,'CRAFT_UNKNOWN',r.unlockHint);g.affixes=[affix,...g.affixes.filter(a=>a.stat!==affix.stat)].slice(0,Math.max(1,g.affixes.length));
    }
    if(old){g.affixes=[structuredClone(old.affixes.find(a=>a.id===old.id+'-attack')!),...g.affixes.filter(a=>a.stat===p.guaranteedStat).slice(0,1)];if(old.locked)g.locked=true;}

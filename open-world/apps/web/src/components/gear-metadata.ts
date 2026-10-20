@@ -10,7 +10,7 @@ export function gearQuality(gear:Gear){return gear.quality??'common';}
 /** 换装总评由服务端给出，界面只挑中文标签与配色。 */
 const verdictLabels:Record<GearVerdict,string>={stronger:'更强',output:'更偏输出',sustain:'更偏续航',weaker:'较弱',even:'差不多'};
 const verdictTones:Record<GearVerdict,StatusTone>={stronger:'success',output:'success',sustain:'success',weaker:'danger',even:'neutral'};
-const verdictHints:Record<GearVerdict,string>={stronger:'面板属性提升更均衡。',output:'攻击方面的提升更多。',sustain:'续航方面的提升更多。',weaker:'综合属性比你现在更低。',even:'综合属性和你现在接近。'};
+const verdictHints:Record<GearVerdict,string>={stronger:'属性提升更均衡；实际收益取决于装配技能。',output:'含元素与技能类型增伤的属性参考；仅匹配流派时生效。',sustain:'回复、生存或能量属性提升更多；击杀回复在单体首领战中受限。',weaker:'通用属性评分较低；请同时查看流派词条与能量收益。',even:'通用属性评分接近；请按流派与能量需求选择。'};
 export function gearVerdictHtml(verdict?:GearVerdict){return verdict?statusBadgeHtml(verdictLabels[verdict],verdictTones[verdict],{className:'gear-verdict',title:verdictHints[verdict]}):'';}
 /** ▲涨绿 / ▼跌红 + 差值：不写“提升/降低”，一眼看出方向。 */
 export function deltaChangeHtml(change:number|null,format:(amount:number)=>string){return change===null?'待核对':change===0?'—':`${change>0?'▲':'▼'} ${format(change)}`;}

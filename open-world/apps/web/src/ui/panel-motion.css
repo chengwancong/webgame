@@ -1,0 +1,32 @@
+/* UX-A01 面板进出场、tab 下划线滑动、卡片错峰。时长与缓动全部来自 tokens；减少动态效果时一律不播放。 */
+@keyframes ui-overlay-in{from{opacity:0}to{opacity:1}}
+@keyframes ui-overlay-out{from{opacity:1}to{opacity:0}}
+@keyframes ui-panel-in{from{opacity:0;transform:translateY(var(--motion-enter-shift)) scale(var(--motion-enter-scale))}to{opacity:1;transform:none}}
+@keyframes ui-panel-out{from{opacity:1;transform:none}to{opacity:0;transform:translateY(calc(var(--motion-enter-shift) / 2)) scale(var(--motion-enter-scale))}}
+@keyframes ui-swap-in{from{opacity:0;transform:translateY(calc(var(--motion-enter-shift) / 2))}to{opacity:1;transform:none}}
+@keyframes ui-item-in{from{opacity:0;transform:translateY(calc(var(--motion-enter-shift) / 2))}to{opacity:1;transform:none}}
+@keyframes ui-tip-in{from{opacity:0;transform:translateY(calc(var(--motion-enter-shift) / 2)) scale(var(--motion-enter-scale))}to{opacity:1;transform:none}}
+
+#modal[data-enter=open]{animation:ui-overlay-in var(--motion-normal) var(--motion-ease-out) backwards}
+#modal[data-enter=open]>*{animation:ui-panel-in var(--motion-normal) var(--motion-ease-out) backwards}
+#modal[data-enter=swap]>*{animation:ui-swap-in var(--motion-fast) var(--motion-ease-out) backwards}
+#modal[data-enter=open] [data-stagger]{animation:ui-item-in var(--motion-normal) var(--motion-ease-out) calc(var(--stagger-index,0) * var(--motion-stagger) + var(--motion-fast)) backwards}
+
+/* 退出：把刚被清空的内容放回 #modal，淡出后再移除（见 panel-motion.ts）。 */
+#modal.is-closing{display:flex;pointer-events:none;animation:ui-overlay-out var(--motion-exit) var(--motion-ease) forwards}
+#modal.is-closing>*{animation:ui-panel-out var(--motion-exit) var(--motion-ease) forwards}
+
+/* tooltip / 悬浮提示出现。 */
+#tooltip{animation:ui-tip-in var(--motion-fast) var(--motion-ease-out) backwards}
+
+/* tab 下划线：一条随选中项滑动的线；原来贴在选中按钮上的静态下划线让位。 */
+.ui-tabs[data-tab-slide]{position:relative}
+.ui-tabs[data-tab-slide]::after{content:'';position:absolute;left:0;bottom:var(--space-1);height:calc(var(--border-edge) + var(--border-width));width:var(--tab-w,0);transform:translateX(var(--tab-x,0));background:var(--color-highlight);border-radius:var(--radius-round);pointer-events:none;transition:transform var(--motion-normal) var(--motion-ease-out),width var(--motion-normal) var(--motion-ease-out)}
+.ui-tabs[data-tab-slide] button[aria-selected=true]{box-shadow:none!important}
+
+@media(prefers-reduced-motion:reduce){
+ #modal[data-enter],#modal[data-enter]>*,#modal[data-enter] [data-stagger],#modal.is-closing,#modal.is-closing>*,#tooltip{animation:none!important}
+ .ui-tabs[data-tab-slide]::after{transition:none}
+}
+[data-motion-reduced=true] #modal[data-enter],[data-motion-reduced=true] #modal[data-enter]>*,[data-motion-reduced=true] #modal[data-enter] [data-stagger],[data-motion-reduced=true] #modal.is-closing,[data-motion-reduced=true] #modal.is-closing>*,[data-motion-reduced=true] #tooltip{animation:none!important}
+[data-motion-reduced=true] .ui-tabs[data-tab-slide]::after{transition:none}

@@ -18,9 +18,10 @@ export function combatModeHtml(mode:Mode,open:boolean,options:Parameters<typeof 
  const current=`<button type="button" class="entry hud-mode-current" data-action="hud-mode-toggle" aria-label="战斗模式：${labels[mode]}" aria-expanded="${open}" aria-controls="hud-mode-options"${disabled?' disabled':''}><span class="entry-orb">${hudMenuIcon('combat')}</span><span class="entry-name">${labels[mode]}</span></button>`;
  return current+(open?`<div id="hud-mode-options" class="hud-mode-options" role="group" aria-label="选择战斗模式">${(['manual','semi','auto'] as Mode[]).map(id=>buttonHtml((id===mode?'✓ ':'')+labels[id],{action:'mode',id,variant:'tertiary',className:'hud-mode-option',disabled:hudModeBlocked(id,options),attributes:id===mode?{'aria-current':'true'}:{}})).join('')}</div>`:'');
 }
-export function hudStatusHtml(s:Pick<Snapshot,'gear'|'capacity'>,context:HudContext,processing=false,stopReason=''){
+export function hudStatusHtml(s:Pick<Snapshot,'gear'|'capacity'>&Partial<Pick<Snapshot,'rewards'>>,context:HudContext,processing=false,stopReason=''){
  if(context==='result')return '';
  if(s.gear.length>=s.capacity){const action=context==='field'?'camp-sort':'panel',label=context==='field'?'回港整理':'行囊',note=context==='home'?'整理装备后再出发':context==='dungeon'?'副本继续，结束后回港整理':'拾取已暂停，先回港整理';return `<div class="hud-inventory-notice"><div><strong>背包满了 <span class="num">${s.gear.length}/${s.capacity}</span></strong>${buttonHtml(context==='home'?'整理':label,{action,id:action==='panel'?'bag':'town',size:'compact',variant:'secondary',disabled:processing})}</div><small>${note}</small></div>`;}
+ if((s.rewards?.length??0)>=s.capacity)return `<div class="hud-inventory-notice" role="status"><div><strong>待领取 ${s.rewards!.length} 件</strong>${buttonHtml(context==='field'?'回港整理':'整理行囊',{action:context==='field'?'camp-sort':'panel',id:context==='field'?'town':'bag',size:'compact',variant:'secondary',disabled:processing})}</div><small>先分解或存仓，再领取积压装备</small></div>`;
  return context==='field'&&stopReason?`<div class="hud-combat-notice">${esc(stopReason)}</div>`:'';
 }
 // 追踪条只有一行：长目标截到第一个分句（或 13 字）加省略号，完整文字在 title 与任务页；不再整句换成“查看下一步”（Grok BUG-66）。

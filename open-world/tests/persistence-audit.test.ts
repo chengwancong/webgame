@@ -18,6 +18,15 @@ function world():Legacy{
   ow_receipts:[receipt(9,30,2,{revision:2,gold:5}),receipt(9,20,1,{revision:1,gold:0})],ow_ledger:[{id:1,character:uuid(9),command:uuid(20)},{id:2,character:uuid(9),command:uuid(30)}]}};
 }
 function advanced(){const s=structuredClone(world());s.tables.ow_characters[0].state={revision:3,gold:7,taskJournal:[1]};s.tables.ow_receipts.push(receipt(9,10,3,{revision:3,gold:7}));s.tables.ow_ledger.push({id:3,character:uuid(9),command:uuid(10)});return s;}
+it('audits the public starsea projection without hiding quest progress or legacy preference mismatches',()=>{
+ const next=advanced();next.tables.ow_characters[0].state.starsea={tracked:'q1',trackedManually:false,done:['q0']};
+ next.tables.ow_receipts[2].receipt.snapshot.starsea={tracked:'q1',done:['q0']};
+ expect(verifyPersistence(streamed(world()),streamed(next))).toMatchObject({auditedCharacterChanges:1});
+ const bad=structuredClone(next);bad.tables.ow_receipts[2].receipt.snapshot.starsea.done=[];
+ expect(()=>verifyPersistence(streamed(world()),streamed(bad))).toThrow(/starsea/);
+ const legacy=structuredClone(next);legacy.tables.ow_receipts[2].receipt.snapshot.starsea.trackedManually=true;
+ expect(()=>verifyPersistence(streamed(world()),streamed(legacy))).toThrow(/starsea/);
+});
 it('streamed receipt summary equals the legacy full-row summary hash',()=>{
  const s=advanced();
  expect(persistenceSummary(streamed(s))).toEqual(persistenceSummary(s));

@@ -1,0 +1,1159 @@
+[
+  {
+    "id": "hex-chain-lightning",
+    "name": "连锁闪电",
+    "description": "命中后，闪电会在附近敌人之间传导。",
+    "category": "attack",
+    "icon": "hex-chain-lightning",
+    "exclusiveGroup": "chain-lightning",
+    "tiers": {
+      "common": {
+        "requiredLevel": 10,
+        "rules": [
+          {
+            "id": "hex-chain-lightning-c",
+            "name": "连锁闪电",
+            "description": "命中时30%概率释放连锁闪电。",
+            "source": "hex-chain-lightning",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 0.3,
+            "icd": 60,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "arc",
+              "ratio": 0.5,
+              "count": 3,
+              "range": 4,
+              "damageType": "lightning",
+              "decay": 0.7
+            },
+            "scale": [],
+            "vfxKey": "hex/chain-lightning"
+          }
+        ]
+      },
+      "magic": {
+        "requiredLevel": 15,
+        "rules": [
+          {
+            "id": "hex-chain-lightning-m",
+            "name": "连锁闪电",
+            "description": "命中时35%概率释放连锁闪电。",
+            "source": "hex-chain-lightning",
+            "tier": 2,
+            "trigger": "hit",
+            "chance": 0.35,
+            "icd": 60,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "arc",
+              "ratio": 0.55,
+              "count": 4,
+              "range": 4,
+              "damageType": "lightning",
+              "decay": 0.7
+            },
+            "scale": [],
+            "vfxKey": "hex/chain-lightning"
+          }
+        ]
+      },
+      "rare": {
+        "requiredLevel": 20,
+        "rules": [
+          {
+            "id": "hex-chain-lightning-r",
+            "name": "连锁闪电",
+            "description": "命中时40%概率释放连锁闪电。每次弹射命中施加减速。",
+            "source": "hex-chain-lightning",
+            "tier": 3,
+            "trigger": "hit",
+            "chance": 0.4,
+            "icd": 60,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "arc",
+              "ratio": 0.6,
+              "count": 5,
+              "range": 5,
+              "damageType": "lightning",
+              "decay": 0.7,
+              "status": {
+                "kind": "slow",
+                "duration": 60,
+                "strength": 0.2,
+                "scope": "hit",
+                "cleanse": true
+              }
+            },
+            "scale": [],
+            "vfxKey": "hex/chain-lightning"
+          }
+        ]
+      },
+      "legendary": {
+        "requiredLevel": 25,
+        "rules": [
+          {
+            "id": "hex-chain-lightning-l",
+            "name": "连锁闪电",
+            "description": "命中时45%概率释放连锁闪电。每次弹射命中施加感电（易受伤害）。",
+            "source": "hex-chain-lightning",
+            "tier": 4,
+            "trigger": "hit",
+            "chance": 0.45,
+            "icd": 60,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "arc",
+              "ratio": 0.65,
+              "count": 6,
+              "range": 5,
+              "damageType": "lightning",
+              "decay": 0.7,
+              "status": {
+                "kind": "shock",
+                "duration": 90,
+                "strength": 0.25,
+                "scope": "hit",
+                "cleanse": true
+              }
+            },
+            "scale": [],
+            "vfxKey": "hex/chain-lightning"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "hex-aftershock",
+    "name": "余震裂地",
+    "description": "每5次命中时：对目标周围2.5格敌人造成本次命中伤害60%的物理伤害。",
+    "category": "attack",
+    "icon": "hex-aftershock",
+    "exclusiveGroup": "aftershock",
+    "tiers": {
+      "common": {
+        "requiredLevel": 10,
+        "rules": [
+          {
+            "id": "hex-aftershock-common-nova",
+            "name": "余震裂地",
+            "description": "每5次对同一目标命中时：对目标周围2.5格敌人造成本次命中伤害60%的物理伤害。",
+            "source": "hex-aftershock",
+            "tier": 1,
+            "trigger": "nth",
+            "chance": 1,
+            "icd": 0,
+            "every": 5,
+            "count": "hit",
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "nova",
+              "ratio": 0.6,
+              "radius": 2.5,
+              "damageType": "physical",
+              "ref": "hit",
+              "at": "target"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "hex/aftershock",
+            "hexMechanism": "hex-aftershock",
+            "countScope": "target"
+          }
+        ]
+      },
+      "magic": {
+        "requiredLevel": 15,
+        "rules": [
+          {
+            "id": "hex-aftershock-magic-nova",
+            "name": "余震裂地",
+            "description": "每5次对同一目标命中时：对目标周围2.5格敌人造成本次命中伤害70%的物理伤害。",
+            "source": "hex-aftershock",
+            "tier": 2,
+            "trigger": "nth",
+            "chance": 1,
+            "icd": 0,
+            "every": 5,
+            "count": "hit",
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "nova",
+              "ratio": 0.7,
+              "radius": 2.5,
+              "damageType": "physical",
+              "ref": "hit",
+              "at": "target"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "hex/aftershock",
+            "hexMechanism": "hex-aftershock",
+            "countScope": "target"
+          }
+        ]
+      },
+      "rare": {
+        "requiredLevel": 20,
+        "rules": [
+          {
+            "id": "hex-aftershock-rare-nova",
+            "name": "余震裂地",
+            "description": "每4次对同一目标命中时：对目标周围2.5格敌人造成本次命中伤害80%的物理伤害。",
+            "source": "hex-aftershock",
+            "tier": 3,
+            "trigger": "nth",
+            "chance": 1,
+            "icd": 0,
+            "every": 4,
+            "count": "hit",
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "nova",
+              "ratio": 0.8,
+              "radius": 2.5,
+              "damageType": "physical",
+              "ref": "hit",
+              "at": "target"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "hex/aftershock",
+            "hexMechanism": "hex-aftershock",
+            "countScope": "target"
+          },
+          {
+            "id": "hex-aftershock-rare-field",
+            "name": "余震裂地",
+            "description": "每4次对同一目标命中时：形成2.5格领域，持续2秒，施加减速（移动速度降低30%）。",
+            "source": "hex-aftershock",
+            "tier": 3,
+            "trigger": "nth",
+            "chance": 1,
+            "icd": 0,
+            "every": 4,
+            "count": "hit",
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "field",
+              "ratio": 0,
+              "damageType": "physical",
+              "radius": 2.5,
+              "duration": 60,
+              "interval": 30,
+              "at": "target",
+              "statuses": [
+                "slow"
+              ]
+            },
+            "scale": [],
+            "vfxKey": "hex/aftershock",
+            "hexMechanism": "hex-aftershock",
+            "countScope": "target"
+          }
+        ]
+      },
+      "legendary": {
+        "requiredLevel": 25,
+        "rules": [
+          {
+            "id": "hex-aftershock-legendary-nova",
+            "name": "余震裂地",
+            "description": "每4次对同一目标命中时：对目标周围3.25格敌人造成本次命中伤害105%的物理伤害。",
+            "source": "hex-aftershock",
+            "tier": 4,
+            "trigger": "nth",
+            "chance": 1,
+            "icd": 0,
+            "every": 4,
+            "count": "hit",
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "nova",
+              "ratio": 1.05,
+              "radius": 3.25,
+              "damageType": "physical",
+              "ref": "hit",
+              "at": "target"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "hex/aftershock",
+            "hexMechanism": "hex-aftershock",
+            "countScope": "target"
+          },
+          {
+            "id": "hex-aftershock-legendary-field",
+            "name": "余震裂地",
+            "description": "每4次对同一目标命中时：形成3.25格领域，持续2秒，施加减速（移动速度降低30%）。",
+            "source": "hex-aftershock",
+            "tier": 4,
+            "trigger": "nth",
+            "chance": 1,
+            "icd": 0,
+            "every": 4,
+            "count": "hit",
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "field",
+              "ratio": 0,
+              "damageType": "physical",
+              "radius": 3.25,
+              "duration": 60,
+              "interval": 30,
+              "at": "target",
+              "statuses": [
+                "slow"
+              ]
+            },
+            "scale": [],
+            "vfxKey": "hex/aftershock",
+            "hexMechanism": "hex-aftershock",
+            "countScope": "target"
+          }
+        ]
+      }
+    },
+    "playstyle": "贴身绞杀",
+    "flavor": "驿道石板被马蹄敲了一整年，终于松了。"
+  },
+  {
+    "id": "hex-detonation-sigil",
+    "name": "引爆印记",
+    "description": "目标处于燃烧或中毒或流血，命中时：引爆燃烧、中毒、流血，造成各目标自身剩余持续伤害的50%，保留对应状态（触发间隔6秒）。",
+    "category": "synergy",
+    "icon": "hex-detonation-sigil",
+    "exclusiveGroup": "detonation-sigil",
+    "tiers": {
+      "common": {
+        "requiredLevel": 10,
+        "rules": [
+          {
+            "id": "hex-detonation-sigil-common-detonate",
+            "name": "引爆印记",
+            "description": "目标处于燃烧或中毒或流血，命中时：引爆燃烧、中毒、流血，造成各目标自身剩余持续伤害的50%，保留对应状态（触发间隔6秒）。",
+            "source": "hex-detonation-sigil",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 180,
+            "filter": {},
+            "when": [
+              {
+                "kind": "target_status",
+                "statuses": [
+                  "burn",
+                  "poison",
+                  "bleed"
+                ]
+              }
+            ],
+            "action": {
+              "type": "detonate",
+              "statuses": [
+                "burn",
+                "poison",
+                "bleed"
+              ],
+              "ratio": 0.5,
+              "remove": false,
+              "budget": "perTarget"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "hex/detonation-sigil",
+            "hexMechanism": "hex-detonation-sigil"
+          }
+        ]
+      },
+      "magic": {
+        "requiredLevel": 15,
+        "rules": [
+          {
+            "id": "hex-detonation-sigil-magic-detonate",
+            "name": "引爆印记",
+            "description": "目标处于燃烧或中毒或流血，命中时：引爆燃烧、中毒、流血，造成各目标自身剩余持续伤害的60%，保留对应状态（触发间隔6秒）。",
+            "source": "hex-detonation-sigil",
+            "tier": 2,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 180,
+            "filter": {},
+            "when": [
+              {
+                "kind": "target_status",
+                "statuses": [
+                  "burn",
+                  "poison",
+                  "bleed"
+                ]
+              }
+            ],
+            "action": {
+              "type": "detonate",
+              "statuses": [
+                "burn",
+                "poison",
+                "bleed"
+              ],
+              "ratio": 0.6,
+              "remove": false,
+              "budget": "perTarget"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "hex/detonation-sigil",
+            "hexMechanism": "hex-detonation-sigil"
+          }
+        ]
+      },
+      "rare": {
+        "requiredLevel": 20,
+        "rules": [
+          {
+            "id": "hex-detonation-sigil-rare-detonate",
+            "name": "引爆印记",
+            "description": "目标处于燃烧或中毒或流血，命中时：引爆燃烧、中毒、流血，造成各目标自身剩余持续伤害的120%，消耗对应状态（触发间隔6秒）。",
+            "source": "hex-detonation-sigil",
+            "tier": 3,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 180,
+            "filter": {},
+            "when": [
+              {
+                "kind": "target_status",
+                "statuses": [
+                  "burn",
+                  "poison",
+                  "bleed"
+                ]
+              }
+            ],
+            "action": {
+              "type": "detonate",
+              "statuses": [
+                "burn",
+                "poison",
+                "bleed"
+              ],
+              "ratio": 1.2,
+              "remove": true,
+              "budget": "perTarget"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "hex/detonation-sigil",
+            "hexMechanism": "hex-detonation-sigil"
+          }
+        ]
+      },
+      "legendary": {
+        "requiredLevel": 25,
+        "rules": [
+          {
+            "id": "hex-detonation-sigil-legendary-detonate",
+            "name": "引爆印记",
+            "description": "目标处于燃烧或中毒或流血，命中时：引爆燃烧、中毒、流血，造成各目标自身剩余持续伤害的150%，半径3格，消耗对应状态（触发间隔6秒）。",
+            "source": "hex-detonation-sigil",
+            "tier": 4,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 180,
+            "filter": {},
+            "when": [
+              {
+                "kind": "target_status",
+                "statuses": [
+                  "burn",
+                  "poison",
+                  "bleed"
+                ]
+              }
+            ],
+            "action": {
+              "type": "detonate",
+              "statuses": [
+                "burn",
+                "poison",
+                "bleed"
+              ],
+              "ratio": 1.5,
+              "remove": true,
+              "radius": 3,
+              "budget": "perTarget"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "hex/detonation-sigil",
+            "hexMechanism": "hex-detonation-sigil"
+          }
+        ]
+      }
+    },
+    "playstyle": "先铺后炸",
+    "prereq": "dot-source",
+    "flavor": "火漆封口，一捏就烧。"
+  },
+  {
+    "id": "hex-footfall-heal",
+    "name": "行路回春",
+    "description": "走得越远，伤口愈合得越快。",
+    "category": "mobility",
+    "icon": "hex-ph-syn",
+    "exclusiveGroup": "footfall-heal",
+    "playstyle": "穿行续战",
+    "flavor": "送信人的老话：脚不停，气就不断。",
+    "tiers": {
+      "common": {
+        "requiredLevel": 10,
+        "rules": [
+          {
+            "id": "hex-footfall-heal-common",
+            "name": "行路回春",
+            "description": "每移动10格时：回复1%最大生命。",
+            "source": "hex-footfall-heal",
+            "hexMechanism": "hex-footfall-heal",
+            "tier": 1,
+            "trigger": "moved",
+            "chance": 1,
+            "icd": 0,
+            "every": 10,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "heal",
+              "ratio": 0.01,
+              "ref": "maxHp"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "hex/footfall-heal"
+          }
+        ]
+      },
+      "magic": {
+        "requiredLevel": 15,
+        "rules": [
+          {
+            "id": "hex-footfall-heal-magic",
+            "name": "行路回春",
+            "description": "每移动9格时：回复1%最大生命。",
+            "source": "hex-footfall-heal",
+            "hexMechanism": "hex-footfall-heal",
+            "tier": 2,
+            "trigger": "moved",
+            "chance": 1,
+            "icd": 0,
+            "every": 9,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "heal",
+              "ratio": 0.01,
+              "ref": "maxHp"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "hex/footfall-heal"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "hex-control-to-shield",
+    "name": "控场成盾",
+    "description": "敌人被你控住的瞬间，你获得护盾。",
+    "category": "defense",
+    "icon": "hex-ph-syn",
+    "exclusiveGroup": "control-to-shield",
+    "playstyle": "穿行续战",
+    "prereq": "control-source",
+    "flavor": "拦路的人站稳了，自己也就稳了。",
+    "tiers": {
+      "common": {
+        "requiredLevel": 10,
+        "rules": [
+          {
+            "id": "hex-control-to-shield-common",
+            "name": "控场成盾",
+            "description": "冰冻或眩晕或恐惧或石化或定身，施加状态时：护盾取现有值与最大生命5%的较高值，至少持续8秒（触发间隔2秒）。",
+            "source": "hex-control-to-shield",
+            "hexMechanism": "hex-control-to-shield",
+            "tier": 1,
+            "trigger": "status_apply",
+            "chance": 1,
+            "icd": 60,
+            "filter": {
+              "statusKinds": [
+                "freeze",
+                "stun",
+                "fear",
+                "petrify",
+                "root"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "shield",
+              "ratio": 0.05,
+              "ref": "maxHp",
+              "duration": 240
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "hex/control-to-shield"
+          }
+        ]
+      },
+      "magic": {
+        "requiredLevel": 15,
+        "rules": [
+          {
+            "id": "hex-control-to-shield-magic",
+            "name": "控场成盾",
+            "description": "冰冻或眩晕或恐惧或石化或定身，施加状态时：护盾取现有值与最大生命6%的较高值，至少持续8秒（触发间隔2秒）。",
+            "source": "hex-control-to-shield",
+            "hexMechanism": "hex-control-to-shield",
+            "tier": 2,
+            "trigger": "status_apply",
+            "chance": 1,
+            "icd": 60,
+            "filter": {
+              "statusKinds": [
+                "freeze",
+                "stun",
+                "fear",
+                "petrify",
+                "root"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "shield",
+              "ratio": 0.06,
+              "ref": "maxHp",
+              "duration": 240
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "hex/control-to-shield"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "hex-cast-hit-relay",
+    "name": "技攻接力",
+    "description": "技能与普攻交替打出，一次比一次重。",
+    "category": "synergy",
+    "icon": "hex-ph-syn",
+    "exclusiveGroup": "cast-hit-relay",
+    "playstyle": "节奏接力",
+    "flavor": "一封一封接着送，别在驿站停。",
+    "tiers": {
+      "common": {
+        "requiredLevel": 10,
+        "rules": [
+          {
+            "id": "hex-cast-hit-relay-common-cast",
+            "name": "技攻接力",
+            "description": "技能，施放时：伤害增加30%，作用于下一次普攻命中，持续到战斗结束，最多1层。",
+            "source": "hex-cast-hit-relay",
+            "hexMechanism": "hex-cast-hit-relay",
+            "tier": 1,
+            "trigger": "cast",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "attackSources": [
+                "cast"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "buff",
+              "duration": 1,
+              "untilCombatEnd": true,
+              "maxStacks": 1,
+              "mods": {
+                "damageMult": 0.3
+              },
+              "consume": "nextBasicHit"
+            },
+            "scale": [
+              "action.mods.damageMult"
+            ],
+            "vfxKey": "hex/cast-hit-relay"
+          },
+          {
+            "id": "hex-cast-hit-relay-common-basic",
+            "name": "技攻接力",
+            "description": "普攻，命中时：伤害增加20%，作用于下一次技能施放，持续到战斗结束，最多1层。",
+            "source": "hex-cast-hit-relay",
+            "hexMechanism": "hex-cast-hit-relay",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "attackSources": [
+                "basic"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "buff",
+              "duration": 1,
+              "untilCombatEnd": true,
+              "maxStacks": 1,
+              "mods": {
+                "damageMult": 0.2
+              },
+              "consume": "nextSkillCast"
+            },
+            "scale": [
+              "action.mods.damageMult"
+            ],
+            "vfxKey": "hex/cast-hit-relay"
+          }
+        ]
+      },
+      "magic": {
+        "requiredLevel": 15,
+        "rules": [
+          {
+            "id": "hex-cast-hit-relay-magic-cast",
+            "name": "技攻接力",
+            "description": "技能，施放时：伤害增加40%，作用于下一次普攻命中，持续到战斗结束，最多1层。",
+            "source": "hex-cast-hit-relay",
+            "hexMechanism": "hex-cast-hit-relay",
+            "tier": 2,
+            "trigger": "cast",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "attackSources": [
+                "cast"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "buff",
+              "duration": 1,
+              "untilCombatEnd": true,
+              "maxStacks": 1,
+              "mods": {
+                "damageMult": 0.4
+              },
+              "consume": "nextBasicHit"
+            },
+            "scale": [
+              "action.mods.damageMult"
+            ],
+            "vfxKey": "hex/cast-hit-relay"
+          },
+          {
+            "id": "hex-cast-hit-relay-magic-basic",
+            "name": "技攻接力",
+            "description": "普攻，命中时：伤害增加25%，作用于下一次技能施放，持续到战斗结束，最多1层。",
+            "source": "hex-cast-hit-relay",
+            "hexMechanism": "hex-cast-hit-relay",
+            "tier": 2,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "attackSources": [
+                "basic"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "buff",
+              "duration": 1,
+              "untilCombatEnd": true,
+              "maxStacks": 1,
+              "mods": {
+                "damageMult": 0.25
+              },
+              "consume": "nextSkillCast"
+            },
+            "scale": [
+              "action.mods.damageMult"
+            ],
+            "vfxKey": "hex/cast-hit-relay"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "hex-void-rift",
+    "name": "虚空裂隙",
+    "description": "每隔一会儿，脚下裂开一道吞噬一切的缝。",
+    "category": "attack",
+    "icon": "hex-ph-atk",
+    "exclusiveGroup": "void-rift",
+    "playstyle": "贴身绞杀",
+    "flavor": "邮路上有一道缝，寄进去的信再没回来过。",
+    "tiers": {
+      "common": {
+        "requiredLevel": 10,
+        "rules": [
+          {
+            "id": "hex-void-rift-common",
+            "name": "虚空裂隙",
+            "description": "每10秒：形成3格领域，持续3秒，每1秒造成25%的暗影伤害。",
+            "source": "hex-void-rift",
+            "hexMechanism": "hex-void-rift",
+            "tier": 1,
+            "trigger": "interval",
+            "chance": 1,
+            "icd": 0,
+            "every": 300,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "field",
+              "ratio": 0.25,
+              "damageType": "shadow",
+              "radius": 3,
+              "duration": 90,
+              "interval": 30,
+              "at": "self"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "hex/void-rift"
+          }
+        ]
+      },
+      "magic": {
+        "requiredLevel": 15,
+        "rules": [
+          {
+            "id": "hex-void-rift-magic",
+            "name": "虚空裂隙",
+            "description": "每10秒：形成3格领域，持续3秒，每1秒造成30%的暗影伤害。",
+            "source": "hex-void-rift",
+            "hexMechanism": "hex-void-rift",
+            "tier": 2,
+            "trigger": "interval",
+            "chance": 1,
+            "icd": 0,
+            "every": 300,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "field",
+              "ratio": 0.3,
+              "damageType": "shadow",
+              "radius": 3,
+              "duration": 90,
+              "interval": 30,
+              "at": "self"
+            },
+            "scale": [
+              "action.ratio"
+            ],
+            "vfxKey": "hex/void-rift"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "hex-mark-relay",
+    "name": "印记接力",
+    "description": "技能种下印记，普攻把它收走。",
+    "category": "synergy",
+    "icon": "hex-ph-syn",
+    "exclusiveGroup": "mark-relay",
+    "playstyle": "先铺后炸",
+    "flavor": "先盖章，后收件，一环扣一环。",
+    "tiers": {
+      "common": {
+        "requiredLevel": 10,
+        "rules": [
+          {
+            "id": "hex-mark-relay-common-apply",
+            "name": "印记接力",
+            "description": "技能，命中时：为目标挂上印记，持续5秒。",
+            "source": "hex-mark-relay",
+            "hexMechanism": "hex-mark-relay",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "attackSources": [
+                "cast"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "mark",
+              "key": "relay",
+              "duration": 150
+            },
+            "scale": [],
+            "vfxKey": "hex/mark-relay"
+          },
+          {
+            "id": "hex-mark-relay-common-consume",
+            "name": "印记接力",
+            "description": "普攻，命中时：消耗目标的印记。对攻击者造成攻击40%的暗影伤害。其他技能冷却缩短0.5秒。",
+            "source": "hex-mark-relay",
+            "hexMechanism": "hex-mark-relay",
+            "tier": 1,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "mark": "relay",
+              "attackSources": [
+                "basic"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "unmark",
+              "key": "relay"
+            },
+            "after": [
+              {
+                "type": "nova",
+                "ratio": 0.4,
+                "radius": 0,
+                "damageType": "shadow",
+                "ref": "attack",
+                "at": "target",
+                "maxTargets": 1
+              },
+              {
+                "type": "cooldown",
+                "mode": "random",
+                "ticks": 15
+              }
+            ],
+            "scale": [
+              "after.0.ratio"
+            ],
+            "vfxKey": "hex/mark-relay"
+          }
+        ]
+      },
+      "magic": {
+        "requiredLevel": 15,
+        "rules": [
+          {
+            "id": "hex-mark-relay-magic-apply",
+            "name": "印记接力",
+            "description": "技能，命中时：为目标挂上印记，持续5秒。",
+            "source": "hex-mark-relay",
+            "hexMechanism": "hex-mark-relay",
+            "tier": 2,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "attackSources": [
+                "cast"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "mark",
+              "key": "relay",
+              "duration": 150
+            },
+            "scale": [],
+            "vfxKey": "hex/mark-relay"
+          },
+          {
+            "id": "hex-mark-relay-magic-consume",
+            "name": "印记接力",
+            "description": "普攻，命中时：消耗目标的印记。对攻击者造成攻击50%的暗影伤害。其他技能冷却缩短0.5秒。",
+            "source": "hex-mark-relay",
+            "hexMechanism": "hex-mark-relay",
+            "tier": 2,
+            "trigger": "hit",
+            "chance": 1,
+            "icd": 0,
+            "filter": {
+              "mark": "relay",
+              "attackSources": [
+                "basic"
+              ]
+            },
+            "when": [],
+            "action": {
+              "type": "unmark",
+              "key": "relay"
+            },
+            "after": [
+              {
+                "type": "nova",
+                "ratio": 0.5,
+                "radius": 0,
+                "damageType": "shadow",
+                "ref": "attack",
+                "at": "target",
+                "maxTargets": 1
+              },
+              {
+                "type": "cooldown",
+                "mode": "random",
+                "ticks": 15
+              }
+            ],
+            "scale": [
+              "after.0.ratio"
+            ],
+            "vfxKey": "hex/mark-relay"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "hex-bee-volley",
+    "name": "蜂群齐射",
+    "description": "蓄满一轮，下一次技能命中就放出蜂群。",
+    "category": "attack",
+    "icon": "hex-ph-syn",
+    "exclusiveGroup": "bee-volley",
+    "playstyle": "节奏接力",
+    "flavor": "蜂箱里的信号，等蓄满再放。",
+    "tiers": {
+      "common": {
+        "requiredLevel": 10,
+        "rules": [
+          {
+            "id": "hex-bee-volley-common",
+            "name": "蜂群齐射",
+            "description": "每8秒：，作用于下一次技能命中，持续到战斗结束，最多1层。消耗此增益时：从自身发出3枚追踪弹，每枚造成攻击20%的毒素伤害；只追踪原目标，目标死亡则追最近敌人，无目标则消失，命中施加减速20%，持续1.5秒。",
+            "source": "hex-bee-volley",
+            "hexMechanism": "hex-bee-volley",
+            "tier": 1,
+            "trigger": "interval",
+            "chance": 1,
+            "icd": 0,
+            "every": 240,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "buff",
+              "duration": 1,
+              "untilCombatEnd": true,
+              "maxStacks": 1,
+              "mods": {},
+              "consume": "nextSkillHit"
+            },
+            "consumeEffects": [
+              {
+                "type": "homing",
+                "count": 3,
+                "ratio": 0.2,
+                "ref": "attack",
+                "damageType": "poison",
+                "status": {
+                  "kind": "slow",
+                  "duration": 45,
+                  "strength": 0.2,
+                  "scope": "hit",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              }
+            ],
+            "scale": [
+              "consumeEffects.0.ratio"
+            ],
+            "vfxKey": "hex/bee-volley"
+          }
+        ]
+      },
+      "magic": {
+        "requiredLevel": 15,
+        "rules": [
+          {
+            "id": "hex-bee-volley-magic",
+            "name": "蜂群齐射",
+            "description": "每8秒：，作用于下一次技能命中，持续到战斗结束，最多1层。消耗此增益时：从自身发出4枚追踪弹，每枚造成攻击20%的毒素伤害；只追踪原目标，目标死亡则追最近敌人，无目标则消失，命中施加减速20%，持续1.5秒。",
+            "source": "hex-bee-volley",
+            "hexMechanism": "hex-bee-volley",
+            "tier": 2,
+            "trigger": "interval",
+            "chance": 1,
+            "icd": 0,
+            "every": 240,
+            "filter": {},
+            "when": [],
+            "action": {
+              "type": "buff",
+              "duration": 1,
+              "untilCombatEnd": true,
+              "maxStacks": 1,
+              "mods": {},
+              "consume": "nextSkillHit"
+            },
+            "consumeEffects": [
+              {
+                "type": "homing",
+                "count": 4,
+                "ratio": 0.2,
+                "ref": "attack",
+                "damageType": "poison",
+                "status": {
+                  "kind": "slow",
+                  "duration": 45,
+                  "strength": 0.2,
+                  "scope": "hit",
+                  "cleanse": true,
+                  "breakOnDamage": false,
+                  "removeWithSource": false
+                }
+              }
+            ],
+            "scale": [
+              "consumeEffects.0.ratio"
+            ],
+            "vfxKey": "hex/bee-volley"
+          }
+        ]
+      }
+    }
+  }
+]

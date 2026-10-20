@@ -1,0 +1,31 @@
+/* UX-A03：标题/登录/命名页营地背景（标题光泽/版本/静音在 auth.css）。营地背景只用已登记的草地、石路和营地摆件，不新增位图。 */
+#modal[data-title]{background:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+
+.title-bg{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none;container-type:size;background:color-mix(in srgb,var(--color-world-ink) 35%,var(--color-secondary-edge))}
+.title-bg>div{position:absolute;pointer-events:none}
+.title-bg img{position:absolute;display:block;height:var(--h);width:auto;max-width:none;user-select:none;-webkit-user-drag:none}
+.title-bg__ground{inset:-8%;background:url('/art/open-world/textures/ow-art-grass.png') 0 0/320px 320px;filter:blur(2px) saturate(.92);animation:title-drift var(--motion-title-drift) ease-in-out infinite alternate;animation-delay:var(--tbg-phase,0s)}
+.title-bg__camp{left:50%;top:66%;width:92%;height:66%;transform:translate(-50%,-50%);background:url('/art/open-world/five-islands/textures/ow-road-stone.png') center/300px 300px;-webkit-mask-image:radial-gradient(ellipse at center,#000 38%,transparent 70%);mask-image:radial-gradient(ellipse at center,#000 38%,transparent 70%);filter:blur(1.5px);opacity:.92}
+.title-bg__far,.title-bg__near{inset:-4%}
+.title-bg__far{filter:blur(1.2px);animation:title-drift-far var(--motion-title-drift) ease-in-out infinite alternate;animation-delay:var(--tbg-phase,0s)}
+.title-bg__near{animation:title-drift-near var(--motion-title-drift) ease-in-out infinite alternate;animation-delay:var(--tbg-phase,0s)}
+.tbg-windmill{--h:44cqh;left:12%;bottom:34%}
+.tbg-tent{--h:27cqh;right:13%;bottom:30%}
+.tbg-fire{--h:14cqh;left:50%;bottom:22%;transform:translateX(-50%)}
+.tbg-tree{--h:64cqh;bottom:14%}
+.tbg-tree--l{left:-3%}
+.tbg-tree--r{right:-4%;--h:58cqh}
+.tbg-rocks{--h:15cqh;right:30%;bottom:6%}
+.title-bg__light{inset:0;background:radial-gradient(56% 46% at 50% 72%,color-mix(in srgb,var(--color-primary) 38%,transparent),transparent 72%),linear-gradient(180deg,color-mix(in srgb,var(--color-world-text) 26%,transparent),transparent 42%);animation:title-breathe var(--motion-title-drift) ease-in-out infinite alternate}
+
+
+
+
+
+@keyframes title-drift{from{transform:translate3d(0,0,0) scale(1.02)}to{transform:translate3d(-2.4%,-1.4%,0) scale(1.06)}}
+@keyframes title-drift-far{from{transform:translate3d(0,0,0)}to{transform:translate3d(1.2%,-.6%,0)}}
+@keyframes title-drift-near{from{transform:translate3d(0,0,0)}to{transform:translate3d(2.6%,.8%,0)}}
+@keyframes title-breathe{from{opacity:.72}to{opacity:1}}
+
+@media(prefers-reduced-motion:reduce){.title-bg__ground,.title-bg__far,.title-bg__near,.title-bg__light{animation:none}}
+[data-motion-reduced=true] .title-bg__ground,[data-motion-reduced=true] .title-bg__far,[data-motion-reduced=true] .title-bg__near,[data-motion-reduced=true] .title-bg__light{animation:none}

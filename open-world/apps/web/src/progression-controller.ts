@@ -8,10 +8,11 @@ type Write=(path:string,body:object,changesBuild?:boolean)=>Promise<'success'|'r
 export class ProgressionController{
  readonly ui:ProgressionUI={section:'',item:'',operation:'',loading:false,previewLoading:false,busy:false,message:'',error:'',status:''};
  private generation=0;
- constructor(private refresh:()=>void,private write:Write,private blocked:()=>boolean){}
+ /** visible：当前分组里玩家看得到的分区；未开放的分区（如未解锁的武器盘）不能被默认选中，否则报价对不上面板显示的条目，费用块一直“读取中…”（Grok BUG-88）。 */
+ constructor(private refresh:()=>void,private write:Write,private blocked:()=>boolean,private visible:()=>readonly string[]=()=>[]){}
  async load(){
   if(this.ui.loading)return;this.generation++;this.ui.preview=undefined;this.ui.previewLoading=false;this.ui.loading=true;this.ui.error='';this.refresh();
-  try{this.ui.view=await api<ProgressionView>('progression');const section=this.ui.view.sections.find(s=>s.id===this.ui.section)??this.ui.view.sections[0];this.ui.section=section?.id??'';this.ui.item=section?.items.find(i=>i.id===this.ui.item)?.id??section?.items[0]?.id??'';await this.preview();}
+  try{this.ui.view=await api<ProgressionView>('progression');const allowed=this.visible(),pool=allowed.length?this.ui.view.sections.filter(s=>allowed.includes(s.id)):this.ui.view.sections,section=pool.find(s=>s.id===this.ui.section)??pool[0];this.ui.section=section?.id??'';this.ui.item=section?.items.find(i=>i.id===this.ui.item)?.id??section?.items[0]?.id??'';await this.preview();}
   catch(e){this.ui.error=e instanceof Error?e.message:'养成信息读取失败。';}
   finally{this.ui.loading=false;this.refresh();}
  }
@@ -21,7 +22,7 @@ export class ProgressionController{
   if(action==='progression-summary'){this.ui.summaryOpen=true;this.refresh();return true;}
   if(action==='progression-summary-close'){this.ui.summaryOpen=false;this.refresh();return true;}
   if(action==='progression-reset-cancel'){this.ui.resetConfirm=undefined;this.refresh();return true;}
-  if(action==='progression-refresh'){await this.load();return true;}
+  if(action==='progression-refresh'){const [section,item]=id.split(':');if(section&&this.ui.view?.sections.some(s=>s.id===section)){this.ui.section=section;this.ui.item=item??'';this.ui.operation='';}await this.load();return true;}
   if(action==='progression-section'){
    const section=this.ui.view?.sections.find(s=>s.id===id);if(!section)return true;
    this.ui.section=id;this.ui.query='';this.ui.item=section.items[0]?.id??'';this.ui.operation='';this.ui.message='';await this.preview();return true;

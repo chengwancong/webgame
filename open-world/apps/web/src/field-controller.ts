@@ -9,6 +9,7 @@ import {campSource} from '../../../packages/rules/world-camps.ts';
 import {exploredAt,mergeExploration,revealExploration} from '../../../packages/rules/exploration.ts';
 import {zoneGuide,type GuideTarget} from '../../../packages/rules/zone-guide.ts';
 import {api} from './network.ts';
+import {parseFieldFreeze,type FieldFreeze} from '../../../packages/contracts/field-freeze.ts';
 
 /** Re-asks for streamed camp state and saves exploration; the current entry never respawns cleared camps. */
 const pollMs=10000;
@@ -32,17 +33,22 @@ export class FieldController{
  /** Members the hero killed here: never re-added even if a report is still in flight. */
  private gone=new Set<string>();
  private world?:World;private zone='';
+ /** Server-published switches (GET /api/content.fieldFreeze); all false until read or if unreadable, so the UI never hides on a guess. */
+ private freezeState:Readonly<FieldFreeze>=parseFieldFreeze();private freezeAsked=false;private freezeRetryAt=0;
  /** Fog revealed locally since entering; merged upward with the saved bitmap. */
  private explored='';private sent='';private cell='';
  private guideKey='';private guided?:GuideTarget;
  /** Cleared camps are not reselected after a local timer; only server-supplied living camps clear the mark. */
  private empty=new Map<string,number>();private autoZone='';
  constructor(private deps:Deps){}
+ freeze(){return this.freezeState;}
+ private loadFreeze(){if(this.freezeAsked||performance.now()<this.freezeRetryAt)return;this.freezeAsked=true;api<{fieldFreeze?:unknown}>('content').then(v=>{try{this.freezeState=parseFieldFreeze(v.fieldFreeze??{});this.deps.refresh?.();}catch{/* unknown shape: keep entries visible, server still refuses */}}).catch(()=>{this.freezeAsked=false;this.freezeRetryAt=performance.now()+30000;});}
  active(){return Boolean(fieldRegionInfo(this.deps.world().region.id));}
  step(now=performance.now()){
   const w=this.deps.world(),p=this.deps.permit(),info=fieldRegionInfo(w.region.id);
   if(w!==this.world){this.world=w;this.replay=undefined;this.replayError='';this.phase=undefined;this.revision=-1;this.gone.clear();this.empty.clear();this.key='';this.zone='';this.autoZone='';this.cell='';this.explored=this.sent=this.saved(w.region.id);}
   if(!info)return;
+  this.loadFreeze();
   const snapshot=this.deps.snapshot();if(snapshot&&snapshot.revision!==this.revision){this.revision=snapshot.revision;this.phase=snapshot.worldView;const phaseKey=JSON.stringify(snapshot.worldView??null);if(phaseKey!==this.phaseKey){this.phaseKey=phaseKey;this.key='';}else this.stale=true;}
   this.reveal(w);this.announce(w);this.roam(w,now);
   if(!p||p.region!==w.region.id||this.pending||!this.deps.ready())return;
@@ -68,14 +74,14 @@ export class FieldController{
  }
  private async loadReplay(w:World){const before=JSON.stringify([this.replay,this.replayError]);try{const v=await api<{goal:FieldReplayGoal|null}>('field/replay-goal?region='+encodeURIComponent(w.region.id));if(this.deps.world()!==w)return;const old=this.replay;this.replay=v.goal;this.replayError='';if(old&&v.goal?.visit===old.visit&&!old.done&&v.goal.done)this.deps.banner('走访完成：'+v.goal.label);}catch{if(this.deps.world()!==w)return;this.replayError='走访目标还没读到，稍后再看。';}if(before!==JSON.stringify([this.replay,this.replayError]))this.deps.refresh?.();}
  /** Hero within reach of a waypoint of this map, if any. */
- nearbyWaypoint(){const w=this.deps.world();return worldTables.waypoints.filter(w=>this.phase?.waypoints.includes(w.id)??(!w.when&&!w.until)).find(x=>x.region===w.region.id&&Math.hypot(x.x-w.hero.position.x,x.y-w.hero.position.y)<=waypointReach);}
+ nearbyWaypoint(){const w=this.deps.world();if(this.freezeState.waypoints)return undefined;return worldTables.waypoints.filter(w=>this.phase?.waypoints.includes(w.id)??(!w.when&&!w.until)).find(x=>x.region===w.region.id&&Math.hypot(x.x-w.hero.position.x,x.y-w.hero.position.y)<=waypointReach);}
  unlocked(id:string){return Boolean(this.deps.snapshot()?.starsea?.waypoints?.includes(id));}
  /** Client-side courtesy check; the server refuses travel during quest waves too. */
  inCombat(){const w=this.deps.world();return w.enemies.some(e=>e.alive&&e.engaged&&Math.hypot(e.position.x-w.hero.position.x,e.position.y-w.hero.position.y)<=combatReach);}
  /** Full-map data: fog bitmap plus waypoints standing in explored cells (or unlocked). */
  mapView():FieldMapView|undefined{
   const w=this.deps.world();if(!this.active())return;const {width,height}=w.region;
-  return {replay:this.replay?.map===w.region.id?this.replay:undefined,replayError:this.replayError,explored:this.explored,waypoints:worldTables.waypoints.filter(x=>x.region===w.region.id&&(this.phase?.waypoints.includes(x.id)??(!x.when&&!x.until))).map(x=>({id:x.id,name:x.name,x:x.x,y:x.y,unlocked:this.unlocked(x.id)})).filter(x=>x.unlocked||exploredAt(this.explored,width,height,x))};
+  return {replay:this.replay?.map===w.region.id?this.replay:undefined,replayError:this.replayError,explored:this.explored,waypoints:this.freezeState.waypoints?[]:worldTables.waypoints.filter(x=>x.region===w.region.id&&(this.phase?.waypoints.includes(x.id)??(!x.when&&!x.until))).map(x=>({id:x.id,name:x.name,x:x.x,y:x.y,unlocked:this.unlocked(x.id)})).filter(x=>x.unlocked||exploredAt(this.explored,width,height,x))};
  }
  /** Guide target adjusted for zones: other-zone targets point at an unlocked waypoint
   * there or at this zone's exit. The route is re-planned per 8-cell move, not per frame. */

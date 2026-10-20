@@ -1,0 +1,5 @@
+export const forms=[{key:'young',height:54,label:'幼年'},{key:'adult',height:70,label:'成年'},{key:'awakened',height:84,label:'觉醒'}];
+export const pets=['A10','A7'].flatMap((family,i)=>['A','B'].map(style=>({key:`r2-${i?'yi':'jia'}-${style.toLowerCase()}`,name:`${i?'乙':'甲'} ${style}`,family,style,tier:'heavy',island:'龙眠',islandKey:'dragon',chapter:5,stages:['c','d','e'],heights:[54,70,84]})));
+export const materialNames=['back','backShadow','fin','finShadow','belly','outline','eyeWhite','bellyShadow','deepShadow','backLight','rim','metal','metalShadow','metalLight','gem','gemLight','iris','horn','hornShadow'];
+export const colors=p=>p.family==='A10'?['#9f4d40','#703c38','#c98654','#855344','#f2d7a2','#3c2b23','#fff7e8','#c29b68','#452d30','#c16b50','#e6ac76','#cfaa65','#886638','#fff0bb','#dc7d3f','#ffdf92','#67bbc4','#dfcfa9','#99826e']:['#397e89','#285662','#dd9c68','#a65e4c','#f1d9a3','#3c2b23','#fff7e8','#b99b70','#203e4d','#66a4a8','#a8d1c1','#cfaa65','#886638','#fff0bb','#dc7d3f','#ffdf92','#6674b0','#e0d3ae','#a4967e'];
+export function palette(){return {};}

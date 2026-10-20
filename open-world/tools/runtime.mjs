@@ -105,3 +105,14 @@ export async function startDatabase({temporary=false,reap=true}={}){
  }
 }
 export async function waitFor(url,child){for(let n=0;n<100;n++){if(child?.exitCode!==null&&child?.exitCode!==undefined)throw Error('Service exited before ready');try{const r=await fetch(url);if(r.ok)return;}catch{}await new Promise(r=>setTimeout(r,100));}throw Error('Timed out: '+url);}
+/** New characters start in the prologue and the Starsea landing story: choose the first echo, then dismiss story popups so HUD panels are reachable. */
+export async function skipOpening(page){
+ const skip=page.locator('[data-action=prologue-skip]');await skip.waitFor({timeout:20000});await skip.click();await page.locator('[data-action=prologue-choose]').first().click();
+ await page.waitForFunction(()=>!document.querySelector('[data-action=prologue-skip]'),{},{timeout:20000});
+ await page.locator('.story-dialogue').first().waitFor({state:'visible',timeout:12000}).catch(()=>{});
+ for(let n=0,quiet=0;n<40&&quiet<2;n++){const dialog=page.locator('.story-dialogue');const button=dialog.getByRole('button',{name:'跳过'}).or(dialog.getByRole('button',{name:'继续'})).first();if(await button.waitFor({state:'visible',timeout:1500}).then(()=>true,()=>false)){quiet=0;await button.click();await page.waitForTimeout(300);}else quiet++;}
+}
+/** Dismiss any guided story popup that appears later (timed Starsea lines); resolves once none is visible for a short moment. */
+export async function dismissStory(page){
+ for(let n=0;n<12;n++){const dialog=page.locator('.story-dialogue'),button=dialog.getByRole('button',{name:'跳过'}).or(dialog.getByRole('button',{name:'继续'})).first();if(!await button.waitFor({state:'visible',timeout:700}).then(()=>true,()=>false))return;await button.click();await page.waitForTimeout(300);}
+}

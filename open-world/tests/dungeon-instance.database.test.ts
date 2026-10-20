@@ -9,7 +9,7 @@ import type {DungeonView} from '../packages/contracts/dungeons.ts';
 import {World} from '../packages/simulation/index.ts';
 import {monsterContent} from '../packages/content/monsters.ts';
 import {resolveMonsterSpawn} from '../packages/rules/monster-stats.ts';
-import {permitSchema} from '../packages/contracts/index.ts';
+import {permitSchema,validateResponse} from '../packages/contracts/index.ts';
 import {request as httpRequest} from 'node:http';
 const dsn=process.env.AW_DATABASE_URL;if(!dsn)throw Error('Real PostgreSQL required');
 const config=structuredClone(source) as any;config.profiles.raid.partyRef=undefined;config.profiles.raid.party={min:2,max:2,roles:{damage:2}};config.defaults.loadingSeconds=15;config.defaults.retention.seconds=10;config.defaults.rescue={seconds:.2,range:2,hpRatio:.3};config.defaults.timeLimitSeconds=30;config.runtime.autoTicksPerSlice=3;config.runtime.cleanupEveryMs=200;
@@ -18,6 +18,7 @@ config.definitions.push({id:'qa-auto-team',kind:'raid',profiles:['simulation'],a
 config.definitions.push({id:'qa-rescue',kind:'raid',profiles:['realtime'],area:'meadow',stages:['meadow-boss'],policy:{party:{min:2,max:3,roles:{}},enemyScale:{hp:10000,attack:.01},rescue:{seconds:.3,range:2,hpRatio:.42},timeLimitSeconds:120}});
 config.definitions.push({id:'qa-load',kind:'trial',profiles:['realtime'],area:'meadow',stages:['meadow-boss'],policy:{loadingSeconds:.15,entryCost:{gold:37,material:4},quota:{pool:'qa-load',period:'day',limit:2}}});
 config.definitions.push({id:'qa-success-quota',kind:'trial',profiles:['realtime'],area:'meadow',stages:['meadow-boss'],policy:{quotaAt:'success',quota:{pool:'qa-success',period:'day',limit:2}},reward:{gold:10,xp:20,material:3}});
+config.definitions.push({id:'qa-tier-preview',kind:'trial',profiles:['realtime'],area:'meadow',stages:['meadow-boss'],worldDrops:false,policy:{minTier:1,maxTier:3,tierRules:{rewardPerTier:.5}},reward:{gold:10,xp:20,material:3}});
 config.definitions.push({id:'qa-deadline',kind:'trial',profiles:['realtime'],area:'meadow',stages:['meadow-boss'],policy:{timeLimitSeconds:.2,enemyScale:{hp:10000,attack:.01}}});
 config.definitions.push({id:'qa-twenty',kind:'raid',profiles:['realtime'],area:'meadow',stages:['meadow-boss'],policy:{party:{min:20,max:20,roles:{tank:2,healer:4,damage:14}},enemyScale:{hp:10000,attack:.01},timeLimitSeconds:120}});
 config.definitions.push({id:'qa-checkpoint',kind:'normal',profiles:['realtime'],area:'meadow',stages:['meadow','meadow-boss'],worldDrops:true,policy:{party:{min:1,max:2,roles:{}},timeLimitSeconds:120,entryCost:{gold:37,material:4}}});
@@ -70,6 +71,23 @@ it('loading failure does not charge a fee or quota and success quota is charged 
 });
 it('server enforces a short deadline and never simulates or rewards a later kill',async()=>{
  const p=await player(),{id,c}=await beginSolo(p,'qa-deadline');await until(()=>c.frame.status==='failed');expect(c.frame.tick).toBe(Math.ceil(.2*30));expect(c.frame.reason).toBe('副本时间已结束');expect(c.frame.self!.gains.gold).toBe(0);expect((await p.command('next',{instance_id:id})).body.code).toBe('DUNGEON_CLOSED');await p.command('return',{instance_id:id});
+});
+it('completion preview is read-only, validates tiers and matches the actual charged success bonus',async()=>{
+ const p=await player(),before=(await pool.query('SELECT state FROM ow_characters WHERE id=$1',[p.id])).rows[0].state;
+ const path='dungeons/reward-preview?dungeon_id=qa-tier-preview&tier=2',preview=await p.request(path);
+ expect(preview.status).toBe(200);expect(validateResponse(path,preview.body)).toEqual({dungeon_id:'qa-tier-preview',tier:2,scope:'completion_bonus',reward:{gold:15,xp:30,material:5}});
+ expect((await p.request('dungeons/reward-preview?dungeon_id=nightmare&tier=100')).body.reward).toEqual({gold:2480,xp:1736,material:198});
+ expect((await p.request('dungeons/reward-preview?dungeon_id=qa-tier-preview&tier=4')).body.code).toBe('DUNGEON_TIER');
+ expect((await p.request('dungeons/reward-preview?dungeon_id=not-real&tier=1')).status).toBe(404);
+ for(const tier of ['0','1.5','bad'])expect((await p.request('dungeons/reward-preview?dungeon_id=qa-tier-preview&tier='+tier)).status).toBe(400);
+ expect((await pool.query('SELECT state FROM ow_characters WHERE id=$1',[p.id])).rows[0].state).toEqual(before);
+ const created=await p.command('create',{dungeon_id:'qa-tier-preview',tier:2});expect(created.status).toBe(200);
+ const id=created.body.instance.id,c=await connect(p,id);await p.command('ready',{instance_id:id});expect((await p.command('start',{instance_id:id})).status).toBe(200);
+ c.input({seq:1,kind:'mode',mode:'auto'});await until(()=>c.frame.status==='success');
+ const result=(await p.request('dungeons/'+id+'/result')).body.instance;
+ expect({gold:result.self.gains.gold,xp:result.self.gains.xp,material:result.self.gains.material}).toEqual(preview.body.reward);
+ const state=(await p.request('character')).body;expect(state.gold-before.gold).toBe(15);expect(state.material-before.material).toBe(5);
+ await p.command('return',{instance_id:id});expect((await p.request('character')).body.gold).toBe(state.gold);
 });
 it('a downed solo character fails and can return without losing committed inventory',async()=>{
  const p=await player(),run=await beginSolo(p,'trial-meadow');

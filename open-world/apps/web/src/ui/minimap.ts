@@ -19,11 +19,16 @@ export const mapCorners=(width:number,height:number)=>[{x:0,y:0},{x:width,y:0},{
 export function minimapBounds(width:number,height:number){
  const corners=mapCorners(width,height).map(project);return {minX:Math.min(...corners.map(p=>p.x)),maxX:Math.max(...corners.map(p=>p.x)),minY:Math.min(...corners.map(p=>p.y)),maxY:Math.max(...corners.map(p=>p.y))};
 }
-export function minimapHeight(width:number,height:number,size=320,padding=8){
- const b=minimapBounds(width,height);return Math.ceil((size-padding*2)*(b.maxY-b.minY)/(b.maxX-b.minX)+padding*2);
+/** 圆形海岸的等距包围盒（外扩 grow 格给浪线留边）；区域全图按它取景，岛体不再缩在方图中央。 */
+export function coastBounds(coast:readonly IsoPoint[],grow=0){
+ const cx=coast.reduce((n,p)=>n+p.x,0)/coast.length,cy=coast.reduce((n,p)=>n+p.y,0)/coast.length,pts=coast.map(p=>{const d=Math.hypot(p.x-cx,p.y-cy)||1;return project({x:p.x+(p.x-cx)/d*grow,y:p.y+(p.y-cy)/d*grow});});
+ return {minX:Math.min(...pts.map(p=>p.x)),maxX:Math.max(...pts.map(p=>p.x)),minY:Math.min(...pts.map(p=>p.y)),maxY:Math.max(...pts.map(p=>p.y))};
 }
-export function minimapProjection(width:number,height:number,size=320,padding=8,canvasHeight=minimapHeight(width,height,size,padding)):MapProjection{
- const b=minimapBounds(width,height),scale=Math.min((size-padding*2)/(b.maxX-b.minX),(canvasHeight-padding*2)/(b.maxY-b.minY));
+export function minimapHeight(width:number,height:number,size=320,padding=8,b=minimapBounds(width,height)){
+ return Math.ceil((size-padding*2)*(b.maxY-b.minY)/(b.maxX-b.minX)+padding*2);
+}
+export function minimapProjection(width:number,height:number,size=320,padding=8,canvasHeight=minimapHeight(width,height,size,padding),b=minimapBounds(width,height)):MapProjection{
+ const scale=Math.min((size-padding*2)/(b.maxX-b.minX),(canvasHeight-padding*2)/(b.maxY-b.minY));
  return {scale,x:size/2-(b.minX+b.maxX)/2*scale,y:canvasHeight/2-(b.minY+b.maxY)/2*scale,width:size,height:canvasHeight,padding};
 }
 /** Half the stage width in cells, so the radar reaches as far sideways as the main view does. */
@@ -67,7 +72,7 @@ function fogLayer(canvas:HTMLCanvasElement,region:World['region'],projection:Map
  const cell=projection.scale*32,light=ink('Color.Minimap.FogLight'),shade=ink('Color.Minimap.FogShade');
  f.save();outline(f,2);f.clip();f.fillStyle=ink('Color.Minimap.Fog');f.fillRect(0,0,width,height);
  const rnd=seeded(region.id);f.filter=`blur(${Math.max(3,cell*6)*density}px)`;
- for(let i=0;i<Math.round(region.width*region.height/1900);i++){const p=minimapPoint({x:rnd()*region.width,y:rnd()*region.height},projection),r=(14+rnd()*26)*cell/1.6,lit=rnd()<.5;f.fillStyle=lit?light:shade;f.globalAlpha=lit?.55:.16;f.beginPath();f.ellipse(p.x,p.y,r*1.6,r,0,0,Math.PI*2);f.fill();}
+ for(let i=0;i<Math.round(region.width*region.height/1900);i++){const p=minimapPoint({x:rnd()*region.width,y:rnd()*region.height},projection),r=(14+rnd()*26)*cell/1.6,lit=rnd()<.5;f.fillStyle=lit?light:shade;f.globalAlpha=lit?.3:.16;f.beginPath();f.ellipse(p.x,p.y,r*1.6,r,0,0,Math.PI*2);f.fill();}
  f.restore();
  const grid=explorationGrid(region.width,region.height);let bits:Uint8Array;try{bits=decodeExploration(field.explored,grid.bytes);}catch{bits=new Uint8Array(grid.bytes);}
  f.globalCompositeOperation='destination-out';f.filter=`blur(${Math.max(2,cell*5)*density}px)`;f.fillStyle='#000';
@@ -110,19 +115,21 @@ function radarLayer(owner:HTMLCanvasElement,map:StarseaMap,scale:number,density:
 }
 
 export function paintMinimap(canvas:HTMLCanvasElement,world:World,options:{mode?:'radar'|'full';size?:number;radius?:number;npcs?:MapMarker[];field?:FieldMapView}={}){
- const full=options.mode==='full',region=world.region,size=options.size??(canvas.clientWidth||(full?320:192)),pad=full?18:8,height=full?minimapHeight(region.width,region.height,size,pad):size;
+ const full=options.mode==='full',region=world.region,size=options.size??(canvas.clientWidth||(full?320:192)),pad=full?18:8;
+ // Same source as the scene (main.ts bridge.worldMap): produced islands carry their sealed map in fieldMaps.
+ const fieldMap=fieldMaps[region.id] as StarseaMap|undefined,state=!fieldMap&&region.presentationKey?.startsWith('ss-map-')?requestMinimapMap(region.presentationKey):undefined,map=fieldMap??state?.map;
+ // Produced islands are a round coast inside the square map: sea, surf, fog and markers follow the coast, not the square; the region map frames the coast itself.
+ const coast=map?.boundary.points?.length?islandOutline(map):undefined,fit=full&&coast?coastBounds(coast,16):undefined,height=full?minimapHeight(region.width,region.height,size,pad,fit):size;
  const density=Math.min(3,Math.ceil(Math.max(window.devicePixelRatio||1,stageLayout().render))),pixelWidth=Math.round(size*density),pixelHeight=Math.round(height*density);
  if(canvas.width!==pixelWidth||canvas.height!==pixelHeight){canvas.width=pixelWidth;canvas.height=pixelHeight;}
- const projection=full?minimapProjection(region.width,region.height,size,pad,height):radarProjection(world.hero.position,size,options.radius,RING),{scale}=projection;
- // Same source as the scene (main.ts bridge.worldMap): produced islands carry their sealed map in fieldMaps.
- const fieldMap=fieldMaps[region.id] as StarseaMap|undefined,state=!fieldMap&&region.presentationKey?.startsWith('ss-map-')?requestMinimapMap(region.presentationKey):undefined,map=fieldMap??state?.map,terrain=minimapTerrain(region,map);
+ const projection=full?minimapProjection(region.width,region.height,size,pad,height,fit):radarProjection(world.hero.position,size,options.radius,RING),{scale}=projection;
+ const terrain=minimapTerrain(region,map);
  const supplied=options.npcs??[],npcs=fieldMap?supplied:state?.map?minimapNpcs(state.npcs,options.npcs):state?[]:supplied;
  canvas.dataset.mapMode=full?'full':'radar';canvas.dataset.mapSource=terrain.source;canvas.dataset.regionId=region.id;
  canvas.dataset.centerX=String(world.hero.position.x);canvas.dataset.centerY=String(world.hero.position.y);
  const ctx=canvas.getContext('2d')!;ctx.setTransform(density,0,0,density,0,0);ctx.clearRect(0,0,size,height);
  const point=(x:number,y:number)=>minimapPoint({x,y},projection);
- // Produced islands are a round coast inside the square map: sea, surf, fog and markers follow the coast, not the square.
- const coast=map?.boundary.points?.length?islandOutline(map):undefined,centre=coast&&{x:coast.reduce((n,p)=>n+p.x,0)/coast.length,y:coast.reduce((n,p)=>n+p.y,0)/coast.length};
+ const centre=coast&&{x:coast.reduce((n,p)=>n+p.x,0)/coast.length,y:coast.reduce((n,p)=>n+p.y,0)/coast.length};
  const shape=(grow:number)=>coast&&centre?coast.map(p=>{const d=Math.hypot(p.x-centre.x,p.y-centre.y)||1;return {x:p.x+(p.x-centre.x)/d*grow,y:p.y+(p.y-centre.y)/d*grow};}):[{x:-grow,y:-grow},{x:region.width+grow,y:-grow},{x:region.width+grow,y:region.height+grow},{x:-grow,y:region.height+grow}];
  const outline=(c:Ctx,grow=0)=>{c.beginPath();shape(grow).forEach((p,i)=>{const q=minimapPoint(p,projection);i?c.lineTo(q.x,q.y):c.moveTo(q.x,q.y);});c.closePath();};
  const polygon=()=>outline(ctx);
@@ -158,7 +165,8 @@ export function paintMinimap(canvas:HTMLCanvasElement,world:World,options:{mode?
   ctx.restore();polygon();ctx.strokeStyle=cliffColor?mixHex(hexRgb(cliffColor),[0,0,0],.15):ink('Color.Minimap.Cliff');ctx.lineWidth=2.2;ctx.lineJoin='round';ctx.stroke();
  }
  // Field maps: unexplored 8×8 cells stay under fog on the full map (expansion plan §3.6).
- if(full&&options.field&&terrain.source!=='loading'){ctx.globalAlpha=.94;ctx.drawImage(fogLayer(canvas,region,projection,options.field,density,size,height,outline),0,0,size,height);ctx.globalAlpha=1;}
+ // 雾层不再全遮：未探索区透出近半实景，大岛初期不会是一整块发白的羊皮纸（BUG-56 复测：0.8 仍像白椭圆，降到 0.55）。
+ if(full&&options.field&&terrain.source!=='loading'){ctx.globalAlpha=.55;ctx.drawImage(fogLayer(canvas,region,projection,options.field,density,size,height,outline),0,0,size,height);ctx.globalAlpha=1;}
  // Keep markers upright and at constant CSS sizes, while clipping to the real map.
  ctx.save();outline(ctx,4);ctx.clip();
  const circle=(x:number,y:number,r:number)=>{ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);};
@@ -173,7 +181,7 @@ export function paintMinimap(canvas:HTMLCanvasElement,world:World,options:{mode?
   else if(landmark.kind==='safe'){ctx.fillStyle=ink('Color.Minimap.Safe');ctx.strokeStyle=ink('Color.Minimap.FrameShade');ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(p.x-3.5,p.y-3,7,6,1.5);ctx.fill();ctx.stroke();}
  }
  for(const waypoint of options.field?.waypoints??[]){const p=point(waypoint.x,waypoint.y);diamondMark(ctx,p.x,p.y,full?5:4.5,ink(waypoint.unlocked?'Color.Minimap.Portal':'Color.Minimap.Background'),ink(waypoint.unlocked?'Color.Minimap.Background':'Color.Minimap.Portal'));}
- for(const enemy of world.enemies){if(!enemy.alive)continue;const p=point(enemy.position.x,enemy.position.y);
+ for(const enemy of world.enemies){if(!enemy.alive||full&&options.field&&!exploredAt(options.field.explored,region.width,region.height,enemy.position))continue;const p=point(enemy.position.x,enemy.position.y);
   ctx.globalAlpha=enemy.boss||enemy.elite||full?1:Math.max(.45,1-Math.hypot(p.x-size/2,p.y-size/2)/size);
   if(enemy.boss)diamondMark(ctx,p.x,p.y,5,ink('Color.Minimap.Boss'),bg);
   else if(enemy.elite){ctx.beginPath();ctx.moveTo(p.x,p.y-4.5);ctx.lineTo(p.x+4,p.y+3);ctx.lineTo(p.x-4,p.y+3);ctx.closePath();ctx.fillStyle=ink('Color.Minimap.Enemy');ctx.fill();ctx.strokeStyle=ink('Color.Minimap.EliteEdge');ctx.lineWidth=1.3;ctx.stroke();}

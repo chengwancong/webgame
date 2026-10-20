@@ -2,6 +2,9 @@ import {stageKeyRandomIds} from './stage-key-recipe-random.ts';
 import {gearWeaponAffinity} from '../../../packages/rules/weapon-skills.ts';
 import type {AffixRandom} from '../../../packages/rules/affix-generator.ts';
 import {skillTags} from '../../../packages/content/skill-tags.ts';
+import {craftPolicy} from '../../../packages/content/crafting.ts';
+import {generateGuaranteedAffix} from '../../../packages/rules/guaranteed-affix.ts';
+import {starseaBalance} from '../../../packages/content/starsea/balance.ts';
 import {crystalSources,grantCoreSources} from '../../../packages/rules/crystal-progress.ts';
 import selectionSource from './stage-key-selection.json';
 import {weaponTypeSchema} from '../../../packages/contracts/weapons.ts';
@@ -11,7 +14,7 @@ import {randomInt,randomUUID} from 'node:crypto';
 import {z} from 'zod';
 import type {CharacterState,Gear,Slot} from '../../../packages/contracts/index.ts';
 import {gearBases,instantiateGearTemplate} from '../../../packages/rules/index.ts';
-import {applyItemPower,gearMaxRank} from '../../../packages/rules/item-power.ts';
+import {applyItemPower,gearMaxRank,scaleItemAffixes} from '../../../packages/rules/item-power.ts';
 import {freezeItemRules,issueCombatGear} from '../../../packages/rules/item-issuance.ts';
 import {ensureProgression} from '../../../packages/rules/deep-progression.ts';
 import {collectionEquipment} from '../../../packages/content/equipment-runtime.ts';
@@ -21,7 +24,7 @@ import {progressionConfig,aspectDefinitions,progressionGearTemplates,glyphDefini
 const selection=z.object({bodyFamily:z.record(weaponTypeSchema,z.enum(equipmentFamilies)),setSlots:z.array(gearSlotSchema).length(4)}).strict().refine(v=>new Set(v.setSlots).size===4,'套装输出部位不能重复').parse(selectionSource);
 const rank=z.number().int().positive();
 export const stageKeyOutputSchema=z.discriminatedUnion('kind',[
- z.object({kind:z.literal('gear'),slot:z.enum(['weapon','armor','helmet','boots','accessory','ring']),quality:z.enum(['magic','rare','legendary']),count:rank.max(4).default(1),series:z.enum(['standard','omega','primal']).default('standard')}).strict(),
+ z.object({kind:z.literal('gear'),slot:z.enum(['weapon','armor','helmet','boots','accessory','ring']),quality:z.enum(['magic','rare','legendary']),count:rank.max(4).default(1),series:z.enum(['standard','omega','primal']).default('standard'),itemLevel:rank.max(200).optional(),guaranteedOutput:z.literal('repair-tendency').optional(),starterAttack:z.literal(true).optional()}).strict().refine(o=>!(o.guaranteedOutput||o.starterAttack)||o.slot==='weapon'&&o.count===1,'Output guarantee requires one main-hand weapon'),
  z.object({kind:z.literal('skill'),rank:rank.max(5),scope:z.enum(['aoe','single'])}).strict(),
  z.object({kind:z.literal('enhance'),rank:rank.max(12)}).strict(),
  z.object({kind:z.literal('codex'),rank:rank.max(5)}).strict(),
@@ -32,7 +35,7 @@ export const stageKeyOutputSchema=z.discriminatedUnion('kind',[
  z.object({kind:z.literal('glyph'),levels:rank.max(5)}).strict(),
 ]);
 export type StageKeyOutput=z.infer<typeof stageKeyOutputSchema>;
-export function freezeStageKeyRewardRules(){return structuredClone({gearArtPolicy:'highest-admitted' as const,gearMetadata:Object.fromEntries(gearBases.flatMap(g=>{const item=collectionEquipment(g.base);return item?[[g.base,{family:item.family,tier:item.tier,series:item.series}]]:[]})),coreSourceIds:crystalSources('core').map(row=>row.id),selection,templates:gearBases,gearSeries:Object.fromEntries(progressionGearTemplates.map(t=>[t.base,t.series])),items:freezeItemRules(),skills:skillCatalog,glyphs:glyphDefinitions,summons:progressionConfig.summons,aspects:aspectDefinitions.filter(a=>a.dropEnabled).map(a=>({id:a.id,weapons:a.weapons,slots:a.slots,requiredLevel:a.requiredLevel}))});}
+export function freezeStageKeyRewardRules(){return structuredClone({starterAttackAffix:starseaBalance.starterWeapon.attackAffix,repairTendencyStats:craftPolicy.tendencyStats,gearArtPolicy:'highest-admitted' as const,gearMetadata:Object.fromEntries(gearBases.flatMap(g=>{const item=collectionEquipment(g.base);return item?[[g.base,{family:item.family,tier:item.tier,series:item.series}]]:[]})),coreSourceIds:crystalSources('core').map(row=>row.id),selection,templates:gearBases,gearSeries:Object.fromEntries(progressionGearTemplates.map(t=>[t.base,t.series])),items:freezeItemRules(),skills:skillCatalog,glyphs:glyphDefinitions,summons:progressionConfig.summons,aspects:aspectDefinitions.filter(a=>a.dropEnabled).map(a=>({id:a.id,weapons:a.weapons,slots:a.slots,requiredLevel:a.requiredLevel}))});}
 export type FrozenStageKeyRewards=ReturnType<typeof freezeStageKeyRewardRules>;
 /** Applies only declared acquisition actions. Effective attributes and skills
  * continue to be resolved by the existing rule owners. Current combat stays frozen. */
@@ -42,8 +45,23 @@ export function grantStageKeyOutputs(s:CharacterState,outputs:readonly StageKeyO
   if(o.kind==='gear')for(let i=0;i<o.count;i++){
    const slot:Slot=o.count>1?(frozen.selection.setSlots as Slot[])[i]:o.slot;
    const meta=(base:string)=>frozen.gearMetadata?.[base]??collectionEquipment(base),candidates=frozen.templates.filter(t=>t.slot===slot&&((slot==='weapon'?gearWeaponType(t)===family:meta(t.base)?.family===bodyFamily)||family===null&&slot!=='weapon')&&(meta(t.base)?.series??frozen.gearSeries[t.base]??'standard')===o.series&&(frozen.gearArtPolicy||(meta(t.base)?.tier??1)===1));
-   const admitted=candidates.filter(t=>(t.requiredLevel??1)<=Math.min(s.level,level)).sort((a,b)=>(meta(b.base)?.tier??1)-(meta(a.base)?.tier??1)),template=admitted[0]??candidates[0];if(!template)throw Error('阶段钥匙缺少兼容装备模板 '+slot+'/'+family+'/'+o.series);
-   const item=instantiateGearTemplate(template,createId(template.base,template.slot),o.quality,[]);applyItemPower(item,level);issueCombatGear(item,level,Math.max(...frozen.items.affixes.pool.map(a=>a.tier)),s.level,false,frozen.items,rng);s.gear.push(item);gear.push(item);
+   const itemLevel=o.itemLevel??level;
+   const admitted=candidates.filter(t=>(t.requiredLevel??1)<=Math.min(s.level,itemLevel)).sort((a,b)=>(meta(b.base)?.tier??1)-(meta(a.base)?.tier??1)),template=admitted[0]??candidates[0];if(!template)throw Error('阶段钥匙缺少兼容装备模板 '+slot+'/'+family+'/'+o.series);
+   const item=instantiateGearTemplate(template,createId(template.base,template.slot),o.quality,[]);applyItemPower(item,itemLevel);issueCombatGear(item,itemLevel,Math.max(...frozen.items.affixes.pool.map(a=>a.tier)),s.level,false,frozen.items,rng);
+   if(o.guaranteedOutput){
+    const tendency=['staff','wand'].includes(family??'')?'spell':'martial',stat=frozen.repairTendencyStats?.[tendency];
+    if(!stat)throw Error('Missing frozen repair-tendency policy');
+    const affix=generateGuaranteedAffix(item,stat,rng,frozen.items.affixes);
+    if(!affix)throw Error('No eligible guaranteed output affix');
+    item.affixes=[affix,...item.affixes.filter(a=>a.stat!==affix.stat)].slice(0,Math.max(1,item.affixes.length));
+   }
+   if(o.starterAttack){
+    const value=frozen.starterAttackAffix,name=frozen.items.affixes.names.attack;
+    if(!Number.isSafeInteger(value)||value<0)throw Error('Missing frozen starter attack policy');
+    const affix=scaleItemAffixes([{id:item.id+'-starter-attack',stat:'attack',name,value,tier:1,description:name+' +'+value}],itemLevel)[0];
+    item.affixes=[affix,...item.affixes.filter(a=>a.stat!=='attack')];
+   }
+   s.gear.push(item);gear.push(item);
   }
   else if(o.kind==='skill'){
    const available=frozen.skills.filter(sk=>skillWeaponAllowed(s,sk.id)&&!['shield','heal','support'].includes(sk.kind)).sort((a,b)=>a.unlockLevel-b.unlockLevel),matches=(sk:typeof available[number])=>o.scope==='aoe'?skillTags(sk).includes('area'):skillTags(sk).includes('single'),preferred=available.find(sk=>s.skills.includes(sk.id)&&matches(sk)),sk=preferred??available.find(sk=>s.skills.includes(sk.id))??available.find(matches)??available[0];if(!sk)throw Error('阶段技能书没有兼容主技能');s.skillRanks[sk.id]=Math.max(s.skillRanks[sk.id]??0,o.rank);if(!s.skills.some(id=>available.some(a=>a.id===id))&&s.skills.length<4)s.skills.push(sk.id);rememberWeaponSkills(s);

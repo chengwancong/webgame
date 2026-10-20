@@ -37,6 +37,7 @@ for(const p of pets.filter(p=>keys.includes(p.key))){const records=[];
  if(p.family==='C6')body+=`<ellipse cx="${w*.92}" cy="${h*.6}" rx="${w*.065}" ry="${h*.07}" fill="${c[4]}" stroke="${c[5]}" stroke-width="1.2"/><circle cx="${w*.91}" cy="${h*.6}" r="1" fill="${c[5]}"/><circle cx="${w*.94}" cy="${h*.6}" r="1" fill="${c[5]}"/>`;
  }}
  if(p.family==='A7'&&/^pi[12]$/.test(n))body=`<path d="${path}" fill="${c[0]}"/>`;
+ if(p.family==='A7'&&r==='eye')body=`<ellipse cx="${w*.5}" cy="${h*.5}" rx="${w*.47}" ry="${h*.47}" fill="${c[0]}"/><ellipse cx="${w*.5}" cy="${h*.5}" rx="${w*.32}" ry="${h*.42}" fill="${c[5]}"/><circle cx="${w*.4}" cy="${h*.31}" r="${Math.min(w,h)*.105}" fill="${c[6]}"/><circle cx="${w*.59}" cy="${h*.68}" r="${Math.min(w,h)*.07}" fill="${c[6]}"/>`;
  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w*4}" height="${h*4}" viewBox="0 0 ${w} ${h}">${body}</svg>`,file=join(dir,'parts',part.region.replaceAll('/','__'));
  await writeFile(file+'.svg',svg);await sharp(Buffer.from(svg)).resize(w*2,h*2).png().toFile(file+'.png');
  const native=JSON.parse(await readFile(join(library,name,name+'.json'),'utf8'));let mesh;for(const skin of Object.values(native.skins))for(const en of Object.values(skin))for(const [an,a]of Object.entries(en))if(a.type==='mesh'&&(a.path??an)===part.region)mesh=a;

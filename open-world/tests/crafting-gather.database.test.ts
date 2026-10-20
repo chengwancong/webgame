@@ -5,7 +5,7 @@ import {randomUUID} from 'node:crypto';
 import {migrate} from '../apps/api/src/database.ts';
 import {createApp} from '../apps/api/src/app.ts';
 import {worldTables} from '../packages/content/world-tables.ts';
-import {regionById} from '../packages/content/index.ts';
+import {regionById,settings} from '../packages/content/index.ts';
 import {walkable} from '../packages/simulation/navigation.ts';
 import {receiptSchema} from '../packages/contracts/index.ts';
 import {gatheredInRegion} from '../packages/rules/world-interactions.ts';
@@ -27,6 +27,12 @@ async function player(){
 it('150个点来自六岛可通行位置，每分区4至8个',()=>{expect(nodes).toHaveLength(150);for(const n of nodes)expect(walkable(regionById(n.region),n,.55),n.id).toBe(true);for(const zone of worldTables.zones.filter(z=>nodes.some(n=>n.region===z.region))){const count=nodes.filter(n=>n.zone===zone.id).length;expect(count).toBeGreaterThanOrEqual(4);expect(count).toBeLessThanOrEqual(8);}});
 it('采集成功进回执、熟练经验与本轮快照，同一命令幂等',async()=>{const p=await player(),body=await p.command(),one=await p.request('field/gather',body);expect(one.status,JSON.stringify(one.body)).toBe(200);const receipt=receiptSchema.parse(one.body);expect(receipt.delta.materials?.[node.material!]).toBeGreaterThanOrEqual(2);expect(receipt.delta.professions?.gathering.xp).toBe(15);expect(receipt.snapshot.field?.gathered).toContain(node.id);expect((await p.request('field/gather',body)).body).toEqual(one.body);expect((await pool.query('SELECT count(*)::int n FROM ow_ledger WHERE character=$1',[p.id])).rows[0].n).toBe(1);});
 it('距离大于2格拒绝且存档不变',async()=>{const p=await player(),before=await p.saved(),r=await p.request('field/gather',await p.command({position:{x:node.x+2.01,y:node.y}}));expect(r.body.code).toBe('GATHER_FAR');expect(await p.saved()).toEqual(before);});
+it('装备满包仍可手动采集堆叠材料，不分解装备也不增加金币',async()=>{
+ const p=await player(),s=await p.saved();while(s.gear.length<settings.capacity)s.gear.push({...s.gear[0],id:randomUUID()});
+ await pool.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[s,p.id]);
+ const result=await p.request('field/gather',await p.command());expect(result.status,JSON.stringify(result.body)).toBe(200);
+ expect(result.body.delta.materials[node.material!]).toBeGreaterThan(0);const after=await p.saved();expect(after.gear).toEqual(s.gear);expect(after.gold).toBe(s.gold);
+});
 it('BUG-31 a successful gather snapshot names the region and hides the exhausted node across refresh',async()=>{
  const p=await player(),r=await p.request('field/gather',await p.command());expect(r.status).toBe(200);expect(r.body.snapshot.field.region).toBe(node.region);
  expect(gatheredInRegion(r.body.snapshot,node.region).has(node.id)).toBe(true);

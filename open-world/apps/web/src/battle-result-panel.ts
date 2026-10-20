@@ -11,11 +11,13 @@ import {materialDestinations} from './bag-model.ts';
 import {materialDefs,materialIcon} from './crafting-model.ts';
 import {victory,defeat,pending} from './battle-result-emblems.ts';
 import type {ResultPhase} from './battle-result-controller.ts';
+import {battleDefeatHtml} from './battle-defeat-panel.ts';
 
 const stageMaterials=new Map(stageKeyLabels.map(row=>[row.id,row]));
 const weights:Record<GearQuality,number>={legendary:0,rare:1,magic:2,common:3};
-export function battleResultHtml(context:{region:string;outcome:'success'|'failure';keyStage?:number},data:BattleResult|undefined,phase:ResultPhase,safe:string,error:string,enter:boolean,revision=0,review?:CombatReview,keyProgress?:StageKeyProgress|null){
+export function battleResultHtml(context:{region:string;outcome:'success'|'failure';keyStage?:number},data:BattleResult|undefined,phase:ResultPhase,safe:string,error:string,enter:boolean,revision=0,review?:CombatReview,keyProgress?:StageKeyProgress|null,simpleDefeat=true){
  const won=Boolean(data?.success),visual=won?'success':context.outcome==='failure'?'failure':'pending',title=won?'挑战成功':visual==='failure'?'挑战失败':'战斗结束';
+ if(visual==='failure'&&simpleDefeat)return battleDefeatHtml(regionById(context.region).name,phase,error);
  const gear=[...(data?.gear??[])].sort((a,b)=>weights[a.quality]-weights[b.quality]);
  const stacks=[...Object.entries(data?.materials??{}).map(([id,n])=>({id:'material:'+id,name:materialDefs.get(id)?.name??materialDestinations[id]?.name??stageMaterials.get(id)?.name??id,count:n,icon:materialDefs.has(id)?materialIcon(id,hasArt):stageMaterials.get(id)?.icon??'item-material-'+id,kind:'材料'})),...Object.entries(data?.books??{}).map(([id,n])=>({id:'book:'+id,name:(skillCatalog.find(s=>s.id===id)?.name??id)+'技能书',count:n,icon:'item-skill-book',kind:'技能书'}))].filter(i=>i.count>0);
  const tiles=gear.map(g=>itemSlot({action:'result-item',id:g.id,label:g.name,src:art('gear-'+g.base),className:'loot-tile quality-'+g.quality,attributes:{'data-quality':g.quality},equipmentTip:data?.delivery==='inventory'?{id:g.id,revision}:undefined,tip:data?.delivery==='inventory'?undefined:JSON.stringify({title:g.name,rows:[['攻击',g.attack],['护甲',g.armor],...g.affixes.map(a=>[a.name,affixDisplayValue(a.stat,a.value)])],note:'本次获得的装备'})})).concat(stacks.map(i=>itemSlot({action:'result-item',id:i.id,label:i.name+' ×'+i.count,src:art(i.icon),className:'loot-tile',extra:`<span class="quantity">${i.count.toLocaleString('zh-CN')}</span>`,tip:JSON.stringify({title:i.name,rows:[[i.kind,i.count]],note:'本次获得'})})));

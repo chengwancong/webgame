@@ -23,11 +23,6 @@ export class BattleResultController{
    if(starseaBossMaps.includes(this.context.region))try{this.data.phase_progress=(await api<{phase_progress?:BattleResult['phase_progress']}>('combat/results/'+this.context.permit+'/progress')).phase_progress;if(!this.data.phase_progress)this.error='首领进度暂未读到，可到航图查看。';}
    catch{this.error='收获已收好，首领进度请到航图查看。';}
    if(!starseaBossMaps.includes(this.context.region))try{this.keyProgress=(await api<{progress:StageKeyProgress|null}>('stage-keys')).progress;}catch{this.keyProgress=undefined;}
-   if(this.context.outcome==='failure'&&this.context.review){
-    const review=this.context.review;
-    try{this.context.review={...combatReviewSchema.parse(await api<CombatReview>('combat/review',{permit:this.context.permit,fatal:review.fatal,recent:review.recent})),...(review.totalTaken===undefined?{}:{totalTaken:review.totalTaken})};localStorage.setItem('aw-battle-result',JSON.stringify(this.context));}
-    catch{this.context.review={...review,advice:[]};this.error='建议暂未读到，回港整备后再来。';}
-   }
    if(this.context.outcome==='success'&&!this.data.success)throw Error('通关记录正在保存，请恢复连接后查看。');
    this.phase='ready';
   }catch(error){this.phase='offline';this.error=error instanceof Error?error.message:'连接中断，请重新连接。';}

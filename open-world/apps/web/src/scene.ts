@@ -1,3 +1,4 @@
+import {newFollow,stepFollow} from './camera-follow.ts';
 import {interactionReach} from '../../../packages/rules/world-interactions.ts';
 import {CombatSoundEvents,type SoundDispatch} from './audio/combat-sound-events.ts';
 import {dressingResources} from './world-dressing.ts';
@@ -56,14 +57,16 @@ import {project,unproject} from './iso.ts';
 export type {StarseaSceneView,StarseaSceneObject,StarseaSceneActor} from './starsea-runtime-assets.ts';
 const catalog={actors:actorCatalog};
 export type EffectPresenter={consume(w:World):void;draw(w:World,fraction:number):void;reset():void;destroy():void;diagnostics():any;cameraOffset?:()=>{x:number;y:number}};
+/** 首领在这个距离内（世界单位）时镜头轻轻推近。 */
+const BOSS_PUSH_RANGE=14;
 export interface ViewBridge{skillSound?:(cue:SoundDispatch,pan:number,visible:boolean)=>void;worldPhase?:()=>WorldPhaseView|undefined;worldMap?:StarseaMap;planeMap?:PlaneMap;interactKey?:()=>string;starSea?:()=>StarseaSceneView|undefined;starSeaInteract?:(id:string)=>void;storyObjects?:()=>StoryObject[];storyEncounter?:()=>StoryEncounterView|undefined;storyInteract?:(id:string)=>void;authoritativeWorld?:boolean;authoritativeSequence?:number;appearanceForActor?:(id:string)=>ResolvedAppearance|undefined;go?:(point:Vec)=>void;selectEnemy?:(id:string)=>void;allowDeathPlayback?:boolean;playbackRate?:number;stepFrames?:number;effectFactory?:(scene:Phaser.Scene,attachment:(id:string,name:SocketName)=>{x:number;y:number}|undefined,pose:()=>RenderPose&{skill:string}|undefined)=>EffectPresenter;/** 野外击杀此刻是否由服务端发奖（开场沙盒、地城结算时为 false），决定要不要蹦金币和强化石。 */killSpoils?:()=>boolean;/** 回执带回的材料，场景取走后在最近一次击杀处蹦出。 */takeSpoils?:()=>SpoilItem[];world:World;rewards:Reward[];panel:string;loggedIn:boolean;resolvedAppearance?:ResolvedAppearance;step():void;interact():void;cast(index:number):void;castAt?:(point:Vec)=>boolean;pause():void;open(panel:string):void;pick(id:string):void;sound(kind:string):void;motionReduced:boolean;}
 export {project,unproject} from './iso.ts';
 type ActorView={sprite:Phaser.GameObjects.Sprite;shadow:Phaser.GameObjects.Image;hp:Phaser.GameObjects.Graphics;name?:Phaser.GameObjects.Text;status?:Phaser.GameObjects.Text;rim?:Phaser.GameObjects.Sprite[];tags?:Phaser.GameObjects.Text[];tagKey?:string;action:string;facing:number;art:string;deathAt?:number;actionUntil?:number;actionStarted:number;wardrobe?:WardrobeRenderer;native?:StarseaNativeActor};
 export class WorldScene extends Phaser.Scene {
  private soundEvents=new CombatSoundEvents();private chapterEffects?:ChapterEffects;private skillEffects?:EffectPresenter;private effectFactory?:ViewBridge['effectFactory'];private vignette?:Phaser.GameObjects.Graphics;private feedback=new HitFeedback(()=>this.bridge.motionReduced);
  private heroCast?:{skill:string;action:'attack'|'skill';started:number;windup:number;end:number;target?:Vec};
- private warningUI?:WarningUI;private storyRenderer?:StoryRenderer;
- private fieldEventEffects?:FieldEventEffects;private loadingRegion=false;private regionGeneration=0;private fetchedMaps=new Map<string,StarseaMap|undefined>();
+ private warningUI?:WarningUI;private storyRenderer?:StoryRenderer;private landmarkLabels=new Set<Phaser.GameObjects.Text>();
+ private fieldEventEffects?:FieldEventEffects;private follow=newFollow();private baseZoom=1;private loadingRegion=false;private regionGeneration=0;private fetchedMaps=new Map<string,StarseaMap|undefined>();
  private starSeaWorld?:StarseaWorldRenderer;private planeScene?:PlaneSceneRenderer;private starSeaStory?:StarseaStoryRenderer;private starSeaView?:StarseaSceneView;private questGuide?:QuestGuide;private interactBubble?:InteractBubble;private nativeBudget=new StarseaNativeBudget();
  private enemyCasts=new Map<string,{skill:string;started:number;windup:number;end:number}>();
  private pendingInteraction?:{world:World;point:Vec;range:number;valid:()=>boolean;action:()=>void};
@@ -155,7 +158,7 @@ export class WorldScene extends Phaser.Scene {
  });
  this.transient=this.add.graphics();
  // Backing pixels per stage pixel: the camera always shows the same 1280×720 world area.
- const fitZoom=()=>this.cameras.main.setZoom(this.scale.width/STAGE.width);fitZoom();this.scale.on('resize',fitZoom);this.events.once('shutdown',()=>this.scale.off('resize',fitZoom));
+ const fitZoom=()=>{this.baseZoom=this.scale.width/STAGE.width;this.cameras.main.setZoom(this.baseZoom);};fitZoom();this.scale.on('resize',fitZoom);this.events.once('shutdown',()=>this.scale.off('resize',fitZoom));
  this.events.once('shutdown',()=>{this.spoils?.destroy();this.vignette?.destroy();this.numbers?.destroy();this.questGuide?.destroy();this.interactBubble?.destroy();this.storyRenderer?.destroy();this.starSeaStory?.destroy();this.starSeaWorld?.destroy();this.planeScene?.destroy();this.groundLoot?.destroy();this.skillEffects?.destroy();this.warningUI?.destroy();this.chapterEffects?.destroy();for(const actor of this.actors.values())this.destroyActor(actor);});
  }
  private walkToInteraction(point:Vec,range:number,valid=()=>true,action=()=>this.bridge.interact()){
@@ -196,7 +199,7 @@ export class WorldScene extends Phaser.Scene {
  }else{
  propAt(l.x,l.y,'sign',66);
  }
- prop.setDepth(p.y);const text=this.add.text(p.x,p.y+18,l.name,{resolution:worldTextResolution(),fontFamily:resolvedToken('Font.Family'),fontSize:resolvedToken('Font.Size.Body'),color:resolvedToken('Color.TextPrimary'),backgroundColor:resolvedToken('Color.PanelInset'),padding:{x:8,y:4}}).setOrigin(0,0).setDepth(p.y+1).setData('world-label',true);text.setPosition(Math.round(p.x-text.width/2),Math.round(p.y+18));items.push(prop,text);
+ prop.setDepth(p.y);const text=this.add.text(p.x,p.y+18,l.name,{resolution:worldTextResolution(),fontFamily:resolvedToken('Font.Family'),fontSize:resolvedToken('Font.Size.Body'),color:resolvedToken('Color.TextPrimary'),backgroundColor:resolvedToken('Color.PanelInset'),padding:{x:8,y:4}}).setOrigin(0,0).setDepth(p.y+1);text.setPosition(Math.round(p.x-text.width/2),Math.round(p.y+18));this.landmarkLabels.add(text);text.once('destroy',()=>this.landmarkLabels.delete(text));items.push(prop,text);
  }
  const container=this.add.container(0,0,items);container.setDepth(-9000); // props promoted below to independent depth sorting
  for(const item of items.slice(1)){container.remove(item);}
@@ -212,7 +215,7 @@ export class WorldScene extends Phaser.Scene {
  if(this.bridge.planeMap||this.bridge.worldMap||this.regionId.startsWith('ss-map-'))this.loadRegionLayers();
  }
  private loadRegionLayers(){
-  const generation=++this.regionGeneration,plane=this.bridge.planeMap,region=this.bridge.world.region.id,map=plane?undefined:this.bridge.worldMap??this.fetchedMaps.get(region),resources=new Set<string>(plane?plane.resources:map?[map.groundResource,map.backdropResource,map.boundary.resourceId,...edgeResources(map),...map.roads.map(r=>r.resource),...map.decorations.map(d=>d.resourceId),...dressingResources(map)]:[]);
+  this.follow.ready=false;const generation=++this.regionGeneration,plane=this.bridge.planeMap,region=this.bridge.world.region.id,map=plane?undefined:this.bridge.worldMap??this.fetchedMaps.get(region),resources=new Set<string>(plane?plane.resources:map?[map.groundResource,map.backdropResource,map.boundary.resourceId,...edgeResources(map),...map.roads.map(r=>r.resource),...map.decorations.map(d=>d.resourceId),...dressingResources(map)]:[]);
   // 首领房等地图不在静态 fieldMaps 里：先取回地图再按完整清单加载，期间保持加载锁，不让本地战斗在相机底色上开打（Grok：首领房暗绿空洞）。
   if(!plane&&!map&&!this.fetchedMaps.has(region)&&this.regionId.startsWith('ss-map-')&&starseaAsset(region)?.runtime.kind==='map'){this.loadingRegion=true;
    const wait=this.add.text(this.scale.width/2,this.scale.height/2,'正在载入场景 · 0%',{fontFamily:resolvedToken('Font.Family'),fontSize:resolvedToken('Font.Size.Body'),color:resolvedToken('Color.TextPrimary'),backgroundColor:resolvedToken('Color.PanelInset'),padding:{x:12,y:8}}).setOrigin(.5).setScrollFactor(0).setDepth(30000);
@@ -257,7 +260,7 @@ export class WorldScene extends Phaser.Scene {
  if(singleStep)world.paused=true;
  this.heroDeathPlayback.advance(world.hero.hp<=0,delta,world.paused&&!this.bridge.allowDeathPlayback,this.bridge.playbackRate??1,singleStep,this.actors.get('hero')?.wardrobe?.actionDuration('death')??1.5);
  this.logicTimes.push(performance.now()-logicStart);if(this.logicTimes.length>600)this.logicTimes.shift();const renderStart=performance.now();
- const p=project(this.interpolate('hero',world.hero.position));const shake=this.skillEffects?.cameraOffset?.()??{x:0,y:0};this.cameras.main.centerOn(p.x+shake.x,p.y-15+shake.y);
+ const p=project(this.interpolate('hero',world.hero.position));const shake=this.skillEffects?.cameraOffset?.()??{x:0,y:0};const bossNear=world.enemies.some(e=>e.boss&&e.alive&&Math.hypot(e.position.x-world.hero.position.x,e.position.y-world.hero.position.y)<BOSS_PUSH_RANGE),cam=stepFollow(this.follow,p.x,p.y-15,delta,{reduced:Boolean(this.bridge.motionReduced),bossNear});this.cameras.main.setZoom(this.baseZoom*(1+cam.push));this.cameras.main.centerOn(cam.x+shake.x,cam.y+shake.y);
  // Letterbox backdrop: one capture per map once its chunks have streamed in, never per frame.
  if(this.backdropFrames>0&&--this.backdropFrames===0)this.game.events.once(Phaser.Core.Events.POST_RENDER,()=>setStageBackdrop(this.game.canvas));
  const cx=Math.floor(world.hero.position.x/32),cy=Math.floor(world.hero.position.y/32);
@@ -276,7 +279,7 @@ export class WorldScene extends Phaser.Scene {
   if(world.tick-view.deathAt>=Math.ceil((view.native?.duration('death')??profile.actions.death/profile.fps)*30)+6){this.destroyActor(view);this.actors.delete(e.id);continue;}}
  this.syncActor(e.id,e.position,e.alive?e.action:'death',e.facing,e.hp,e.maxHp,false,e.elite,e.boss,e.art,e.actionUntil,e.currentPhase??1,e.shield??0,e.monster?.affixes??[]);
  }
- for(const child of (this.children?.list??[])){if(child instanceof Phaser.GameObjects.Image&&child.getData('occluder')){const b=child.getBounds();const hidden=b.contains(p.x,p.y-35)&&child.depth>p.y;child.setAlpha(hidden?.42:1);}}
+ for(const child of (this.children?.list??[])){if(child instanceof Phaser.GameObjects.Image&&child.data?.get('occluder')){const b=child.getBounds();const hidden=b.contains(p.x,p.y-35)&&child.depth>p.y;child.setAlpha(hidden?.42:1);}}
  this.fieldEventEffects??=new FieldEventEffects(this);this.fieldEventEffects.draw(this.starSeaView?.effects??[],world.tick);
  if(this.starSeaStory)this.starSeaStory.draw(this.starSeaView?.objects??starseaPortObjects(this.starSeaWorld?.mapData),world.tick,world.hero.position);else if(this.bridge.storyObjects){this.storyRenderer??=new StoryRenderer(this);this.storyRenderer.draw(this.bridge.storyObjects(),this.bridge.storyEncounter?.(),world.tick);}
  if(this.starSeaView?.guide||this.questGuide){this.questGuide??=new QuestGuide(this);const guide=this.starSeaView?.guide,near=this.starSeaView?.prompt;this.questGuide.draw(world,guide,Boolean(guide&&near&&Math.hypot(guide.x-near.x,guide.y-near.y)<1.5));}
@@ -286,7 +289,7 @@ export class WorldScene extends Phaser.Scene {
  if(this.warningUI){
    this.warningUI.render(world);
  }
- this.syncLoot();worldLabels(this).flush();this.renderTimes.push(performance.now()-renderStart);if(this.renderTimes.length>600)this.renderTimes.shift();this.frames.push(delta);if(this.frames.length>600)this.frames.shift();this.debugFrame++;
+ this.syncLoot();this.submitLandmarkLabels();worldLabels(this).flush();this.renderTimes.push(performance.now()-renderStart);if(this.renderTimes.length>600)this.renderTimes.shift();this.frames.push(delta);if(this.frames.length>600)this.frames.shift();this.debugFrame++;
  if(import.meta.env.DEV&&this.debugFrame%60===0)this.game.canvas.dataset.artDiagnostics=JSON.stringify({region:world.region.id,hero:{position:world.hero.position,frame:this.actors.get('hero')?.wardrobe?.frameName},environment:environment.version,story:this.storyRenderer?.diagnostics(),spoils:this.spoils?.diagnostics(),metrics:this.metrics()});
  }
  private interpolate(id:string,pos:Vec){if(this.bridge.authoritativeWorld)return this.networkMotion.position(id,pos,this.renderNow);const previous=this.previous.get(id);if(!previous)return pos;const a=this.accumulator/(1000/30);return {x:previous.x+(pos.x-previous.x)*a,y:previous.y+(pos.y-previous.y)*a};}
@@ -391,6 +394,8 @@ export class WorldScene extends Phaser.Scene {
  this.numbers?.update(w.tick+(w.paused?0:this.accumulator/(1000/30)));
  if(w.mode==='auto'){const p=project(w.anchor);g.lineStyle(2,0x598879,.35);g.strokeEllipse(p.x,p.y,w.radius*85,w.radius*48);}
  }
+ /** 地标名常驻原位、优先级最低：与其他世界标签或 HUD 保留区冲突时隐藏，不让位（docs/hud-arbitration-plan.md §2.3）。 */
+ private submitLandmarkLabels(){const view=this.cameras.main.worldView;for(const text of this.landmarkLabels){const bounds=text.getBounds();if(!Phaser.Geom.Rectangle.Overlaps(view,bounds))continue;worldLabels(this).submit({id:'landmark:'+Math.round(bounds.x)+':'+Math.round(bounds.y),bounds,priority:40,steps:0,apply:visible=>text.setVisible(visible)});}}
  private syncLoot(){const hero=project(this.bridge.world.hero.position);this.groundLoot?.update(this.bridge.rewards,this.regionId,hero);const got=this.bridge.takeSpoils?.();if(got?.length)this.spoils?.materials(got);this.spoils?.update(hero);}
 
  /** Stage pixels (1280×720 space). */

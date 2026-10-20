@@ -1,0 +1,43 @@
+import {it,expect} from 'vitest';
+import {applyEncounterOverrides} from '../packages/rules/encounter-overrides.ts';
+import {resolveMonsterSpawn} from '../packages/rules/monster-stats.ts';
+import {stepRowSchema} from '../packages/contracts/task-tables.ts';
+import {monsterCombatSchema} from '../packages/contracts/monsters.ts';
+import {newStarseaState,applyStarseaOp} from '../packages/rules/starsea.ts';
+import {makeStarseaStarterWeapon} from '../packages/rules/starsea-starter.ts';
+import {makeGear} from '../packages/rules/index.ts';
+import {choosePrologueWeapon,finishPrologue} from '../packages/rules/starsea-prologue.ts';
+import {prologueConfig} from '../packages/content/starsea/prologue.ts';
+import {monsterContent} from '../packages/content/monsters.ts';
+import type {CharacterState} from '../packages/contracts/index.ts';
+const spawn=()=>resolveMonsterSpawn({id:'fixture',template:'ss-mon-wind-hound',level:1,rank:'normal',x:27,y:24});
+const step={_row:4,task:'qa',seq:1,op:'battle',key:'wave',label:'fight'};
+it('validates only explicitly authored battle overrides, distinguishing zero from blank',()=>{
+ expect(stepRowSchema.parse(step).encounter_attack).toBeUndefined();
+ expect(stepRowSchema.parse({...step,encounter_attack:0}).encounter_attack).toBe(0);
+ for(const values of [{encounter_hp:0},{encounter_attack:-1},{encounter_hp:1.5},{op:'talk',encounter_hp:680}])expect(()=>stepRowSchema.parse({...step,...values})).toThrow();
+});
+it('preserves template/metadata identity and freezes coherent encounter stats without mutating its source',()=>{
+ const original=spawn(),before=structuredClone(original);
+ expect(applyEncounterOverrides(original,{})).toBe(original);
+ const modified=applyEncounterOverrides(original,{encounter_hp:680,encounter_attack:12});
+ expect(modified.hp).toBe(680);expect(modified.attack).toBe(12);expect(original).toEqual(before);
+ expect(modified.monster!.template).toBe(original.monster!.template);
+ expect(modified.monster!.baseStats.hp*modified.monster!.difficulty.hp).toBe(680);
+ expect(monsterCombatSchema.parse(modified.monster).baseStats.attack).toBe(12);
+ expect(applyEncounterOverrides(original,{encounter_attack:0}).attack).toBe(0);
+});
+it('consumes the workbook values for new landing waves and preserves old saved wave values/kills on resume',()=>{
+ const gear=[makeStarseaStarterWeapon(crypto.randomUUID()),makeGear(2,crypto.randomUUID())],skills=prologueConfig.families.sword.starterSkills;
+ const s={id:crypto.randomUUID(),name:'test',revision:0,build:1,level:1,xp:0,gold:0,material:0,field:{gathered:[]},gear,equipment:{weapon:gear[0].id,armor:gear[1].id},skills:[...skills],skillRanks:Object.fromEntries(skills.map(id=>[id,1])),skillBooks:{},progress:{kills:0,regions:[],bosses:[],safe:'ss-map-wind',tasks:[]},starsea:newStarseaState()} as CharacterState;
+ choosePrologueWeapon(s,'sword');finishPrologue(s);
+ const templates=JSON.stringify(monsterContent);
+ const first=applyStarseaOp(s,'start',{task:'ss-c01-t01',region:'ss-map-wind',now:1});
+ expect(first.spawns.map(m=>[m.hp,m.attack])).toEqual([[680,12],[680,12]]);
+ const old=structuredClone(s);old.starsea!.wave!.spawns=first.spawns.map(m=>({...spawn(),id:m.id,x:m.x,y:m.y}));
+ old.starsea!.wave!.killed=[first.spawns[0].id];
+ const frozen=structuredClone(old.starsea!.wave);
+ const resumed=applyStarseaOp(old,'start',{task:'ss-c01-t01',region:'ss-map-wind',now:2});
+ expect(resumed.spawns).toEqual([frozen!.spawns[1]]);expect(old.starsea!.wave).toEqual(frozen);
+ expect(JSON.stringify(monsterContent)).toBe(templates);
+});

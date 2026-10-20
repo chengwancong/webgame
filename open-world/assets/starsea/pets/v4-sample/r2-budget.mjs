@@ -1,0 +1,2 @@
+import {spawnSync} from 'node:child_process';import {join} from 'node:path';import {group} from './pipeline.mjs';
+for(const args of [['r2-parts-proof.mjs'],['r2-budget-setup.mjs'],['r2-estimate.mjs'],['r2-cost-probe.mjs'],['r2-cost-lod.mjs','1.6']]){const r=spawnSync(process.execPath,[join(group,args[0]),...args.slice(1)],{stdio:'inherit'});if(r.status!==0)throw Error(args[0]+' failed '+r.status);}

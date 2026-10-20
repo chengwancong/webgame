@@ -1,0 +1,27 @@
+import assert from 'node:assert/strict';
+import {readFile,writeFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {grow01Steps,measureGrow01} from './grow01-derive.ts';
+import {skillCatalog} from '../../packages/content/index.ts';
+import {skillCoefficients} from '../../packages/content/spine-controls.ts';
+import {versions} from '../../packages/contracts/index.ts';
+import accepted from './data/grow01-accepted-deviation.json';
+const arg=(key:string)=>{const n=process.argv.indexOf(key);assert(n>=0&&process.argv[n+1],'Missing '+key);return process.argv[n+1];};
+const bytes=await readFile(arg('--baseline'));
+assert.equal(createHash('sha256').update(bytes).digest('hex'),accepted.derivationSha256,'Wrong historical derivation');
+const baseline=JSON.parse(bytes.toString('utf8'));
+assert.equal(baseline.versions.rules,accepted.measurementRules);
+assert.equal(skillCatalog.find(s=>s.id==='throwing_knife')?.cost,accepted.knifeCost);
+assert.equal(skillCoefficients.explosive_kunai,accepted.kunaiCoefficient);
+const rows=grow01Steps.map(s=>{
+ const before=measureGrow01(s.level,s.before,`grow01-final-r${s.recovery}-before`),after=measureGrow01(s.level,s.after,`grow01-final-r${s.recovery}-after`);
+ const gain=after.value/before.value-1,withinTarget=gain>=accepted.targetGain;
+ const acceptedResidual=s.recovery===accepted.acceptedRecovery&&gain+1e-12>=accepted.acceptedGain;
+ return {recovery:s.recovery,before,after,gain,withinTarget,acceptedResidual,passed:withinTarget||acceptedResidual};
+});
+const level50=measureGrow01(50,['fan_of_knives','death_lotus','night_veil','explosive_kunai'],'grow01-final-l50');
+const level50Ratio=level50.value/baseline.baseline50.value;
+const result={at:new Date().toISOString(),versions,scope:'One final verification from actual source, controlled standard builds, dense 30s seeds 41/42/43; not GUI/natural progression.',baselineSha256:accepted.derivationSha256,rows,level50,level50Ratio,absoluteTargetsPassed:rows.every(r=>r.withinTarget),passed:rows.every(r=>r.passed)&&level50Ratio<=accepted.level50RatioCeiling};
+await writeFile(arg('--output'),JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify({gains:rows.map(r=>({recovery:r.recovery,gain:r.gain,withinTarget:r.withinTarget,acceptedResidual:r.acceptedResidual})),level50Ratio,passed:result.passed,absoluteTargetsPassed:result.absoluteTargetsPassed}));
+assert(result.passed,'GROW-01 regressed beyond accepted scope');

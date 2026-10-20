@@ -25,7 +25,9 @@ export async function validateApiSource(root){
 
 // Vite reloads the frontend; the API must reload the same shared contracts/content.
 // Exclude frontend assets and tools so producing artwork does not interrupt play.
-const dependencies=['apps/api/src','packages/contracts','packages/content','packages/rules','packages/simulation'];
+// Exported workbook data is imported by content/task-tables and world/crafting loaders.
+// Watch the runtime JSON, not spreadsheets while they are being edited.
+const dependencies=['apps/api/src','packages/contracts','packages/content','packages/rules','packages/simulation','config/json'];
 export async function apiSourceSignature(root){
  const files=[];
  async function scan(folder){

@@ -68,3 +68,36 @@ body:has(#pausebox .paused) #warning-ui{visibility:hidden}
 .skill-slot.is-sealed{opacity:.72;cursor:default}.skill-slot.is-sealed img{filter:grayscale(1) brightness(.7)}.skill-slot.is-sealed .state{position:absolute;inset:auto 0 2px;text-align:center;font-size:var(--font-size-micro);color:var(--color-text-muted,#cfc6b0)}
 .skill-slot.is-blocked img,.skill-slot.is-dead img{filter:grayscale(1) brightness(.85)}.skill-slot.is-dead{opacity:.7}
 .skill-slot{transition:border-color .25s,background-color .25s}.skill-slot img{transition:filter .25s,opacity .25s}
+/* HUD game feel (2026-10-20): gold-ringed avatar with a level pill, glossy vitals, gold-rimmed wallet. Layout, menu and minimap stay as decided. */
+#vitals .who img{border-width:calc(var(--border-focus-width) * 1.5);border-color:var(--color-primary-border);box-shadow:0 0 0 var(--border-width) var(--color-primary-top),var(--shadow-panel)}
+#vitals .who small{padding:0 var(--space-2);border:var(--border-width) solid var(--color-primary-border);border-radius:var(--radius-round);background:linear-gradient(180deg,var(--color-primary-top),var(--color-primary));box-shadow:0 var(--border-edge) 0 var(--color-primary-border);color:var(--color-primary-text);font-weight:var(--font-weight-bold);line-height:var(--space-5)}
+.meter::after{content:'';position:absolute;inset:0 0 50%;background:linear-gradient(180deg,color-mix(in srgb,var(--panel-head-title-highlight) 42%,transparent),transparent);pointer-events:none}
+.meter .numv{z-index:1}
+.hud-wallet{border-color:var(--color-primary-border);background:linear-gradient(180deg,var(--color-panel-raised),var(--color-panel-secondary));box-shadow:0 var(--border-edge) 0 var(--color-primary-border),var(--shadow-control)}
+/* UX-A07 技能栏反馈：就绪扫光、不可用轻抖 */
+.skill-slot[data-ready-flash]::after{content:"";position:absolute;inset:0;z-index:4;border-radius:inherit;pointer-events:none;background:linear-gradient(105deg,transparent 30%,color-mix(in srgb,var(--color-highlight) 75%,#fff) 50%,transparent 70%);background-size:250% 100%;animation:slot-ready-sweep .6s ease-out both;box-shadow:inset 0 0 0 2px var(--color-highlight)}
+@keyframes slot-ready-sweep{from{background-position:130% 0;opacity:1}to{background-position:-30% 0;opacity:0}}
+.skill-slot[data-deny-shake]{animation:slot-deny-shake .28s ease-in-out;border-color:var(--color-danger,#d8503f)}
+@keyframes slot-deny-shake{0%,100%{translate:0}25%{translate:-3px}60%{translate:3px}}
+.skill-slot:active:not(:disabled){transform:scale(.92)}
+@media(prefers-reduced-motion:reduce){.skill-slot[data-ready-flash]::after{animation:none;opacity:.6}.skill-slot[data-deny-shake]{animation:none}}
+[data-motion-reduced=true] .skill-slot[data-ready-flash]::after{animation:none;opacity:.6}[data-motion-reduced=true] .skill-slot[data-deny-shake]{animation:none}
+/* UX-A06 血条残影 / 受击闪 / 低血脉冲 */
+.meter .ghost{position:absolute;inset:0;transform-origin:left;background:color-mix(in srgb,var(--color-combat-damage,#e8c27a) 70%,transparent);transition:transform .5s ease-out .35s;pointer-events:none}
+.meter.mp .ghost{display:none}
+.meter.hp i{position:absolute}
+.meter[data-hit]{animation:meter-hit .26s ease-out}
+@keyframes meter-hit{0%{filter:brightness(1.8)}100%{filter:none}}
+.meter.hp[data-low]{animation:meter-low 1.2s ease-in-out infinite}
+@keyframes meter-low{0%,100%{box-shadow:var(--shadow-control)}50%{box-shadow:0 0 0 2px color-mix(in srgb,var(--color-vital-health) 70%,transparent),0 0 10px var(--color-vital-health)}}
+@media(prefers-reduced-motion:reduce){.meter[data-hit],.meter.hp[data-low]{animation:none}.meter .ghost{transition:none}}
+[data-motion-reduced=true] .meter[data-hit],[data-motion-reduced=true] .meter.hp[data-low]{animation:none}[data-motion-reduced=true] .meter .ghost{transition:none}
+/* UX-A06 金币滚动高亮 / 升级光环 */
+#hud-gold[data-tick]{color:var(--color-highlight);transition:color .2s}
+#vitals .who[data-levelup]{position:relative}
+#vitals .who[data-levelup]::after{content:"";position:absolute;left:0;top:0;width:var(--hud-avatar-size);height:var(--hud-avatar-size);border-radius:var(--radius-round);pointer-events:none;box-shadow:0 0 0 2px var(--color-highlight),0 0 18px var(--color-highlight);animation:level-ring 1s ease-out both}
+#vitals .who[data-levelup] .hero-level{display:inline-block;animation:level-num-pop .6s var(--motion-ease-back,cubic-bezier(.34,1.56,.64,1)) both}
+@keyframes level-ring{from{transform:scale(.9);opacity:.95}to{transform:scale(1.5);opacity:0}}
+@keyframes level-num-pop{0%{transform:scale(1)}40%{transform:scale(1.7);color:var(--color-highlight)}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){#vitals .who[data-levelup]::after,#vitals .who[data-levelup] .hero-level{animation:none}}
+[data-motion-reduced=true] #vitals .who[data-levelup]::after,[data-motion-reduced=true] #vitals .who[data-levelup] .hero-level{animation:none}

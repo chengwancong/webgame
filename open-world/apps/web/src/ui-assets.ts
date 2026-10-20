@@ -1,4 +1,5 @@
 import manifest from '../../../packages/asset-manifest/ui.v2.json';
+import {hexRuneDataUri} from './hex-rune-icon.ts';
 
 type Asset = {kind: string; path: string; size: number[]; sha256: string; icon?:{path:string;size:number[];sha256:string}};
 type Manifest = {version: string; chrome: string; colors: Record<string, string>; assets: Record<string, Asset>};
@@ -9,6 +10,8 @@ const data = manifest as Manifest;
 /** Single resolver for the game and the showcase. Paths come only from ui.v2.json. */
 export function art(id: string): string {
   const item = data.assets[id];
+  // HEX runes are drawn in code (hex-rune-icon.ts), not shipped as manifest art.
+  if (!item?.path && id.startsWith('gear-hex-')) return hexRuneDataUri(id.slice(5));
   if (!item?.path) throw new Error(`缺少界面资源：${id}`);
   return item.path;
 }

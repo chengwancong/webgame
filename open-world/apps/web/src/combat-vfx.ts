@@ -14,7 +14,8 @@ import expandedManifest from '../../../packages/asset-manifest/vfx-v2.json';
 import libraryManifest from '../../../packages/asset-manifest/combat-layer-fx.json';
 import metricsManifest from '../../../packages/asset-manifest/combat-fx-metrics.json';
 import hitManifest from '../../../packages/asset-manifest/combat-hit-fx.json';
-import {hitLayer,critLayer,areaLayer,freezeLayer,iceStatusLayer,buffLayer} from './vfx-hit-style.ts';
+import cookedManifest from '../../../packages/asset-manifest/combat-cooked-fx.json';
+import {hitLayer,critLayer,areaLayer,freezeLayer,iceStatusLayer,buffLayer,statusMarkerKind,statusMarkerLayers,type StatusMarkerKind} from './vfx-hit-style.ts';
 import {vfxPresence,visibleFxScale,stageOpacity} from './vfx-presence.ts';
 import {projectFx,projectileLayout,sourceFrame,type FxClip,type FxPoint} from './skill-fx-layout.ts';
 import {vfxProfile,vfxPalettes,vfxBudgets,type SkillVfxProfile} from './vfx-profiles.ts';
@@ -30,8 +31,8 @@ import {drawIceCrystal,drawIceMissile} from './ice-vfx.ts';
 import telegraphReuse from '../../../packages/asset-manifest/telegraph-reuse.json';
 import {ensureTelegraphSurface,telegraphSurfaceKey,telegraphFloorKey,telegraphFrontKey,telegraphColors} from './telegraph-polish.ts';
 const source=sourceManifest as unknown as {texture:{key:string;image:string;atlas:string};clips:Record<string,FxClip>};
-type Extra={key:string;image:string;atlas:string;count?:number;frames?:string[];peak?:string;duration?:number;fps:number;origin:number[];cell:number;visibleHeight:number;visibleSize?:number[];rotationOffset?:number;blend?:string;kind:string};
-export const extraClips={...expandedManifest.clips,...libraryManifest.clips,...hitManifest.clips} as unknown as Record<string,Extra>;
+type Extra={key:string;image:string;atlas:string;count?:number;frames?:string[];peak?:string;duration?:number;fps:number;origin:number[];cell:number;visibleHeight:number;visibleSize?:number[];rotationOffset?:number;blend?:string;kind:string;loop?:boolean};
+export const extraClips={...expandedManifest.clips,...libraryManifest.clips,...hitManifest.clips,...cookedManifest.clips} as unknown as Record<string,Extra>;
 const renderMetrics=metricsManifest as Record<string,{visibleSize:number[];duration:number;sustainFrames?:string[]}>;
 Object.assign(extraClips,physicalManifest.clips);
 type Flash={id:number;event:CombatEvent;profile:SkillVfxProfile;stage:'windup'|'release'|'impact'|'surface';life:number;lite?:boolean;point?:FxPoint;ground?:FxPoint;segments?:{from:FxPoint;to:FxPoint;depth:number}[]};
@@ -39,7 +40,7 @@ type Flight={from:FxPoint;to:FxPoint;launch:FxPoint;emitter:SocketName;frame?:st
 const clamp=(n:number)=>Math.max(0,Math.min(1,n));
 const group=castVfxGroup;
 /** Noise caps (presentation only): full impact bursts per cast per tick, and hit-spark sets per tick. */
-const FULL_IMPACTS_PER_CAST=3,HIT_SPARK_SETS=6,HIT_SPARK_TICKS=7;
+const FULL_IMPACTS_PER_CAST=3,HIT_SPARK_SETS=6,HIT_SPARK_TICKS=7,STATUS_MARKER_CAP=10;
 export function preloadSkillEffects(scene:Phaser.Scene){scene.load.atlas(source.texture.key,source.texture.image,source.texture.atlas);scene.load.image(telegraphReuse.key,telegraphReuse.image);for(const clip of Object.values(extraClips))scene.load.atlas(clip.key,clip.image,clip.atlas);}
 
 /** Presentation-only: consumes simulation clocks, identifiers and collision results. */
@@ -109,12 +110,19 @@ export class SkillEffects{
   this.drawStatusMarkers(w);this.drawBosses(w);this.drawShield(w);this.drawHitSparks();this.particles+=this.physical().drawGround(this.now,Math.max(0,vfxBudgets.particles-this.particles));this.pool.end();
  }
  private drawStatusMarkers(w:World){
-  this.statusMarkerCount=0;const seen=new Set<string>();
-  for(const status of w.statuses){if(status.ends<=w.tick||!['freeze','vulnerable'].includes(status.effect.kind))continue;const key=status.targetId+':'+status.effect.kind;if(seen.has(key))continue;seen.add(key);
-   const enemy=w.enemies.find(e=>e.id===status.targetId),player=w.players.get(status.targetId)?.hero??(status.targetId===w.playerId?w.hero:undefined),actor=enemy?.alive?enemy:player;if(!actor||actor.hp<=0)continue;
-   const ground=projectFx(actor.position);if(!this.pool.visible(ground.x,ground.y))continue;const foot=this.point(status.targetId,'feet',ground),chest=this.point(status.targetId,'chest',{x:foot.x,y:foot.y-32}),g=this.pool.graphics('status:'+key,foot.y+12);if(!g)continue;this.statusMarkerCount++;
-   if(status.effect.kind==='freeze'){this.sprite('status-layer:'+key,freezeLayer.clip,0,{x:foot.x,y:foot.y-freezeLayer.size*.32},foot,freezeLayer.size,.92,{progress:freezeLayer.hold,normal:true,depth:foot.y+12});continue;}
-   {const c=vfxPalettes.blood,alpha=.75+.15*Math.sin(w.tick*.15);for(const y of [chest.y-16,chest.y-8]){const pts=[{x:chest.x-9,y},{x:chest.x,y:y+6},{x:chest.x+9,y}];line(g,pts,5,c.dark,alpha);line(g,pts,2,c.light,alpha);}}
+  this.statusMarkerCount=0;const seen=new Set<string>(),markers=new Map<string,{freeze:boolean;kinds:Set<StatusMarkerKind>}>();
+  for(const status of w.statuses){if(status.ends<=w.tick)continue;const kind=status.effect.kind,freeze=kind==='freeze',marker=statusMarkerKind(kind);if(!freeze&&!marker)continue;
+   const entry=markers.get(status.targetId)??{freeze:false,kinds:new Set<StatusMarkerKind>()};if(freeze)entry.freeze=true;else entry.kinds.add(marker!);markers.set(status.targetId,entry);}
+  for(const [targetId,entry] of markers){
+   if(this.statusMarkerCount>=STATUS_MARKER_CAP)break;
+   const enemy=w.enemies.find(e=>e.id===targetId),player=w.players.get(targetId)?.hero??(targetId===w.playerId?w.hero:undefined),actor=enemy?.alive?enemy:player;if(!actor||actor.hp<=0)continue;
+   const ground=projectFx(actor.position);if(!this.pool.visible(ground.x,ground.y))continue;const foot=this.point(targetId,'feet',ground),chest=this.point(targetId,'chest',{x:foot.x,y:foot.y-32});this.statusMarkerCount++;
+   if(entry.freeze)this.sprite('status-layer:'+targetId+':freeze',freezeLayer.clip,0,{x:foot.x,y:foot.y-freezeLayer.size*.32},foot,freezeLayer.size,.92,{progress:freezeLayer.hold,normal:true,depth:foot.y+12});
+   // Cooked FX status layers, looping on the battle clock; at most two categories per actor, in statusMarkerLayers order.
+   const shown=(Object.keys(statusMarkerLayers) as StatusMarkerKind[]).filter(k=>entry.kinds.has(k)).slice(0,2);
+   shown.forEach((kind,i)=>{const layer=statusMarkerLayers[kind],key='status:'+targetId+':'+kind;if(seen.has(key))return;seen.add(key);
+    const x=chest.x+(shown.length>1?(i?14:-14):0),y=kind==='control'?chest.y-layer.lift:chest.y-layer.lift*.5;
+    this.sprite(key,layer.clip,this.now/30,{x,y},foot,layer.size,kind==='control'?.95:.85,{loop:true,normal:true,depth:foot.y+(kind==='control'?14:11),decor:true});});
   }
  }
  private drawFlash(w:World,f:Flash){

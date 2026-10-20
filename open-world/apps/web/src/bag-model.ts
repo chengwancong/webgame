@@ -68,4 +68,5 @@ export function bagCounts(items:BagItem[]){
  for(const item of items)if(relevant(item)){counts.all++;counts[item.kind]++;}
  return counts;
 }
-export function bagSelection(snapshot:Snapshot,draft:BagDraft,quality:GearQuality|'',slot:GearSlotFilter,metadata?:ProgressionView){const all=bagItems(snapshot,draft,quality,slot,metadata),pages=Math.max(1,Math.ceil(all.length/24)),page=Math.max(0,Math.min(pages-1,draft.page??0)),items=all.slice(page*24,(page+1)*24);return {items,total:all.length,page,pages,selected:items.find(item=>item.key===draft.selected)??items[0]};}
+/** The shelf scrolls (2026-10-20): every matching item is returned, no paging. */
+export function bagSelection(snapshot:Snapshot,draft:BagDraft,quality:GearQuality|'',slot:GearSlotFilter,metadata?:ProgressionView){const items=bagItems(snapshot,draft,quality,slot,metadata);return {items,total:items.length,selected:items.find(item=>item.key===draft.selected)??items[0]};}

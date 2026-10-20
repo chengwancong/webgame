@@ -30,7 +30,9 @@ import {taskById} from '../content/task-tables.ts';
 import {starseaMap} from '../content/starsea/index.ts';
 import {collectionGearTemplates} from '../content/equipment-runtime.ts';
 import {withCurrentEquipmentNames} from './equipment-names.ts';
-const gearBaseSchema=gearSchema.omit({id:true,rank:true,locked:true}).extend({primary_attribute:z.enum(['attack','armor']),reinforcement_per_rank:z.number().int().positive(),regional_primary_base:z.number().positive().optional()}).strict().refine(g=>g.primary_attribute==='attack'?g.attack>0&&g.armor===0:g.armor>0&&g.attack===0,'Equipment must have exactly one primary attribute');
+import {ordinaryGearSlotSchema,isHexSlot} from '../contracts/gear-slots.ts';
+import {hexDefinition} from './hex-runes.ts';
+const gearBaseSchema=gearSchema.omit({id:true,rank:true,locked:true}).extend({slot:ordinaryGearSlotSchema,primary_attribute:z.enum(['attack','armor']),reinforcement_per_rank:z.number().int().positive(),regional_primary_base:z.number().positive().optional()}).strict().refine(g=>g.primary_attribute==='attack'?g.attack>0&&g.armor===0:g.armor>0&&g.attack===0,'Equipment must have exactly one primary attribute');
 export const gearBases=z.array(gearBaseSchema).parse([...gearDefinitions,...progressionGearTemplates.map(g=>({base:g.base,slot:'weapon',name:g.name,primary_attribute:'attack',attack:g.attack,armor:0,reinforcement_per_rank:2,effect:'none',quality:g.base.startsWith('primal')?'legendary':'rare',affixes:[]})),...collectionGearTemplates]);
 const gearDefinitionByBase=new Map(gearBases.map(definition=>[definition.base,definition]));
 if(gearDefinitionByBase.size!==gearBases.length)throw Error('Duplicate runtime equipment base');
@@ -105,6 +107,7 @@ export function normalizeSkillLoadout(s:CharacterState){
 }
 // Single server-owned implementation for deriving persistent build parameters.
 export function gearContribution(g:Gear):{base:{attack:number;armor:number;[stat:string]:number};enhancement:{attack:number;armor:number;[stat:string]:number};effective:{attack:number;armor:number;[stat:string]:number}}{
+ if(isHexSlot(g.slot)){hexDefinition(g);return {base:{attack:0,armor:0},enhancement:{attack:0,armor:0},effective:{attack:0,armor:0}};}
  const main=mainStatContribution(g);if(main)return {base:{attack:0,armor:0,[main.stat]:main.base},enhancement:{attack:0,armor:0,[main.stat]:main.enhancement},effective:{attack:0,armor:0,[main.stat]:main.effective}};
  const definition=gearDefinitionByBase.get(g.base);if(!definition)throw Error('Unknown equipment definition: '+g.base);
  const base={attack:definition.primary_attribute==='attack'?g.attack:0,armor:definition.primary_attribute==='armor'?g.armor:0};

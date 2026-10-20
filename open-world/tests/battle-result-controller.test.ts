@@ -4,6 +4,13 @@ vi.mock('../apps/web/src/network.ts',()=>({api:request}));
 import {BattleResultController} from '../apps/web/src/battle-result-controller.ts';
 beforeEach(()=>{request.mockReset();const saved=new Map<string,string>();vi.stubGlobal('localStorage',{getItem:(k:string)=>saved.get(k)??null,setItem:(k:string,v:string)=>saved.set(k,v),removeItem:(k:string)=>saved.delete(k)});});
 function controller(){const returnSafe=vi.fn().mockResolvedValue(true),recover=vi.fn().mockResolvedValue(undefined),c=new BattleResultController({character:()=> 'player',settle:async()=>{},blocked:()=>false,recover,returnSafe,refresh:()=>{}});return {c,returnSafe,recover};}
+it('keeps local cumulative and omitted damage when the advice endpoint returns its own fields',async()=>{
+ const review={totalTaken:693,omittedTaken:400,source:'client' as const,fatal:{enemy:'乌洛',skill:'重击',damage:93,damageType:'物理',statuses:[],hint:'离开攻击范围',kind:'melee' as const},recent:['乌洛 · 重击：200 伤害'],advice:[]};
+ request.mockImplementation(async(path:string)=>path==='combat/review'?{fatal:review.fatal,recent:review.recent,advice:[]}:{success:false});
+ const c=new BattleResultController({character:()=> 'player',review:()=>review,settle:async()=>{},blocked:()=>false,recover:async()=>{},returnSafe:async()=>true,refresh:()=>{}});
+ await c.start('permit','meadow','failure');expect(c.context?.review).toMatchObject({totalTaken:693,omittedTaken:400,source:'client'});
+ expect(JSON.parse(localStorage.getItem('aw-battle-result')!).review.omittedTaken).toBe(400);
+});
 it('keeps the failed run and return action after a return error, then clears them only after successful return',async()=>{
  request.mockResolvedValue({success:false});const {c,returnSafe}=controller();await c.start('permit','meadow','failure');returnSafe.mockResolvedValueOnce(false);
  await c.return();expect(c.phase).toBe('return-error');expect(c.context?.outcome).toBe('failure');expect(localStorage.getItem('aw-battle-result')).not.toBeNull();

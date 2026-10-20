@@ -12,9 +12,10 @@ import {applyCraft} from '../../packages/rules/crafting.ts';
 import {applyItemPower} from '../../packages/rules/item-power.ts';
 import {issueCombatGear,freezeItemRules} from '../../packages/rules/item-issuance.ts';
 import {compareVerdict} from '../../packages/rules/stat-comparison.ts';
-import {starterSkills} from '../../packages/content/index.ts';
+import {prologueConfig} from '../../packages/content/starsea/prologue.ts';
 import {craftRepairRecipe} from '../../packages/content/crafting.ts';
 import type {CharacterState,Gear} from '../../packages/contracts/index.ts';
+const starterSkills=prologueConfig.families.sword.starterSkills;
 let n=0;const uuid=()=>'00000000-0000-4000-8000-'+String(++n).padStart(12,'0');
 function seeded(seed:number){let x=seed>>>0;const next=()=>{x=(x*1664525+1013904223)>>>0;return x/2**32;};return {float:next,int:(a:number,b:number)=>a+Math.floor(next()*(b-a))};}
 const place={atForge:true,reason:'',storyUnlocked:true,maxCraftLevel:0};

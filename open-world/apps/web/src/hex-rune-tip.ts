@@ -10,7 +10,7 @@ export type HexRuneTierView={requiredLevel:number;description:string};
 export type HexRuneView={id:string;name:string;description:string;category:string;icon:string;exclusiveGroup?:string;tiers:Partial<Record<GearQuality,HexRuneTierView>>};
 export type HexRuneTipState={quality:GearQuality;equipped?:boolean;locked?:boolean;playerLevel?:number;conflictName?:string};
 
-const categoryLabels:Record<string,string>={attack:'攻击',defense:'防御',utility:'功能',sustain:'续航'};
+const categoryLabels:Record<string,string>={attack:'攻击',defense:'生存',survival:'生存',control:'控制',mobility:'位移',resource:'资源',synergy:'联动',utility:'功能',sustain:'续航'};
 
 // Effect text always comes from the server catalog for the item's own quality; the client never recomputes numbers.
 export function renderHexRuneTip(rune:HexRuneView,state:HexRuneTipState){

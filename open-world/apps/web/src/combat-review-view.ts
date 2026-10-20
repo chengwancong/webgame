@@ -33,8 +33,8 @@ export function combatKeyProgressHtml(key?:KeyProgressView|null,place?:string){
 }
 /** Render executor-resolved events and the server's current material progress only. */
 export function combatReviewHtml(review:CombatReview,key?:KeyProgressView|null,title='你倒在了这里',defeated=true){
- const earlier=review.recent.length?`<details class="review-earlier"><summary>之前还挨了 ${review.recent.length} 下</summary><ul>${review.recent.map(line=>`<li>${esc(line)}</li>`).join('')}</ul></details>`:'';
+ const earlier=review.recent.length?`<details class="review-earlier"><summary>最近受击 ${review.recent.length} 次（致命一击之前）</summary><ul>${review.recent.map(line=>`<li>${esc(line)}</li>`).join('')}</ul></details>`:'',older=review.omittedTaken?statRowHtml({label:'更早伤害',value:Math.round(review.omittedTaken),secondary:'上面只留最近几次，更早的受击只记合计'}):'';
  // 赢了就没有“致命一击”这一行，只留钥匙进度和建议。
  const failed=defeated,hit=failed?combatFatalHitHtml(review.fatal):'';
- return `<section class="dungeon-diagnostic" aria-label="战斗回顾">${sectionTitleHtml(title)}${failed&&review.totalTaken!==undefined?statRowHtml({label:'本场累计承受伤害',value:Math.round(review.totalTaken)}):''}${hit}${failed&&review.gap?`<p class="ui-caption review-gap">${esc(review.gap)}</p>`:''}${failed?earlier+combatAdviceHtml(review.advice):''}${combatKeyProgressHtml(key)}</section>`;
+ return `<section class="dungeon-diagnostic" aria-label="战斗回顾">${sectionTitleHtml(title)}${failed&&review.totalTaken!==undefined?statRowHtml({label:'本场累计承受伤害',value:Math.round(review.totalTaken),secondary:'实际生命损失，含治疗后再次受伤；不含护盾吸收'}):''}${failed&&review.source?`<p class="ui-caption">${review.source==='server'?'地城战斗记录':'本机战斗记录'}${review.totalTaken!==undefined?' · 累计 = 最近受击 + 更早伤害':''}</p>`:''}${hit}${failed&&review.gap?`<p class="ui-caption review-gap">${esc(review.gap)}</p>`:''}${failed?older+earlier+combatAdviceHtml(review.advice):''}${combatKeyProgressHtml(key)}</section>`;
 }

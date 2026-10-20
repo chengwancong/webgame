@@ -1,5 +1,6 @@
 // 扩展技能列表 - 将工程化技能转换为游戏实际格式
 import type { SkillDefinition } from './index.ts';
+import {skillCosts} from './skill-costs.ts';
 import {skillMechanicsSchema,type SkillMechanics} from '../contracts/skill-mechanics.ts';
 
 // 基于现有12个技能，扩展到50+个技能
@@ -78,7 +79,7 @@ const definitions: SkillDefinition[] = [
   {id:'guardian_angel',category:'support',unlockLevel:18,name:'守护天使',kind:'shield',damage:0,range:0,radius:0,cooldown:600,cost:0,windup:1,duration:300,description:'死亡时复活一次'},
 
   // ========== 暗器技能 (8个) ==========
-  {id:'throwing_knife',category:'ranged',unlockLevel:1,name:'飞刀',kind:'projectile',damage:18,range:9,radius:.3,cooldown:18,cost:3,windup:3,duration:0,description:'快速掷出一柄飞刀'},
+  {id:'throwing_knife',category:'ranged',unlockLevel:1,name:'飞刀',kind:'projectile',damage:18,range:9,radius:.3,cooldown:18,cost:skillCosts.throwing_knife,windup:3,duration:0,description:'快速掷出一柄飞刀'},
   {id:'fan_of_knives',category:'ranged',unlockLevel:3,name:'扇刃',kind:'projectile',damage:30,range:8,radius:.3,cooldown:45,cost:10,windup:5,duration:0,description:'扇形掷出五柄飞刀'},
   {id:'venom_needle',category:'ranged',unlockLevel:4,name:'淬毒针',kind:'projectile',damage:26,range:11,radius:.25,cooldown:50,cost:10,windup:4,duration:90,description:'穿透两名敌人并使其中毒'},
   {id:'shadow_step',category:'melee',unlockLevel:5,name:'影袭',kind:'dash',damage:30,range:6,radius:1.8,cooldown:90,cost:12,windup:2,duration:0,description:'闪至目标身旁并割伤周围敌人'},

@@ -9,11 +9,12 @@ export const spineJsonWritableFiles=new Set([
  'packages/content/gear-affixes.json','packages/content/deep-progression.json','packages/content/inscriptions.json',
  'packages/content/monsters.json','packages/content/elite-affixes.json','packages/content/dungeons.json',
  'packages/content/world-tiers.json','packages/content/progression-curve.json',
- 'apps/api/src/stage-key-pools.json','apps/api/src/field-loot.json',
- 'packages/content/skill-coefficients.json','packages/content/progression-node-values.json',
+ 'apps/api/src/stage-key-pools.json','apps/api/src/field-loot.json','apps/api/src/hex-loot.json',
+ 'packages/content/skill-coefficients.json','packages/content/skill-costs.json','packages/content/progression-node-values.json',
  'packages/content/spine-rate-limits.json',
+ 'packages/content/hex-runes.json',
 ]);
-export type SpineChange={file:string;path:(string|number)[];before:unknown;after:unknown;basis:string};
+export type SpineChange={file:string;path:(string|number)[];before:unknown;after:unknown;basis:string;op?:'append'};
 export type SpineSchemas=Record<string,{parse:(value:unknown)=>unknown}>;
 const digest=(bytes:Uint8Array|string)=>createHash('sha256').update(bytes).digest('hex');
 function pathValue(value:any,path:(string|number)[]){
@@ -24,11 +25,19 @@ function pathValue(value:any,path:(string|number)[]){
 function validJson(value:unknown){const check=(v:unknown):void=>{if(['undefined','function','symbol','bigint'].includes(typeof v))throw Error('配置值不可序列化');if(typeof v==='number'&&!Number.isFinite(v))throw Error('配置数值必须有限');if(v&&typeof v==='object'){for(const [k,x]of Object.entries(v)){if(['__proto__','constructor','prototype'].includes(k))throw Error('配置包含危险字段');check(x);}}};check(value);return JSON.stringify(value);}
 export function prepareSpinePlan(sources:Record<string,unknown>,changes:readonly SpineChange[],schemas:SpineSchemas){
  const next=structuredClone(sources),paths=new Set<string>();
+ const appendFiles=new Set(changes.filter(c=>c.op==='append').map(c=>c.file));
  for(const c of changes){
   if(!spineJsonWritableFiles.has(c.file)||!schemas[c.file])throw Error('配置不在白名单或没有真实schema：'+c.file);
   if(!c.path.length||c.path.some(k=>typeof k==='string'?['__proto__','constructor','prototype'].includes(k):!Number.isSafeInteger(k)||k<0))throw Error('配置路径无效');
   if(!c.basis.trim())throw Error('每项变更必须有实测/推导依据');
+  if(c.op!==undefined&&c.op!=='append')throw Error('未知配置操作');
+  if(appendFiles.has(c.file)&&c.op!=='append')throw Error('追加内容不可同时修改已有条目');
   const key=c.file+'/'+JSON.stringify(c.path);if(paths.has(key))throw Error('同一路径重复写入');paths.add(key);
+  if(c.op==='append'){
+   const catalogue=next[c.file];
+   if(c.file!=='packages/content/hex-runes.json'||!Array.isArray(catalogue)||c.path.length!==1||c.path[0]!==catalogue.length||c.before!==null)throw Error('仅允许在海克斯目录末尾追加新身份');
+   validJson(c.after);catalogue.push(structuredClone(c.after));continue;
+  }
   if(validJson(pathValue(next[c.file],c.path))!==validJson(c.before))throw Error('写前值已变化：'+key);
   validJson(c.after);const parent=pathValue(next[c.file],c.path.slice(0,-1));parent[c.path.at(-1)!]=structuredClone(c.after);
  }
@@ -37,6 +46,10 @@ export function prepareSpinePlan(sources:Record<string,unknown>,changes:readonly
   const original=sources[file] as any,changed=next[file] as any;
   for(const [before,after] of [[original,changed],...['templates','definitions','pools'].map(key=>[original?.[key],changed?.[key]])]){
    if(Array.isArray(before)&&before.every(v=>v&&typeof v==='object'&&'id' in v)){
+    if(appendFiles.has(file)){
+     if(!Array.isArray(after)||after.length<=before.length||validJson(after.slice(0,before.length))!==validJson(before))throw Error('追加内容不得改动原条目');
+     continue;
+    }
     if(!Array.isArray(after)||JSON.stringify(before.map(v=>v.id))!==JSON.stringify(after.map(v=>v.id)))throw Error('不得删除、合并或替换内容身份：'+file);
    }
   }

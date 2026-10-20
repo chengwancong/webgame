@@ -5,6 +5,7 @@ import type {VfxPool} from './vfx-pool.ts';
 import manifest from '../../../packages/asset-manifest/combat-physical-fx.json';
 import {physicalSpec,physicalLimits} from './physical-vfx-spec.ts';
 import {GroundImpact} from './vfx-ground.ts';
+import {cookedHitClip} from './vfx-hit-style.ts';
 import {vfxPalettes,type SkillVfxProfile} from './vfx-profiles.ts';
 import {groundSize} from './vfx-geometry.ts';
 import {project} from './iso.ts';
@@ -32,7 +33,7 @@ export class PhysicalVfx{
    if(p.power===3)this.layer(key+':gather-dust','ground-dust',0,feet,feet,55,20,.18,0,0xb7a084,true)?.setDepth(feet.y-1);
    return true;
   }
-  if(stage==='impact'){if(lite)return true;const chest=this.attachment(e.id,'chest')??ground,alpha=Math.max(0,1-age/9);if(spec.onHit&&spec.main)this.layer(key+':contact',spec.main,age,chest,ground,spec.form==='thrust'?48:74,spec.form==='thrust'?36:54,alpha,0,spec.tint??palette.light);for(const [i,id]of spec.hit.entries()){if(spec.onHit&&spec.form==='thrust'&&i===0)continue;const size=spec.weapon==='hidden'||spec.form==='flight'?58:p.power===3?112:84;this.layer(key+':hit:'+i,id,age,id==='ground-dust'?ground:chest,ground,id==='ground-dust'?48:size,id==='ground-dust'?24:size,alpha*(i?.55:1),0,id==='ground-dust'?0xb7a084:undefined);}return true;}
+  if(stage==='impact'){if(lite)return true;const chest=this.attachment(e.id,'chest')??ground,alpha=Math.max(0,1-age/9);if(spec.onHit&&spec.main)this.layer(key+':contact',spec.main,age,chest,ground,spec.form==='thrust'?48:74,spec.form==='thrust'?36:54,alpha,0,spec.tint??palette.light);for(const [i,id]of spec.hit.entries()){if(spec.onHit&&spec.form==='thrust'&&i===0)continue;const size=spec.weapon==='hidden'||spec.form==='flight'?58:p.power===3?112:84;this.layer(key+':hit:'+i,cookedHitClip(id),age,id==='ground-dust'?ground:chest,ground,id==='ground-dust'?48:size,id==='ground-dust'?24:size,alpha*(i?.55:1),0,id==='ground-dust'?0xb7a084:undefined);}return true;}
   if(this.skills.release(e,p,stage,age,key,weapon,feet,target))return true;
   if(!['release','surface'].includes(stage))return true;const alpha=age<5?1:Math.max(0,1-(age-5)/4),area=groundSize(e.radius??0),width=e.radius?area.width*.95:p.size*1.2;
   if(spec.form==='slam'){if(age<physicalLimits.whiteFlashTicks)this.layer(key+':flash','impact-heavy',0,feet,feet,20,20,.65,0,0xffffff,true);return true;}

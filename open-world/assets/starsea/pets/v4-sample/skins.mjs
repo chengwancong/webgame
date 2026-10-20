@@ -1,5 +1,5 @@
 import {readFile,writeFile,mkdir} from 'node:fs/promises';import {join} from 'node:path';import {group,out,json,sharp,record} from './pipeline.mjs';import {pets,forms,colors,materialNames} from './definitions.mjs';
-const flows=[{id:'ember',name:'余烬',color:'#df8959',shadow:'#a85035',metal:['#dbaf65','#916339','#fff1ac'],gem:['#f19255','#fff0c9']},{id:'glacier',name:'霜卫',color:'#7dbdce',shadow:'#4c8497',metal:['#c7cbd1','#7c8e9e','#f4f4dc'],gem:['#68c7e4','#e9fdff']}],accessories=[],skins=[];
+const flows=[{id:'ember',name:'余烬',color:'#df8959',shadow:'#a85035',metal:['#c99440','#79532d','#ffec9c'],gem:['#f19255','#fff0c9']},{id:'glacier',name:'霜卫',color:'#7dbdce',shadow:'#4c8497',metal:['#c7cbd1','#7c8e9e','#f4f4dc'],gem:['#68c7e4','#e9fdff']}],accessories=[],skins=[];
 await mkdir(join(group,'sources/accessories'),{recursive:true});await mkdir(join(out,'accessories'),{recursive:true});
 for(const flow of flows){const old=await readFile(join(group,'../v3/sources/accessories/badge-'+flow.id+'.svg'),'utf8'),glyph=old.match(/<g fill=.*<\/g>/)[0];
  for(const type of ['collar','guard','crest','inlay','scarf']){
@@ -14,7 +14,7 @@ for(const flow of flows){const old=await readFile(join(group,'../v3/sources/acce
   pal.splice(11,3,...flow.metal);pal.splice(14,2,...flow.gem);
   const type=pet.tier==='free'?'collar':pet.tier==='light'?'guard':pet.style==='A'?'crest':'inlay',height=pet.heights[0],adjust=44/height;
   const attachments=[{asset:type+'-'+flow.id,socket:'badge',offset:[0,0],displaySize:({collar:8,guard:11,crest:11,inlay:8}[type])*adjust,anchor:[.5,.5],layer:32}];
-  if(pet.tier!=='free')attachments.push({asset:'scarf-'+flow.id,socket:'job',offset:[0,0],displaySize:(pet.tier==='light'?11:pet.style==='A'?18:15)*adjust,anchor:[.5,.3],layer:18});
+  if(pet.tier!=='free')attachments.push({asset:'scarf-'+flow.id,socket:'job',offset:[0,0],displaySize:(pet.tier==='light'?11:pet.style==='A'?18:18)*adjust,anchor:[.5,.3],layer:pet.style==='B'?-1:18});
   skins.push({id:'pa5-'+pet.key+'-'+flow.id,family:pet.family,style:pet.style??pet.tier,tier:pet.tier,tierName:pet.name,flow:flow.id,flowName:flow.name,profession:'sword',professionName:'剑',island:'dragon',islandName:'龙眠',palette:pal,materialNames,forms:Object.fromEntries(forms.map(f=>[f.key,{base:'ss-pet-'+pet.key+'-'+f.key}])),attachments,effects:pet.tier==='heavy'?[{id:'arc-'+flow.id,socket:'ground',offset:[0,-2],displaySize:58*adjust,aspect:.44,mode:'arc',alpha:.85,layer:-10},{id:flow.id,socket:'body',offset:[-14,7],displaySize:24*adjust,alpha:.85,layer:-5}]:[],emission:pet.tier==='heavy'?{materials:[14,15],blend:'lighter',alpha:.18}:null});
  }
 }

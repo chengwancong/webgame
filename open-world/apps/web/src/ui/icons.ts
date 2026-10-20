@@ -20,7 +20,9 @@ const utilityPaths={
  lightning:'<path d="M18 2 5 19h10l-1 11 13-18H17z"/>',poison:'<path d="M11 3h10m-8 0v9L5 24c-3 6 25 6 22 0l-8-12V3M8 20h16"/>',
  arcane:'<path d="m16 2 4 10 10 4-10 4-4 10-4-10-10-4 10-4z"/>',shadow:'<path d="M24 4A13 13 0 1 0 28 25 13 13 0 0 1 24 4z"/>',
  area:'<ellipse cx="16" cy="20" rx="13" ry="8"/><path d="M16 2v18m-5-6 5 6 5-6"/>',
- multiply:'<path d="m7 7 18 18M7 25 25 7"/>',search:'<circle cx="13" cy="13" r="9"/><path d="m20 20 9 9"/>'
+ multiply:'<path d="m7 7 18 18M7 25 25 7"/>',search:'<circle cx="13" cy="13" r="9"/><path d="m20 20 9 9"/>',
+ salvage:'<path d="M5 9h22M12 9V5h8v4M8 9l1.5 19h13L24 9M13 14v10M19 14v10"/>',warehouse:'<path d="M3 12 16 4l13 8v16H3zM8 28V16h16v12M8 21h16"/>',
+ house:'<path d="M4 15 16 4l12 11v13H4zM13 28v-9h6v9"/>',hammer:'<path d="m5 27 12-12m-4-10 8-2 8 8-2 8-6-1-9-9z"/>'
 } as const;
 const aliases={'role-tank':'armor','role-healer':'regen','role-damage':'swords',attack:'swords',physical:'swords',melee:'swords',spell:'arcane',projectile:'projectiles',dot:'poison',skillDamage:'fire',skillCost:'mana',skillCooldown:'cdr',executeBonus:'skull',executeThreshold:'hp',
  // 2026-10-07 天赋四树的属性图标（无专属图形时借用同义图标）。
@@ -64,3 +66,8 @@ export function iconHtml(name:IconName,options:{size?:16|20|24|32;tone?:StatusTo
  return `<svg class="ui-icon ui-icon--${options.size??20}${options.tone&&options.tone!=='inherit'?` ui-icon--${options.tone}`:''}${options.className?` ${escapeHtml(options.className)}`:''}" viewBox="0 0 32 32" data-icon="${escapeHtml(name)}" ${options.label?`role="img" aria-label="${escapeHtml(options.label)}"`:'aria-hidden="true"'} focusable="false" fill="none" stroke="${illustration?'var(--color-chrome-ink)':'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${illustration??`<g fill="currentColor" stroke="none" opacity=".18">${body}</g>${body}`}</svg>`;
 }
 export function statIcon(key:string,options:{size?:16|20|24|32;label?:string}={}){const name=(iconNames.includes(key as IconName)?key:key.replace(/Damage$/,'')) as IconName;return iconHtml(iconNames.includes(name)?name:'diamond',{...options,className:'ui-stat-icon ui-stat-icon--'+(iconNames.includes(name)?name:'generic')});}
+/** Round plate behind a stat icon; the tone follows the stat family so rows stay scannable (bag card, equipment chips). */
+const plateTone=(key:string)=>/resist|cold|frost/i.test(key)?(/fire/i.test(key)?'danger':/poison/i.test(key)?'success':/arcane|shadow/i.test(key)?'purple':'info'):/hp|life|regen|heal/i.test(key)?'danger':/armor|block|shield/i.test(key)?'icon-steel':/speed|dodge|mana|cdr|cooldown/i.test(key)?'icon-blue':/pickup|radius/i.test(key)?'icon-purple':/attack|crit|damage|penetration|execute/i.test(key)?'icon-orange':'icon-steel';
+export function statPlateHtml(key:string,size:'chip'|'main'|'affix'='affix'){return `<span class="ui-stat-plate ui-stat-plate--${size}" style="--tone:var(--color-${plateTone(key)})">${statIcon(key,{size:size==='main'?32:24})}</span>`;}
+/** Panel-head seal picture: the shared icon at seal size (2026-10-20). */
+export const sealEmblem=(name:IconName)=>iconHtml(name,{size:32,className:'ui-seal-icon'});

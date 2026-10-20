@@ -12,10 +12,15 @@ import {inscriptionAtomSchema} from '../../packages/contracts/inscriptions.ts';
 import {inscriptionContentSchema} from '../../packages/content/inscriptions.ts';
 import {stageKeyPoolsContentSchema} from '../../apps/api/src/stage-key-pools.ts';
 import {fieldLootContentSchema} from '../../apps/api/src/field-loot.ts';
+import {hexLootContentSchema} from '../../apps/api/src/hex-loot.ts';
+import {hexRuneCatalogSchema} from '../../packages/content/hex-runes.ts';
+import {skillCostsSchema} from '../../packages/content/skill-costs.ts';
 import type {SpineSchemas} from './apply.ts';
 const n=z.number().finite().nonnegative(),i=n.int(),positive=n.positive();
 const sequential=(values:number[])=>values.every((v,k)=>!k||v>=values[k-1]);
 export const spineSchemas:SpineSchemas={
+ 'packages/content/skill-costs.json':skillCostsSchema,
+ 'packages/content/hex-runes.json':hexRuneCatalogSchema,
  'packages/content/aspects.json':z.array(newAspectSchema).length(60),
  'packages/content/augments.json':z.array(augmentDefinitionSchema).length(90),
  'packages/content/set-effects.json':setEffectsSchema,
@@ -28,6 +33,7 @@ export const spineSchemas:SpineSchemas={
  'packages/content/inscriptions.json':inscriptionContentSchema,
  'apps/api/src/stage-key-pools.json':stageKeyPoolsContentSchema,
  'apps/api/src/field-loot.json':fieldLootContentSchema,
+ 'apps/api/src/hex-loot.json':hexLootContentSchema,
  'packages/content/progression-curve.json':z.object({version:i.positive(),source:z.string(),thresholds:z.array(i.positive()).min(49).refine(sequential,'经验需求非单调')}).strict(),
  'packages/content/skill-coefficients.json':z.record(z.string().min(1),positive),
  'packages/content/progression-node-values.json':z.record(z.string().min(1),z.array(n)),

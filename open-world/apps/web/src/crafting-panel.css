@@ -51,4 +51,7 @@
 
 /* Recipe headings share normal document flow; gear badges must not position their metadata. */
 .craft-panel-wrap .bag-detail-heading>div{min-width:0;display:flex;flex-direction:column;gap:var(--space-1)}
-.craft-panel-wrap .bag-detail-heading :is(small,h3,div>span){position:static;display:block;transform:none;white-space:normal;overflow-wrap:anywhere;line-height:var(--font-line-body);margin:0}
+.craft-panel-wrap .bag-detail-heading :is(small,h3,div>span){position:static;display:block;transform:none;white-space:normal;overflow-wrap:break-word;line-height:var(--font-line-body);margin:0}
+/* 设施、地点这类短词整体换行，不拆成单字竖排 */
+.craft-atom{display:inline-block;white-space:nowrap}
+.craft-professions :is([role=tab],button){white-space:nowrap}

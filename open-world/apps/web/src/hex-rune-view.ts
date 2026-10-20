@@ -14,7 +14,8 @@ export function hexSlotRowInputFromSnapshot(snapshot:HexAwareSnapshot,catalog:Re
  const equipment=snapshot.equipment;
  if(!hexSlots.some(slot=>Object.hasOwn(equipment,slot))&&!Object.keys(catalog).length)return undefined;
  const worn=new Set(hexSlots.map(slot=>equipment[slot]).filter((id):id is string=>!!id));
- const candidates=snapshot.gear.filter(gear=>isHexGear(gear,catalog)&&!worn.has(gear.id)).length;
+ // Only count runes the player's current level can actually equip; level-locked ones stay visible in the chooser (disabled).
+ const candidates=snapshot.gear.filter(gear=>isHexGear(gear,catalog)&&!worn.has(gear.id)&&snapshot.level>=(catalog[gear.base]?.tiers[gear.quality??'common']?.requiredLevel??0)).length;
  const slots={} as Record<HexSlot,HexSlotState>;
  for(const slot of hexSlots){
   const id=equipment[slot],gear=id?snapshot.gear.find(item=>item.id===id):undefined;

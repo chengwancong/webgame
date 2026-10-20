@@ -1,4 +1,5 @@
 import {z} from 'zod';
+import {hexChoiceRewardSchema} from './hex-runes.ts';
 // 配置表（config/json，由 config/excel 导出）的行格式。字段含义见各工作簿第 1 行批注。
 const id=z.string().min(1).max(120),text=z.string().min(1),row=z.number().int().positive(),nn=z.number().int().nonnegative(),pos=z.number().int().positive();
 const ids=z.array(id).default([]),coord=z.number().finite();
@@ -12,18 +13,20 @@ export const taskRowSchema=z.object({
  accept_npc:id.optional(),accept_map:id.optional(),accept_landmark:id.optional(),accept_stay:z.boolean().default(false),
  dialog_accept:id.optional(),dialog_progress:id.optional(),dialog_complete:id.optional(),elite:z.boolean().default(false),
  reward_xp:nn.optional(),reward_gold:nn.optional(),reward_material:nn.optional(),journal:z.boolean().default(false),show_when:id.optional(),
+ reward_hex_slot:z.enum(['hex1','hex2']).optional(),reward_hex_choice:hexChoiceRewardSchema.optional(),reward_hex_shards:nn.optional(),
  cond_kind:z.enum(['kills','boss','story']).optional(),cond_value:id.optional(),cond_count:pos.optional(),
  summary:text.optional(),story:text.optional(),region:id.optional(),area:text.optional(),place:text.optional(),tags:z.array(text).default([]),
  note:text.optional(),note_ready:text.optional(),goal_ready:text.optional(),goal_final:text.optional()
 }).strict();
-export const stepOps=['talk','interact','battle','defend','choose','route_battle','boss','rescue','gate','clear_camp','reach_waypoint','discover_zone','open_chest','complete_event','kill_rare','clear_dungeon'] as const;
+export const stepOps=['talk','interact','battle','defend','choose','route_battle','boss','rescue','gate','clear_camp','reach_waypoint','discover_zone','open_chest','complete_event','kill_rare','clear_dungeon','kill_zone','obtain_hex','equip_hex'] as const;
 export const stepRowSchema=z.object({
  _row:row,task:id,seq:pos,op:z.enum(stepOps),key:id,title:text.optional(),label:text,hint:text.optional(),map:id.optional(),landmark:id.optional(),
  point_index:nn.default(0),point_count:pos.default(1),npc:id.optional(),prop:id.optional(),count:nn.default(0),enemies:ids,waves:z.array(wave).optional(),
  seconds:pos.optional(),xp:nn.default(0),speaker:text.optional(),line:text.optional(),defense:id.optional(),then_battle:z.boolean().default(false),
  spawn_at:z.enum(['clue','ally']).optional(),ally_locked:z.boolean().default(false)
- ,world_fact:z.boolean().default(false),zone:id.optional(),camp:id.optional(),gate:id.optional()
-}).strict();
+ ,world_fact:z.boolean().default(false),zone:id.optional(),camp:id.optional(),gate:id.optional(),
+ encounter_hp:pos.optional(),encounter_attack:nn.optional()
+}).strict().refine(v=>(v.encounter_hp===undefined&&v.encounter_attack===undefined)||v.op==='battle','Encounter overrides require a battle step');
 export const routeRowSchema=z.object({_row:row,task:id,slot:id,id,name:text,landmark:id.optional(),enemies:ids,goal:text.optional(),risk:text.optional(),description:text.optional(),waves:z.array(wave).optional()}).strict();
 export const chapterRowSchema=z.object({
  _row:row,id,campaign:z.enum(['starsea','homeward']),order:pos,title:text,map:id,island:text.optional(),boss:id,boss_map:id.optional(),giver:id,ally:id,
@@ -39,8 +42,8 @@ export const npcRowSchema=z.object({
  service_panel:z.enum(['character','forge','starsea-chart','progression','sea-difficulty']).optional()
 }).strict();
 export const lineRowSchema=z.object({_row:row,group:id,seq:pos,speaker:text,name:text.optional(),text,when:id.optional()}).strict();
-export const npcPositionRowSchema=z.object({_row:row,id,npc:id,map:id,landmark:id.optional(),x:coord,y:coord,when:id.optional(),until:id.optional()}).strict();
-export const conditionRowSchema=z.object({_row:row,target:id,group:pos,kind:z.enum(['task','task_active','task_ready','level','island','zone','boss','feature','waypoint','gate','npc_met','threads','hardmode']),value:text,path:z.enum(['guide','fallback'])}).strict();
+export const npcPositionRowSchema=z.object({_row:row,id,npc:id,map:id,landmark:id.optional(),x:coord,y:coord,when:id.optional(),until:id.optional(),priority:nn.optional()}).strict();
+export const conditionRowSchema=z.object({_row:row,target:id,group:pos,kind:z.enum(['task','task_active','task_ready','level','island','zone','boss','feature','waypoint','gate','npc_met','threads','hardmode','hex_playstyle']),value:text,path:z.enum(['guide','fallback'])}).strict();
 export const rumorRowSchema=z.object({_row:row,id,island:id,zone:id,landmark:id,text,source:z.enum(['task','npc','board']),source_id:id}).strict();
 /** 技能找回（任务.xlsx「技能找回」）：招牌技找回、选路送招、任务送招、技能槽、法术归岛。见 docs/progression-goal-plan.md §4、§11.3。 */
 const family=z.enum(['sword','staff','hidden']);

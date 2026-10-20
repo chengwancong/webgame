@@ -22,7 +22,7 @@ export function statPowerDelta(key:string,before:number,after:number){
 export function compareVerdict(current:Stats,equipped:Stats):GearVerdict{
  let offense=0,sustain=0;
  for(const key of new Set([...Object.keys(offenseWeights),...Object.keys(sustainWeights)])){
-  const power=statPowerDelta(key,numericStat(current,key),numericStat(equipped,key));
+  const power=statPowerDelta(key,resolvedStatValue(current,key),resolvedStatValue(equipped,key));
   if(!power)continue;
   offense+=power*(offenseWeights[key]??0);sustain+=power*(sustainWeights[key]??0);
  }

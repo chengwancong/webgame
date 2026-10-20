@@ -1,4 +1,6 @@
 import {vitalsDisplay} from './vitals-display.ts';
+import {publicHexRunes} from '../../../packages/content/hex-runes.ts';
+import {hexCatalogById} from './hex-rune-view.ts';
 import {seaDifficultyHtml,type SeaDifficultyView} from './sea-difficulty-view.ts';
 import {bountyHtml,type BountyView} from './bounty-view.ts';
 import {ShieldBarTracker} from './shield-feedback.ts';
@@ -12,7 +14,8 @@ import {trackerGoals} from './growth-cards.ts';
 import {settings} from '../../../packages/content/index.ts';
 import {settingsPanelHtml,autoSettingsHtml,keyLabel} from './ui/settings-panel.ts';
 import {loginPanelHtml,createCharacterPanelHtml,takeoverPanelHtml} from './ui/auth-panels.ts';
-import {panelHeaderHtml,confirmationHtml,buttonHtml,resourceAmountHtml,statusBadgeHtml,stateBlockHtml} from './ui-components.ts';
+import {panelHeaderHtml,confirmationHtml,buttonHtml,resourceAmountHtml,statusBadgeHtml,stateBlockHtml,sealEmblem} from './ui-components.ts';
+import type {IconName} from './ui/icons.ts';
 import type {Snapshot,GrowthPreview,Gear,Skill,GearTip,GearQuality,StoryView,TaskView} from '../../../packages/contracts/index.ts';
 import type {World} from '../../../packages/simulation/index.ts';
 import {distance} from '../../../packages/simulation/index.ts';
@@ -27,6 +30,10 @@ import type {ProgressionUI} from './progression-controller.ts';
 import type {ChallengeUI} from './progression-challenges.ts';
 import {art,skillArt} from './ui-assets.ts';
 import {hudIcon,hudMenuIcon} from './hud-icons.ts';
+/** 窗口抬头的图标章与右下菜单同一套插画；没有登记的面板保持原抬头。 */
+const panelEmblems:Record<string,Parameters<typeof hudMenuIcon>[0]>={bag:'bag',character:'appearance',skills:'build',progression:'growth',appearance:'appearance',settings:'settings',forge:'combat','region-map':'goal'};
+const sealIcons:Record<string,IconName>={rewards:'chest',bounty:'swords','sea-difficulty':'compass',boss:'skull',auto:'auto',takeover:'link',travel:'compass'};
+const panelEmblem=(panel:string)=>panelEmblems[panel]?hudMenuIcon(panelEmblems[panel]):sealIcons[panel]?sealEmblem(sealIcons[panel]):undefined;
 import {nativeCoinHtml,updateNativeCoin} from './ui/native-coin.ts';
 import {TooltipController} from './tooltip-controller.ts';
 import {renderHexRuneTip} from './hex-rune-tip.ts';
@@ -47,7 +54,7 @@ import {gearSlotLabels as slotName,equipmentPartLabels,type GearSlotFilter} from
 import {gearAffixes,gearSetLabel,gearSetDetails,gearQuality,qualityLabels} from './components/gear-metadata.ts';
 import {renderTravel,travelHeader,initialTravelState,type TravelState,type TravelDropView} from './travel-browser.ts';
 
-export type PresentationModel={autoPreferences?:Pick<World,'radius'|'targetPriority'|'avoidElite'|'autoSkills'>;bounty?:BountyView;fieldMap?:FieldMapView;seaDifficulty?:SeaDifficultyView;seaTierPick?:number;hudModeOpen?:boolean;story?:StoryView;taskData?:TaskView;dungeonId?:string;dungeonBusy?:boolean;allyTarget?:{hp:number;maxHp:number;shield:number;position:{x:number;y:number};range:number};portraitURL?:string;figureURL?:string;appearance?:AppearanceUI;appearanceDirty?:boolean;accountOnly?:boolean;authReady?:boolean;authConnecting?:boolean;authError?:string;authReload?:boolean;world:World;snapshot?:Snapshot;loggedIn:boolean;panel:string;confirm:''|'salvage'|'dungeon-exit';confirmId:string;feed:string[];blocked:boolean;userPaused:boolean;processing:boolean;selected:string;skillFocus:string;skillCategory:SkillSchool|'all';skillTags?:string[];skillQuery?:string;skillFilter?:'all'|'active'|'eligible';skillLocked?:boolean;frozenSkills?:Skill[];skillOperation:''|'activate'|'upgrade'|'equip'|'unequip';skillOperationId:string;skillStatus:''|'success'|'error'|'pending';skillMessage:string;lastError:string;volume:number;reduced:boolean;autoPickup?:boolean;fieldReturnRegion?:string;dungeonRunning?:boolean;dungeonConnected?:boolean;binding?:string;bindingMessage?:string;bagTab:'bag'|'rewards';bag:BagUI;characterPart:Exclude<GearSlotFilter,''>;characterChooserOpen:boolean;hexChooser?:{slot:HexSlot;selected:string};characterDetailsOpen:boolean;slotFilter:GearSlotFilter;qualityFilter:GearQuality|'';trackerOpen:boolean;bindings:Record<string,string>;onSelect(id:string):void;previewGear(id:string):Promise<GrowthPreview>;previewGearTip(id:string):Promise<GearTip>;noticeError(e:unknown):void;onConfirm(action:string,id:string):void;onCancelConfirm():void};
+export type PresentationModel={autoPreferences?:Pick<World,'radius'|'targetPriority'|'avoidElite'|'autoSkills'>;bounty?:BountyView;fieldMap?:FieldMapView;seaDifficulty?:SeaDifficultyView;seaTierPick?:number;hudModeOpen?:boolean;story?:StoryView;taskData?:TaskView;dungeonId?:string;dungeonBusy?:boolean;allyTarget?:{hp:number;maxHp:number;shield:number;position:{x:number;y:number};range:number};portraitURL?:string;figureURL?:string;appearance?:AppearanceUI;appearanceDirty?:boolean;accountOnly?:boolean;authReady?:boolean;authConnecting?:boolean;authError?:string;authReload?:boolean;world:World;snapshot?:Snapshot;loggedIn:boolean;panel:string;confirm:''|'salvage'|'dungeon-exit';confirmId:string;feed:string[];blocked:boolean;userPaused:boolean;processing:boolean;selected:string;skillFocus:string;skillCategory:SkillSchool|'all';skillTags?:string[];skillQuery?:string;skillFilter?:'all'|'active'|'eligible';skillLocked?:boolean;frozenSkills?:Skill[];skillOperation:''|'activate'|'upgrade'|'equip'|'unequip';skillOperationId:string;skillStatus:''|'success'|'error'|'pending';skillMessage:string;lastError:string;volume:number;reduced:boolean;autoPickup?:boolean;fieldReturnRegion?:string;dungeonRunning?:boolean;dungeonConnected?:boolean;binding?:string;bindingMessage?:string;bagTab:'bag'|'rewards';bag:BagUI;characterPart:Exclude<GearSlotFilter,''>;characterChooserOpen:boolean;hexChooser?:{slot:HexSlot;selected:string};characterDetailsOpen:boolean;slotFilter:GearSlotFilter;qualityFilter:GearQuality|'';trackerOpen:boolean;bindings:Record<string,string>;onSelect(id:string):void;previewGear(id:string):Promise<GrowthPreview>;previewGearTip(id:string):Promise<GearTip>;noticeError(e:unknown):void;currentSnapshot?():Snapshot|undefined;resyncSnapshot?():void;onConfirm(action:string,id:string):void;onCancelConfirm():void};
 
 const $=(selector:string)=>document.querySelector(selector) as HTMLElement;
 const esc=(s:unknown)=>String(s).replace(/[&<>"']/g,v=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[v]!));
@@ -111,6 +118,67 @@ export function mountHud(){
   bindTips(document.body);
 }
 
+/** UX-A07：冷却就绪扫光 / 不可用按键轻抖。靠 data 属性 + CSS 动画，className 每帧重写也不丢。 */
+function flashSlot(slot: HTMLElement, key: "readyFlash" | "denyShake"): void {
+  slot.dataset[key] = "1";
+  window.setTimeout(() => { delete slot.dataset[key]; }, key === "readyFlash" ? 650 : 300);
+}
+let slotDenyBound = false;
+function bindSlotDeny(): void {
+  if (slotDenyBound) return;
+  slotDenyBound = true;
+  const tryDeny = (slot: Element | null): void => {
+    if (slot instanceof HTMLElement && slot.getAttribute("aria-disabled") === "true" && !slot.classList.contains("is-sealed")) flashSlot(slot, "denyShake");
+  };
+  document.addEventListener("click", e => tryDeny((e.target as Element | null)?.closest?.(".skill-slot") ?? null), true);
+  document.addEventListener("keydown", e => {
+    if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+    const label = keyLabel(e.code);
+    document.querySelectorAll<HTMLElement>(".skill-slot").forEach(slot => { if (slot.querySelector(".key")?.textContent === label) tryDeny(slot); });
+  }, true);
+}
+/** UX-A06：数字滚动（金币只反映服务端确认值，动画不改变真实数值；减弱动效时直接落值）。 */
+const numberTweens = new WeakMap<HTMLElement, number>();
+function tweenNumber(el: HTMLElement, to: number, reduced: boolean): void {
+  const shown = el.dataset.target === undefined ? to : Number(el.dataset.target);
+  if (el.dataset.target === String(to)) return;
+  el.dataset.target = String(to);
+  const running = numberTweens.get(el); if (running) cancelAnimationFrame(running);
+  if (reduced || matchMedia("(prefers-reduced-motion:reduce)").matches || el.dataset.target === undefined || !Number.isFinite(shown) || shown === to || Math.abs(to - shown) < 2) { el.textContent = String(to); return; }
+  const from = Number(el.textContent) || shown, start = performance.now(), dur = 420;
+  el.dataset.tick = "1"; window.setTimeout(() => { delete el.dataset.tick; }, dur + 200);
+  const step = (now: number): void => {
+    const t = Math.min(1, (now - start) / dur), eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = String(Math.round(from + (to - from) * eased));
+    if (t < 1) numberTweens.set(el, requestAnimationFrame(step)); else numberTweens.delete(el);
+  };
+  numberTweens.set(el, requestAnimationFrame(step));
+}
+/** UX-A06：升级时等级数字弹出 + 头像外圈柔光环（首次渲染与重连不触发）。 */
+function levelPop(el: HTMLElement, level: number, reduced: boolean): void {
+  const text = String(level), prev = el.dataset.level;
+  if (el.textContent !== text) el.textContent = text;
+  if (prev === text) return;
+  el.dataset.level = text;
+  if (prev === undefined || reduced) return;
+  const who = el.closest<HTMLElement>(".who"); if (!who) return;
+  who.dataset.levelup = "1"; window.setTimeout(() => { delete who.dataset.levelup; }, 1100);
+}
+/** UX-A06：血/能量条延迟残影 + 受击微闪 + 低血脉冲（data 属性驱动，className 重写不丢）。 */
+function meterTrail(meter: HTMLElement, ratio: number, isHp: boolean): void {
+  let ghost = meter.querySelector<HTMLElement>(".ghost");
+  if (!ghost) { ghost = document.createElement("span"); ghost.className = "ghost"; meter.insertBefore(ghost, meter.firstChild); }
+  const prev = meter.dataset.ratio === undefined ? ratio : Number(meter.dataset.ratio);
+  meter.dataset.ratio = String(ratio);
+  if (ratio < prev - 0.001) {
+    ghost.style.transition = "none"; ghost.style.transform = `scaleX(${prev})`; void ghost.offsetWidth;
+    ghost.style.transition = ""; ghost.style.transform = `scaleX(${ratio})`;
+    if (isHp) { meter.dataset.hit = "1"; window.setTimeout(() => { delete meter.dataset.hit; }, 260); }
+  } else if (ratio > prev + 0.001 || !ghost.style.transform) {
+    ghost.style.transition = "none"; ghost.style.transform = `scaleX(${ratio})`;
+  }
+  if (isHp) { if (ratio > 0 && ratio <= 0.3) meter.dataset.low = "1"; else delete meter.dataset.low; }
+}
 function skillState(w:World,skillId:string,view?:PresentationModel):{cd:number;why:string;cls:string}{
   const s=w.skills.find(s=>s.id===skillId)!;
   if(view?.dungeonRunning&&view.dungeonConnected===false)return {cd:0,why:'连接中',cls:'is-blocked'};
@@ -176,10 +244,10 @@ export function updateHud(h:PresentationModel) {
     const e = h.snapshot, i = h.world, vitals=vitalsDisplay(i,e,Boolean(h.dungeonRunning)), d = Math.max(0, Math.min(1, vitals.hp / vitals.maxHp)), n = $("#vitals");
     n.querySelector<HTMLElement>(".who") || (n.innerHTML = `<button class="who character-entry" type="button" data-action="panel" data-id="character" aria-label="打开人物"><img src="${h.portraitURL || art("portrait-bust")}" alt="角色外观"><div class="identity"><b class="hero-name"></b><small>Lv. <span class="num hero-level"></span></small></div></button><div class="bars"><div class="meter hp" role="meter" aria-label="生命" aria-valuemin="0"><i></i><span class="shield-band"></span><span class="numv num"></span></div><div class="meter mp" role="meter" aria-label="能量" aria-valuemin="0"><i></i><span class="numv num"></span></div></div><div class="chips"><span class="chip shield" data-tip='{"title":"护盾","note":"优先于生命承受伤害"}'></span></div>`);
     const r = n.querySelector<HTMLElement>(".hero-name")!;
-    r.textContent = e.name, r.title = e.name, n.querySelector<HTMLElement>(".hero-level")!.textContent = String(e.level);
+    r.textContent = e.name, r.title = e.name, levelPop(n.querySelector<HTMLElement>(".hero-level")!, e.level, h.reduced);
     for (const [P, I, D] of [["hp", vitals.hp, vitals.maxHp], ["mp", vitals.mana, vitals.maxMana]] as const) {
         const G = n.querySelector<HTMLElement>(".meter." + P)!;
-        G.querySelector<HTMLElement>("i")!.style.transform = `scaleX(${Math.max(0, Math.min(1, I / D))})`, G.querySelector<HTMLElement>(".numv")!.textContent = `${I} / ${D}`, G.setAttribute("aria-valuenow", String(I)), G.setAttribute("aria-valuemax", String(D)), G.dataset.tip = JSON.stringify({ title: P === "hp" ? d <= .3 ? "生命过低" : "生命" : "能量", rows: [["当前", `${I} / ${D}`], ...P === "hp" && i.hero.shield ? [["护盾", String(i.hero.shield)]] : []], ...P === "hp" && d <= .3 ? { why: "寻找安全点或使用回复手段" } : {} });
+        G.querySelector<HTMLElement>("i")!.style.transform = `scaleX(${Math.max(0, Math.min(1, I / D))})`, meterTrail(G, Math.max(0, Math.min(1, I / D)), P === "hp"), G.querySelector<HTMLElement>(".numv")!.textContent = `${I} / ${D}`, G.setAttribute("aria-valuenow", String(I)), G.setAttribute("aria-valuemax", String(D)), G.dataset.tip = JSON.stringify({ title: P === "hp" ? d <= .3 ? "生命过低" : "生命" : "能量", rows: [["当前", `${I} / ${D}`], ...P === "hp" && i.hero.shield ? [["护盾", String(i.hero.shield)]] : []], ...P === "hp" && d <= .3 ? { why: "寻找安全点或使用回复手段" } : {} });
     }
     const a = n.querySelector<HTMLElement>(".shield-band")!;
     const shieldRatio=hudShield.ratio('hero',i.hero.shield);a.style.width=`${shieldRatio*100}%`;a.classList.toggle('is-on',shieldRatio>0);
@@ -201,7 +269,7 @@ export function updateHud(h:PresentationModel) {
       </button>`).join("") + sealed.map(x => `
       <span class="skill-slot is-sealed" role="img" aria-label="${esc(x.name + "，待找回")}" data-tip="${esc(x.name + " · 待找回" + (x.task ? "：完成「" + x.task + "」" : ""))}">
         ${iconOrFallback("skill", x.id, x.name)}<span class="state">待找回</span>
-      </span>`).join("")), i.skills.forEach((P, I) => { const D = b.children[I] as HTMLElement, G = skillState(i, P.id, h); D.dataset.tip = skillTip(i, h, I, P), D.className = "skill-slot" + slotTint(D, G.cls), D.setAttribute("aria-disabled", String(G.why !== "" || G.cd > 0)); let U = D.querySelector<HTMLElement>(".cd,.state"); if (U?.classList.contains("state")) U.remove(), U = null; const total = G.cd > 0 ? Math.max(G.cd, Number(D.dataset.cdTotal) || 0) : 0; if (G.cd > 0) D.dataset.cdTotal = String(total); if (total >= SHORT_COOLDOWN) { if (!U) D.insertAdjacentHTML("beforeend", `<span class="cd num"></span>`), U = D.querySelector<HTMLElement>(".cd"); const sec = String(Math.ceil(G.cd)); if (U!.textContent !== sec) U!.textContent = sec; U!.style.setProperty("--cd-left", (G.cd / total * 100).toFixed(1) + "%"); } else { if (G.cd <= 0) delete D.dataset.cdTotal; U?.remove(); } });
+      </span>`).join("")), bindSlotDeny(), i.skills.forEach((P, I) => { const D = b.children[I] as HTMLElement, G = skillState(i, P.id, h); D.dataset.tip = skillTip(i, h, I, P), D.className = "skill-slot" + slotTint(D, G.cls), D.setAttribute("aria-disabled", String(G.why !== "" || G.cd > 0)); let U = D.querySelector<HTMLElement>(".cd,.state"); if (U?.classList.contains("state")) U.remove(), U = null; const total = G.cd > 0 ? Math.max(G.cd, Number(D.dataset.cdTotal) || 0) : 0; if (G.cd > 0) D.dataset.cdTotal = String(total); if (total >= SHORT_COOLDOWN) { if (!U) D.insertAdjacentHTML("beforeend", `<span class="cd num"></span>`), U = D.querySelector<HTMLElement>(".cd"); const sec = String(Math.ceil(G.cd)); if (U!.textContent !== sec) U!.textContent = sec; U!.style.setProperty("--cd-left", (G.cd / total * 100).toFixed(1) + "%"); } else { if (G.cd <= 0) { if (Number(D.dataset.cdTotal) >= SHORT_COOLDOWN) flashSlot(D, "readyFlash"); delete D.dataset.cdTotal; } U?.remove(); } });
     const options={blocked:h.blocked,processing:h.processing,hp:i.hero.hp,full:e.gear.length>=e.capacity,context};
     setHudMarkup($('#modebar'),combatModeHtml(i.mode,Boolean(h.hudModeOpen),options));
     setHudMarkup($('#hud-status'),hudStatusHtml(e,context,h.processing,h.blocked?'':i.stopReason));
@@ -211,7 +279,7 @@ export function updateHud(h:PresentationModel) {
     const A = M.querySelector<HTMLElement>(".badge")!;
     A.hidden = e.rewards.length === 0, A.textContent = String(e.rewards.length); A.setAttribute('aria-label',`待领取装备 ${e.rewards.length} 件`); M.querySelector<HTMLElement>('[data-id=bag]')!.setAttribute('aria-label',`背包，装备 ${e.gear.length}/${e.capacity}，待领取 ${e.rewards.length} 件`);
     const F = $("#hud-gold");
-    F.textContent !== String(e.gold) && (F.textContent = String(e.gold)), updateNativeCoin(F.parentElement!, e.gold, h.reduced);
+    tweenNumber(F, e.gold, h.reduced), updateNativeCoin(F.parentElement!, e.gold, h.reduced);
     const B:Record<string,string> = { bag: keyLabel(h.bindings.bag), skills: keyLabel(h.bindings.skills) };
     M.querySelectorAll<HTMLButtonElement>(".entry").forEach(P => { const I = B[P.dataset.id!]; P.title = P.getAttribute("aria-label") + (I ? `（${I}）` : ""), P.setAttribute("aria-expanded", String(h.panel === P.dataset.id)), P.disabled = h.processing, I && P.setAttribute("aria-keyshortcuts", I); }), lastFeedKey !== JSON.stringify(h.feed) && (lastFeedKey = JSON.stringify(h.feed), $("#feed").innerHTML = h.feed.map(P => `<div class="num">${esc(P)}</div>`).join(""));
     let L = "";
@@ -251,7 +319,7 @@ export function renderPanel(view:PresentationModel&{crafting?:CraftingUI;travel?
   if(!s)return;
   
   // 先确定各页面的 title 和 body
-  if(view.panel==='region-map'){title=view.world.region.name;body=`<canvas id="region-map-canvas" aria-label="本区域全图"></canvas><div class="region-map-legend"><span class="map-key hero">● 当前位置</span>${view.snapshot?.starseaView?'<span class="map-key safe">？ 待调查</span>':''}<span class="map-key npc">● 营地同伴</span><span class="map-key main">◎ 追踪目标</span><span class="map-key portal">◎ 区域入口</span><span class="map-key safe">■ 记录据点</span><span class="map-key forge">▰ 锻造</span><span class="map-key enemy">● 敌人</span><span class="map-key elite">▲ 精英</span><span class="map-key boss">◆ 首领</span>${view.fieldMap?'<span class="map-key portal">◆ 已激活航标</span><span class="map-key">◇ 未激活航标</span>':''}</div>${view.fieldMap?.replay?`<div class='region-map-actions' aria-label='沉星可选走访'>${buttonHtml((view.fieldMap.replay.done?'已走访 · ':'')+view.fieldMap.replay.label,{action:'replay-goto',variant:'secondary',disabled:view.processing||view.blocked||view.fieldMap.replay.done})}</div>`:''}${view.fieldMap?.replayError?`<p class='ui-caption'>${esc(view.fieldMap.replayError)}</p>`:''}${view.fieldMap?.waypoints.some(w=>w.unlocked)?`<div class="region-map-actions" aria-label="航标传送">${view.fieldMap.waypoints.filter(w=>w.unlocked).map(w=>buttonHtml('传送 · '+w.name,{action:'waypoint-travel',id:w.id,variant:'secondary',disabled:view.processing||view.blocked})).join('')}</div>`:''}${view.dungeonRunning?'':`<div class="region-map-actions">${buttonHtml('远行地图',{action:'panel',id:'travel',variant:'primary'})}${buttonHtml('副本目录',{action:'panel',id:'dungeons',variant:'secondary'})}</div>`}`;}
+  if(view.panel==='region-map'){title=view.world.region.name;body=`<div class="region-map-frame"><canvas id="region-map-canvas" aria-label="本区域全图"></canvas><span class="region-map-compass" aria-hidden="true">${hudMenuIcon('goal')}<b>北</b></span></div><div class="region-map-legend"><span class="map-key hero">● 当前位置</span>${view.snapshot?.starseaView?'<span class="map-key safe">？ 待调查</span>':''}<span class="map-key npc">● 营地同伴</span><span class="map-key main">◎ 追踪目标</span><span class="map-key portal">◎ 区域入口</span><span class="map-key safe">■ 记录据点</span><span class="map-key forge">▰ 锻造</span><span class="map-key enemy">● 敌人</span><span class="map-key elite">▲ 精英</span><span class="map-key boss">◆ 首领</span>${view.fieldMap?'<span class="map-key portal">◆ 已激活航标</span><span class="map-key">◇ 未激活航标</span>':''}</div>${view.fieldMap?.replay?`<div class='region-map-actions' aria-label='沉星可选走访'>${buttonHtml((view.fieldMap.replay.done?'已走访 · ':'')+view.fieldMap.replay.label,{action:'replay-goto',variant:'secondary',disabled:view.processing||view.blocked||view.fieldMap.replay.done})}</div>`:''}${view.fieldMap?.replayError?`<p class='ui-caption'>${esc(view.fieldMap.replayError)}</p>`:''}${view.fieldMap?.waypoints.some(w=>w.unlocked)?`<div class="region-map-actions" aria-label="航标传送">${view.fieldMap.waypoints.filter(w=>w.unlocked).map(w=>buttonHtml('传送 · '+w.name,{action:'waypoint-travel',id:w.id,variant:'secondary',disabled:view.processing||view.blocked})).join('')}</div>`:''}${view.dungeonRunning?'':`<div class="region-map-actions">${buttonHtml('远行地图',{action:'panel',id:'travel',variant:'primary'})}${buttonHtml('副本目录',{action:'panel',id:'dungeons',variant:'secondary'})}</div>`}`;}
   else if(view.panel==='bounty'&&view.bounty){title='悬赏板 · '+view.bounty.zone;body=bountyHtml(view.bounty,Boolean(view.processing));}
   else if(view.panel==='sea-difficulty'){title='海域难度';body=view.seaDifficulty?seaDifficultyHtml(view.seaDifficulty,view.seaTierPick??view.seaDifficulty.current,Boolean(view.processing||view.blocked)):'<p class="ui-caption">远航开启后，这里可以选要走多深的海。</p>';}
   else if(view.panel==='travel'){title='远行目的地';body=renderTravel(view.travel??initialTravelState(),s,view.processing,undefined,view.travelDrops);}
@@ -259,13 +327,14 @@ export function renderPanel(view:PresentationModel&{crafting?:CraftingUI;travel?
     title=view.bagTab==='rewards'?'待领取战利品':view.bag.warehouseOpen?'仓库':'背包';
     if(view.bagTab==='bag'){
       const selection=bagSelection(s,view.bag,view.qualityFilter,view.slotFilter,view.bag.metadata);
-      gearToPreview=selection.selected?.kind==='equipment'?selection.selected.gear:undefined;
-      body=BagPanel({snapshot:s,ui:view.bag,quality:view.qualityFilter,slot:view.slotFilter,busy:view.processing,blocked:view.blocked,inTown:view.world.region.id==='town'||view.world.region.id==='ss-map-port',returnRegion:view.fieldReturnRegion});
+      const hexCatalog=hexCatalogById(publicHexRunes);
+      gearToPreview=selection.selected?.kind==='equipment'&&!Object.hasOwn(hexCatalog,selection.selected.gear.base)?selection.selected.gear:undefined;
+      body=BagPanel({hexCatalog,snapshot:s,ui:view.bag,quality:view.qualityFilter,slot:view.slotFilter,busy:view.processing,blocked:view.blocked,inTown:view.world.region.id==='town'||view.world.region.id==='ss-map-port',returnRegion:view.fieldReturnRegion,figureURL:view.figureURL});
     }else body=`<div class="bag-reward-toolbar">${buttonHtml('返回背包',{action:'bag-tab',id:'bag',size:'compact'})}<span>装备 ${s.gear.length} / ${s.capacity}</span></div><div class="gear-reward-list">${s.rewards.length?s.rewards.map(reward=>`<div class="gear-reward-row">${GearCard(reward.gear,{revision:s.revision,pending:true})}<div class="gear-reward-action"><span>${esc(regionById(reward.region).name)}</span>${buttonHtml('领取到背包',{action:'claim',id:reward.id,variant:'primary',disabled:s.gear.length>=s.capacity||view.blocked,busy:view.processing,busyLabel:'正在领取…'})}</div></div>`).join(''):stateBlockHtml({kind:'empty',title:'暂无待领取装备',message:'背包满时获得的装备会暂存于此。'})}</div>`;
   }
   else if(view.panel==='character'){
     title='人物';const selection=characterSelection(s,view.characterPart,view.selected);gearToPreview=view.characterChooserOpen?selection.selected:undefined;if(gearToPreview)view.onSelect(gearToPreview.id);
-    body=CharacterPanel(s,view.characterPart,view.selected,view.figureURL,view.processing||view.blocked,{chooserOpen:view.characterChooserOpen,hexChooser:view.hexChooser,detailsOpen:view.characterDetailsOpen,blocked:view.blocked,recovering:view.processing,damage:{stats:view.world.enemies.length>0?view.world.stats:s.stats,skills:view.world.enemies.length>0?view.world.skills:s.resolvedSkills,telemetry:view.world.enemies.length>0?view.world.effectStats:null}});
+    body=CharacterPanel(s,view.characterPart,view.selected,view.figureURL,view.processing||view.blocked,{chooserOpen:view.characterChooserOpen,hexCatalog:hexCatalogById(publicHexRunes),hexChooser:view.hexChooser,detailsOpen:view.characterDetailsOpen,blocked:view.blocked,recovering:view.processing,damage:{stats:view.world.enemies.length>0?view.world.stats:s.stats,skills:view.world.enemies.length>0?view.world.skills:s.resolvedSkills,telemetry:view.world.enemies.length>0?view.world.effectStats:null}});
   }
   else if(view.panel==='forge'){title='拾星港工坊';const craft=view.crafting,tabs=craft?craftingTabsHtml(craft):'';if(!craft||craft.tab==='upgrade'){const gear=forgeSelection(s,view.selected);gearToPreview=gear;if(gear)view.onSelect(gear.id);body=tabs+ForgePanel(s,gear,Boolean(view.processing||view.blocked));}else body=tabs+CraftingPanel(s,craft,Boolean(view.processing||view.blocked));}
   else if(view.panel==='skills'){title='技能';body=renderSkills({...view,snapshot:s});}
@@ -280,12 +349,12 @@ export function renderPanel(view:PresentationModel&{crafting?:CraftingUI;travel?
 
   // 所有页面内容确定后，生成 head
   const headerActions=view.panel==='bag'?bagHeader(s):view.panel==='forge'?`<div class="bag-header-tools"><span class="bag-wallet">${resourceAmountHtml('gold',s.gold,{compact:true})}${resourceAmountHtml('material',s.material,{compact:true})}</span></div>`:view.panel==='character'?`<div class="bag-header-tools"><span class="bag-wallet">${resourceAmountHtml('gold',s.gold,{compact:true})}${resourceAmountHtml('material',s.material,{compact:true})}</span>${buttonHtml('返回背包',{action:'bag-return',size:'compact'})}${buttonHtml('外观',{action:'panel',id:'appearance',size:'compact'})}</div>`:'';
-  const head=view.panel==='travel'?travelHeader(view.travel??initialTravelState(),view.processing):panelHeaderHtml(title,{actionsHtml:headerActions,closeLabel:'关闭',closeDisabled:view.processing});
+  const head=view.panel==='travel'?travelHeader(view.travel??initialTravelState(),view.processing):panelHeaderHtml(title,{actionsHtml:headerActions,emblemHtml:panelEmblem(view.panel),closeLabel:'关闭',closeDisabled:view.processing});
   
   if(view.confirm==='salvage'&&view.confirmId){
     const g=s.gear.find(v=>v.id===view.confirmId);
     if(g){
-      body+=confirmationHtml({title:'确认分解',description:'分解后无法恢复，获得的材料将放入背包。',detailsHtml:`<p><b>${esc(g.name)}${g.rank?' +'+g.rank:''}</b></p><p class="small">${slotName[g.slot]} · ${effectName[g.effect]}${g.rank?' · 已强化':''}</p>`,confirmLabel:'确认分解',confirmAction:'salvage',confirmId:g.id,cancelAction:'cancel-confirm',danger:true,busy:view.processing,disabled:view.blocked});
+      body+=confirmationHtml({title:'确认分解',description:'分解后无法恢复，获得的材料将放入背包。',detailsHtml:`<p><b>${esc(g.name)}${g.rank?' +'+g.rank:''}</b></p><p class="small">${(()=>{const hx=hexCatalogById(publicHexRunes)[g.base];return hx?`海克斯 · ${esc(hx.name)} · ${esc(hx.description)}`:`${slotName[g.slot]} · ${effectName[g.effect]}`})()}${g.rank?' · 已强化':''}</p>`,confirmLabel:'确认分解',confirmAction:'salvage',confirmId:g.id,cancelAction:'cancel-confirm',danger:true,busy:view.processing,disabled:view.blocked});
     }
   }
   if(view.bag.batch&&view.panel==='bag'){const quote=view.bag.batch;body+=confirmationHtml({title:'确认批量分解',description:'分解后无法恢复。已装备、锁定、强化、传奇、威能和武器盘装备均已排除。',detailsHtml:`<p>将分解 <b>${quote.gear.length}</b> 件普通、魔法或稀有装备，获得 <b>${quote.material}</b> 强化石；保护 ${quote.protectedCount} 件。</p><div class="batch-salvage-list" tabindex="0" aria-label="待分解装备清单">${quote.gear.map(g=>`<p>${esc(g.name)} · ${qualityName[g.quality]}</p>`).join('')||'<p>没有可批量分解的装备。</p>'}</div>`,confirmLabel:'确认分解 '+quote.gear.length+' 件',confirmAction:'bag-batch-salvage',cancelAction:'bag-batch-cancel',danger:true,busy:view.processing||view.bag.busy,disabled:view.blocked||!quote.gear.length||quote.revision!==s.revision});}
@@ -304,7 +373,7 @@ export function renderPanel(view:PresentationModel&{crafting?:CraftingUI;travel?
   if(progressFocus){const node=Array.from(host.querySelectorAll<HTMLElement>('button,input,select')).find(el=>progressFocus.elementId?el.id===progressFocus.elementId:progressFocus.tier?el.dataset.challengeTier===progressFocus.tier:progressFocus.role?el.dataset.challengeRole===progressFocus.role:el.dataset.action===progressFocus.action&&el.dataset.id===progressFocus.id);node?.focus({preventScroll:true});}
   if(view.panel==='bag'&&view.bagTab==='bag'){const list=host.querySelector<HTMLElement>('[data-bag-scroll=list]');if(list)list.scrollTop=view.bag.scrollTop;}
   invalidatePreviews();
-  if(gearToPreview)loadGearDetails(gearToPreview,s,{busy:view.processing||view.blocked,preview:view.previewGear,tip:view.previewGearTip,error:view.noticeError});
+  if(gearToPreview)loadGearDetails(gearToPreview,s,{busy:view.processing||view.blocked,preview:view.previewGear,tip:view.previewGearTip,error:view.noticeError,current:view.currentSnapshot,resync:view.resyncSnapshot});
   if(characterFocus){const target=Array.from(host.querySelectorAll<HTMLElement>('[data-action]')).find(node=>node.dataset.action===characterFocus.action&&node.dataset.id===characterFocus.id);target?.focus({preventScroll:true});}
   for(const saved of characterScroll){const node=Array.from(host.querySelectorAll<HTMLElement>('[data-character-scroll]')).find(node=>node.dataset.characterScroll===saved.key);if(node){node.scrollTop=saved.top;node.scrollLeft=saved.left;}}
 }

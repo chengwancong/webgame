@@ -7,10 +7,10 @@ import {gapDiagnosis} from '../../../packages/rules/gap-diagnosis.ts';
 /** 把缺口诊断的一行话放在建议最前面（docs/progression-goal-plan.md G4）。 */
 export function withGapDiagnosis(s:CharacterState,d:DungeonDiagnostic):DungeonDiagnostic{const line=gapDiagnosis(s,{damageType:d.fatal?.damageType,outputShort:d.requiredDps!==null&&d.dpsGap!==null&&d.dpsGap>d.requiredDps*.15});return line?{...d,suggestions:[line,...d.suggestions]}:d;}
 export type DungeonMeasurement={stage:number;ticks:number;bossTicks?:number;lastTick?:number;review?:CombatReviewRecord;bossMaxHp:number;bossRemainingHp:number;bossDamage:number;taken:Record<string,number>;healed:Record<string,number>};
-export function newDungeonMeasurement(stage:number):DungeonMeasurement{return {stage,ticks:0,bossTicks:0,lastTick:-1,review:newCombatReview(),bossMaxHp:0,bossRemainingHp:0,bossDamage:0,taken:{},healed:{}};}
+export function newDungeonMeasurement(stage:number):DungeonMeasurement{return {stage,ticks:0,bossTicks:0,lastTick:-1,review:newCombatReview('server'),bossMaxHp:0,bossRemainingHp:0,bossDamage:0,taken:{},healed:{}};}
 /** Consume every actual executed tick, including the front rooms, once. */
 export function observeDungeonTick(m:DungeonMeasurement,w:World,events:readonly CombatEvent[]=w.events){
- if(m.lastTick!==undefined&&w.tick<=m.lastTick)return;m.lastTick=w.tick;m.bossTicks??=m.ticks;m.ticks++;m.review??=newCombatReview();observeCombatReview(m.review,w,events);
+ if(m.lastTick!==undefined&&w.tick<=m.lastTick)return;m.lastTick=w.tick;m.bossTicks??=m.ticks;m.ticks++;m.review??=newCombatReview('server');observeCombatReview(m.review,w,events);
  const bosses=w.enemies.filter(e=>e.boss&&e.reward),ids=new Set(bosses.map(e=>e.id));if(bosses.length){m.bossTicks++;m.bossMaxHp=bosses.reduce((n,e)=>n+e.maxHp,0);m.bossRemainingHp=bosses.reduce((n,e)=>n+e.hp,0);}
  for(const e of events){if(e.type==='hit_resolved'){if(ids.has(e.id))m.bossDamage+=e.amount??0;if(w.players.has(e.id)||e.id===w.playerId)m.taken[e.id]=(m.taken[e.id]??0)+(e.amount??0);}if(e.type==='healed'&&(w.players.has(e.id)||e.id===w.playerId))m.healed[e.id]=(m.healed[e.id]??0)+(e.amount??0);}
 }

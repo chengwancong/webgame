@@ -5,7 +5,7 @@ import {destinationArtwork} from '../../../packages/asset-manifest/destination-a
 export {destinationArtwork} from '../../../packages/asset-manifest/destination-artwork.ts';
 import {art} from './ui-assets.ts';
 import {gearSlotLabels} from './equipment-slots.ts';
-import {marksHtml,iconHtml,statTilesHtml,sectionTitleHtml,buttonHtml,panelHeaderHtml,fieldHtml,tabsHtml,statusBadgeHtml,stateBlockHtml,resourceAmountHtml,itemSlot,esc as escape} from './ui-components.ts';
+import {marksHtml,iconHtml,statTilesHtml,sectionTitleHtml,buttonHtml,panelHeaderHtml,sealEmblem,fieldHtml,tabsHtml,statusBadgeHtml,stateBlockHtml,resourceAmountHtml,itemSlot,esc as escape} from './ui-components.ts';
 
 export type TravelState={regionId:string;destinationId:string;mode:'explore'|'dungeon';filter:'all'|'available';query:string;page:number};
 export const initialTravelState=():TravelState=>({regionId:'meadow',destinationId:'meadow',mode:'explore',filter:'all',query:'',page:0});
@@ -46,7 +46,7 @@ export function travelIcon(name:'lock'|'search'|'arrow'|'left'|'right'|'check'|'
 export function travelCompass(){
  return '<svg class="travel-compass" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle cx="50" cy="50" r="33" fill="var(--color-panel-inset)" stroke="var(--color-highlight)" stroke-width="2"/><circle cx="50" cy="50" r="28" fill="none" stroke="var(--color-border)"/><path d="m50 1 8 35 25-19-19 25 35 8-35 8 19 25-25-19-8 35-8-35-25 19 19-25-35-8 35-8-19-25 25 19Z" fill="var(--color-primary-pressed)" stroke="var(--color-primary-border)" stroke-width="1.2"/><path d="m50 1 0 49 14-8ZM99 50H50l8 14ZM50 99V50l-14 8ZM1 50h49l-8-14Z" fill="var(--color-primary-top)"/><circle cx="50" cy="50" r="7" fill="var(--color-panel)" stroke="var(--color-text-primary)" stroke-width="2"/><circle cx="50" cy="50" r="3" fill="var(--color-highlight)"/></svg>';
 }
-export function travelHeader(state:TravelState,processing=false){return panelHeaderHtml('远行目的地',{closeDisabled:processing,className:'travel-head',iconHtml:travelCompass(),actionsHtml:`${buttonHtml('副本目录',{action:'panel',id:'dungeons',size:'compact',variant:'secondary',disabled:processing})}<div class="travel-search">${fieldHtml({id:'travel-search',label:'搜索地区或副本',type:'search',placeholder:'搜索地区或副本',value:state.query,autocomplete:'off',compact:true,attributes:{'data-action':'travel-search'}})}</div>`});}
+export function travelHeader(state:TravelState,processing=false){return panelHeaderHtml('远行目的地',{closeDisabled:processing,className:'travel-head',emblemHtml:sealEmblem('compass'),actionsHtml:`${buttonHtml('副本目录',{action:'panel',id:'dungeons',size:'compact',variant:'secondary',disabled:processing})}<div class="travel-search">${fieldHtml({id:'travel-search',label:'搜索地区或副本',type:'search',placeholder:'搜索地区或副本',value:state.query,autocomplete:'off',compact:true,attributes:{'data-action':'travel-search'}})}</div>`});}
 
 export function renderTravelDrops(view:TravelDropView|undefined,selectedId:string|undefined){
  const header=sectionTitleHtml('掉落预览');

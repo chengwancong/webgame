@@ -16,10 +16,17 @@ const key={scope:'stage:4',stage:4,dungeon:'field-mist-1',materials:6,required:2
 const fatal={enemy:'逐风幼牙',skill:'普通攻击',damage:12,damageType:'物理',statuses:['减速'],hint:'它会贴近你再出手',kind:'melee' as const};
 const review:CombatReview={fatal,recent:[],advice:[{label:'控场技能',target:'skills'},{label:'加生存天赋',target:'survival'},{label:'强化护甲',target:'forge',focus:'armor'}]};
 it('compacts a confirmed zero-reward result and removes redundant headings',()=>{
- const html=battleResultHtml({region:'ss-map-boss-1',outcome:'failure'},result(),'ready','拾星港','',false,0,review,key);
+ const html=battleResultHtml({region:'ss-map-boss-1',outcome:'failure'},result(),'ready','拾星港','',false,0,review,key,false);
  expect(html).toContain('is-empty');expect(html).toContain('这次没带回东西');
  for(const text of ['整备再战','凯旋而归','返回地点','本次挑战','普通首领 0/6','雾铃树穴钥匙碎片'])expect(html).not.toContain(text);
  expect(html).toContain('data-action="result-retry"');expect(html).toContain('data-action="result-return"');
+});
+it('shows the defeat screen with only the return button and the three regular improvement hints',()=>{
+ const html=battleResultHtml({region:'ss-map-boss-1',outcome:'failure'},result(),'ready','拾星港','',false,0,review,key);
+ expect(html).toContain('defeat-screen');expect(html).toContain('挑战失败');expect(html).toContain('回城复活');
+ expect(html.match(/data-action="combat-advice"/g)).toHaveLength(3);
+ for(const id of ['forge:weapon','survival','skills'])expect(html).toContain('data-id="'+id+'"');
+ for(const text of ['result-retry','再来一次','本场累计承受伤害','最后一击','loot-grid','这次没带回东西'])expect(html).not.toContain(text);
 });
 it('keeps a key only when its stage belongs to this dungeon, and acknowledges actual first clear',()=>{
  const data={...result(true),first_clear:true,totals:{gold:20,xp:40,material:0}};

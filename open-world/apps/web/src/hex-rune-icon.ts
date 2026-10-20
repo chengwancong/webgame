@@ -6,8 +6,8 @@ import {qualityColors} from './components/gear-metadata.ts';
 export const hexGlyphs=['chain','quake','mark','reaper','thorns','spring','frost','phantom','rift','sigil','siphon','echo'] as const;
 export type HexGlyph=typeof hexGlyphs[number];
 
-// Content-pack `icon` key → glyph. Only the HEX-01 sample is real data; batch keys get added with B03.
-const iconGlyphs:Record<string,HexGlyph>={'hex-chain-lightning':'chain'};
+// Content-pack `icon` key → glyph. Real data so far: HEX-01 chain, A2 aftershock, S1 sigil; batch keys get added with B03.
+const iconGlyphs:Record<string,HexGlyph>={'hex-chain-lightning':'chain','hex-aftershock':'quake','hex-detonation-sigil':'sigil'};
 export function hexGlyphForIcon(icon:string|undefined):HexGlyph|undefined{return icon?iconGlyphs[icon]:undefined;}
 
 const ink='var(--color-chrome-ink)';
@@ -33,4 +33,11 @@ export function hexRuneIconSvg(glyph:HexGlyph|undefined,quality:GearQuality,labe
  const color=qualityColors[quality]??qualityColors.common;
  const a11y=label?`role="img" aria-label="${label.replace(/[&<>"]/g,'')}"`:'aria-hidden="true"';
  return `<svg class="hex-rune-icon quality-${quality}" viewBox="0 0 50 50" ${a11y} focusable="false" style="--quality-glyph:${color}" fill="none" stroke="${ink}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${outer}" fill="${color}"/><path d="${inner}" fill="var(--color-icon-paper)" stroke-width="1.5"/>${glyph?glyphPaths[glyph]:fallbackGlyph}</svg>`;
+}
+
+/** Flat <img>-safe form for generic item slots (bag/loot/paperdoll resolve art by id); CSS variables can't reach into an <img>, so literals stand in and the slot's quality frame carries the rarity colour. */
+export function hexRuneDataUri(icon:string|undefined){
+ const svg=hexRuneIconSvg(hexGlyphForIcon(icon),'common').replace(/ style="[^"]*"/,'').replace(/xmlns=/,'').replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" ')
+  .replace(/var\(--color-chrome-ink\)/g,'#3a2a1a').replace(/var\(--quality-glyph\)/g,'#c9a24a').replace(/var\(--color-rarity-common\)/g,'#c9a24a').replace(/var\(--color-icon-paper\)/g,'#f4ead5');
+ return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
 }

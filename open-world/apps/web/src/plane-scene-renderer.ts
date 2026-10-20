@@ -4,7 +4,8 @@ import {planeResource,PLANE_DRAW_DEPTH,type PlaneMap,type PlaneMaterial,type Pla
 import {starseaAsset,starseaTexture} from './starsea-runtime-assets.ts';
 import type {Point} from './starsea-assets.ts';
 import {project} from './iso.ts';
-import {visibleWorldChunks,chunkKey,chunkViewDistance,cameraView,screenOrigin} from './world-chunks.ts';
+import {visibleWorldChunks,chunkKey,chunkViewDistance,cameraView,screenOrigin,chunkBuild} from './world-chunks.ts';
+const {stepBudgetMs,urgentBudgetMs,spareChunks}=chunkBuild;
 
 /** Chunk canvases reserve TOP pixels above the floor diamond for rock rising out of it. */
 const TOP=340,groundWidth=2178,groundHeight=1226+TOP,groundLeft=1089,groundTop=37+TOP,CHUNK=32;
@@ -22,7 +23,7 @@ const rgba=(hex:string,a:number)=>{const v=parseInt(hex.slice(1),16);return `rgb
  * replaces textures and sprites, never geometry. */
 export class PlaneSceneRenderer{
  private chunks=new Map<string,{image:Phaser.GameObjects.Image;key:string;canvas:HTMLCanvasElement}>();private nodes=new Map<string,Node[]>();private source=new Map<string,PlanePiece[]>();
- private backdrop?:Phaser.GameObjects.Image;private pendingChunks=0;private destroyed=false;private errors:string[]=[];private walk:Uint8Array;private lamps:V[];
+ private backdrop?:Phaser.GameObjects.Image;private pendingChunks=0;private job?:{key:string;steps:Generator<void,void>};private destroyed=false;private errors:string[]=[];private walk:Uint8Array;private lamps:V[];
  constructor(private scene:Phaser.Scene,readonly map:PlaneMap){
   this.walk=Uint8Array.from(map.cells,c=>c==='.'||c===','?1:0);
   scene.cameras.main.setBackgroundColor(map.background);
@@ -43,8 +44,8 @@ export class PlaneSceneRenderer{
  private image(part:string){return this.scene.textures.get(this.texture(part)).getSourceImage() as HTMLImageElement;}
  private cell(path:Path2D,x:number,y:number,z=0){[[x,y],[x+1,y],[x+1,y+1],[x,y+1]].forEach(([i,j],k)=>{const p=project({x:i,y:j});k?path.lineTo(p.x,p.y-z):path.moveTo(p.x,p.y-z);});path.closePath();}
  private glow(x:number,y:number,z:number){let g=0;for(const l of this.lamps){const d=Math.hypot(l.x-x,l.y-y,(l.z-z)/36);if(d<5)g+=1-d/5;}return Math.min(1,g);}
- private chunk(cx:number,cy:number){
-  const map=this.map,n=map.width,key=`plane-ground:${map.id}:${cx}:${cy}`,canvas=document.createElement('canvas');canvas.width=groundWidth;canvas.height=groundHeight;
+ private *chunk(cx:number,cy:number):Generator<void,void>{
+  const map=this.map,n=map.width,cell=`${cx},${cy}`,key=`plane-ground:${map.id}:${cx}:${cy}`,canvas=document.createElement('canvas');canvas.width=groundWidth;canvas.height=groundHeight;
   const ctx=canvas.getContext('2d')!,origin=project({x:cx*CHUNK,y:cy*CHUNK});ctx.translate(groundLeft-origin.x,groundTop-origin.y);
   // Floor: clipped to the padded chunk diamond so neighbouring chunks paint identical overlap.
   const clip=new Path2D();[[cx*CHUNK-1,cy*CHUNK-1],[cx*CHUNK+CHUNK+1,cy*CHUNK-1],[cx*CHUNK+CHUNK+1,cy*CHUNK+CHUNK+1],[cx*CHUNK-1,cy*CHUNK+CHUNK+1]].forEach(([x,y],i)=>{const p=project({x,y});i?clip.lineTo(p.x,p.y):clip.moveTo(p.x,p.y);});clip.closePath();
@@ -53,22 +54,28 @@ export class PlaneSceneRenderer{
    if(c==='#')this.cell(rock,x,y);else this.cell(floor,x,y);if(c===',')this.cell(worn,x,y);}
   ctx.save();ctx.clip(clip);ctx.clip(floor);
   ctx.fillStyle=ctx.createPattern(this.image('ground-main'),'repeat')!;ctx.fill(floor);
+  yield;
   // Worn route: feathered so it reads as trodden ground, not a cell staircase.
   ctx.globalAlpha=.85;ctx.filter='blur(7px)';ctx.fillStyle=ctx.createPattern(this.image('ground-path'),'repeat')!;ctx.fill(worn);ctx.filter='none';ctx.globalAlpha=1;
+  yield;
   // Underground ambient: the floor sits a step darker than daylight and the lamp pools lift it back.
   ctx.fillStyle=rgba(map.shadow,.2);ctx.fill(floor);
   // Soft contact shade where the floor meets rock.
   ctx.filter='blur(8px)';ctx.fillStyle=rgba(map.shadow,.45);ctx.fill(rock);ctx.filter='none';
+  yield;
   const pool=this.image('light-pool');ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.75;
   for(const l of map.lights){if(l.x<x0-4||l.x>x1+4||l.y<y0-4||l.y>y1+4)continue;const p=project(l);ctx.drawImage(pool,p.x-pool.width/2,p.y-pool.height/2);}
   ctx.restore();
   // Rock: this chunk's own cells only, back to front (ascending x+y).
   const xs=cx*CHUNK,ys=cy*CHUNK,xe=Math.min(n,xs+CHUNK),ye=Math.min(n,ys+CHUNK),top=ctx.createPattern(this.image('wall-top'),'repeat')!;
-  for(let d=xs+ys;d<=xe+ye-2;d++)for(let x=Math.max(xs,d-ye+1);x<=Math.min(xe-1,d-ys);x++){const y=d-x;if(!this.rock(x,y)||map.dist[y*n+x]>PLANE_DRAW_DEPTH)continue;
-   this.blockCell(ctx,x,y,top);}
+  for(let d=xs+ys;d<=xe+ye-2;d++){for(let x=Math.max(xs,d-ye+1);x<=Math.min(xe-1,d-ys);x++){const y=d-x;if(!this.rock(x,y)||map.dist[y*n+x]>PLANE_DRAW_DEPTH)continue;
+   this.blockCell(ctx,x,y,top);}if((d-xs-ys)%8===7)yield;}
+  yield;
   ctx.setTransform(1,0,0,1,0,0);const texture=this.scene.textures.create(key,canvas,groundWidth,groundHeight);if(!texture)throw Error('Unable to register plane ground '+key);texture.add('__BASE',0,0,0,groundWidth,groundHeight);
-  const image=this.scene.add.image(origin.x-groundLeft,origin.y-groundTop,key).setOrigin(0).setDepth(-10000+cx+cy);this.chunks.set(`${cx},${cy}`,{image,key,canvas});
+  const image=this.scene.add.image(origin.x-groundLeft,origin.y-groundTop,key).setOrigin(0).setDepth(-10000+cx+cy);this.chunks.set(cell,{image,key,canvas});
+  this.nodes.set(cell,(this.source.get(cell)??[]).map(p=>this.sprite(p)));
  }
+ private release(key:string){const node=this.chunks.get(key);if(node){node.image.destroy();this.scene.textures.remove(node.key);node.canvas.width=0;node.canvas.height=0;this.chunks.delete(key);}for(const n of this.nodes.get(key)??[])n.image.destroy();this.nodes.delete(key);}
  /** Shadow tint, warm lamp light and banded haze over one surface already outlined by `path`. */
  private finish(ctx:CanvasRenderingContext2D,path:Path2D,dark:number,glow:number,haze:number){
   if(dark>0){ctx.fillStyle=rgba(this.map.shadow,dark);ctx.fill(path);}
@@ -110,10 +117,17 @@ export class PlaneSceneRenderer{
  draw(hero:Point,_phase?:WorldPhaseView){
   if(this.destroyed)return;const map=this.map,camera=this.scene.cameras.main,origin=screenOrigin(camera);
   this.backdrop?.setPosition(origin.x,origin.y).setDisplaySize(camera.width/camera.zoom,camera.height/camera.zoom);
-  const view=cameraView(camera),wanted=visibleWorldChunks(map.width,map.height,view);
-  for(const [key,node] of this.chunks)if(!wanted.has(key)){node.image.destroy();this.scene.textures.remove(node.key);node.canvas.width=0;node.canvas.height=0;this.chunks.delete(key);for(const n of this.nodes.get(key)??[])n.image.destroy();this.nodes.delete(key);}
-  const pending=[...wanted].filter(key=>!this.chunks.has(key)).sort((a,b)=>chunkViewDistance(a,view)-chunkViewDistance(b,view));this.pendingChunks=pending.length;
-  for(const key of pending.slice(0,1)){try{const [x,y]=key.split(',').map(Number);this.chunk(x,y);this.nodes.set(key,(this.source.get(key)??[]).map(p=>this.sprite(p)));this.pendingChunks--;}catch(error){this.errors.push(String(error));console.error('[plane-scene]',error);this.destroyed=true;return;}}
+  const view=cameraView(camera),wanted=visibleWorldChunks(map.width,map.height,view),onScreen=visibleWorldChunks(map.width,map.height,view,0),retain=visibleWorldChunks(map.width,map.height,view,2);
+  // Same streaming as the island ground: spare chunks linger briefly, building runs in steps under a frame budget.
+  const spare=[...this.chunks.keys()].filter(key=>!wanted.has(key)).sort((a,b)=>chunkViewDistance(a,view)-chunkViewDistance(b,view));
+  spare.forEach((key,i)=>{if(!retain.has(key)||i>=spareChunks)this.release(key);});
+  if(this.job&&!wanted.has(this.job.key))this.job=undefined;
+  const pending=[...wanted].filter(key=>!this.chunks.has(key)&&key!==this.job?.key).sort((a,b)=>chunkViewDistance(a,view)-chunkViewDistance(b,view));this.pendingChunks=pending.length+(this.job?1:0);
+  const urgent=[...onScreen].some(key=>!this.chunks.has(key)),deadline=performance.now()+(urgent?urgentBudgetMs:stepBudgetMs);
+  try{do{
+   if(!this.job){const key=pending.shift();if(!key)break;const [x,y]=key.split(',').map(Number);this.job={key,steps:this.chunk(x,y)};}
+   if(this.job.steps.next().done){this.job=undefined;this.pendingChunks--;}
+  }while(performance.now()<deadline);}catch(error){this.errors.push(String(error));console.error('[plane-scene]',error);this.destroyed=true;return;}
   // A pillar or blocking prop standing between the camera and the hero fades so the hero stays readable.
   const foot=project(hero),near=chunkKey(hero),[hx,hy]=near.split(',').map(Number);
   for(const [key,bucket] of this.nodes){const [x,y]=key.split(',').map(Number),close=Math.abs(x-hx)<=1&&Math.abs(y-hy)<=1;
@@ -121,5 +135,5 @@ export class PlaneSceneRenderer{
  }
  get mapData(){return undefined;}
  diagnostics(){return{map:this.map.id,kit:this.map.kit,ready:!this.destroyed||this.errors.length>0,chunks:this.chunks.size,pendingChunks:this.pendingChunks,pieces:[...this.nodes.values()].reduce((n,b)=>n+b.length,0),totalPieces:this.map.pieces.length,errors:[...this.errors]};}
- destroy(){if(this.destroyed&&!this.chunks.size&&!this.backdrop)return;this.destroyed=true;for(const node of this.chunks.values()){node.image.destroy();this.scene.textures.remove(node.key);node.canvas.width=0;node.canvas.height=0;}this.chunks.clear();for(const bucket of this.nodes.values())for(const n of bucket)n.image.destroy();this.nodes.clear();this.source.clear();this.backdrop?.destroy();this.backdrop=undefined;}
+ destroy(){if(this.destroyed&&!this.chunks.size&&!this.backdrop)return;this.destroyed=true;this.job=undefined;for(const node of this.chunks.values()){node.image.destroy();this.scene.textures.remove(node.key);node.canvas.width=0;node.canvas.height=0;}this.chunks.clear();for(const bucket of this.nodes.values())for(const n of bucket)n.image.destroy();this.nodes.clear();this.source.clear();this.backdrop?.destroy();this.backdrop=undefined;}
 }

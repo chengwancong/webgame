@@ -6,7 +6,7 @@ import {makeGear,resolveBuild} from '../packages/rules/index.ts';
 import {previewProgressionAction} from '../packages/rules/deep-progression.ts';
 import {bagItems,bagCounts,inventoryItems,initialBagDraft,materialDestinations} from '../apps/web/src/bag-model.ts';
 import type {BagUI} from '../apps/web/src/bag-controller.ts';
-import {BagPanel,bagItemTip} from '../apps/web/src/components/BagPanel.ts';
+import {BagPanel,bagHeader,bagItemTip} from '../apps/web/src/components/BagPanel.ts';
 import {CharacterPanel,characterSelection} from '../apps/web/src/components/CharacterPanel.ts';
 
 function fixture():Snapshot{
@@ -24,7 +24,7 @@ it('projects actual independent inventories without modifying persistent state o
  expect(all.find(item=>item.key==='material:wind_ore')?.quantity).toBe(7);expect(all.find(item=>item.key==='material:ore')).toBeUndefined();
  expect(all.find(item=>item.key==='material:enhance_stone')?.quantity).toBe(9);
  expect(visible).toHaveLength(8);expect(bagCounts(all).equipment).toBe(3);
- expect(render(snapshot,ui()).match(/<div class="bag-capacity">([\s\S]*?)<\/div>/)?.[1].replace(/<[^>]+>/g,'')).toContain('3/60');expect(snapshot).toEqual(before);
+ expect(bagHeader(snapshot).replace(/<[^>]+>/g,'')).toMatch(/3\s*\/\s*60/);expect(snapshot).toEqual(before);
 });
 it('uses equipment filters only for the equipment category and never maps core to a new empty part',()=>{
  const snapshot=fixture(),draft=initialBagDraft();
@@ -75,7 +75,7 @@ it('keeps character-total comparisons in the character panel rather than the bag
 });
 it('exposes equipment quality on the bag card and detail without assigning equipment quality to materials',()=>{
  const snapshot=fixture();snapshot.gear[0].quality='rare';const html=render(snapshot,ui('gear:blade'));
- expect(html).toContain('data-item-kind="equipment" data-quality="rare"');expect(html).toContain('quality-rare is-selected');expect(html).toContain('稀有品质，持有1');expect(html).toContain('gear-detail bag-detail quality-rare');expect(html).not.toContain('data-item-kind="materials" data-quality');
+ expect(html).toContain('data-item-kind="equipment" data-quality="rare"');expect(html).toContain('quality-rare is-selected');expect(html).toContain('稀有品质，持有1');expect(html).toContain('gear-detail bag-card quality-rare');expect(html).not.toContain('data-item-kind="materials" data-quality');
 });
 it('keeps generic item tips truthful for materials, active tonics and learned books',()=>{
  const snapshot=fixture();snapshot.progression!.buffs.tonic_attack=7;const items=inventoryItems(snapshot);
@@ -85,7 +85,7 @@ it('keeps generic item tips truthful for materials, active tonics and learned bo
 it('carries an explicit bag equipment id and keeps that candidate ahead of the currently worn item',()=>{
  const snapshot=fixture(),candidate=makeGear(3,'spare-charm');snapshot.gear.push(candidate);
  const view=ui('gear:'+candidate.id);view.category='equipment';
- expect(render(snapshot,view)).toContain(`data-action="bag-character" data-id="${candidate.id}"`);
+ expect(render(snapshot,view)).toContain(`data-action="equip" data-id="${candidate.id}"`);
  expect(characterSelection(snapshot,'necklace',candidate.id).selected?.id).toBe(candidate.id);
  expect(characterSelection(snapshot,'core','core').selected?.id).toBe('core');
  expect(characterSelection(snapshot,'necklace',candidate.id).items.every(gear=>gear.slot==='accessory')).toBe(true);

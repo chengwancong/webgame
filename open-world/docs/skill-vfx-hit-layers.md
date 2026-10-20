@@ -57,3 +57,21 @@
 
 - `tools/build-combat-hit-fx.mjs` 在每个单元格外圈 20px 做 Alpha 羽化，被导出裁切（alpha>40）截平的柔光不再显成方块；hit-nature 和 hit-shadow 的首帧最明显。颜色与内部像素不变，`adaptation` 字段已写明。
 - 自身增益（护盾、加速等）的胸前闪光由 `buffLayer`（`vfx-hit-style.ts`）选择该元素的受击层；钢、土、血三系用 hit-holy 加乘法染色。`hit-earth` 仍只给怪物用。
+
+## Cooked FX 替换（2026-10-20）
+
+用户批准下载并接入免费包 Cooked FX（https://the-cooked-works.itch.io/cooked-fx，Cozy Chunky 主题，免费个人／商用、无需署名，特效本身不得转售或再分发）。原包与哈希在工程外层 `source-assets/cooked-fx/`（`SOURCE.md`、`SHA256SUMS-extracted.txt`），不进 Git。
+
+- 转换：`tools/build-combat-cooked-fx.mjs` 校验每个源文件哈希，把 2x 横条（256px 单元）重排为 4 列图集，像素不改；生成 `apps/web/public/art/effects/combat-cooked/`（被忽略）与 `packages/asset-manifest/combat-cooked-fx.json`，每个片段带 `source`（包名、主题、原文件、动画名、sha256、被替换的片段、授权、下载日期、改动）。运行时只缩放／着色。
+- 受击层替换（`vfx-hit-style.ts` 为唯一映射；物理技能规格里直接引用的旧片段经 `cookedHitClip` 同步换成新层，不改规格表）：
+
+| 用途 | 旧片段 | 新片段（包内动画） |
+|---|---|---|
+| 斩击 | hit-slash | cooked-slash-x（combat/slash_x） |
+| 受击火花 | hit-blast | cooked-hit（combat/hit_side） |
+| 爆炸（火系强力、火系范围本体） | hit-fire-big | cooked-explosion（combat/explosion_side） |
+| 冰击（冰系单体、范围、强力） | hit-ice / hit-ice-shard 受击 | cooked-ice-hit（magic/ice_hit_side） |
+
+- 状态标记（循环，战斗时钟驱动，每个角色最多显示两类，全场最多 10 个）：控制（眩晕／石化／时停）→ cooked-stun 头顶；燃烧 → cooked-burn；中毒 → cooked-poison；减益（易伤／破甲／致盲／沉默／恐惧／感电／束缚）→ cooked-debuff；增益（攻击／速度／回复／守护／免疫／反击）→ cooked-buff。取代只有易伤的血色箭头图形；冰冻仍用库里的 hit-ice 定格帧。
+- 未换：旧 Spine 片段仍登记在 `combat-hit-fx.json`（物理规格 `main` 字段、增益释放闪光、其他元素受击层继续使用）。伤害、判定、弹道与模拟不变。
+

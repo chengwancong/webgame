@@ -1,6 +1,6 @@
 import {reinforcementSchema} from '../content/reinforcement.ts';
 import {statDefinition} from '../contracts/stats.ts';
-import {gearSlotSchema} from '../contracts/gear-slots.ts';
+import {gearSlotSchema,isHexSlot} from '../contracts/gear-slots.ts';
 import {statIdSchema} from '../contracts/stats.ts';
 import {randomInt} from 'node:crypto';
 import {z} from 'zod';
@@ -24,7 +24,8 @@ export function generateGearAffixes(gear:{quality:GearQuality;ilvl?:number;slot?
  return gear.ilvl===undefined?affixes:scaleItemAffixes(affixes,gear.ilvl);
 }
 export function generateAffixes(quality:GearQuality,maxTier=3,random:AffixRandom=defaultRandom,config=gearAffixConfig,context:{slot?:Slot;exclude?:string}={}):GearAffix[]{
- const rule=config.quality[quality],count=rule.count[0]===rule.count[1]?rule.count[0]:random.int(rule.count[0],rule.count[1]+1),pool=config.pool.filter(a=>rule.tiers.includes(a.tier)&&a.tier<=maxTier&&a.stat!==context.exclude&&(!context.slot||statDefinition(a.stat)!.slots.includes(context.slot))),result:GearAffix[]=[],used=new Set<string>();
+ if(context.slot&&isHexSlot(context.slot))return [];
+ const rule=config.quality[quality],count=rule.count[0]===rule.count[1]?rule.count[0]:random.int(rule.count[0],rule.count[1]+1),pool=config.pool.filter(a=>rule.tiers.includes(a.tier)&&a.tier<=maxTier&&a.stat!==context.exclude&&(!context.slot||statDefinition(a.stat)!.slots.some(slot=>slot===context.slot))),result:GearAffix[]=[],used=new Set<string>();
  for(let i=0;i<count;i++){const available=pool.filter(a=>!used.has(a.stat));if(!available.length)break;const template=available[random.int(0,available.length)];used.add(template.stat);
   const fraction=statDefinition(template.stat)?.unit!=='flat',precision=template.precision??(fraction?2:0),scale=10**precision,value=fraction?Math.round((template.minValue+(template.maxValue-template.minValue)*random.float())*scale)/scale:random.int(template.minValue,template.maxValue+1);
   if(!validAffixValue(template.stat,value))throw Error('Generated affix has invalid units');

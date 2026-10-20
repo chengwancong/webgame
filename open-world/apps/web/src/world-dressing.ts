@@ -201,6 +201,10 @@ const cellOf=(v:GroundView,px:number,py:number)=>{const ix=(px-v.ox)/v.k/32,iy=(
  * pattern space. `material` returns the tile canvas (mirrored unless `plain`) or undefined while loading. Returns false if a material was missing.
  */
 export function paintGroundDressing(ctx:CanvasRenderingContext2D,map:DressedMap,v:GroundView,material:(resource:string,tint?:string,wash?:Wash,plain?:boolean)=>CanvasImageSource|undefined){
+ const steps=groundDressingSteps(ctx,map,v,material);let r=steps.next();while(!r.done)r=steps.next();return r.value;
+}
+/** Same painting as paintGroundDressing, one layer per step, so a chunk can be built across frames without a long main-thread task. */
+export function* groundDressingSteps(ctx:CanvasRenderingContext2D,map:DressedMap,v:GroundView,material:(resource:string,tint?:string,wash?:Wash,plain?:boolean)=>CanvasImageSource|undefined):Generator<void,boolean>{
  const corners=[[0,0],[v.width,0],[0,v.height],[v.width,v.height]].map(([x,y])=>cellOf(v,x,y)),pad=3;
  const area=[Math.min(...corners.map(c=>c[0]))-pad,Math.min(...corners.map(c=>c[1]))-pad,Math.max(...corners.map(c=>c[0]))+pad,Math.max(...corners.map(c=>c[1]))+pad];
  const hit=(it:Item)=>it.box[0]<area[2]&&it.box[2]>area[0]&&it.box[1]<area[3]&&it.box[3]>area[1];
@@ -221,6 +225,7 @@ export function paintGroundDressing(ctx:CanvasRenderingContext2D,map:DressedMap,
   full.drawImage(s.soft,m+x0/q,m+y0/q,(x1-x0)/q,(y1-y0)/q,x0,y0,x1-x0,y1-y0);
   full.globalCompositeOperation='source-in';full.setTransform(v.k,0,0,v.k,v.ox,v.oy);const pattern=full.createPattern(tile,'repeat')!;if(layer.scale)pattern.setTransform(new DOMMatrix().scale(layer.scale));full.fillStyle=pattern;full.fillRect((x0-v.ox)/v.k,(y0-v.oy)/v.k,(x1-x0)/v.k,(y1-y0)/v.k);full.globalCompositeOperation='source-over';full.setTransform(1,0,0,1,0,0);
   ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=layer.alpha;if(layer.blend)ctx.globalCompositeOperation=layer.blend;ctx.drawImage(s.full,x0,y0,x1-x0,y1-y0,x0,y0,x1-x0,y1-y0);ctx.restore();
+  yield;
  }
  return complete;
 }

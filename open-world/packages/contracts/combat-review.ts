@@ -29,6 +29,9 @@ export type CombatAdvice=z.infer<typeof combatAdviceSchema>;
 
 export const combatReviewSchema=z.object({
   totalTaken:z.number().nonnegative().optional(),
+  /** Damage before the retained recent hits, included in totalTaken. */
+  omittedTaken:z.number().nonnegative().optional(),
+  source:z.enum(['client','server']).optional(),
   fatal:combatFatalHitSchema.nullable(),
   advice:z.array(combatAdviceSchema).max(3),
   /** Older hits before the killing blow; collapsed, never the main line. */

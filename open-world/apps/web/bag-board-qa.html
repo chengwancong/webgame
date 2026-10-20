@@ -1,0 +1,54 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>背包 · 版面验收</title></head><body>
+<div id="modal" class="open"><div id="qa-host" style="--stage-width:1280px;--stage-height:720px;display:contents"></div></div>
+<script type="module">
+// 独立展示数据：只渲染真实 BagPanel / GearDetails，不读写玩家存档，也不连接服务。
+import './src/ui-entry.css';
+import {BagPanel,bagHeader} from './src/components/BagPanel.ts';
+import {loadGearDetails} from './src/components/GearDetails.ts';
+import {panelHeaderHtml} from './src/ui-components.ts';
+import {bagSelection,initialBagDraft} from './src/bag-model.ts';
+import {isGearSlotFilter,runtimeSlotForPart} from './src/equipment-slots.ts';
+import {makeGear,resolveBuild} from '../../packages/rules/index.ts';
+import {mainStatValues} from '../../packages/rules/main-stat-values.ts';
+import {progressionStateSchema} from '../../packages/contracts/deep-progression.ts';
+import {starterSkills} from '../../packages/content/index.ts';
+
+const params=new URLSearchParams(location.search),full=params.has('full'),town=!params.has('field');
+const qualities=['common','magic','rare','legendary'];
+const count=full?60:36;
+const gear=Array.from({length:count},(_,i)=>{const g=makeGear((i*11)%324,'qa-'+i);g.quality=qualities[(i*7+i%3)%4];const pool=[['critChance',0.04,'暴击率'],['hp',36,'生命'],['fireResist',0.08,'火焰抗性'],['speed',0.05,'移动速度'],['cdr',0.06,'冷却缩减'],['lifesteal',0.02,'生命偷取']];const n={common:0,magic:1,rare:3,legendary:4}[g.quality];g.affixes=Array.from({length:n},(_,k)=>{const [stat,value,name]=pool[(i+k)%pool.length];return {id:'qa-'+i+'-'+k,name,tier:1+(i+k)%3,stat,value,description:name};});if(i%9===4)g.locked=true;if(i%7===3)g.rank=2+i%4;return g;});
+const pick=slot=>gear.find(g=>g.slot===slot);
+const equipment={};for(const slot of ['weapon','armor','helmet','accessory','ring']){const g=pick(slot);if(g)equipment[slot]=g.id;}
+const state={id:'qa',name:'远行者',revision:7,build:1,level:5,xp:0,gold:100344,material:10039,gear,equipment,skills:[...starterSkills],skillRanks:Object.fromEntries(starterSkills.map(id=>[id,1])),skillBooks:{ember:2},progress:{kills:0,regions:['town'],bosses:[],safe:'town',tasks:[]},progression:progressionStateSchema.parse({consumables:{tonic_attack:3,tonic_hp:6},materials:{ore:52,herb:18},buffs:{}})};
+const snapshot={...state,...resolveBuild(state),capacity:60,rewards:params.has('rewards')||full?[{id:'r1',region:'town',gear:makeGear(5,'qa-r1')},{id:'r2',region:'town',gear:makeGear(9,'qa-r2')}]:[]};
+const ui={...initialBagDraft(),loading:false,quoteTarget:'',quoteCharacter:'',quoteLoading:false,busy:false,message:'',error:'',status:'',category:params.get('tab')??'equipment'};
+let quality='',slot='';
+const host=document.querySelector('#qa-host');
+const gearById=id=>snapshot.gear.find(g=>g.id===id);
+const preview=async id=>{const g=gearById(id),worn=Object.values(snapshot.equipment).includes(id);return {gear_id:id,revision:snapshot.revision,verdict:'even',cost:{gold:120,material:3},max:false,salvage:{gear_id:id,material:3,allowed:!g.locked&&!worn,blocked:g.locked?'locked':worn?'equipped':''},current:{stats:snapshot.stats,resolvedSkills:[]},equipped:{stats:snapshot.stats,resolvedSkills:[]},upgraded:{stats:snapshot.stats,resolvedSkills:[]}};};
+const tip=async id=>{const g=gearById(id),main=mainStatValues(g)??{stat:g.primary_attribute??'attack',base:g.attack||g.armor||0,enhancement:0,effective:g.attack||g.armor||0},stat=main.stat,worn=snapshot.equipment[g.slot],cur=gearById(worn),curMain=cur&&mainStatValues(cur),delta=main&&curMain&&curMain.stat===stat?main.effective-curMain.effective:0;
+ return {gear:g,revision:snapshot.revision,primary_attribute:stat,attributes:{base:{[stat]:main?.base??0},enhancement:{[stat]:main?.enhancement??0},effective:{[stat]:main?.effective??0}},comparison:{attack:{current:43,equipped:43+(stat==='attack'?delta:0),delta:stat==='attack'?delta:0},armor:{current:4,equipped:4+(stat==='armor'?delta:0),delta:stat==='armor'?delta:0},hp:{current:270,equipped:270+(stat==='hp'?delta:0),delta:stat==='hp'?delta:0}},currentSets:[{setId:'qa-set',setName:'青锋旅人',count:3,total:6,activeBonuses:[]}],equippedSets:[]};};
+function render(){
+ const keep=host.querySelector('[data-bag-scroll=list]')?.scrollTop??0;
+ const selection=bagSelection(snapshot,ui,quality,slot,ui.metadata);ui.selected=selection.selected?.key??'';
+ host.innerHTML=`<section data-panel="bag" class="panel panel-wide" role="dialog" aria-label="背包">${panelHeaderHtml('背包',{actionsHtml:bagHeader(snapshot),closeLabel:'关闭'})}${BagPanel({snapshot,ui,quality,slot,busy:false,blocked:false,inTown:town})}</section>`;
+ const list=host.querySelector('[data-bag-scroll=list]');if(list)list.scrollTop=keep;
+ const g=selection.selected?.kind==='equipment'?selection.selected.gear:undefined;
+ if(g)loadGearDetails(g,snapshot,{busy:false,preview,tip,error:e=>console.error(e)});
+}
+document.addEventListener('click',event=>{
+ const node=event.target.closest('[data-action]');if(!node)return;const {action,id}=node.dataset;
+ if(action==='bag-category'){ui.category=id;ui.selected='';ui.query='';quality='';slot='';}
+ else if(action==='bag-select'){ui.selected=id;}
+ else if(action==='bag-pick'){if(!['all','equipment'].includes(ui.category))ui.category='equipment';quality='';slot='';ui.query='';ui.selected=id;}
+ else if(action==='bag-part'){ui.category='equipment';ui.query='';ui.selected='';slot=isGearSlotFilter(id)?id:'';}
+ else if(action==='bag-quality'){quality=id;ui.selected='';}
+ else if(action==='equip'){const g=gearById(id);snapshot.equipment[g.slot]=id;snapshot.revision++;}
+ else if(action==='unequip'){const g=gearById(id);delete snapshot.equipment[g.slot];snapshot.revision++;}
+ else if(action==='lock'){const g=gearById(id);g.locked=!g.locked;snapshot.revision++;}
+ else return;
+ render();
+});
+document.addEventListener('input',event=>{const input=event.target;if(input.dataset?.action==='bag-search'){ui.query=input.value;render();const next=document.querySelector('#bag-search');next?.focus();next?.setSelectionRange(input.value.length,input.value.length);}});
+render();
+</script></body></html>

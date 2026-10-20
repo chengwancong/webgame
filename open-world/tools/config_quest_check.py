@@ -42,6 +42,8 @@ def validate_quest_config(files):
     if row.get('join_guide_condition') and row['join_guide_condition'] not in grouped: fail('人物引导条件不存在 '+row['id'])
     if row.get('dialog_join_fallback') and not any(l['group']==row['dialog_join_fallback'] for l in files['dialogue.json']['lines']): fail('人物入驻对白不存在 '+row['id'])
   for row in positions:
+    priority=row.get('priority',0)
+    if isinstance(priority,bool) or not isinstance(priority,int) or priority<0: fail('无效人物相位优先级 '+row['id'])
     if row['npc'] not in npc_ids: fail('站位人物不存在 '+row['id'])
     if row['map'] not in islands|bosses|{n['home_map'] for n in npcs}|{i['region'] for i in world.get('islands',[])}: fail('站位地图不存在 '+row['id'])
     if row.get('landmark') and not any(l.get('key',l['id'])==row['landmark'] and l['region']==row['map'] for l in world.get('landmarks',[])): fail('站位地标不存在 '+row['id'])
@@ -78,7 +80,10 @@ def validate_quest_config(files):
     return combine(visible,clauses(row['until'],True)) if row.get('until') else visible
   for i,row in enumerate(positions):
     for other in positions[i+1:]:
-      if row['npc']==other['npc'] and combine(position_clauses(row),position_clauses(other)): fail('人物站位同时可见 '+row['id']+' / '+other['id'])
+      # Runtime selects the highest configured priority before enforcing unique
+      # placement. D12 permits a temporary quest position to mask old phases;
+      # equal-priority overlap remains an error, including the default zero.
+      if row['npc']==other['npc'] and row.get('priority',0)==other.get('priority',0) and combine(position_clauses(row),position_clauses(other)): fail('人物站位同时可见 '+row['id']+' / '+other['id'])
   pools={}
   for t in rows.values():
     if t.get('campaign')!='starsea': continue

@@ -1,0 +1,2 @@
+import {chromium} from 'playwright';import {start} from './server.mjs';
+export async function open({overrides={}}={}){const host=await start(0,overrides),browser=await chromium.launch({channel:'chrome',headless:false,args:['--use-gl=angle','--use-angle=d3d11','--enable-webgl','--disable-background-timer-throttling']}),page=await browser.newPage({viewport:{width:1280,height:900},deviceScaleFactor:1});page.on('pageerror',e=>console.error('PAGE',e.message));return {...host,browser,page,async close(){await browser.close();await host.close();}};}

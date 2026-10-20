@@ -39,7 +39,7 @@ const affinityText=(q:{mainHandAffinity?:'martial'|'spell'|null;affinityBonus?:n
 export const skillTagsOf=(id:string):readonly string[]=>browseTags.get(id)??[];
 const tagLine=(sk:typeof skillCatalog[number])=>[skillSchools[skillSchoolOf(sk.category)],...skillTagsOf(sk.id).map(tagName)].join(' · ');
 const inSchool=(sk:typeof skillCatalog[number],school:SkillSchool|'all')=>school==='all'||skillSchoolOf(sk.category)===school;
-const keyStatsHtml=(skill:Skill)=>statTilesHtml(skillKeyStats(skill).map(k=>({label:k.label,value:k.text})));
+const keyStatsHtml=(skill:Skill)=>statTilesHtml(skillKeyStats(skill).map(k=>({label:k.label,value:k.text})))+(skill.damage>0&&!['heal','shield','buff'].includes(skill.kind)?'<p class="ui-caption">伤害为技能效果量；实际命中还受敌方减伤、暴击与条件增伤影响。多段、持续伤害分次结算，能量不足会延后施放。</p>':'');
 export function renderSkills(view:SkillsView){
  const s=view.snapshot,access=new Map(s.skillAccess.map(sk=>[sk.id,sk]));
  const active=(id:string)=>access.get(id)?.activated??false;

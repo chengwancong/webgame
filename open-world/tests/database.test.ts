@@ -156,6 +156,23 @@ it('control takeover invalidates old writes but preserves receipt reads',async()
  const login=await app.inject({method:'POST',url:'/api/session/login',payload:{username,password:'secure-qa-password'}});const cookie=String(login.headers['set-cookie']).split(';')[0];const takeover=await app.inject({method:'POST',url:'/api/control',headers:{cookie},payload:{takeover:true,client_id:randomUUID()}});expect(takeover.statusCode).toBe(200);expect((await p.request('receipt/'+v.command_id)).status).toBe(200);expect((await p.request('control/renew',{lease_id:p.lease})).body.code).toBe('CONTROL');});
 it('foreign account cannot read receipts or report another permit',async()=>{const a=await player(),b=await player(),v=a.report();await a.request('combat/report',v);expect((await b.request('receipt/'+v.command_id)).status).toBe(404);expect((await b.request('combat/report',{...v,command_id:randomUUID(),lease_id:b.lease})).body.code).toBe('PERMIT');});
 it('checks browser origin, body schemas and speed envelopes',async()=>{const p=await player();expect((await app.inject({method:'POST',url:'/api/control',headers:{cookie:p.cookie,origin:'https://hostile.example'},payload:{}})).statusCode).toBe(403);expect((await p.request('combat/report',{...p.report(),to_tick:100000})).body.code).toBe('RATE');expect((await p.request('skills',{command_id:randomUUID(),revision:0,lease_id:p.lease,skills:['unknown']})).body.code).toBe('SKILL');});
+it('refreshes an active lease for the same session and client without takeover, but keeps other clients blocked',async()=>{
+ const p=await player();
+ await pool.query("UPDATE ow_controls SET expires=now()+interval '45 seconds' WHERE character=$1",[p.s.id]);
+ const before=(await pool.query('SELECT * FROM ow_controls WHERE character=$1',[p.s.id])).rows[0];
+ const refreshed=await p.request('control',{client_id:before.client_id,takeover:false});
+ expect(refreshed.status).toBe(200);expect(refreshed.body.lease_id).toBe(p.lease);
+ const after=(await pool.query('SELECT * FROM ow_controls WHERE character=$1',[p.s.id])).rows[0];
+ expect(after.session).toBe(before.session);expect(after.client_id).toBe(before.client_id);
+ expect(new Date(after.expires).getTime()).toBeGreaterThan(new Date(before.expires).getTime());
+ expect((await p.request('control/renew',{lease_id:refreshed.body.lease_id})).status).toBe(200);
+ const otherClient=randomUUID(),blocked=await p.request('control',{client_id:otherClient,takeover:false});
+ expect(blocked.status).toBe(409);expect(blocked.body.code).toBe('BUSY');
+ const taken=await p.request('control',{client_id:otherClient,takeover:true});
+ expect(taken.status).toBe(200);expect(taken.body.lease_id).not.toBe(p.lease);
+ expect((await p.request('control/renew',{lease_id:p.lease})).body.code).toBe('CONTROL');
+ expect((await p.request('control/renew',{lease_id:taken.body.lease_id})).status).toBe(200);
+});
 it('blocks two tabs sharing the same login cookie',async()=>{const p=await player();const second=await p.request('control',{client_id:randomUUID()});expect(second.body.code).toBe('BUSY');});
 it('retries an original payload under a newly valid controller without a new command ID',async()=>{const p=await player(),v=p.report([p.p.spawns[0].id]);await pool.query("UPDATE ow_controls SET expires=now()-interval '1 second' WHERE character=$1",[p.s.id]);const renewed=(await p.request('control',{client_id:randomUUID()})).body.lease_id;const r=await app.inject({url:'/api/combat/report',method:'POST',headers:{cookie:p.cookie,'x-aw-resume-lease':renewed},payload:v});expect(r.statusCode).toBe(200);expect(r.json().command_id).toBe(v.command_id);});
 it('releases control on logout so immediate relogin does not request takeover',async()=>{const p=await player();await p.request('logout',{});expect((await pool.query('SELECT * FROM ow_controls WHERE character=$1',[p.s.id])).rowCount).toBe(0);});

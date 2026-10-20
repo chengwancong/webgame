@@ -1,4 +1,5 @@
 import {interactionReach} from '../../../packages/rules/world-interactions.ts';
+import {parseFieldFreeze,type FieldFreeze} from '../../../packages/contracts/field-freeze.ts';
 import {consumeCraftKills} from '../../../packages/rules/crafting-consumables.ts';
 import type {FastifyInstance} from 'fastify';
 import type {Pool,PoolClient} from 'pg';
@@ -25,7 +26,7 @@ import {transaction} from './database.ts';
 type Identity={account:string;session:string;resume?:string};
 type Command={command_id:string;revision:number;lease_id:string};
 type Gain={delta?:Receipt['delta'];rewards?:Reward[];questCompletions?:{id:string;xp:number;gold:number}[]};
-type Context={pool:Pool;identity:(req:unknown)=>Promise<Identity>;state:(c:Pool|PoolClient,who:Identity,lock?:boolean)=>Promise<CharacterState>;lease:(c:Pool|PoolClient,s:CharacterState,who:Identity,id:string)=>Promise<void>;fail:(code:string,message:string,status?:number)=>never;write:(who:Identity,input:Command,body:unknown,fn:(c:PoolClient,s:CharacterState)=>Promise<Gain>)=>Promise<Receipt>};
+type Context={fieldFreeze?:Readonly<FieldFreeze>;pool:Pool;identity:(req:unknown)=>Promise<Identity>;state:(c:Pool|PoolClient,who:Identity,lock?:boolean)=>Promise<CharacterState>;lease:(c:Pool|PoolClient,s:CharacterState,who:Identity,id:string)=>Promise<void>;fail:(code:string,message:string,status?:number)=>never;write:(who:Identity,input:Command,body:unknown,fn:(c:PoolClient,s:CharacterState)=>Promise<Gain>)=>Promise<Receipt>};
 type Event=typeof worldTables.events[number];type Rare=typeof worldTables.rares[number];
 export type FieldActivity={spawnRadius?:number;eliteAffixes?:[number,number];worldTier?:number;difficulty?:{hp:number;attack:number;armor:number};instance:string;character:string;target:string;region:string;kind:'event'|'chest'|'rare';name:string;status:'running'|'success'|'failed'|'claimed';startedAt:number;cooldownUntil:number;attempt:number;definition:Event|Rare|typeof worldTables.chests[number];level:number;position:{x:number;y:number};waves:number;waveCount:number;tick:number;seed:number;reason:string;settled:boolean;lastInputAt:number;renderEvents:CombatEvent[];loot:FrozenFieldLoot;battle:WorldCheckpoint|null};
 function spawnWave(data:FieldActivity,index:number,world:World){
@@ -60,7 +61,7 @@ export function fieldActivityView(data:FieldActivity,now:number,includeBattle=tr
  return {instance:data.instance,target:data.target,region:data.region,kind:data.kind,name:data.name,position:data.kind==='rare'&&data.status==='claimed'&&now>=data.cooldownUntil?(data.definition as Rare).spots[data.attempt%(data.definition as Rare).spots.length]:data.position,status:data.status==='claimed'&&data.kind!=='chest'?(now<data.cooldownUntil?'cooldown':'ready'):data.status,tick:data.tick,waves:data.waves,waveCount:data.waveCount,startedAt:data.startedAt,cooldownUntil:data.cooldownUntil,remainingSeconds:data.kind==='event'&&data.status==='running'?Math.max(0,definition.durationSeconds-data.tick/30):Math.max(0,(data.cooldownUntil-now)/1000),...(defense?{objectiveHp:defense.hp,objectiveMaxHp:defense.maxHp}:{}),killed:actors.filter(e=>e.reward&&!e.alive).length,total:actors.filter(e=>e.reward).length,reason:data.reason,...(includeBattle&&battle?{battle}:{})};
 }
 export function registerFieldActivities(app:FastifyInstance,ctx:Context){
- const {pool,identity,state,lease,fail,write}=ctx;
+ const {pool,identity,state,lease,fail,write,fieldFreeze=parseFieldFreeze()}=ctx;
  const persist=async(c:PoolClient,data:FieldActivity)=>c.query('INSERT INTO ow_field_activities(character,target,instance,status,data) VALUES($1,$2,$3,$4,$5) ON CONFLICT(character,target) DO UPDATE SET instance=excluded.instance,status=excluded.status,data=excluded.data,updated=now()',[data.character,data.target,data.instance,data.status,data]);
  let busy=false,timer:ReturnType<typeof setInterval>|undefined;const tick=async()=>{if(busy)return;busy=true;try{
   const rows=(await pool.query("SELECT character,target FROM ow_field_activities WHERE status='running'")).rows;
@@ -72,7 +73,9 @@ export function registerFieldActivities(app:FastifyInstance,ctx:Context){
    const rows=v.kind==='event'?worldTables.events:v.kind==='rare'?worldTables.rares:worldTables.chests,definition=rows.find(r=>r.id===v.target&&r.region===v.region);if(!definition||!worldPhaseVisible(s,definition))fail('ACTIVITY','这个世界目标尚未出现。');
    if(!s.starsea?.islands.includes(v.region)&&!worldTables.islands.some(i=>i.region===v.region&&s.starsea?.islands.includes(i.island)))fail('LOCKED','这座岛尚未开放。');
    const old=(await c.query('SELECT data FROM ow_field_activities WHERE character=$1 AND target=$2 FOR UPDATE',[s.id,v.target])).rows[0]?.data as FieldActivity|undefined;
-   if(old?.status==='running')return {};if(old?.settled&&v.kind==='chest')fail('CHEST_CLAIMED','宝箱已经打开。');if(old&&Date.now()<old.cooldownUntil)fail('ACTIVITY_COOLDOWN','这个目标尚在冷却。');
+   if(old?.status==='running')return {};
+   if(v.kind==='event'&&fieldFreeze.events)fail('FIELD_FROZEN','该野外功能暂时停用。',409);
+   if(old?.settled&&v.kind==='chest')fail('CHEST_CLAIMED','宝箱已经打开。');if(old&&Date.now()<old.cooldownUntil)fail('ACTIVITY_COOLDOWN','这个目标尚在冷却。');
    if((await c.query("SELECT 1 FROM ow_field_activities WHERE character=$1 AND status='running'",[s.id])).rowCount)fail('ACTIVITY_BUSY','请先结束当前世界活动。');
    const attempt=(old?.attempt??0)+1,position=v.kind==='rare'?(definition as Rare).spots[(attempt-1)%(definition as Rare).spots.length]:{x:(definition as Event).x,y:(definition as Event).y};
    if(distance(v.position,position)>interactionReach.activity||!walkable(regionById(v.region),v.position))fail('ACTIVITY_DISTANCE','请走到世界目标旁。');

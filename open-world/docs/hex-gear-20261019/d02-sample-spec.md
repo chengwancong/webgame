@@ -92,7 +92,7 @@
         {
           "id": "hex-chain-lightning-r",
           "name": "连锁闪电",
-          "description": "命中时40%概率释放连锁闪电，弹射5次，各60%伤害，减速命中目标。",
+          "description": "命中时40%概率释放连锁闪电，弹射5次，各60%伤害，每次弹射命中减速目标。",
           "source": "hex-chain-lightning",
           "tier": 3,
           "trigger": "hit",
@@ -106,32 +106,17 @@
             "count": 5,
             "range": 5,
             "damageType": "lightning",
-            "decay": 0.7
+            "decay": 0.7,
+            "status": {
+              "kind": "slow",
+              "duration": 60,
+              "strength": 0.2,
+              "scope": "hit",
+              "cleanse": true
+            }
           },
           "scale": [],
           "vfxKey": "hex/chain-lightning"
-        },
-        {
-          "id": "hex-chain-lightning-e-slow",
-          "name": "连锁闪电 · 感电",
-          "description": "连锁闪电命中时施加减速。",
-          "source": "hex-chain-lightning",
-          "tier": 3,
-          "trigger": "hit",
-          "chance": 1,
-          "icd": 60,
-          "filter": { "fromEffect": "hex-chain-lightning-r" },
-          "when": [],
-          "action": {
-            "type": "status",
-            "ref": "hit",
-            "status": "chill",
-            "duration": 60,
-            "strength": 0.2,
-            "ratio": 0
-          },
-          "scale": [],
-          "vfxKey": "hex/chain-lightning-slow"
         }
       ]
     },
@@ -141,7 +126,7 @@
         {
           "id": "hex-chain-lightning-l",
           "name": "连锁闪电",
-          "description": "命中时45%概率释放连锁闪电，弹射6次，各65%伤害，减速且有概率感电。",
+          "description": "命中时45%概率释放连锁闪电，弹射6次，各65%伤害，每次弹射命中施加感电（易受伤害）。",
           "source": "hex-chain-lightning",
           "tier": 4,
           "trigger": "hit",
@@ -155,32 +140,17 @@
             "count": 6,
             "range": 5,
             "damageType": "lightning",
-            "decay": 0.7
+            "decay": 0.7,
+            "status": {
+              "kind": "shock",
+              "duration": 90,
+              "strength": 0.25,
+              "scope": "hit",
+              "cleanse": true
+            }
           },
           "scale": [],
           "vfxKey": "hex/chain-lightning"
-        },
-        {
-          "id": "hex-chain-lightning-l-shock",
-          "name": "连锁闪电 · 雷击",
-          "description": "连锁闪电命中时施加感电减速。",
-          "source": "hex-chain-lightning",
-          "tier": 4,
-          "trigger": "hit",
-          "chance": 1,
-          "icd": 60,
-          "filter": { "fromEffect": "hex-chain-lightning-l" },
-          "when": [],
-          "action": {
-            "type": "status",
-            "ref": "hit",
-            "status": "shock",
-            "duration": 90,
-            "strength": 0.25,
-            "ratio": 0
-          },
-          "scale": [],
-          "vfxKey": "hex/chain-lightning-shock"
         }
       ]
     }
@@ -372,7 +342,7 @@ HEX 效果触发时，服务端推送已有 `CombatEvent`：
 | # | 操作 | 预期结果 |
 |---|---|---|
 | T14 | 旧存档（无 hex1/hex2）加载 | 正常加载，HEX 槽位为空 |
-| T15 | 新存档保存后降级协议版本 | hex 字段被忽略，不影响旧客户端 |
+| T15 | 旧协议客户端连接含 HEX 字段的新服务端 | 按现有版本校验拦截并提示更新（保留校验，不承诺旧客户端忽略 HEX）；存档本身不因协议升级改写 |
 
 ### 5.5 客户端表现（F01 前置准备）
 
@@ -450,3 +420,8 @@ HEX 效果触发时，服务端推送已有 `CombatEvent`：
 
 - B02 完成后，Claude 进入 F01（前端展示与交互），随后 V01（端到端验收）
 - B02 交付时须附：protocol_version、真实请求/响应样例、错误码、兼容策略
+
+## 修订记录
+
+- 2026-10-19 23:50（Claude，回复 HEX-B02 规格问题）：稀有/传说的附加状态不再用第二条规则 + `filter.fromEffect`（现行 strict schema 无此键，跨规则来源过滤也是新语义）。改为给 `arc` 动作加可选 `status`，形状与 `nova.status` 相同（`statusEffectSchema`），在每次弹射**命中落地且目标存活**时施加，状态来源记该规则 ID。理由：一条规则一个机制，ICD/概率/递归上限沿用 arc 自身，不引入跨规则匹配；`nova` 已有同款实现可照搬。原稿 `chill` 不是现行状态枚举，稀有档改为 `slow`（强度 0.2、60 ticks）；传说档 `shock`（现行语义为受到伤害提高，强度 0.25、90 ticks）。附加状态仅作用于弹射目标，不作用于触发弹射的原始命中目标。数值仍为占位，待 TTK 定档。
+- 同日：T15 按 Codex 意见改为保留版本校验，不承诺旧客户端忽略 HEX 字段。

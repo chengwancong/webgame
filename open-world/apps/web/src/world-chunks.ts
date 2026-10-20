@@ -1,6 +1,8 @@
 import {project,unproject,type IsoPoint} from './iso.ts';
 export type WorldViewport={x:number;y:number;width:number;height:number};
 export const worldChunkCells=32;
+/** Ground chunks are built in small steps under a per-frame budget; a chunk already on screen but still missing gets the larger one (map entry, teleport). Up to `spareChunks` chunks that left the loading ring stay, so walking back does not repaint them. */
+export const chunkBuild={stepBudgetMs:4,urgentBudgetMs:40,spareChunks:4} as const;
 /** Workbook roads store vertices. Rasterize every segment so sparse vertices
  * produce a connected road across chunk boundaries. */
 export function roadCells(points:readonly (readonly [number,number])[]){
