@@ -77,7 +77,7 @@ export function startHubStage(w:World,d:DungeonDefinition,state:HubRunState){sta
  w.defense={position:point(w,'hub-beacon'),hp:state.beaconHp,maxHp:max,radius:Math.max(w.region.width,w.region.height),requiredTicks:Number.MAX_SAFE_INTEGER,heldTicks:0,enemyIds:w.enemies.map(e=>e.id),failed:false,complete:false};
 }}
 export function currentHubStoryStep(state:HubRunState,stage:number){return state.storySegments[stage]?.steps[state.step];}
-function storyObjects(w:World,state:HubRunState,stage:number):StoryEncounterView['objects']{const step=currentHubStoryStep(state,stage);if(!step)return [];const object=(id:string,name:string,kind:'route'|'clue'|'npc'|'beacon',p:{x:number;y:number})=>({id,name,kind,position:accessibleHubPoint(w.region,p),enabled:true,label:name,reason:''});
+function storyObjects(w:World,state:HubRunState,stage:number):StoryEncounterView['objects']{const step=currentHubStoryStep(state,stage);if(!step)return [];const object=(id:string,name:string,kind:'route'|'clue'|'npc'|'beacon',p:{x:number;y:number})=>({id,name,kind,position:accessibleHubPoint(w.region,p),...(kind==='npc'&&step.npc?{npcId:step.npc,artId:step.npc}:{artId:step.prop??'ss-prop-sign'}),enabled:true,label:name,reason:''});
  if(step.op==='choose')return (state.storyRoutes?.filter(r=>r.task===step.task)??hubStoryRoutes(step.task)).map((r,i)=>object(r.id,r.name,'route',{x:point(w,step.landmark).x+(i?3:-3),y:point(w,step.landmark).y}));
  if(['battle','route_battle','clear_camp'].includes(step.op))return [];
  return [object(step.task+':'+step.seq,step.label,step.op==='defend'?'beacon':step.op==='talk'?'npc':'clue',point(w,step.landmark))];

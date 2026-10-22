@@ -3,7 +3,7 @@ const key=z.string().min(1).max(100),point=z.object({x:z.number().finite(),y:z.n
 export const storyStateSchema=z.object({version:z.literal(1),legacyAccess:z.boolean(),events:z.record(key,z.string()),choices:z.record(key,key)}).strict();
 export type StoryState=z.infer<typeof storyStateSchema>;
 export type StoryFeature='forge'|'professions'|'grid'|'summons'|'aspects'|'nightmare'|'trial'|'high'|'raid'|'sprint'|'waypoint'|'outpost'|'events'|'bounty'|'field-dungeon';
-export const storyObjectSchema=z.object({id:key,name:z.string(),kind:z.enum(['npc','clue','beacon','route']),position:point,npcId:key.optional(),state:z.enum(['dim','lit']).optional(),enabled:z.boolean(),label:z.string(),reason:z.string()}).strict();
+export const storyObjectSchema=z.object({id:key,name:z.string(),kind:z.enum(['npc','clue','beacon','route']),position:point,npcId:key.optional(),artId:key.optional(),state:z.enum(['dim','lit']).optional(),enabled:z.boolean(),label:z.string(),reason:z.string()}).strict();
 export type StoryObject=z.infer<typeof storyObjectSchema>;
 export const storyEncounterSchema=z.object({chapter:key,title:z.string(),phase:key,objective:z.string(),speaker:z.string(),line:z.string(),objects:z.array(storyObjectSchema),completed:z.array(key),choice:key.nullable(),heldTicks:z.number().int().nonnegative(),requiredTicks:z.number().int().nonnegative(),readyForBoss:z.boolean(),defendActive:z.boolean(),contested:z.boolean()}).strict();
 export type StoryEncounterView=z.infer<typeof storyEncounterSchema>;
