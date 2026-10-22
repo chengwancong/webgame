@@ -33,6 +33,16 @@ export function cropHubStoryRegion(source:Region,id:string,part:HubStoryStep[],l
   return {...structuredClone(source),id,presentationKey:source.id+':crop:'+x+','+y,sprint:false,roam:false,rest:false,boss:false,width,height,safe,portal,obstacles,landmarks,spawns:[]};
 }
 
+/** 2–3 段，每段只围绕一处地标裁图：按数量平分会把相距两百多格的两处目标切进同一段，
+ *  裁出跨海的长条图，目标落在虚空（Grok：抢救船台）。地标组多于 3 组时合并相距最近的相邻两组。 */
+export function storyChunks(all:HubStoryStep[],island:Region):HubStoryStep[][]{
+  const groups:HubStoryStep[][]=[];for(const s of all){const last=groups.at(-1);if(last&&(last[0].landmark??'landing')===(s.landmark??'landing'))last.push(s);else groups.push([s]);}
+  if(groups.length===1){const size=Math.ceil(all.length/Math.min(3,Math.max(2,all.length))),out:HubStoryStep[][]=[];for(let i=0;i<all.length;i+=size)out.push(all.slice(i,i+size));return out;}
+  const spot=(g:HubStoryStep[])=>at(island,g[0].landmark??'landing');
+  while(groups.length>3){let best=0,gap=Infinity;for(let i=0;i<groups.length-1;i++){const a=spot(groups[i]),b=spot(groups[i+1]),d=Math.hypot(a.x-b.x,a.y-b.y);if(d<gap){gap=d;best=i;}}groups.splice(best,2,[...groups[best],...groups[best+1]]);}
+  return groups;
+}
+
 export function buildHubDungeonDefinitions(base:DungeonDefinition[]):DungeonDefinition[]{
  const out=[...base];
  for(const region of ['wind','mist'] as const){
@@ -64,8 +74,8 @@ export function buildHubDungeonDefinitions(base:DungeonDefinition[]):DungeonDefi
      all.push(...group);
      if(complete.length)all.push({task:taskId,seq:999,op:'talk',key:'complete-dialogue',label:task.title,npc:task.giver,landmark:group.at(-1)?.landmark,dialogueGroup:task.dialog_complete,dialogue:complete});
     }
-    const count=Math.min(3,Math.max(2,all.length)),size=Math.ceil(all.length/count),parts:HubStorySegment[]=[];
-    for(let i=0;i<all.length;i+=size){const part=all.slice(i,i+size),id='hub-map-'+node+'-'+(parts.length+1);if(!regions.some(r=>r.id===id))registerDungeonRegion(cropHubStoryRegion(regionById(island),id,part,level),island);parts.push({steps:structuredClone(part),region:id});}
+    const parts:HubStorySegment[]=[];
+    for(const part of storyChunks(all,regionById(island))){const id='hub-map-'+node+'-'+(parts.length+1);if(!regions.some(r=>r.id===id))registerDungeonRegion(cropHubStoryRegion(regionById(island),id,part,level),island);parts.push({steps:structuredClone(part),region:id});}
     hubStorySegments.set(node,parts);d.stages=parts.map(p=>p.region);d.policy.augments.roundCount=parts.length;
    }
    d.hub=hubDungeonTemplateSchema.parse({node,kind,objective:objectives[kind],augmentRounds:d.policy.augments.roundCount});
