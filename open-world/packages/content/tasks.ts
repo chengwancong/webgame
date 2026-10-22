@@ -9,7 +9,7 @@ export type TaskDefinition={id:string;typeId:string;title:string;goal:string;sum
 const fail=(msg:string):never=>{throw Error('配置表 任务.xlsx：'+msg);};
 // Starsea v2 owns its accepted steps and confirmed archives through
 // currentQuests/archiveQuestCompletions. Legacy aggregate goals remain here.
-const journal=tasks.filter(t=>t.journal&&t.campaign!=='starsea');
+const journal=tasks.filter(t=>!t.frozen&&t.journal&&t.campaign!=='starsea');
 function condition(t:typeof tasks[number]):TaskDefinition['condition']{
  if(t.cond_kind==='kills')return {kind:'kills',required:t.cond_count??fail(`任务 ${t.id} 缺少条件数量`)};
  if(t.cond_kind==='boss')return {kind:'boss',boss:t.cond_value??fail(`任务 ${t.id} 缺少首领地区`)};

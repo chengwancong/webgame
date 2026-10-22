@@ -15,7 +15,7 @@ export function recordTaskCompletions(s:CharacterState,before:Record<string,bool
 function currentEntry(s:CharacterState,d:TaskDefinition):TaskEntry{
  const progress=taskProgress(s,d),ready=progress.current>=progress.total;
  const note=d.condition.kind==='boss'&&!ready?resolveBossAccess(s.progress)[d.condition.boss]?.message??d.note??'':ready?d.noteReady??'':d.note??'';
- const chapter=d.condition.kind==='story'?storyChapter(d.condition.chapter):undefined,goal=chapter?ready?d.goalReady??d.goal:chapter.phases.find(p=>!storyHas(s,chapter.id+':'+p.id))?.objective??d.goalFinal??d.goal:d.goal;
+ const chapter=d.condition.kind==='story'?storyChapter(d.condition.chapter):undefined,goal=chapter?ready?d.goalReady||d.goal:chapter.phases.find(p=>!storyHas(s,chapter.id+':'+p.id))?.objective||d.goalFinal||d.goalReady||d.goal:d.goal;
  return {id:'current:'+d.id,taskId:d.id,typeId:d.typeId,typeName:taskTypes.find(t=>t.id===d.typeId)?.name??d.typeId,title:d.title,state:ready?'ready':'active',goal,...progress,summary:d.summary,story:d.story,area:d.area,place:d.place,regionId:d.regionId,tags:[...d.tags],reward:d.reward??{gold:rewards.taskGold,material:rewards.taskMaterial,xp:0},goalAt:s.taskJournal?.completed[d.id]??null,claimedAt:null,chain:structuredClone(d.chain),note,source:'current'};
 }
 export function resolveTasks(s:CharacterState):TaskView{

@@ -16,11 +16,15 @@ async function player(){
  return {request,permit,report,lease,s};
 }
 it('island failure advice is selected by the server and never writes rewards or progress',async()=>{
- const p=await player(),run=await p.permit(),before=(await p.request('character')).body;
+ const p=await player(),run=await p.permit(),before=(await p.request('character')).body,persisted=(await pool.query('SELECT state FROM ow_characters WHERE id=$1',[p.s.id])).rows[0].state;
  const fatal={enemy:'督猎者',skill:'背刺',damage:120,damageType:'物理',statuses:['减速'],hint:'它会绕到你身后出手',kind:'melee'};
  const review=await p.request('combat/review',{permit:run.id,fatal,recent:[]});
  expect(review.status).toBe(200);expect(review.body.advice.map((a:any)=>a.label)).toEqual(['控场技能','加生存天赋','强化护甲']);
- expect((await p.request('character')).body).toEqual(before);
+ const after=(await p.request('character')).body;
+ expect((await pool.query('SELECT state FROM ow_characters WHERE id=$1',[p.s.id])).rows[0].state).toEqual(persisted);
+ expect(after.hexCooldowns.observedAt).toBeGreaterThanOrEqual(before.hexCooldowns.observedAt);
+ // Observation timestamps are fresh on each read; all gameplay fields and deadlines remain equal.
+ expect({...after,hexCooldowns:{...after.hexCooldowns,observedAt:before.hexCooldowns.observedAt}}).toEqual(before);
  const other=await player();expect((await other.request('combat/review',{permit:run.id,fatal,recent:[]})).status).toBe(404);
  expect((await p.request('combat/review',{permit:run.id,fatal,recent:[],advice:[{label:'自选',target:'bag'}]})).status).toBe(400);
 });

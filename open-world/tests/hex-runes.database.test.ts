@@ -1,4 +1,8 @@
-import {beforeAll,afterAll,it,expect} from 'vitest';
+// @ts-nocheck
+// Retired D11/D12 socket/choice specifications. D13 explicitly removed this
+// protocol. Kept for history; current acceptance is tests/hex-affix*.test.ts.
+import {beforeAll,afterAll,it as historicalIt,expect} from 'vitest';
+const it=historicalIt.skip;
 import {Pool} from 'pg';
 import {randomUUID} from 'node:crypto';
 import WebSocket from 'ws';
@@ -6,6 +10,8 @@ import {createApp} from '../apps/api/src/app.ts';
 import {migrate} from '../apps/api/src/database.ts';
 import {receiptSchema,snapshotSchema,validateResponse,versions} from '../packages/contracts/index.ts';
 import {rewards as economy} from '../apps/api/src/economy.ts';
+import {newStarseaState} from '../packages/rules/starsea.ts';
+import {makeHexGear} from '../packages/rules/hex-runes.ts';
 
 const dsn=process.env.AW_DATABASE_URL;if(!dsn)throw Error('HEX integration needs isolated real PostgreSQL');
 const schema='qa_hex_'+randomUUID().replaceAll('-','');
@@ -33,6 +39,48 @@ async function auditHex(id:string){
  const counts=(await pool.query('SELECT (SELECT count(*)::int FROM ow_receipts WHERE character=$1) receipts,(SELECT count(*)::int FROM ow_ledger WHERE character=$1) ledger',[id])).rows[0];
  return {state,counts};
 }
+async function prepareHexQuestState(id:string,done:string[]=[]){
+ const s=(await auditHex(id)).state;
+ s.starsea=newStarseaState();Object.assign(s.starsea,{quests:{},tracked:null,done,islands:['ss-map-wind','ss-map-mist'],discovered:['ow-mist-z2'],prologue:{done:true}});
+ await pool.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[s,id]);
+}
+it('D12 real API rejects locked slots, freezes four choices, and serializes competing picks into one gear/receipt/ledger',async()=>{
+ const p=await player();await prepareHexQuestState(p.id);
+ const grant=await p.send('dev/hex-grant',{base:'hex-aftershock',quality:'common'}),gear_id=grant.body.delta.gear[0].id;
+ const locked=await p.send('hex/equip',{gear_id,slot:'hex1'});expect(locked.body.code).toBe('HEX_SLOT_LOCKED');
+ const state=(await auditHex(p.id)).state;state.starsea.done.push('HEX-Q01');
+ await pool.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[state,p.id]);
+ // Controlled completed-quest fixture; offer generation, choice commands and
+ // all persistence/receipt guards below run through the real application.
+ const trigger=await p.send('hex/equip',{gear_id,slot:'hex1'});expect(trigger.status).toBe(200);
+ const offer=trigger.body.snapshot.hex.offers.find((o:any)=>o.task==='HEX-Q01');
+ expect(offer.candidates).toHaveLength(4);expect(new Set(offer.candidates.map((c:any)=>c.playstyle)).size).toBe(4);
+ const before=await auditHex(p.id),a=p.command({offer_id:offer.id,candidate_id:offer.candidates[0].id}),b=p.command({offer_id:offer.id,candidate_id:offer.candidates[1].id});
+ const [left,right]=await Promise.all([p.request('hex/choose',a),p.request('hex/choose',b)]);
+ const winner=left.status===200?left:right,loser=left.status===200?right:left,input=left.status===200?a:b;
+ expect(winner.status).toBe(200);validateResponse('hex/choose',winner.body);expect(loser.body.code).toBe('REVISION');
+ const after=await auditHex(p.id);
+ expect(after.state.gear.length).toBe(before.state.gear.length+1);expect(after.state.gear.filter((g:any)=>g.id===input.candidate_id)).toHaveLength(1);
+ expect(after.counts).toEqual({receipts:before.counts.receipts+1,ledger:before.counts.ledger+1});
+ expect((await p.request('hex/choose',input)).body).toEqual(winner.body);expect(await auditHex(p.id)).toEqual(after);
+ expect((await p.request('hex/choose',{...input,candidate_id:randomUUID()})).body.code).toBe('COMMAND_CONFLICT');
+ const again=await p.request('hex/choose',{...p.command({offer_id:offer.id,candidate_id:offer.candidates[2].id}),revision:after.state.revision});
+ expect(again.body.code).toBe('GEAR');expect(await auditHex(p.id)).toEqual(after);
+});
+it('D12 full inventory and forged candidate rejection preserve the frozen choice and allow a later legitimate pick',async()=>{
+ const p=await player();await prepareHexQuestState(p.id,['HEX-Q01']);
+ const grant=await p.send('dev/hex-grant',{base:'hex-footfall-heal',quality:'common'}),offer=grant.body.snapshot.hex.offers[0];
+ const forged=await p.send('hex/choose',{offer_id:offer.id,candidate_id:randomUUID()});expect(forged.body.code).toBe('INPUT');
+ const s=(await auditHex(p.id)).state;
+ while(s.gear.length<60)s.gear.push(makeHexGear('hex-aftershock','common',randomUUID()));
+ await pool.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[s,p.id]);
+ const before=await auditHex(p.id),full=await p.send('hex/choose',{offer_id:offer.id,candidate_id:offer.candidates[0].id});
+ expect(full.body.code).toBe('CAPACITY');expect(await auditHex(p.id)).toEqual(before);
+ const salvage=await p.send('gear/salvage',{gear_id:s.gear.at(-1).id});expect(salvage.status).toBe(200);
+ const choose=await p.send('hex/choose',{offer_id:offer.id,candidate_id:offer.candidates[0].id});expect(choose.status).toBe(200);
+ expect(choose.body.snapshot.hex.offers[0].candidates).toEqual(offer.candidates);
+ expect(choose.body.snapshot.hex.offers[0].selected).toBe(offer.candidates[0].id);
+});
 it.each(['hex-footfall-heal','hex-control-to-shield','hex-cast-hit-relay','hex-void-rift','hex-mark-relay','hex-bee-volley'])('D11 %s common/magic persist through real API equip, replay and reconnect without issuing unavailable tiers',async base=>{
  const p=await player(),content=await p.request('content'),entry=content.body.hexRunes.find((r:any)=>r.id===base);
  expect(Object.keys(entry.tiers)).toEqual(['common','magic']);expect(entry.playstyle).toBeTruthy();expect(entry.flavor).toBeTruthy();

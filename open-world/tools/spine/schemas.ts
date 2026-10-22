@@ -1,4 +1,6 @@
 import {z} from 'zod';
+export {hubRewardPlanSchema,hubRewardEvidenceSchema} from './hub-reward-schema.ts';
+import {challengeContentSchema} from '../../packages/content/progression-challenges.ts';
 import {newAspectSchema} from '../../packages/content/aspects.ts';
 import {augmentDefinitionSchema} from '../../packages/content/augments.ts';
 import {setEffectsSchema} from '../../packages/content/set-effects.ts';
@@ -14,13 +16,16 @@ import {stageKeyPoolsContentSchema} from '../../apps/api/src/stage-key-pools.ts'
 import {fieldLootContentSchema} from '../../apps/api/src/field-loot.ts';
 import {hexLootContentSchema} from '../../apps/api/src/hex-loot.ts';
 import {hexRuneCatalogSchema} from '../../packages/content/hex-runes.ts';
+import {hexPolicyContentSchema} from '../../packages/content/hex-policy.ts';
 import {skillCostsSchema} from '../../packages/content/skill-costs.ts';
 import type {SpineSchemas} from './apply.ts';
 const n=z.number().finite().nonnegative(),i=n.int(),positive=n.positive();
 const sequential=(values:number[])=>values.every((v,k)=>!k||v>=values[k-1]);
 export const spineSchemas:SpineSchemas={
+ 'packages/content/progression-challenges.json':challengeContentSchema,
  'packages/content/skill-costs.json':skillCostsSchema,
  'packages/content/hex-runes.json':hexRuneCatalogSchema,
+ 'packages/content/hex-policy.json':hexPolicyContentSchema,
  'packages/content/aspects.json':z.array(newAspectSchema).length(60),
  'packages/content/augments.json':z.array(augmentDefinitionSchema).length(90),
  'packages/content/set-effects.json':setEffectsSchema,

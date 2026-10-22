@@ -34,7 +34,7 @@ export class PrologueController{
  phase:Phase='idle';
  private battle?:PrologueBattle;private family:PrologueFamily='sword';private clock=0;private phaseAt=0;
  private caption='';private captionUntil=0;private busy=false;private error='';private skipRequested=false;
- private root?:HTMLElement;private lastHtml='';private fall?:FallHandle;private fallStopTimer=0;
+ private root?:HTMLElement;private lastHtml='';private fall?:FallHandle;private fallStopTimer=0;private fallGuard:ReturnType<typeof setTimeout>|undefined;
  constructor(private host:PrologueHost){}
  get active(){return this.phase!=='idle';}
  static pending(s?:Snapshot){return s?.starsea?.prologue?.done===false;}
@@ -56,7 +56,9 @@ export class PrologueController{
  }
  private previewCard(target:EventTarget|null){if(this.phase!=='choose')return;const card=(target as HTMLElement|null)?.closest?.<HTMLElement>('.prologue-card');const canvas=card?.querySelector<HTMLCanvasElement>('canvas.prologue-demo');if(canvas)playDemo(canvas,this.host.motionReduced());}
  private stopFall(delay=0){const h=this.fall;this.fall=undefined;if(!h)return;clearTimeout(this.fallStopTimer);if(delay>0)this.fallStopTimer=window.setTimeout(()=>h.stop(),delay);else h.stop();}
- private go(phase:Phase){this.log.push(`${this.clock}:${this.phase}->${phase}`);const leaving=this.phase==='fall'&&phase!=='fall';this.phase=phase;this.phaseAt=this.clock;if(phase==='fall'&&this.root?.parentElement&&!this.fall)this.fall=startFall(this.root.parentElement,this.host.motionReduced());if(leaving)this.stopFall(700);this.render();}
+ /** UX-A-F02：fall→choose 平时由 step() 计时；宿主停摆/降频时用墙钟兜底，免得永久卡在坠落。 */
+ private clearFallGuard(){if(this.fallGuard!==undefined){clearTimeout(this.fallGuard);this.fallGuard=undefined;}}
+ private go(phase:Phase){this.log.push(`${this.clock}:${this.phase}->${phase}`);const leaving=this.phase==='fall'&&phase!=='fall';this.clearFallGuard();this.phase=phase;if(phase==='fall')this.fallGuard=setTimeout(()=>{this.fallGuard=undefined;if(this.phase==='fall')this.go('choose');},FALL_MS+3000);this.phaseAt=this.clock;if(phase==='fall'&&this.root?.parentElement&&!this.fall)this.fall=startFall(this.root.parentElement,this.host.motionReduced());if(leaving)this.stopFall(700);this.render();}
  private keyed(text:string){return text.replaceAll('{key}',this.host.interactKey());}
  private say(text:string,seconds=3.5){this.caption=text;this.captionUntil=this.clock+seconds*T;}
  private async action(action:string,id:string){
@@ -95,7 +97,7 @@ export class PrologueController{
  }
  private queueBurst(){if(['waves','boss'].includes(this.phase))this.battle?.queueBurst();}
  private async close(){
-  if(this.busy)return;this.log.push(`${this.clock}:close@${this.phase}`);this.busy=true;this.phase='closing';this.error='';this.stopFall();this.render();
+  if(this.busy)return;this.log.push(`${this.clock}:close@${this.phase}`);this.busy=true;this.phase='closing';this.error='';this.clearFallGuard();this.stopFall();this.render();
   try{await this.host.command({finish:true});}catch(e){this.error=e instanceof Error?e.message:'没有连上服务器，请重试。';this.busy=false;this.render();return;}
   this.busy=false;this.phase='idle';this.battle=undefined;document.body.classList.remove('prologue-active');this.root?.replaceChildren();this.lastHtml='';await this.host.finished();
  }

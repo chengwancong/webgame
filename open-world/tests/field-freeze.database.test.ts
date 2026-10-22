@@ -4,7 +4,10 @@ import {Pool} from 'pg';
 import {createApp} from '../apps/api/src/app.ts';
 import {migrate} from '../apps/api/src/database.ts';
 import {parseFieldFreeze} from '../packages/contracts/field-freeze.ts';
-import {validateResponse} from '../packages/contracts/index.ts';
+import {validateResponse,type Gear} from '../packages/contracts/index.ts';
+import {makeGear} from '../packages/rules/index.ts';
+import {generateGearAffixes} from '../packages/rules/affix-generator.ts';
+import {applyItemPower} from '../packages/rules/item-power.ts';
 import {worldTables} from '../packages/content/world-tables.ts';
 import {monsterContent} from '../packages/content/monsters.ts';
 import {generateProductionIsland} from '../tools/build-production-islands.ts';
@@ -27,7 +30,9 @@ const template={...structuredClone(monsterContent.templates.find(t=>t.curve==='s
 beforeAll(async()=>{
  await owner.query('CREATE SCHEMA '+schema);await migrate(pool);
  monsterContent.templates.push(template);
- table.events.push({_row:4,id:'freeze-qa-event',region,zone:table.zones[0].id,...point,name:'QA event',kind:'waves',definition:'freeze-qa-event',resource:table.waypoints[0].resource,radius:64,cooldownSeconds:600,durationSeconds:300,waveIntervalSeconds:15,waves:[[{template:template.id,rank:'normal',count:1}]],loot:'field-event'});
+ // Two waves: success needs every wave spawned (2nd at 15s), so the apps' real 100ms background executor
+ // cannot finish the event while a test is still asserting on its running state; tests advance the trusted clock explicitly.
+ table.events.push({_row:4,id:'freeze-qa-event',region,zone:table.zones[0].id,...point,name:'QA event',kind:'waves',definition:'freeze-qa-event',resource:table.waypoints[0].resource,radius:64,cooldownSeconds:600,durationSeconds:300,waveIntervalSeconds:15,waves:[[{template:template.id,rank:'normal',count:1}],[{template:template.id,rank:'normal',count:1}]],loot:'field-event'});
  table.patrols.push({_row:4,id:'freeze-qa-patrol',region,zone:table.zones[0].id,path:[point,{x:225,y:256}],template:table.camps[0].pack[0].template,rank:'elite',speed:1,radius:4,respawnSeconds:90});
  registerProducedWorld(generateProductionIsland(table,table.islands[0],catalogues) as unknown as ProducedWorld);
  for(const [key,rows]of Object.entries(table))if(key!=='source')(worldTables[key as keyof typeof worldTables] as unknown[]).push(...rows as unknown[]);
@@ -56,7 +61,7 @@ const counts=async(id:string)=>(await pool.query('SELECT (SELECT count(*)::int F
 it('publishes supported immutable switches and rejects unknown/unimplemented switches',async()=>{
  const frozenContent=(await frozen.inject('/api/content')).json(),liveContent=(await live.inject('/api/content')).json();
  expect(frozenContent.fieldFreeze).toEqual(all);
- expect(Object.values(liveContent.fieldFreeze)).toEqual(Array(6).fill(false));
+ expect(liveContent.fieldFreeze).toEqual(parseFieldFreeze());
  expect(validateResponse('content',frozenContent)).toEqual(frozenContent);
  expect(validateResponse('content',liveContent)).toEqual(liveContent);
  expect(Object.isFrozen(parseFieldFreeze())).toBe(true);
@@ -124,24 +129,27 @@ it('keeps completed historical bounties claimable without creating or accepting 
  expect((await p.send('bounty/claim',{instance})).body.code).toBe('BOUNTY_GONE');
  expect((await p.send('bounty/accept',{instance})).body.code).toBe('FIELD_FROZEN');
 });
-it('HEX-A05 real event start protects HEX builds and old receipts until executor completion and claim',async()=>{
- const p=await player();
- const a=await p.send('dev/hex-grant',{base:'hex-chain-lightning',quality:'common'},live);
- const b=await p.send('dev/hex-grant',{base:'hex-aftershock',quality:'common'},live);
- expect(a.status,JSON.stringify(a.body)).toBe(200);expect(b.status).toBe(200);
- const first=a.body.delta.gear[0].id,second=b.body.delta.gear[0].id;
- const equip=await p.send('hex/equip',{gear_id:first,slot:'hex1'},live);expect(equip.status).toBe(200);
+// D13 moved HEX onto ordinary gear as an affix (hex/* and dev/hex-grant routes are gone); the field build lock now guards gear/equip.
+function affixGear(index:number,tier:'common'|'magic'):Gear{
+ const g=makeGear(index,randomUUID());g.origin={kind:'random'};g.quality='rare';applyItemPower(g,20);
+ g.affixes=generateGearAffixes(g,2,{int:(min)=>min,float:()=>.5});g.hex={rune:'hex-aftershock',tier};return g;
+}
+it('HEX-A05 real event start locks HEX-affix gear changes and keeps old receipts until executor completion and claim',async()=>{
+ const p=await player(),fixture=await saved(p.id);
+ // Controlled inventory fixture (same factories as hex-affix.database); equip, lock, executor and claim all run through the real API.
+ const first=affixGear(0,'common'),second=affixGear(0,'magic'),armor=affixGear(2,'common');
+ fixture.gear.push(first,second,armor);await pool.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[fixture,p.id]);
+ const equip=await p.send('gear/equip',{gear_id:first.id},live);expect(equip.status,JSON.stringify(equip.body)).toBe(200);
+ expect(equip.body.snapshot.hexActive.find((r:any)=>r.gear===first.id).active).toBe(true);
  const started=await p.send('field/activity/start',{kind:'event',region,target:'freeze-qa-event',position:point},live);
  expect(started.status,JSON.stringify(started.body)).toBe(200);
  const before=await saved(p.id),beforeCounts=await counts(p.id);
  const activity=(await pool.query('SELECT data,status FROM ow_field_activities WHERE character=$1',[p.id])).rows[0];
  expect(activity.status).toBe('running');
- for(const [path,body]of [
-  ['hex/equip',{gear_id:second,slot:'hex2'}],['hex/equip',{gear_id:first,slot:'hex2'}],['hex/unequip',{slot:'hex1'}],
- ] as const){
-  const denied=await p.send(path,body,live);expect(denied.status).toBe(409);expect(denied.body.code).toBe('FIELD_BUILD_LOCKED');
+ for(const gear_id of [second.id,armor.id]){
+  const denied=await p.send('gear/equip',{gear_id},live);expect(denied.status).toBe(409);expect(denied.body.code).toBe('FIELD_BUILD_LOCKED');
  }
- expect((await p.request('hex/equip',equip.input,live)).body).toEqual(equip.body);
+ expect((await p.request('gear/equip',equip.input,live)).body).toEqual(equip.body);
  expect(await saved(p.id)).toEqual(before);expect(await counts(p.id)).toEqual(beforeCounts);
  // Explicit trusted clock fixture: real executor resolves combat, never a synthetic client kill/success report.
  const data=activity.data as FieldActivity;advanceFieldActivity(data,data.startedAt+60000,1800);
@@ -151,8 +159,9 @@ it('HEX-A05 real event start protects HEX builds and old receipts until executor
  const afterClaim=await saved(p.id),afterCounts=await counts(p.id);
  expect((await p.request('field/activity/claim',claim.input,live)).body).toEqual(claim.body);
  expect(await counts(p.id)).toEqual(afterCounts);
- const off=await p.send('hex/unequip',{slot:'hex1'},live);expect(off.status,JSON.stringify(off.body)).toBe(200);
- const after=await saved(p.id);expect(after.equipment.hex1).toBeUndefined();
+ const swap=await p.send('gear/equip',{gear_id:second.id},live);expect(swap.status,JSON.stringify(swap.body)).toBe(200);
+ expect(swap.body.snapshot.hexActive.find((r:any)=>r.gear===second.id).active).toBe(true);
+ const after=await saved(p.id);expect(after.equipment.weapon).toBe(second.id);
  expect(after.gear).toEqual(afterClaim.gear);expect(after.gold).toBe(afterClaim.gold);expect(after.material).toBe(afterClaim.material);
  expect(after.revision).toBe(afterClaim.revision+1);
 });

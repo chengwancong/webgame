@@ -1,5 +1,5 @@
 import type {GearQuality} from '../../../packages/contracts/index.ts';
-import {qualityColors} from './components/gear-metadata.ts';
+import {qualityColors} from './quality-colors.ts';
 
 // HEX rune icons (U-07): hexagon plate + mechanic glyph, hand-inked like the rune marks elsewhere.
 // Glyphs cover the 12 first-batch mechanics (design.md §3); content icon keys map onto them.
@@ -25,14 +25,32 @@ const glyphPaths:Record<HexGlyph,string>={
  siphon:'<path d="M14 14q11 4 11 11t11 11" fill="none"/><path d="m31 37 5-1-1-5" fill="none"/><circle cx="15" cy="34" r="5" fill="var(--quality-glyph)"/><circle cx="35" cy="15" r="3"/>',
  echo:'<path d="M25 13a12 12 0 1 1-11 7" fill="none"/><path d="m11 14 3 6 6-2" fill="none"/><path d="M25 19v7l5 3" fill="none" stroke="var(--quality-glyph)" stroke-width="3"/>',
 };
+// Category placeholders (attack/defense/control/mobility/resource/synergy): used when a rune's icon key has no registered glyph yet.
+export const hexCategoryGlyphs=['attack','defense','control','mobility','resource','synergy'] as const;
+export type HexCategoryGlyph=typeof hexCategoryGlyphs[number];
+const categoryAlias:Record<string,HexCategoryGlyph>={survival:'defense',sustain:'defense'};
+const categoryPaths:Record<HexCategoryGlyph,string>={
+ attack:'<path d="m25 9 5 21h-10Z" fill="var(--quality-glyph)"/><path d="M17 33h16M25 33v8" fill="none"/>',
+ defense:'<path d="M25 10 37 15v9q0 10-12 16-12-6-12-16v-9Z" fill="var(--quality-glyph)"/><path d="M25 17v15" fill="none"/>',
+ control:'<circle cx="25" cy="25" r="12" fill="none"/><path d="M25 13v24M13 25h24" fill="none"/><circle cx="25" cy="25" r="4" fill="var(--quality-glyph)"/>',
+ mobility:'<path d="M10 25h20m-6-8 8 8-8 8" fill="none"/><path d="M12 17h9M12 33h9" fill="none"/><circle cx="37" cy="25" r="3" fill="var(--quality-glyph)"/>',
+ resource:'<path d="M25 11 36 25 25 39 14 25Z" fill="var(--quality-glyph)"/><path d="M25 11v28M14 25h22" fill="none"/>',
+ synergy:'<circle cx="19" cy="25" r="8" fill="var(--quality-glyph)"/><circle cx="31" cy="25" r="8" fill="none"/>',
+};
+/** Category key (case/alias tolerant) → placeholder glyph; undefined for unknown or missing categories. */
+export function hexGlyphForCategory(category:string|undefined):HexCategoryGlyph|undefined{
+ if(!category)return undefined;const k=categoryAlias[category]??category;
+ return (hexCategoryGlyphs as readonly string[]).includes(k)?k as HexCategoryGlyph:undefined;
+}
 const fallbackGlyph='<path d="M25 15v20M17 21l16 8M17 29l16-8" fill="none"/>';
 
 // Pointy-top hexagon in a 50×50 box; outer plate takes the quality colour, inner plate stays parchment.
 const outer='M25 2 45 13.5v23L25 48 5 36.5v-23Z',inner='M25 7 40.5 16v18L25 43 9.5 34V16Z';
-export function hexRuneIconSvg(glyph:HexGlyph|undefined,quality:GearQuality,label?:string){
- const color=qualityColors[quality]??qualityColors.common;
+/** Unregistered icon (glyph undefined) falls back to the category placeholder when a category is known, else the old generic mark. */
+export function hexRuneIconSvg(glyph:HexGlyph|undefined,quality:GearQuality,label?:string,category?:string){
+ const color=qualityColors[quality]??qualityColors.common,categoryGlyph=glyph?undefined:hexGlyphForCategory(category);
  const a11y=label?`role="img" aria-label="${label.replace(/[&<>"]/g,'')}"`:'aria-hidden="true"';
- return `<svg class="hex-rune-icon quality-${quality}" viewBox="0 0 50 50" ${a11y} focusable="false" style="--quality-glyph:${color}" fill="none" stroke="${ink}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${outer}" fill="${color}"/><path d="${inner}" fill="var(--color-icon-paper)" stroke-width="1.5"/>${glyph?glyphPaths[glyph]:fallbackGlyph}</svg>`;
+ return `<svg class="hex-rune-icon quality-${quality}" viewBox="0 0 50 50" ${a11y} focusable="false" style="--quality-glyph:${color}" fill="none" stroke="${ink}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${outer}" fill="${color}"/><path d="${inner}" fill="var(--color-icon-paper)" stroke-width="1.5"/>${glyph?glyphPaths[glyph]:categoryGlyph?categoryPaths[categoryGlyph]:fallbackGlyph}</svg>`;
 }
 
 /** Flat <img>-safe form for generic item slots (bag/loot/paperdoll resolve art by id); CSS variables can't reach into an <img>, so literals stand in and the slot's quality frame carries the rarity colour. */
@@ -40,4 +58,10 @@ export function hexRuneDataUri(icon:string|undefined){
  const svg=hexRuneIconSvg(hexGlyphForIcon(icon),'common').replace(/ style="[^"]*"/,'').replace(/xmlns=/,'').replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" ')
   .replace(/var\(--color-chrome-ink\)/g,'#3a2a1a').replace(/var\(--quality-glyph\)/g,'#c9a24a').replace(/var\(--color-rarity-common\)/g,'#c9a24a').replace(/var\(--color-icon-paper\)/g,'#f4ead5');
  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+}
+
+/** Small hexagon corner badge for paperdoll / bag cells; grey when the server says the HEX is not in effect. */
+export function hexBadgeSvg(quality:GearQuality,active=true){
+ const color=active?(qualityColors[quality]??qualityColors.common):'#9a9a9a';
+ return `<svg class="hex-badge-icon${active?'':' is-inactive'}" viewBox="0 0 50 50" aria-hidden="true" focusable="false" fill="none" stroke="${ink}" stroke-width="3" stroke-linejoin="round"><path d="${outer}" fill="${color}"/><path d="${inner}" fill="var(--color-icon-paper)" stroke-width="2.5"/><path d="M25 15v20M17 21l16 8M17 29l16-8" stroke-width="3" stroke-linecap="round"/></svg>`;
 }

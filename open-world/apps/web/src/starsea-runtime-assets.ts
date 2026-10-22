@@ -1,8 +1,9 @@
-import {materialCanvas,type ThemeMaterial} from './open-world-five-art-data.ts';
 import {openWorldRuntimeAssets} from '../../../packages/asset-manifest/open-world-assets.ts';
 import Phaser from 'phaser';
 import bundle from '../../../packages/asset-manifest/starsea.v1.json';
-import {StarseaActorPreview} from './starsea-actor-preview.ts';
+import {nativeProfileFor} from './starsea-actor-preview.ts';
+import {nativeFrameCache,nativeBlankKey} from './native-frame-cache.ts';
+import {mirrorSocket} from './native-frame-math.ts';
 import {loadJSON,type Asset,type Point,type PropState} from './starsea-assets.ts';
 import type {SocketName,RenderPose} from './effect-attachments.ts';
 import {runtimeResources} from '../../../packages/asset-manifest/runtime-resources.ts';
@@ -49,33 +50,48 @@ export function starseaAtlasSocket(scene:Phaser.Scene,id:string,frame:string,nam
 }
 export function starseaPropState(asset:RuntimeAsset,state?:string):PropState|undefined{const states=asset.runtime.states;if(!states)return;return state===undefined?Object.values(states)[0]:states[state];}
 
-/** Hero and party slots are reserved before native enemies/NPCs claim a visible slot. */
+/** Hero and party slots are reserved before native enemies/NPCs claim a visible slot.
+ *  帧已共享缓存，limit 仅为合理性上限，默认 64。 */
 export class StarseaNativeBudget{
- readonly limit=8;private used=new Set<string>();private reserved=0;private denied=0;
+ readonly limit=64;private used=new Set<string>();private reserved=0;private denied=0;
  begin(reserved:number){this.reserved=Math.min(this.limit,Math.max(0,reserved));this.used.clear();this.denied=0;}
  claim(id:string){if(this.used.has(id))return true;if(this.used.size+this.reserved>=this.limit){this.denied++;return false;}this.used.add(id);return true;}
  diagnostics(){return{limit:this.limit,reserved:this.reserved,visible:this.used.size,total:this.used.size+this.reserved,denied:this.denied};}
 }
-let serial=0;
 export class StarseaNativeActor{
- readonly sprite:Phaser.GameObjects.Sprite;private texture:Phaser.Textures.CanvasTexture;private painter:StarseaActorPreview;
- private request='';private loaded=false;private destroyed=false;private generation=0;private lastDraw='';private errors:string[]=[];private rendered=0;private skipped=0;
+ readonly sprite:Phaser.GameObjects.Sprite;
+ private current?:{texture:string;sockets:Record<string,Point>;flipped:boolean;name:string};
+ private errors:string[]=[];private rendered=0;private skipped=0;
  private point:Point={x:0,y:0};readonly foot:Point={x:256,y:409.6};
- constructor(private scene:Phaser.Scene,readonly asset:RuntimeAsset){this.texture=scene.textures.createCanvas('starsea-native-live-'+(++serial),512,512)!;this.painter=new StarseaActorPreview(512,512,this.foot);this.sprite=scene.add.sprite(0,0,this.texture.key).setOrigin(.5,.8).setVisible(false);}
+ private destroyed=false;
+ constructor(private scene:Phaser.Scene,readonly asset:RuntimeAsset){
+  const cache=nativeFrameCache(scene);
+  this.sprite=scene.add.sprite(0,0,nativeBlankKey,'f').setOrigin(.5,.8).setVisible(false);
+  cache.preload(asset);
+ }
  sync(id:string,point:Point,action:string,clock:number,facing:number,phase:StarseaPhase,budget:StarseaNativeBudget,cast?:{elapsed:number;windup:number;recovery:number}){
   this.point=point;this.sprite.setPosition(point.x,point.y).setDepth(point.y+2);
   const view=this.scene.cameras.main.worldView,padding=this.asset.runtime.displayHeight??150,visible=point.x>=view.x-padding&&point.x<=view.right+padding&&point.y>=view.y&&point.y<=view.bottom+padding;
   if(!visible||!budget.claim(id)){this.sprite.setVisible(false);this.skipped++;return;}
   if(action==='death')phase='default';
-  const skill=this.asset.actions.skills?.[action],profile=action==='death'?this.asset.runtime.profile:phase==='phase-enter'||phase==='phase-end'?this.asset.states[phase]?.profile:skill?.profiles?.[phase]??skill?.profile??this.asset.states?.[phase]?.profile??this.asset.runtime.profile;
-  if(this.request!==profile){this.request=profile;this.loaded=false;const generation=++this.generation;void this.painter.load(this.asset,action,phase).then(ready=>{if(!this.destroyed&&generation===this.generation){this.loaded=ready;this.lastDraw='';}}).catch(error=>{if(!this.destroyed&&generation===this.generation){this.errors.push(String(error));console.error('[starsea-native]',error);}});}
-  this.sprite.setVisible(this.loaded);if(!this.loaded)return;
-  // Repaint at most 30 times a second (the simulation's rate): each repaint draws a 512² canvas and re-uploads the texture.
-  const drawKey=JSON.stringify([profile,action,phase,facing,Math.floor(clock*30),cast&&[Math.floor(cast.elapsed*30),cast.windup,cast.recovery]]);if(drawKey===this.lastDraw){this.skipped++;return;}
-  try{if(this.painter.render(action,clock,facing,phase,cast)){const context=this.texture.context;context.clearRect(0,0,512,512);const material=(this.asset.runtime as typeof this.asset.runtime&{material?:ThemeMaterial}).material;context.drawImage(material?.tint||material?.wash?materialCanvas(this.painter.canvas,this.painter.canvas.width,this.painter.canvas.height,material):this.painter.canvas,0,0);this.texture.refresh();this.rendered++;}this.lastDraw=drawKey;}catch(error){this.errors.push(String(error));console.error('[starsea-native]',error);}
+  const profile=nativeProfileFor(this.asset,action,phase);
+  const cache=nativeFrameCache(this.scene);
+  const f=cache.frame(this.asset,profile,action,clock,facing,phase,cast);
+  if(typeof f==='object'){
+   if(this.current?.texture!==f.texture)this.sprite.setTexture(f.texture,'f');
+   this.sprite.setFlipX(f.flipped).setVisible(true);this.current=f;this.rendered++;
+  }else{
+   if(f==='error'&&this.errors.length<8){this.errors.push('frame error '+profile);console.error('[starsea-native] frame error',this.asset.id,profile);}
+   // 新帧未就绪（换档加载中/本帧烘焙额度用完）：保持上一帧，不再隐藏；上一帧已被缓存回收则先隐藏
+   if(this.current&&!cache.has(this.current.texture)){this.current=undefined;this.sprite.setTexture(nativeBlankKey,'f');}
+   this.sprite.setVisible(Boolean(this.current));
+  }
  }
- pose():RenderPose{return{art:this.asset.id,frame:String(this.painter.diagnostics().native?.frame??''),position:{...this.point},scale:1,flip:false,socket:name=>{const socket=this.painter.socket(name);return socket?{x:this.point.x+socket.x-this.foot.x,y:this.point.y+socket.y-this.foot.y}:undefined;}};}
- duration(action:string){return this.painter.actionDuration(action)??this.asset.actions[action]?.duration??1.5;}
- diagnostics(){return{...this.painter.diagnostics(),visible:this.sprite.visible,rendered:this.rendered,skipped:this.skipped,errors:[...this.errors,...this.painter.diagnostics().errors]};}
- destroy(){if(this.destroyed)return;this.destroyed=true;this.generation++;this.painter.destroy();this.sprite.destroy();this.scene.textures.remove(this.texture.key);}
+ pose():RenderPose{
+  const cur=this.current,foot=this.foot;
+  return{art:this.asset.id,frame:cur?.name??'',position:{...this.point},scale:1,flip:false,
+   socket:(name:SocketName)=>{const s=cur?.sockets[name];if(!s)return;const m=mirrorSocket(s,foot.x,cur.flipped);return{x:this.point.x+m.x-foot.x,y:this.point.y+m.y-foot.y};}};}
+ duration(action:string){return nativeFrameCache(this.scene).duration(this.asset,action)??this.asset.actions[action]?.duration??1.5;}
+ diagnostics(){return{id:this.asset.id,profile:nativeProfileFor(this.asset,'idle','default'),frame:this.current?.name??'',flip:this.current?.flipped??false,visible:this.sprite.visible,rendered:this.rendered,skipped:this.skipped,errors:[...this.errors],cache:nativeFrameCache(this.scene).diagnostics()};}
+ destroy(){if(this.destroyed)return;this.destroyed=true;this.sprite.destroy();}
 }

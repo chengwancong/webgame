@@ -4,8 +4,8 @@ import {planeResource,PLANE_DRAW_DEPTH,type PlaneMap,type PlaneMaterial,type Pla
 import {starseaAsset,starseaTexture} from './starsea-runtime-assets.ts';
 import type {Point} from './starsea-assets.ts';
 import {project} from './iso.ts';
-import {visibleWorldChunks,chunkKey,chunkViewDistance,cameraView,screenOrigin,chunkBuild} from './world-chunks.ts';
-const {stepBudgetMs,urgentBudgetMs,spareChunks}=chunkBuild;
+import {visibleWorldChunks,chunkKey,chunkViewDistance,cameraView,screenOrigin,chunkBuild,chunkBudgetMs} from './world-chunks.ts';
+const {spareChunks}=chunkBuild;
 
 /** Chunk canvases reserve TOP pixels above the floor diamond for rock rising out of it. */
 const TOP=340,groundWidth=2178,groundHeight=1226+TOP,groundLeft=1089,groundTop=37+TOP,CHUNK=32;
@@ -71,9 +71,15 @@ export class PlaneSceneRenderer{
   for(let d=xs+ys;d<=xe+ye-2;d++){for(let x=Math.max(xs,d-ye+1);x<=Math.min(xe-1,d-ys);x++){const y=d-x;if(!this.rock(x,y)||map.dist[y*n+x]>PLANE_DRAW_DEPTH)continue;
    this.blockCell(ctx,x,y,top);}if((d-xs-ys)%8===7)yield;}
   yield;
-  ctx.setTransform(1,0,0,1,0,0);const texture=this.scene.textures.create(key,canvas,groundWidth,groundHeight);if(!texture)throw Error('Unable to register plane ground '+key);texture.add('__BASE',0,0,0,groundWidth,groundHeight);
-  const image=this.scene.add.image(origin.x-groundLeft,origin.y-groundTop,key).setOrigin(0).setDepth(-10000+cx+cy);this.chunks.set(cell,{image,key,canvas});
-  this.nodes.set(cell,(this.source.get(cell)??[]).map(p=>this.sprite(p)));
+  // Pieces are made hidden in batches and shown with their ground; the GPU upload gets a step of its own; an abandoned job destroys them.
+  const nodes:Node[]=[];let registered=false;
+  try{
+   for(const p of this.source.get(cell)??[]){const node=this.sprite(p);node.image.setVisible(false);nodes.push(node);if(nodes.length%24===0)yield;}
+   yield;
+   ctx.setTransform(1,0,0,1,0,0);const texture=this.scene.textures.create(key,canvas,groundWidth,groundHeight);if(!texture)throw Error('Unable to register plane ground '+key);texture.add('__BASE',0,0,0,groundWidth,groundHeight);
+   const image=this.scene.add.image(origin.x-groundLeft,origin.y-groundTop,key).setOrigin(0).setDepth(-10000+cx+cy);this.chunks.set(cell,{image,key,canvas});
+   for(const node of nodes)node.image.setVisible(true);this.nodes.set(cell,nodes);registered=true;
+  }finally{if(!registered)for(const node of nodes)node.image.destroy();}
  }
  private release(key:string){const node=this.chunks.get(key);if(node){node.image.destroy();this.scene.textures.remove(node.key);node.canvas.width=0;node.canvas.height=0;this.chunks.delete(key);}for(const n of this.nodes.get(key)??[])n.image.destroy();this.nodes.delete(key);}
  /** Shadow tint, warm lamp light and banded haze over one surface already outlined by `path`. */
@@ -121,9 +127,9 @@ export class PlaneSceneRenderer{
   // Same streaming as the island ground: spare chunks linger briefly, building runs in steps under a frame budget.
   const spare=[...this.chunks.keys()].filter(key=>!wanted.has(key)).sort((a,b)=>chunkViewDistance(a,view)-chunkViewDistance(b,view));
   spare.forEach((key,i)=>{if(!retain.has(key)||i>=spareChunks)this.release(key);});
-  if(this.job&&!wanted.has(this.job.key))this.job=undefined;
+  if(this.job&&!wanted.has(this.job.key)){this.job.steps.return();this.job=undefined;}
   const pending=[...wanted].filter(key=>!this.chunks.has(key)&&key!==this.job?.key).sort((a,b)=>chunkViewDistance(a,view)-chunkViewDistance(b,view));this.pendingChunks=pending.length+(this.job?1:0);
-  const urgent=[...onScreen].some(key=>!this.chunks.has(key)),deadline=performance.now()+(urgent?urgentBudgetMs:stepBudgetMs);
+  const urgent=[...onScreen].some(key=>!this.chunks.has(key)),deadline=performance.now()+chunkBudgetMs(!this.chunks.has(chunkKey(hero)),urgent);
   try{do{
    if(!this.job){const key=pending.shift();if(!key)break;const [x,y]=key.split(',').map(Number);this.job={key,steps:this.chunk(x,y)};}
    if(this.job.steps.next().done){this.job=undefined;this.pendingChunks--;}
@@ -135,5 +141,5 @@ export class PlaneSceneRenderer{
  }
  get mapData(){return undefined;}
  diagnostics(){return{map:this.map.id,kit:this.map.kit,ready:!this.destroyed||this.errors.length>0,chunks:this.chunks.size,pendingChunks:this.pendingChunks,pieces:[...this.nodes.values()].reduce((n,b)=>n+b.length,0),totalPieces:this.map.pieces.length,errors:[...this.errors]};}
- destroy(){if(this.destroyed&&!this.chunks.size&&!this.backdrop)return;this.destroyed=true;this.job=undefined;for(const node of this.chunks.values()){node.image.destroy();this.scene.textures.remove(node.key);node.canvas.width=0;node.canvas.height=0;}this.chunks.clear();for(const bucket of this.nodes.values())for(const n of bucket)n.image.destroy();this.nodes.clear();this.source.clear();this.backdrop?.destroy();this.backdrop=undefined;}
+ destroy(){if(this.destroyed&&!this.chunks.size&&!this.backdrop)return;this.destroyed=true;this.job?.steps.return();this.job=undefined;for(const node of this.chunks.values()){node.image.destroy();this.scene.textures.remove(node.key);node.canvas.width=0;node.canvas.height=0;}this.chunks.clear();for(const bucket of this.nodes.values())for(const n of bucket)n.image.destroy();this.nodes.clear();this.source.clear();this.backdrop?.destroy();this.backdrop=undefined;}
 }

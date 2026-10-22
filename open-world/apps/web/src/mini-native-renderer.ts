@@ -261,7 +261,10 @@ export class MiniNativePreview{
       this.pending=false;this.recordError(error);this.retryTimer=setTimeout(()=>{this.retryTimer=undefined;},5000);return false;
     }
   }
-  render(state:WardrobeRenderState):boolean{
+  render(state:WardrobeRenderState):boolean{return this.paint(state)==='drawn';}
+  /** FP7 烘焙用：画布已持有该帧（drawKey 相同）也算成功；仅不可用或出错时返回 false。 */
+  drawFrame(state:WardrobeRenderState):boolean{return this.paint(state)!==false;}
+  private paint(state:WardrobeRenderState):'drawn'|'same'|false{
     const bundle=this.bundle;if(!bundle||!this.gpu||this.dead)return false;
     try{
       const motion=this.motionFor(state),animation=bundle.resources.data.findAnimation(motion.name)!;
@@ -271,15 +274,53 @@ export class MiniNativePreview{
       const flipped=(bundle.profile.nativeFacing==='left'?-1:1)*state.facing<0;
       const key=JSON.stringify([bundle.key,motion.name,state.action,index,flipped,this.canvas.width,this.canvas.height]);
       this.action=state.action;this.frameIndex=index;this.mappedTime=mappedTime;this.flipped=flipped;
-      if(key===this.drawKey)return false;
+      if(key===this.drawKey)return 'same';
       bundle.playback.seek(animation,mappedTime,bundle.profile.fps);
       this.sockets=this.sampleSockets(bundle.playback.skeleton);this.history.set(this.frameName,this.sockets);
       if(this.history.size>180)this.history.delete(this.history.keys().next().value!);
       this.gpu.draw(bundle.playback.skeleton,this.canvas,bundle.profile.runtime.pma,this.displayScale!,
         {x:bundle.profile.ground[0],y:bundle.profile.ground[1]},this.options.footX,this.options.footY,flipped);
-      this.drawKey=key;return true;
+      this.drawKey=key;return 'drawn';
     }catch(error){this.recordError(error);return false;}
   }
+  /** 仅计算帧元数据，不绘制 */
+  resolveFrame(state:WardrobeRenderState):{motion:string;index:number;flipped:boolean}|undefined{
+    const bundle=this.bundle;if(!bundle||!this.gpu||this.dead)return;
+    try{
+      const motion=this.motionFor(state),animation=bundle.resources.data.findAnimation(motion.name)!;
+      const mappedTime=miniSourceTime(animation.duration,motion,state),index=Math.floor(mappedTime*bundle.profile.fps+1e-4);
+      const flipped=(bundle.profile.nativeFacing==='left'?-1:1)*state.facing<0;
+      return{motion:motion.name,index,flipped};
+    }catch(error){this.recordError(error);return undefined;}
+  }
+  /** 当前骨骼在画布坐标系下的像素边界（基于骨架 getBounds），undefined 表示为空或不可用 */
+  frameBounds(pad=4):{x:number;y:number;w:number;h:number}|undefined{
+    const bundle=this.bundle,scale=this.displayScale;if(!bundle||!this.gpu||this.dead||!scale)return;
+    const offset=new Vector2(),size=new Vector2();bundle.playback.skeleton.getBounds(offset,size,[]);
+    if(!(size.x>0&&size.y>0))return;
+    const {footX,footY}=this.options,ground=bundle.profile.ground,flipped=this.flipped,cw=this.canvas.width,ch=this.canvas.height;
+    const x1=cw*footX+(offset.x-ground[0])*scale*(flipped?-1:1);
+    const x2=cw*footX+(offset.x+size.x-ground[0])*scale*(flipped?-1:1);
+    const ytop=ch*footY-(offset.y+size.y-ground[1])*scale;
+    const ybot=ch*footY-(offset.y-ground[1])*scale;
+    const rx=Math.floor(Math.min(x1,x2)-pad),ry=Math.floor(ytop-pad);
+    const rw=Math.ceil(Math.max(x1,x2)+pad-rx),rh=Math.ceil(ybot+pad-ry);
+    const cx=Math.max(0,rx),cy=Math.max(0,ry),cx2=Math.min(cw,rx+rw),cy2=Math.min(ch,ry+rh);
+    if(cx2<=cx||cy2<=cy)return;
+    return{x:cx,y:cy,w:cx2-cx,h:cy2-cy};
+  }
+  /** 画布坐标系下以 prefix 开头的所有活跃骨骼位置 */
+  boneSockets(prefix:string):Record<string,MiniPoint>{
+    const bundle=this.bundle,scale=this.displayScale;if(!bundle||!scale||this.dead)return{};
+    const result:Record<string,MiniPoint>={},{footX,footY}=this.options,ground=bundle.profile.ground,flipped=this.flipped;
+    for(const bone of bundle.playback.skeleton.bones){
+      if(!bone.active||!bone.data.name.startsWith(prefix))continue;
+      result[bone.data.name]={x:this.canvas.width*footX+(bone.worldX-ground[0])*scale*(flipped?-1:1),y:this.canvas.height*footY-(bone.worldY-ground[1])*scale};
+    }
+    return result;
+  }
+  /** 不翻转时对应的 facing 值（nativeFacing right→1, left→-1），未加载时 undefined */
+  get unflippedFacing():number|undefined{const bundle=this.bundle;if(!bundle||this.dead)return;return bundle.profile.nativeFacing==='right'?1:-1;}
   /** Authored skill motion while its cast runs (reduced motion: the in-place variant); otherwise the weapon's native clip. */
   private motionFor(state:WardrobeRenderState):MiniNativeMotion{
     const bundle=this.bundle!,authored=state.cast&&state.skill?skillMotionName(state.skill):undefined;

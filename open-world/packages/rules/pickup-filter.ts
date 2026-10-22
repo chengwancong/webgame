@@ -8,4 +8,4 @@ export const defaultPickupFilter=():PickupFilter=>pickupFilterSchema.parse({});
 const order={common:0,magic:1,rare:2,legendary:3};
 /** A filter changes automatic claim candidates only. It never salvages an item
  * or removes the pending server reward. Explicit manual pickup remains possible. */
-export function acceptsPickup(gear:Gear,filter:PickupFilter,weapon:WeaponType|null){return order[gear.quality]>=order[filter.minimumQuality]&&!filter.excludedSlots.includes(gear.slot)&&(!filter.ownWeaponOnly||gear.slot!=='weapon'||weapon!==null&&gearWeaponType(gear)===weapon);}
+export function acceptsPickup(gear:Gear,filter:PickupFilter,weapon:WeaponType|null){return (Boolean(gear.hex)||order[gear.quality]>=order[filter.minimumQuality])&&!filter.excludedSlots.includes(gear.slot)&&(!filter.ownWeaponOnly||gear.slot!=='weapon'||weapon!==null&&gearWeaponType(gear)===weapon);}

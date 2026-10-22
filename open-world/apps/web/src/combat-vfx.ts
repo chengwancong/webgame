@@ -39,6 +39,8 @@ type Flash={id:number;event:CombatEvent;profile:SkillVfxProfile;stage:'windup'|'
 type Flight={from:FxPoint;to:FxPoint;launch:FxPoint;emitter:SocketName;frame?:string;born:number;tick:number;points:FxPoint[]};
 const clamp=(n:number)=>Math.max(0,Math.min(1,n));
 const group=castVfxGroup;
+/** Windup telegraph radius: current skill def, else radius recorded when the telegraph was built, else 2. Never throws on skills missing from monsterSkills. */
+export const telegraphRadius=(skill:string|undefined,recorded?:number):number=>monsterSkills[skill??'']?.radius??recorded??2;
 /** Noise caps (presentation only): full impact bursts per cast per tick, and hit-spark sets per tick. */
 const FULL_IMPACTS_PER_CAST=3,HIT_SPARK_SETS=6,HIT_SPARK_TICKS=7,STATUS_MARKER_CAP=10;
 export function preloadSkillEffects(scene:Phaser.Scene){scene.load.atlas(source.texture.key,source.texture.image,source.texture.atlas);scene.load.image(telegraphReuse.key,telegraphReuse.image);for(const clip of Object.values(extraClips))scene.load.atlas(clip.key,clip.image,clip.atlas);}
@@ -49,7 +51,7 @@ export class SkillEffects{
  private physical(){return this.physicalVfx??=new PhysicalVfx(this.scene,this.pool,this.reduced,(id,name)=>this.attachment(id,name),(key,id,age,point,ground,size,alpha,tint)=>this.sprite(key,id,age,point,ground,size,alpha,{normal:true,tint,tintFill:tint!==undefined}),this.heroPose);}
  private pool:VfxPool;private flashes:Flash[]=[];private flights=new Map<number,Flight>();private zones=new Map<number,{started:number;delay:number}>();private errors=new Set<string>();private world?:World;private consumedTick=-1;private now=0;private serial=0;private totalConsumed=0;private shake=new CameraShake();private shield=new ShieldFeedback();private shieldAngle=0;private enemyShields=new Map<string,{fb:ShieldFeedback;angle:number}>();private enemyShieldProfile=vfxProfile('player/barrier');private shieldProfile=vfxProfile('player/ward');private heroShieldSpan=45;private warningCount=0;private beamSegments=0;private recent=new Set<string>();private particles=0;private statusMarkerCount=0;
  private hitSparks:{id:number;event:CombatEvent;direction:FxPoint;point?:FxPoint}[]=[];
- private telegraphs=new Map<string,{started:number;ends:number}>();
+ private telegraphs=new Map<string,{started:number;ends:number;radius?:number}>();
  constructor(private scene:Phaser.Scene,private reduced:()=>boolean,private attachment:(id:string,name:SocketName,release?:boolean)=>FxPoint|undefined,private heroPose:()=>RenderPose&{skill:string}|undefined,private sound:(kind:string)=>void=()=>{}){this.pool=new VfxPool(scene,vfxBudgets.decorativeImages);ensureTelegraphSurface(scene);}
  reset(){this.physicalVfx?.reset();this.hitSparks=[];this.pool.clear();this.flashes=[];this.flights.clear();this.zones.clear();this.telegraphs.clear();this.world=undefined;this.consumedTick=-1;this.now=0;this.shake.reset();this.shield.reset();this.enemyShields.clear();this.shieldAngle=0;this.errors.clear();this.recent.clear();}
  destroy(){this.reset();this.pool.destroy();}
@@ -68,7 +70,7 @@ export class SkillEffects{
    if(event.type==='status_changed'&&physicalSpec('player/'+event.skill))continue;
    const impact=event.type==='hit_resolved'&&(event.amount??0)>0,cast=event.type==='cast_started'||event.type==='cast_released'||event.type==='effect_triggered'&&!!(event.vfxKey?.startsWith('combo/')||event.vfxKey?.startsWith('hex/'))||event.type==='status_changed'&&event.change==='applied'||event.type==='healed'&&!!event.amount||event.type==='revived';const surface=event.type==='effect_activated';if(!impact&&!cast&&!surface)continue;
    const key=event.vfxKey??(!impact&&event.skill&&event.id==='hero'?'player/'+event.skill:'system/damage'),raw=this.profile(key);if(!raw)continue;const p=enemyPresentation(raw,w.enemies.find(n=>n.id===(event.sourceId??event.id)));
-   const monster=monsterSkills[event.skill??''];if(event.type==='cast_started'&&key.startsWith('monster/')&&monster?.kind==='zone')this.telegraphs.set(group(event),{started:event.tick,ends:event.tick+(event.windup??monster.windup)+(monster.delay||25)-1});
+   const monster=monsterSkills[event.skill??''];if(event.type==='cast_started'&&key.startsWith('monster/')&&monster?.kind==='zone')this.telegraphs.set(group(event),{started:event.tick,ends:event.tick+(event.windup??monster.windup)+(monster.delay||25)-1,radius:monster.radius});
    const stage=surface?'surface':impact?'impact':event.type==='cast_started'?'windup':'release';
    if(stage==='release')this.flashes=this.flashes.filter(f=>!(f.stage==='windup'&&group(f.event)===group(event)));
    // Area hits: only the first few targets of one cast get the full impact burst; the rest keep tint and sparks, so big pulls stay readable.
@@ -138,7 +140,7 @@ export class SkillEffects{
   const e=f.event,p=f.profile,presence=vfxPresence(p),c=vfxPalettes[p.element],age=Math.max(0,this.now-e.tick),t=clamp(age/f.life),alpha=stageOpacity(t),key='event:'+f.id,owner=e.type==='status_changed'?e.id:['healed','revived'].includes(e.type)?e.targetId??e.id:e.sourceId??e.id,ground=projectFx(e.position),facing=owner==='hero'?w.hero.facing:w.enemies.find(n=>n.id===owner)?.facing??1;
   if(f.stage==='windup'){
    if(owner!=='hero'&&!w.enemies.some(n=>n.id===owner&&n.alive))return;
-   const telegraph=this.telegraphs.get(group(e));if(telegraph&&e.target)this.warning('cast:'+group(e),projectFx(e.target),monsterSkills[e.skill!].radius??2,telegraph.started,telegraph.ends,p);
+   const telegraph=this.telegraphs.get(group(e));if(telegraph&&e.target)this.warning('cast:'+group(e),projectFx(e.target),telegraphRadius(e.skill,telegraph.radius),telegraph.started,telegraph.ends,p);
    const foot=this.point(owner,'feet',ground),point=this.point(owner,p.anchor,foot),g=this.pool.graphics(key,foot.y+3,false);if(!g)return;
    if(p.key==='player/lightning_bolt'){this.sprite(key+':charge','lightning-charge',0,point,foot,9+t*15,.3+t*.45,{depth:foot.y+4});for(const path of lightningDischarge(point,t*.16,this.reduced()?f.id:Math.floor(this.now/2),this.reduced()).slice(0,3))ribbon(g,[...path].reverse(),1.2,p,.25+t*.55);return;}
    this.sprite(key+':charge-body',['arcane','shadow'].includes(p.element)?'library-void-charge':'library-warm-burst',0,point,foot,presence.chargeSize*(.65+t*.35),.4+t*.5,{progress:.4+t*.2,depth:foot.y+4,normal:true});

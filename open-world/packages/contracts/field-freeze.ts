@@ -8,6 +8,9 @@ export const fieldFreezeSchema=z.object({
  waypoints:z.boolean().default(false),
  bounties:z.boolean().default(false),
  events:z.boolean().default(false),
+ fieldEntry:z.boolean().default(false),
+ fieldGather:z.boolean().default(false),
+ fieldSprint:z.boolean().default(false),
 }).strict();
 export type FieldFreeze=z.infer<typeof fieldFreezeSchema>;
 export function parseFieldFreeze(value:unknown={}):Readonly<FieldFreeze>{

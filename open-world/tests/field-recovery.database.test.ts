@@ -15,9 +15,10 @@ async function player(){
  s.gear=s.gear.slice(0,2);
  const extra=(name:string,patch:Partial<Gear>={})=>{const g={...s.gear[0],id:randomUUID(),name,locked:false,quality:'common' as const,rank:0,affixes:[],aspectId:undefined,...patch};s.gear.push(g);return g;};
  const common=extra('普通待分解'),rare=extra('稀有待分解',{quality:'rare'}),locked=extra('锁定',{locked:true}),ranked=extra('强化',{rank:1}),legendary=extra('传奇',{quality:'legendary'}),aspect=extra('威能',{aspectId:'aspect-test'}),grid=extra('武器盘');
+ const hexCommon=extra('普通词缀',{origin:{kind:'random'},hex:{rune:'hex-aftershock',tier:'common'}}),hexMagic=extra('魔法词缀',{quality:'magic',origin:{kind:'random'},hex:{rune:'hex-aftershock',tier:'magic'}});
  ensureProgression(s).weaponGrid[1]=grid.id;await pool.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[s,s.id]);
- const reward={id:randomUUID(),region:'meadow',position:{x:5,y:8},gear:{...common,id:randomUUID(),name:'待领取装备'}};await pool.query('INSERT INTO ow_rewards(id,character,source,data,claimed) VALUES($1,$2,$3,$4,false)',[reward.id,s.id,'fixture-pending',reward]);
- return {request,s,lease,common,rare,protected:[...s.gear.slice(0,2),locked,ranked,legendary,aspect,grid]};
+ const reward={id:randomUUID(),source_id:'fixture-pending',region:'meadow',position:{x:5,y:8},gear:{...common,id:randomUUID(),name:'待领取装备'}};await pool.query('INSERT INTO ow_rewards(id,character,source,data,claimed) VALUES($1,$2,$3,$4,false)',[reward.id,s.id,'fixture-pending',reward]);
+ return {request,s,lease,common,rare,hexCommon,hexMagic,protected:[...s.gear.slice(0,2),locked,ranked,legendary,aspect,grid,hexCommon,hexMagic]};
 }
 it('previews protected equipment, commits exact selected items once, and preserves wallet and pending loot',async()=>{
  const p=await player(),before=(await p.request('character')).body as Snapshot,quote=validateResponse('gear/salvage-batch/preview',(await p.request('gear/salvage-batch/preview')).body) as SalvageBatchPreview;
@@ -30,8 +31,21 @@ it('previews protected equipment, commits exact selected items once, and preserv
 });
 it('rejects protected, missing, duplicate, and stale selections without partial deletion or material awards',async()=>{
  const p=await player(),before=(await p.request('character')).body;
- for(const g of p.protected){const r=await p.request('gear/salvage-batch',{command_id:randomUUID(),revision:before.revision,lease_id:p.lease,gear_ids:[p.common.id,g.id]});expect(r.body.code).toBe('PROTECTED');expect((await p.request('character')).body).toEqual(before);}
- for(const [ids,revision,code] of [[[p.common.id,randomUUID()],before.revision,'GEAR'],[[p.common.id,p.common.id],before.revision,'INPUT'],[[p.common.id],before.revision+1,'REVISION']] as const){const r=await p.request('gear/salvage-batch',{command_id:randomUUID(),revision,lease_id:p.lease,gear_ids:ids});expect(r.body.code).toBe(code);expect((await p.request('character')).body).toEqual(before);}
+ const audit=async()=>({state:(await pool.query('SELECT state FROM ow_characters WHERE id=$1',[p.s.id])).rows[0].state,counts:(await pool.query('SELECT (SELECT count(*)::int FROM ow_receipts WHERE character=$1) receipts,(SELECT count(*)::int FROM ow_ledger WHERE character=$1) ledger',[p.s.id])).rows[0]});
+ const stored=await audit();
+ const unchanged=async()=>{const after=(await p.request('character')).body;expect(after.hexCooldowns.observedAt).toBeGreaterThanOrEqual(before.hexCooldowns.observedAt);expect({...after,hexCooldowns:{...after.hexCooldowns,observedAt:before.hexCooldowns.observedAt}}).toEqual(before);expect(await audit()).toEqual(stored);};
+ for(const g of p.protected){const r=await p.request('gear/salvage-batch',{command_id:randomUUID(),revision:before.revision,lease_id:p.lease,gear_ids:[p.common.id,g.id]});expect(r.body.code).toBe('PROTECTED');await unchanged();}
+ for(const [ids,revision,code] of [[[p.common.id,randomUUID()],before.revision,'GEAR'],[[p.common.id,p.common.id],before.revision,'INPUT'],[[p.common.id],before.revision+1,'REVISION']] as const){const r=await p.request('gear/salvage-batch',{command_id:randomUUID(),revision,lease_id:p.lease,gear_ids:ids});expect(r.body.code).toBe(code);await unchanged();}
+});
+it('P50 explicit individual HEX salvage still commits exactly once',async()=>{
+ const p=await player(),before=(await p.request('character')).body;
+ const input={command_id:randomUUID(),revision:before.revision,lease_id:p.lease,gear_id:p.hexCommon.id},done=await p.request('gear/salvage',input);
+ expect(done.status).toBe(200);validateResponse('gear/salvage',done.body);
+ expect(done.body.snapshot.gear.some((g:Gear)=>g.id===p.hexCommon.id)).toBe(false);
+ expect(done.body.snapshot.gear.find((g:Gear)=>g.id===p.hexMagic.id)).toEqual(before.gear.find((g:Gear)=>g.id===p.hexMagic.id));
+ expect(done.body.snapshot.material-before.material).toBe(done.body.delta.material);expect(done.body.delta.material).toBeGreaterThan(0);
+ expect((await p.request('gear/salvage',input)).body).toEqual(done.body);
+ expect((await pool.query('SELECT count(*)::integer n FROM ow_ledger WHERE character=$1 AND command=$2',[p.s.id,input.command_id])).rows[0].n).toBe(1);
 });
 it('records town as the return point across reloads without losing inventory or pending drops',async()=>{
  const p=await player();p.s.progress.safe='meadow';p.s.progress.safePoint='归途路碑';await pool.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[p.s,p.s.id]);

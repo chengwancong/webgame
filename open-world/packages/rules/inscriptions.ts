@@ -1,5 +1,5 @@
 import {randomInt} from 'node:crypto';
-import {isHexSlot} from '../contracts/gear-slots.ts';
+import {isLegacyHexSlot as isHexSlot} from './legacy-hex.ts';
 import {inscriptionConfig as config} from '../content/inscriptions.ts';
 import {inscriptionSchema,inscriptionRubbingSchema,inscriptionSlotSchema,type Inscription,type InscriptionRubbing} from '../contracts/inscriptions.ts';
 import type {GearQuality,Slot} from '../contracts/index.ts';

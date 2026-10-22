@@ -3,12 +3,17 @@ def validate_quest_config(files):
   tasks=files.get('tasks.json',{}); cs=tasks.get('conditions',[])
   if not cs: return # Old workbooks remain readable during the explicit upgrade.
   rows={t['id']:t for t in tasks['tasks']}; world=files['world.json']; chapters=files['chapters.json']; npcs=files['npcs.json']['npcs']
+  material_ids={m['id'] for m in files.get('crafting-public.json',files.get('crafting.json',{})).get('materials',[])}
+  for task in tasks['tasks']:
+    pack=task.get('reward_materials',{})
+    if pack and (not task['id'].startswith('hub-gate-') or not isinstance(pack,dict) or any(k not in material_ids or isinstance(v,bool) or not isinstance(v,int) or v<0 for k,v in pack.items())):
+      raise ValueError('任务配置：关口材料包无效 '+task['id'])
   params={p['id']:p['value'] for p in tasks.get('parameters',[])}; legacy=set(params.get('legacy_tasks',[])); legacy_layout=set(params.get('legacy_layout',[]))
   zones={z['id'] for z in world['zones']}; islands={c['map'] for c in chapters['chapters'] if c['campaign']=='starsea'}; bosses={c.get('boss_map') for c in chapters['chapters'] if c['campaign']=='starsea'}; npc_ids={n['id'] for n in npcs}; features={f['id'] for f in chapters['features']}|{'sprint','waypoint','outpost','events','bounty','field-dungeon'}; gates={g['id'] for g in world.get('gates',[])}; wp={w['id'] for w in world['waypoints']}
   grouped={}; graph={}; fail=lambda msg: (_ for _ in ()).throw(ValueError('任务配置：'+msg))
   for c in cs:
     target=c['target']; grouped.setdefault(target,{}).setdefault(c['group'],[]).append(c)
-    kind,value=c['kind'],c['value']; reference={'task':rows,'task_active':rows,'task_ready':rows,'feature':features,'island':islands,'boss':bosses,'zone':zones,'gate':gates,'waypoint':wp,'npc_met':npc_ids}.get(kind)
+    kind,value=c['kind'],c['value']; reference={'task':rows,'task_active':rows,'task_ready':rows,'feature':features,'island':islands,'island_visited':islands,'boss':bosses,'zone':zones,'gate':gates,'waypoint':wp,'npc_met':npc_ids}.get(kind)
     if reference is not None and value not in reference and not (kind=='boss' and value=='all-6') and not(kind=='waypoint' and value in ['any','any-outpost']): fail('引用不存在 '+kind+':'+value)
     if kind=='level' and (not value.isdigit() or int(value)<1): fail('无效等级 '+value)
     dep=value if kind in ['task','task_active','task_ready'] else 'feature:'+value if kind=='feature' else 'island:'+value if kind=='island' else 'hardmode' if kind=='hardmode' else None

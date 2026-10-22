@@ -1,0 +1,87 @@
+/* U2/U3 航图面板：1280×720 舞台内排满，面板内不滚动。图区 1200×480 与 chart-panel.ts 里的常量一致。 */
+.hub-chart-panel{--hub-node-disc:var(--space-16);width:calc(var(--stage-width,1280px) - var(--space-6));max-width:none;height:calc(var(--stage-height,720px) - var(--space-6));max-height:none;display:flex;flex-direction:column;gap:var(--space-3);overflow:hidden}
+.hub-chart-panel>*{flex:0 0 auto;min-width:0}
+
+.hub-chart-topbar{display:flex;align-items:center;gap:var(--space-3);border-bottom:var(--border-width) solid var(--color-border-subtle)}
+.hub-chart-topbar .hub-region-tabs{flex:1 1 auto;overflow:hidden}
+.hub-region-tabs button small{color:var(--color-text-disabled);font-weight:var(--font-weight-regular,400)}
+.hub-region-tabs button[aria-selected=true] small{color:var(--color-highlight)}
+
+/* 海域难度：按钮 + 向下展开的弹层，Esc 先收弹层 */
+.hub-chart-sea{position:relative;flex:0 0 auto}
+.hub-sea-pop{position:absolute;right:0;top:calc(100% + var(--space-1));z-index:10;width:640px;max-height:calc(var(--stage-height,720px) - 160px);overflow:auto;padding:var(--space-3);background:var(--color-panel-raised);border:var(--border-width) solid var(--color-border);border-radius:var(--radius-panel);box-shadow:var(--shadow-panel)}
+
+.hub-chart-stage{display:flex;justify-content:center;height:480px}
+.hub-chart-stage>.ui-state{margin:auto}
+
+/* 节点图 */
+.hub-graph{position:relative;flex:0 0 auto}
+.hub-links{position:absolute;inset:0;pointer-events:none}
+.hub-link{stroke:var(--color-border-strong);stroke-width:2;stroke-dasharray:6 6;opacity:.6}
+.hub-link.is-lit{stroke:var(--color-primary-border);stroke-width:3;stroke-dasharray:none;opacity:1}
+
+.hub-node{position:absolute;width:120px;display:flex;flex-direction:column;align-items:center;gap:var(--space-1);padding:0;border:0;background:none;color:var(--color-text-primary);font:inherit;cursor:pointer}
+.hub-node:disabled{cursor:default;color:inherit}
+.hub-node__disc{position:relative;display:grid;place-items:center;width:var(--hub-node-disc);height:var(--hub-node-disc);border-radius:var(--radius-round);border:calc(var(--border-width) * 2) solid var(--color-primary);background:var(--color-panel-raised);color:var(--color-text-primary);transition:box-shadow var(--motion-fast) var(--motion-ease),background var(--motion-fast) var(--motion-ease)}
+.hub-node__mark{font-size:var(--font-size-h2);font-weight:var(--font-weight-bold);color:var(--color-text-disabled)}
+.hub-node__label{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--font-size-caption);font-weight:var(--font-weight-semibold);line-height:var(--font-line-heading)}
+.hub-node__state{position:absolute;right:calc(var(--space-1) * -1);bottom:calc(var(--space-1) * -1);display:grid;place-items:center;width:var(--space-5);height:var(--space-5);border-radius:var(--radius-round);background:var(--color-panel);border:var(--border-width) solid var(--color-border-strong);color:var(--color-text-secondary)}
+.hub-node.is-cleared .hub-node__disc{background:var(--color-primary-top);border-color:var(--color-primary-border)}
+.hub-node.is-cleared .hub-node__state{background:var(--color-primary);border-color:var(--color-primary-border);color:var(--color-primary-text)}
+.hub-node.is-locked .hub-node__disc{background:var(--color-panel-secondary);border-color:var(--color-border);color:var(--color-text-disabled)}
+.hub-node.is-locked .hub-node__label{color:var(--color-text-secondary)}
+.hub-node.is-hidden .hub-node__disc{background:var(--color-panel-inset);border-style:dashed;border-color:var(--color-border)}
+.hub-node.is-hidden .hub-node__label{color:var(--color-text-disabled)}
+.hub-node.is-recommended .hub-node__disc{box-shadow:0 0 0 var(--space-1) color-mix(in srgb,var(--color-primary) 40%,transparent),0 0 var(--space-4) color-mix(in srgb,var(--color-primary) 55%,transparent)}
+.hub-node:not(:disabled):hover .hub-node__disc{background:var(--color-panel-hover)}
+.hub-node.is-cleared:not(:disabled):hover .hub-node__disc{background:var(--color-primary-top)}
+.hub-node.is-selected .hub-node__disc{border-color:var(--color-highlight);box-shadow:0 0 0 var(--space-1) var(--color-highlight)}
+.hub-node:focus-visible{outline:none}
+.hub-node:focus-visible .hub-node__disc{outline:var(--border-focus-width) solid var(--color-highlight);outline-offset:var(--border-focus-offset)}
+
+.hub-node__corner{position:absolute;left:0;right:0;top:0;height:var(--hub-node-disc);pointer-events:none}
+.hub-node__x2{position:absolute;top:calc(var(--space-3) * -1);left:calc(50% + var(--space-2));padding:0 var(--space-1);border-radius:var(--radius-tag);background:var(--color-primary);color:var(--color-primary-text);font-size:var(--font-size-menu-label);font-weight:var(--font-weight-bold);line-height:var(--space-5);white-space:nowrap}
+.hub-node__collect{position:absolute;top:calc(var(--space-1) * -1);left:calc(50% - var(--space-10) - var(--space-2));display:grid;place-items:center;color:var(--color-info)}
+
+/* 节点旁固定尺寸卡片 */
+.hub-card{position:absolute;z-index:5;display:flex;flex-direction:column;gap:var(--space-2);padding:var(--space-3);overflow:hidden;background:var(--color-panel-raised);border:var(--border-width) solid var(--color-border);border-radius:var(--radius-panel);box-shadow:var(--shadow-panel);font-size:var(--font-size-caption);line-height:var(--font-line-body);animation:hub-card-in var(--motion-fast) var(--motion-ease-out) both}
+@keyframes hub-card-in{from{opacity:0}to{opacity:1}}
+[data-motion-reduced=true] .hub-card{animation:none}
+.hub-card__head{display:flex;align-items:center;gap:var(--space-2);min-width:0}
+.hub-card__kind{display:inline-flex;align-items:center;gap:var(--space-1);flex:0 0 auto;color:var(--color-text-secondary)}
+.hub-card__name{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--font-size-h3);font-weight:var(--font-weight-bold)}
+.hub-card__head .ui-button--icon{flex:0 0 auto;width:var(--size-control-compact);height:var(--size-control-compact);min-width:var(--size-control-compact);min-height:var(--size-control-compact)}
+.hub-card__body{flex:1 1 0;min-height:0;display:flex;flex-direction:column;gap:var(--space-2)}
+.hub-card p{margin:0}
+.hub-card__line{color:var(--color-text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hub-card__meta{color:var(--color-text-secondary)}
+.hub-card__drop{padding:var(--space-1) var(--space-2);border-radius:var(--radius-well);background:var(--color-panel-inset);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hub-card__first{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hub-card__first.is-done{display:flex;align-items:center;gap:var(--space-1);color:var(--color-text-secondary)}
+.hub-card__key{margin-right:var(--space-2);flex:0 0 auto;color:var(--color-text-secondary)}
+.hub-card__badges{display:flex;align-items:center;gap:var(--space-2);min-height:0}
+.hub-card__badges:empty{display:none}
+.hub-card__best{color:var(--color-text-secondary)}
+.hub-card__row{display:flex;align-items:center;gap:var(--space-2);min-width:0}
+.hub-card__lock{display:flex;align-items:flex-start;gap:var(--space-2);color:var(--color-text-secondary)}
+.hub-card__lock .ui-icon{flex:0 0 auto;margin-top:var(--space-1)}
+
+.hub-shards{display:flex;flex:1 1 auto;gap:var(--space-1);min-width:0}
+.hub-shard{flex:1 1 0;min-width:0;height:var(--size-control-compact);padding:0 var(--space-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:var(--border-width) dashed var(--color-border-strong);border-radius:var(--radius-control);background:transparent;color:var(--color-text-secondary);font:inherit;cursor:pointer}
+.hub-shard:disabled{cursor:default;opacity:.6}
+.hub-shard.is-filled{border-style:solid;border-color:var(--color-primary-border);background:var(--color-primary-top);color:var(--color-primary-text)}
+.hub-shard:focus-visible{outline:var(--border-focus-width) solid var(--color-highlight);outline-offset:var(--border-focus-offset)}
+.hub-challenges{display:flex;flex:1 1 auto;gap:var(--space-1);min-width:0}
+.hub-challenges .ui-button{flex:1 1 0;min-width:0}
+
+.hub-card__foot{margin-top:auto;display:flex;flex-direction:column;gap:var(--space-1)}
+.hub-card__foot .ui-button{width:100%}
+.hub-card__error{color:var(--color-danger);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* 关口任务 */
+.hub-gate-quests{display:flex;align-items:center;gap:var(--space-4);min-height:var(--size-control-compact);padding:0 var(--space-1);color:var(--color-text-primary);font-size:var(--font-size-caption)}
+.hub-gate-quest{display:inline-flex;align-items:center;gap:var(--space-1)}
+.hub-gate-quest.is-done{color:var(--color-text-secondary);text-decoration:line-through}
+.hub-gate-quest__dot{width:var(--space-2);height:var(--space-2);border-radius:var(--radius-round);border:var(--border-width) solid var(--color-border-strong)}
+
+[data-motion-reduced=true] .hub-node__disc{transition:none}

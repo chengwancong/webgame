@@ -1,0 +1,12 @@
+/* U7 今日：每行 图标+名称 / 内容 / 按钮，固定 640 宽，行数 ≤ 5，不滚动 */
+.hub-today-panel{width:640px;max-height:none;display:flex;flex-direction:column;gap:var(--space-3);overflow:hidden}
+.hub-today__list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--space-2)}
+.hub-today__row{display:grid;grid-template-columns:128px minmax(0,1fr) auto;align-items:center;gap:var(--space-3);min-height:var(--space-12);padding:var(--space-2) var(--space-3);background:var(--color-panel-secondary);border:var(--border-width) solid var(--color-border-subtle);border-radius:var(--radius-control)}
+.hub-today__label{display:inline-flex;align-items:center;gap:var(--space-2);font-weight:var(--font-weight-semibold)}
+.hub-today__value{min-width:0;font-size:var(--font-size-body);color:var(--color-text-primary)}
+.hub-today__actions{display:flex;gap:var(--space-2);justify-content:flex-end}
+.hub-today__actions:empty{display:none}
+.hub-today__fleets{display:flex;flex-direction:column;gap:var(--space-1)}
+.hub-today__fleet{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--font-size-caption);color:var(--color-text-secondary)}
+.hub-today__msg{margin:0;min-height:var(--space-5);font-size:var(--font-size-caption);color:var(--color-success)}
+.hub-today__msg.is-error{color:var(--color-danger)}

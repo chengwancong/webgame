@@ -1,3 +1,6 @@
+import {serverHexCombatStats} from '../../../packages/simulation/hex-combat-stats.ts';
+import {currentGearCount} from '../../../packages/rules/current-inventory.ts';
+import {freezeHexLoot,attachHexAffixes} from './hex-loot.ts';
 import {recordHexInventoryFacts} from '../../../packages/rules/starsea.ts';
 import {craftBuffValue} from '../../../packages/rules/crafting-consumables.ts';
 import numericRateLimits from '../../../packages/content/spine-rate-limits.json';
@@ -11,12 +14,14 @@ import {learnCraftPattern} from '../../../packages/rules/crafting.ts';
 import {worldTierChoices,recordHardmodeBoss} from '../../../packages/rules/world-tier.ts';
 import {freezeFieldGuarantees,guaranteedFieldQualities} from './field-loot.ts';
 import {registerFieldActivities} from './field-activities.ts';
+import {readHexCooldowns} from './hex-cooldown-ledger.ts';
 import {freezeItemRules,issueCombatGear} from '../../../packages/rules/item-issuance.ts';
 import {publicHexRunes,hexRuneById} from '../../../packages/content/hex-runes.ts';
 import {parseFieldFreeze,type FieldFreeze} from '../../../packages/contracts/field-freeze.ts';
-import {equipHex,unequipHex,makeHexGear,HexGearError,hexSlotAccess} from '../../../packages/rules/hex-runes.ts';
-import {grantHexQuestRewards,chooseHexReward} from './hex-rewards.ts';
-import {hexSlotSchema,isHexSlot} from '../../../packages/contracts/gear-slots.ts';
+import {HexGearError,resolveHexActive,hexEquipPreview} from '../../../packages/rules/hex-runes.ts';
+
+import {ordinaryGearSlots} from '../../../packages/contracts/gear-slots.ts';
+import {isLegacyHexSlot} from '../../../packages/rules/legacy-hex.ts';
 import {effectAtomById} from '../../../packages/content/effect-atoms.ts';
 import {resolveAtomParts} from '../../../packages/rules/atom-parts.ts';
 import {scaledDescription} from '../../../packages/rules/set-bonus-descriptions.ts';
@@ -29,7 +34,7 @@ import {quoteTalentBatch,applyTalentBatch} from '../../../packages/rules/talent-
 import {compareResolvedStats,compareVerdict} from '../../../packages/rules/stat-comparison.ts';
 import {assignMainStat} from '../../../packages/rules/main-stats.ts';
 import {archiveQuestCompletions} from './quest-journal.ts';
-import {countBountyKill} from '../../../packages/rules/bounty.ts';
+import {countBountyKill,bountyRow,claimBounty} from '../../../packages/rules/bounty.ts';
 import type {QuestCompletion} from '../../../packages/rules/starsea.ts';
 import {worldTables} from '../../../packages/content/world-tables.ts';
 import {resolveWorldPhase} from '../../../packages/rules/world-phase.ts';
@@ -95,8 +100,16 @@ function stable(v:unknown):string{if(Array.isArray(v))return '['+v.map(stable).j
 function passwordHash(p:string){const salt=randomBytes(16).toString('hex');return salt+':'+scryptSync(p,salt,64).toString('hex');}
 function checkPassword(p:string,h:string){const [salt,key]=h.split(':');const actual=scryptSync(p,salt,64);return timingSafeEqual(actual,Buffer.from(key,'hex'));}
 type Identity={account:string;session:string;resume?:string};
-export function createApp(pool:Pool,options:{fieldFreeze?:Partial<FieldFreeze>;pacingLab?:PacingLabOptions;logger?:boolean;production?:boolean;testLogin?:boolean;origins?:string[];dungeons?:false|typeof dungeonContent;/** 新角色的主线：默认星潮海；legacy 为旧版营地主线（旧系统的回归测试使用）。 */campaign?:'starsea'|'legacy';/** QA-only field regions (M0 graybox); never in production. */fieldQa?:boolean;/** 本地验收检查点（qa_ 测试号跳任务节点）；never in production. */devCheckpoints?:boolean}={}){
+import {registerHubChart} from './hub-chart-service.ts';
+import {readHubState,saveHubState} from './hub-state.ts';
+import {registerHubOutside,pendingHubOutsideNumbers,donateHubProgression,previewHubDonation,type HubOutsideNumbers} from './hub-outside-service.ts';
+import {HubOutsideError} from '../../../packages/rules/hub-state.ts';
+import {moveToHubPort,arriveAtHub,recordHubMutation} from './hub-application.ts';
+import {hubFrozenCommand,HUB_FIELD_FROZEN,frozenFieldRegion} from './hub-field-freeze.ts';
+export function createApp(pool:Pool,options:{hubNumbers?:HubOutsideNumbers;testDungeonSeed?:number;fieldFreeze?:Partial<FieldFreeze>;pacingLab?:PacingLabOptions;logger?:boolean;production?:boolean;testLogin?:boolean;origins?:string[];dungeons?:false|typeof dungeonContent;/** 新角色的主线：默认星潮海；legacy 为旧版营地主线（旧系统的回归测试使用）。 */campaign?:'starsea'|'legacy';/** QA-only field regions (M0 graybox); never in production. */fieldQa?:boolean;/** 本地验收检查点（qa_ 测试号跳任务节点）；never in production. */devCheckpoints?:boolean}={}){
+ if(options.testDungeonSeed!==undefined&&(options.production||!Number.isSafeInteger(options.testDungeonSeed)||options.testDungeonSeed<1))throw Error('testDungeonSeed requires a non-production positive integer');
  const fieldFreeze=parseFieldFreeze(options.fieldFreeze??{});
+ const hubNumbers=options.hubNumbers??pendingHubOutsideNumbers;
  if(options.production&&options.pacingLab)throw Error('Pacing trials cannot be enabled in production.');
  if(options.production&&options.fieldQa)throw Error('QA field regions cannot be enabled in production.');
  if(options.production&&options.testLogin)throw Error('Test login cannot be enabled in production.');
@@ -105,16 +118,19 @@ export function createApp(pool:Pool,options:{fieldFreeze?:Partial<FieldFreeze>;p
  // Caddy is on the compose network. Never trust forwarded headers from public peers.
  const app=Fastify({logger:options.logger??false,bodyLimit:128*1024,trustProxy:['172.16.0.0/12','127.0.0.0/8','::1/128']});app.register(cookie);
  app.register(websocket);
+ // Fresh transport time is separate from an immutable idempotent receipt.
+ // Clients age cached cooldown views without trusting their local wall clock.
+ app.addHook('onSend',async(_req,reply,payload)=>{reply.header('x-aw-server-now',String(Date.now()));return payload;});
  const origins=new Set(options.origins??['http://127.0.0.1:8612','http://127.0.0.1:8611']);
  app.addHook('onRequest',async(req,reply)=>{if(['POST','DELETE','PUT','PATCH'].includes(req.method)){
  const origin=req.headers.origin;if(origin&&!origins.has(origin))fail('ORIGIN','请求来源不受支持。',403);
  if(!origin&&req.headers['sec-fetch-site']==='cross-site')fail('ORIGIN','请求来源不受支持。',403);
  }});
- app.setErrorHandler((e,req,reply)=>{if(e instanceof z.ZodError)return reply.code(400).send({code:'INPUT',message:'输入格式不正确，请检查后重试。'});if(e instanceof AppearanceError)return reply.code(409).send({code:e.code,message:e.message});if(e instanceof ProgressionError||e instanceof StarseaError||e instanceof HexGearError)return reply.code(409).send({code:e.code,message:e.message});if(e instanceof Fault){req.log.warn({code:e.code,request:req.id,command_id:(req.body as any)?.command_id,permit_id:(req.body as any)?.permit_id},'business request rejected');return reply.code(e.status).send({code:e.code,message:e.message});}
+ app.setErrorHandler((e,req,reply)=>{if(e instanceof z.ZodError)return reply.code(400).send({code:'INPUT',message:'输入格式不正确，请检查后重试。'});if(e instanceof HubOutsideError)return reply.code(409).send({code:e.code,message:e.message});if(e instanceof AppearanceError)return reply.code(409).send({code:e.code,message:e.message});if(e instanceof ProgressionError||e instanceof StarseaError||e instanceof HexGearError)return reply.code(409).send({code:e.code,message:e.message});if(e instanceof Fault){req.log.warn({code:e.code,request:req.id,command_id:(req.body as any)?.command_id,permit_id:(req.body as any)?.permit_id},'business request rejected');return reply.code(e.status).send({code:e.code,message:e.message});}
  req.log.error({err:e,request:req.id},'request failed');reply.code(500).send({code:'SERVER',message:'服务暂时不可用，操作未完成，请重试。'});});
  async function identity(req:any):Promise<Identity>{const token=req.cookies.aw_session;if(!token)fail('AUTH','请先登录。',401);const session=sha(token);const r=await pool.query('SELECT account FROM ow_sessions WHERE token_hash=$1 AND expires>now()',[session]);if(!r.rowCount)fail('AUTH','登录已过期，请重新登录。',401);return {account:r.rows[0].account,session,resume:z.uuid().optional().parse(req.headers['x-aw-resume-lease'])};}
  async function state(c:Pool|PoolClient,who:Identity,lock=false):Promise<CharacterState>{const r=await c.query('SELECT state FROM ow_characters WHERE account=$1'+(lock?' FOR UPDATE':''),[who.account]);if(!r.rowCount)fail('CHARACTER','请先创建角色。',404);const s:CharacterState=r.rows[0].state;s.gear=s.gear.map(withCurrentEquipmentNames);ensureProgression(s);ensureAppearance(s);ensureStarsea(s);return s;}
- async function snapshot(c:Pool|PoolClient,s:CharacterState):Promise<Snapshot>{ensureProgression(s);const rewards=await c.query('SELECT data FROM ow_rewards WHERE character=$1 AND NOT claimed ORDER BY id',[s.id]);ensureStarsea(s);const currentRegion=resumeRegion(s),field={region:currentRegion,gathered:s.field?.region===currentRegion?[...s.field.gathered]:[]};const {taskJournal,...visible}=s;if(visible.starsea){const {trackedManually,...publicStarsea}=visible.starsea;visible.starsea=publicStarsea;}return {...visible,hexSlotAccess:hexSlotAccess(s),field,lastRegion:currentRegion,gear:s.gear.map(withCurrentEquipmentNames),...resolveBuild(s),bossAccess:resolveBossAccess(s.progress),rewards:rewards.rows.map(r=>({...r.data,gear:withCurrentEquipmentNames(r.data.gear)})),capacity:settings.capacity,resolvedAppearance:resolveAppearance(s),starseaView:starseaView(s),skillRecovery:skillRecoveryView(s),craftGoal:craftGoalView(s),worldView:resolveWorldPhase(s),worldTierChoices:worldTierChoices(s)};}
+ async function snapshot(c:Pool|PoolClient,s:CharacterState):Promise<Snapshot>{ensureProgression(s);const rewards=await c.query('SELECT data FROM ow_rewards WHERE character=$1 AND NOT claimed ORDER BY id',[s.id]);ensureStarsea(s);const currentRegion=resumeRegion(s),field={region:currentRegion,gathered:s.field?.region===currentRegion?[...s.field.gathered]:[]};const {taskJournal,...visible}=s;if(visible.starsea){const {trackedManually,...publicStarsea}=visible.starsea;visible.starsea=publicStarsea;}return {...visible,fieldFreeze,hexCooldowns:await readHexCooldowns(c,s.id),hex:s.hex?{awardedTasks:s.hex.awardedTasks??[],...(s.hex.pity?{pity:s.hex.pity}:{})}:undefined,hexActive:resolveHexActive(s),equipment:Object.fromEntries(ordinaryGearSlots.flatMap(slot=>s.equipment[slot]?[[slot,s.equipment[slot]]]:[])),warehouse:s.warehouse?.filter(g=>!isLegacyHexSlot(g.slot)),field,lastRegion:currentRegion,gear:s.gear.filter(g=>!isLegacyHexSlot(g.slot)).map(withCurrentEquipmentNames),...resolveBuild(s),bossAccess:resolveBossAccess(s.progress),rewards:rewards.rows.filter(r=>!isLegacyHexSlot(r.data.gear.slot)).map(r=>({...r.data,gear:withCurrentEquipmentNames(r.data.gear)})),capacity:settings.capacity,resolvedAppearance:resolveAppearance(s),starseaView:starseaView(s),skillRecovery:skillRecoveryView(s),craftGoal:craftGoalView(s),worldView:resolveWorldPhase(s),worldTierChoices:worldTierChoices(s)};}
  // 心跳每 15 秒；浏览器后台标签页会把定时器压到约每分钟一次，租约须覆盖两次以上被压后的心跳间隔。
  const controlLeaseSeconds=150;
  async function lease(c:Pool|PoolClient,s:CharacterState,who:Identity,id:string){const r=await c.query('SELECT lease,session,expires FROM ow_controls WHERE character=$1',[s.id]);const control=r.rows[0];if(!control||control.lease!==id||control.session!==who.session||new Date(control.expires).getTime()<=Date.now())fail('CONTROL','角色控制已失效，请重新获取或接管。');}
@@ -126,38 +142,17 @@ export function createApp(pool:Pool,options:{fieldFreeze?:Partial<FieldFreeze>;p
  if(options.dungeons!==false){const membership=(await c.query("SELECT d.data FROM ow_dungeon_members m JOIN ow_dungeons d ON d.id=m.instance WHERE m.character=$1 AND m.active AND d.status='running'",[s.id])).rows[0];if(membership?.data.definition.policy.buildLocked&&(/^(gear\.|skills\.|deep-progression|crafting\.|raid-|challenge-run)/.test((body as any).operation??(body as any).action??'')||(body as any).gear_id||(body as any).skill_id||(body as any).skills))fail('DUNGEON_BUILD_LOCKED','本场装备和技能已锁定，请结束副本后调整。');}
  if(s.starsea){s.starsea.fieldFacts??={open_chest:[],complete_event:[],kill_rare:[],clear_dungeon:[]};const clears=(await c.query('SELECT dungeon FROM ow_dungeon_completions WHERE character=$1',[s.id])).rows;for(const row of clears)if(!s.starsea.fieldFacts.clear_dungeon.includes(row.dungeon))s.starsea.fieldFacts.clear_dungeon.push(row.dungeon);}
  if((/^(gear\.|skills\.|deep-progression|crafting\.|raid-|challenge-run)/.test((body as any).operation??(body as any).action??'')||(body as any).gear_id||(body as any).skill_id||(body as any).skills)&&(await c.query("SELECT 1 FROM ow_field_activities WHERE character=$1 AND status='running'",[s.id])).rowCount)fail('FIELD_BUILD_LOCKED','世界活动进行中，结束后再调整技能和装备。');
- const priorBuild=s.build,beforeTasks=completionState(s),beforeGear=new Set(s.gear.map(g=>g.id));const result=await fn(c,s);
+ if(hubFrozenCommand(fieldFreeze,body as Parameters<typeof hubFrozenCommand>[1]))fail(HUB_FIELD_FROZEN.code,HUB_FIELD_FROZEN.message,409);
+ const beforeHubMutation=structuredClone(s);const priorBuild=s.build,beforeTasks=completionState(s),beforeGear=new Set(s.gear.map(g=>g.id));const result=await fn(c,s);await recordHubMutation(c,s,body,result,beforeHubMutation,hubNumbers);
  if(s.starsea){const cleared=await c.query('SELECT DISTINCT camp FROM ow_camp_cycles WHERE character=$1 AND cleared_at IS NOT NULL',[s.id]);for(const {camp} of cleared.rows){const g=recordCampFact(s,camp);if(g.completed.length){s.gold+=g.gold;applyXp(s,g.xp);result.delta??={gold:0,xp:0,material:0};result.delta.gold+=g.gold;result.delta.xp+=g.xp;(result.questCompletions??=[]).push(...g.completed);}}}
- result.delta??={gold:0,xp:0,material:0};const inventoryGain=recordHexInventoryFacts(s,beforeGear);s.gold+=inventoryGain.gold;applyXp(s,inventoryGain.xp);result.delta.gold+=inventoryGain.gold;result.delta.xp+=inventoryGain.xp;(result.questCompletions??=[]).push(...inventoryGain.completed);grantHexQuestRewards(s,result.delta);
+ result.delta??={gold:0,xp:0,material:0};const inventoryGain=recordHexInventoryFacts(s,beforeGear);s.gold+=inventoryGain.gold;applyXp(s,inventoryGain.xp);result.delta.gold+=inventoryGain.gold;result.delta.xp+=inventoryGain.xp;(result.questCompletions??=[]).push(...inventoryGain.completed);
  if(result.questCompletions?.length)archiveQuestCompletions(s,result.questCompletions,input.command_id,new Date().toISOString());recordTaskCompletions(s,beforeTasks,new Date().toISOString());ensureProgression(s);ensureAppearance(s);evaluateUnlocks(s);if(s.build!==priorBuild&&!(body as any).permit_id)await c.query('UPDATE ow_permits SET build=$1 WHERE character=$2',[s.build,s.id]);s.revision++;await save(c,s);
  const receipt:Receipt={command_id:input.command_id,revision:s.revision,delta:result.delta??{gold:0,xp:0,material:0},rewards:result.rewards??[],snapshot:await snapshot(c,s),...(result.spawns?.length?{spawns:result.spawns}:{})};
  await c.query('INSERT INTO ow_receipts VALUES($1,$2,$3,$4)',[s.id,input.command_id,fingerprint,receipt]);
  await c.query('INSERT INTO ow_ledger(character,command,delta) VALUES($1,$2,$3)',[s.id,input.command_id,receipt.delta]);return receipt;
  });}
  app.get('/api/health',async()=>{await pool.query('SELECT 1');return {ok:true,versions,auth_mode:options.testLogin?'account-only':'password'};});
- app.get('/api/content',async()=>({versions,settings,fieldFreeze,regions,skillCatalog,equipmentItems,hexRunes:publicHexRunes,crafting:publicCraftingContent}));
- app.post('/api/hex/equip',async req=>{
-  const who=await identity(req),v=command.extend({gear_id:z.uuid(),slot:hexSlotSchema}).strict().parse(req.body);
-  return write(who,v,{...v,operation:'gear.hex-equip'},async(_c,s)=>{equipHex(s,v.gear_id,v.slot);s.build++;return {};});
- });
- app.post('/api/hex/unequip',async req=>{
-  const who=await identity(req),v=command.extend({slot:hexSlotSchema}).strict().parse(req.body);
-  return write(who,v,{...v,operation:'gear.hex-unequip'},async(_c,s)=>{const had=s.equipment[v.slot];unequipHex(s,v.slot);if(had)s.build++;return {};});
- });
- app.post('/api/hex/choose',async req=>{
-  const who=await identity(req),v=command.extend({offer_id:z.string().min(1).max(120),candidate_id:z.uuid()}).strict().parse(req.body);
-  return write(who,v,{...v,operation:'hex.choose'},async(_c,s)=>{
-   if(s.gear.length>=settings.capacity)fail('CAPACITY','背包满了，整理后再选择奖励。');
-   const gear=chooseHexReward(s,v.offer_id,v.candidate_id);
-   return {delta:{gold:0,xp:0,material:0,gear:[gear]}};
-  });
- });
- if(options.devCheckpoints)app.post('/api/dev/hex-grant',async req=>{
-  const who=await identity(req),v=command.extend({base:z.string(),quality:z.enum(['common','magic','rare','legendary'])}).strict().parse(req.body);
-  const username=String((await pool.query('SELECT username FROM ow_accounts WHERE id=$1',[who.account])).rows[0]?.username??'');
-  if(!username.startsWith('qa_'))fail('DEV_CHECKPOINT','只有 qa_ 测试账号可授予样板。',403);
-  return write(who,v,{...v,operation:'gear.hex-grant'},async(_c,s)=>{if(s.gear.length>=settings.capacity)fail('CAPACITY','背包满了。');const g=makeHexGear(v.base,v.quality,randomUUID());s.gear.push(g);return {delta:{gold:0,xp:0,material:0,gear:[g]}};});
- });
+ app.get('/api/content',async()=>({versions,settings,fieldFreeze,regions:regions.map(r=>frozenFieldRegion(r,fieldFreeze)),skillCatalog,equipmentItems,hexRunes:publicHexRunes,crafting:publicCraftingContent}));
  app.get('/api/items',async()=>equipmentCatalog);
  app.get('/api/items/:id',async req=>{
   const item=getEquipmentItem((req.params as {id:string}).id);if(!item)fail('NOT_FOUND','道具定义不存在。',404);return item;
@@ -194,7 +189,7 @@ export function createApp(pool:Pool,options:{fieldFreeze?:Partial<FieldFreeze>;p
   const kills=(await pool.query('SELECT source FROM ow_kills WHERE character=$1 AND source=ANY($2::text[])',[s.id,sources])).rows.map(r=>r.source);
   const drops=(await pool.query('SELECT claimed,data FROM ow_rewards WHERE character=$1 AND source=ANY($2::text[])',[s.id,sources])).rows;
   const record:BattleRecord|undefined=row.private_data.battleResult,complete=record?.complete===true;
-  return {permit_id:id,region:row.region,cycle:row.cycle,success:bosses.length>0&&bosses.every((source:string)=>kills.includes(source)),first_clear:complete?record.firstClear:null,unlocked_regions:record?.unlocked??[],totals:{gold:complete?record.gold:null,xp:complete?record.xp:null,material:complete?record.material:null},materials:record?.materials??{},books:record?.books??{},gear:record?.gear??drops.map(r=>r.data.gear),pending_gear:drops.filter(r=>!r.claimed).length,delivery:row.private_data.delivery??'ground',history_complete:complete};
+  return {hexCombatStats:serverHexCombatStats(null),permit_id:id,region:row.region,cycle:row.cycle,success:bosses.length>0&&bosses.every((source:string)=>kills.includes(source)),first_clear:complete?record.firstClear:null,unlocked_regions:record?.unlocked??[],totals:{gold:complete?record.gold:null,xp:complete?record.xp:null,material:complete?record.material:null},materials:record?.materials??{},books:record?.books??{},gear:record?.gear??drops.map(r=>r.data.gear),pending_gear:drops.filter(r=>!r.claimed).length,delivery:row.private_data.delivery??'ground',history_complete:complete};
  });
  app.get('/api/combat/results/:id/progress',async req=>{
   const who=await identity(req),s=await state(pool,who),id=z.uuid().parse((req.params as {id:string}).id);
@@ -207,10 +202,10 @@ export function createApp(pool:Pool,options:{fieldFreeze?:Partial<FieldFreeze>;p
  app.post('/api/appearance/apply',async req=>{const who=await identity(req),v=command.extend({selection:appearanceSelectionSchema}).strict().parse(req.body);return write(who,v,{...v,operation:'appearance.apply'},async(_c,s)=>{applyAppearance(s,v.selection);return {};});});
  for(const action of ['reset','default'])app.post('/api/appearance/'+action,async req=>{const who=await identity(req),v=command.strict().parse(req.body);return write(who,v,{...v,operation:'appearance.'+action},async(_c,s)=>{applyAppearance(s,{});return {};});});
  app.get('/api/progression',async req=>{const who=await identity(req);return progressionView(await state(pool,who));});
- app.post('/api/progression/preview',async req=>{const who=await identity(req),v=z.object({action:progressionActionSchema,revision:z.number().int().nonnegative().optional()}).strict().parse(req.body),s=await state(pool,who);if(v.revision!==undefined&&v.revision!==s.revision)fail('REVISION','角色状态已更新，请刷新后重试。');return previewProgressionAction(s,v.action);});
+ app.post('/api/progression/preview',async req=>{const who=await identity(req),v=z.object({action:progressionActionSchema,revision:z.number().int().nonnegative().optional()}).strict().parse(req.body),s=await state(pool,who);if(v.revision!==undefined&&v.revision!==s.revision)fail('REVISION','角色状态已更新，请刷新后重试。');if(v.action.op==='reputation.donate'&&v.action.target==='forge')return previewHubDonation(s,await readHubState(pool,s.id),v.action,hubNumbers);return previewProgressionAction(s,v.action);});
  app.post('/api/progression/talents/max-preview',async req=>{const s=await state(pool,await identity(req)),v=z.object({revision:z.number().int().nonnegative(),target:z.string().min(1).max(100)}).strict().parse(req.body);if(v.revision!==s.revision)fail('REVISION','角色状态已更新，请重新预览。');return quoteTalentBatch(s,v.target);});
  app.post('/api/progression/talents/max',async req=>{const who=await identity(req),v=command.extend({target:z.string().min(1).max(100),expected_count:z.number().int().positive().max(5)}).strict().parse(req.body);return write(who,v,{...v,operation:'deep-progression.talent-max'},async(_c,s)=>{try{return {delta:applyTalentBatch(s,v.target,v.expected_count)};}catch(error){fail('TALENT_BATCH',error instanceof Error?error.message:'批量投入失败。');}});});
- app.post('/api/progression/action',async req=>{const who=await identity(req),v=command.extend({action:progressionActionSchema}).strict().parse(req.body);return write(who,v,{...v,operation:'deep-progression'},async(_c,s)=>{const target=s.gear.find(g=>g.id===v.action.target);if(target&&(isHexSlot(target.slot)||hexRuneById.has(target.base)))fail('GEAR','海克斯不能进行武器养成、萃取或刻印。');return {delta:applyProgressionAction(s,v.action)};});});
+ app.post('/api/progression/action',async req=>{const who=await identity(req),v=command.extend({action:progressionActionSchema}).strict().parse(req.body);return write(who,v,{...v,operation:'deep-progression'},async(_c,s)=>{const target=s.gear.find(g=>g.id===v.action.target);if(target&&(isLegacyHexSlot(target.slot)))fail('GEAR','海克斯不能进行武器养成、萃取或刻印。');if(v.action.op==='reputation.donate'&&v.action.target==='forge'){const h=await readHubState(_c,s.id);const delta=donateHubProgression(s,h,v.action,hubNumbers);await saveHubState(_c,s.id,h);return {delta};}if(fieldFreeze.fieldEntry&&['reputation.claim','reputation.donate'].includes(v.action.op))fail('FIELD_FROZEN','旧航区阵营声望已冻结，请在港口建设领取。',409);return {delta:applyProgressionAction(s,v.action)};});});
  app.get('/api/travel/:region/drops',async req=>{
   const who=await identity(req),s=await state(pool,who),region=regions.find(r=>r.id===(req.params as {region:string}).region);
   if(!region||region.id==='town')fail('REGION','请选择野外区域或首领试炼。',404);
@@ -236,7 +231,7 @@ export function createApp(pool:Pool,options:{fieldFreeze?:Partial<FieldFreeze>;p
  const s:CharacterState={field:{gathered:[]},id:randomUUID(),name:v.name,revision:0,build:1,level:1,xp:0,gold:0,material:0,gear,equipment:{weapon:gear[0].id,armor:gear[1].id},weaponLoadouts:{},skills:[...start],skillRanks:Object.fromEntries(start.map(id=>[id,1])),skillBooks:{},progress:legacy?{kills:0,regions:['town','meadow'],bosses:[],safe:'town',tasks:[]}:{kills:0,regions:[starseaHub,starseaIslands[0]],bosses:[],safe:starseaIslands[0],tasks:[]}};
  if(!legacy){s.equipment.accessory=gear[3].id;s.equipment.ring=gear.at(-1)!.id;}
  // 新角色只走星潮海主线：从风栖岛落点醒来（docs/hybrid-implementation.md H6）。
- s.story=newStoryState();if(!legacy)s.starsea=newStarseaState();ensureProgression(s);ensureAppearance(s);await c.query('INSERT INTO ow_characters VALUES($1,$2,$3)',[s.id,who.account,s]);return snapshot(c,s);
+ s.story=newStoryState();if(!legacy){s.starsea=newStarseaState();if(fieldFreeze.fieldEntry)moveToHubPort(s);}ensureProgression(s);ensureAppearance(s);await c.query('INSERT INTO ow_characters VALUES($1,$2,$3)',[s.id,who.account,s]);return snapshot(c,s);
  });});
  app.post('/api/control',async req=>{const who=await identity(req);const v=z.object({takeover:z.boolean().default(false),client_id:z.uuid()}).strict().parse(req.body);return transaction(pool,async c=>{
  const s=await state(c,who,true);const old=(await c.query('SELECT * FROM ow_controls WHERE character=$1',[s.id])).rows[0];if(old&&new Date(old.expires).getTime()>Date.now()&&(old.session!==who.session||old.client_id!==v.client_id)&&!v.takeover)fail('BUSY','角色正在其他设备游玩，可选择接管。');
@@ -250,12 +245,13 @@ export function createApp(pool:Pool,options:{fieldFreeze?:Partial<FieldFreeze>;p
  const previous=(await c.query('SELECT * FROM ow_permits WHERE character=$1 AND region=$2 ORDER BY cycle DESC LIMIT 1',[s.id,region.id])).rows[0];let row=previous;const completed=row?(await c.query('SELECT count(*)::integer n FROM ow_kills WHERE character=$1 AND source=ANY($2::text[])',[s.id,row.data.spawns.map((m:Spawn)=>m.id)])).rows[0].n:0;const refreshReady=row&&completed===row.data.spawns.length&&(Date.now()-new Date(row.created).getTime())>=settings.refreshSeconds*1000;
  // Field regions refresh per camp cycle (/api/field/camps); an entry never resets them.
  const newAttempt=!field&&Boolean(v.attempt_id&&row?.private_data.attempt_id!==v.attempt_id&&(region.boss||refreshReady));
+ if(fieldFreeze.fieldEntry&&(!row||row.data.rules!==versions.rules||newAttempt||completed>=row.data.spawns.length))fail(HUB_FIELD_FROZEN.code,HUB_FIELD_FROZEN.message,409);
  if(newAttempt||!row||row.data.rules!==versions.rules){
   // Rule upgrades continue the same enemy instances. Only an explicit entry may reset a cleared area.
   const continuing=Boolean(row&&!newAttempt),cycle=(row?.cycle??0)+1,id=randomUUID();const fieldSpawns=field?[]:starsea&&s.starsea?.hardmode?starseaSpawns(starseaMap(region.id),true):region.spawns;
   const spawns=continuing?row.data.spawns:[...fieldSpawns.map(m=>({...m,id:`${region.id}:${cycle}:${m.id}`})),...starseaPendingWave(s,region.id)];const permit:Permit={id,region:region.id,cycle,build:s.build,rules:versions.rules,expires_at:new Date(Date.now()+settings.permitSeconds*1000).toISOString(),spawns,completed:[],seed:continuing?row.data.seed:randomInt(1,100000),from_tick:0,sequence:0};
   const battleResult=continuing?(row.private_data.battleResult??newBattleRecord(completed===0)):newBattleRecord();
-  row=(await c.query('INSERT INTO ow_permits(id,character,region,cycle,build,created,expires,data,private_data) VALUES($1,$2,$3,$4,$5,now(),$6,$7,$8) RETURNING *',[id,s.id,region.id,cycle,s.build,permit.expires_at,permit,{economy,itemRules:freezeItemRules(),gearBases:worldGearBases,collectionDrops:equipmentDropRules,skillBookRewards,dropProfile:dropProfileFor(region.id),progressionRewards:progressionConfig.rewards,craftingLoot:freezeCraftingLoot(),battleResult,priorKills:continuing?completed:0,attempt_id:v.attempt_id,replayPilot:row?.private_data.replayPilot,fieldLootRules:field?freezeFieldGuarantees():undefined,delivery:region.boss?'inventory':'ground'}])).rows[0];
+  row=(await c.query('INSERT INTO ow_permits(id,character,region,cycle,build,created,expires,data,private_data) VALUES($1,$2,$3,$4,$5,now(),$6,$7,$8) RETURNING *',[id,s.id,region.id,cycle,s.build,permit.expires_at,permit,{economy,hexLoot:freezeHexLoot(),itemRules:freezeItemRules(),gearBases:worldGearBases,collectionDrops:equipmentDropRules,skillBookRewards,dropProfile:dropProfileFor(region.id),progressionRewards:progressionConfig.rewards,craftingLoot:freezeCraftingLoot(),battleResult,priorKills:continuing?completed:0,attempt_id:v.attempt_id,replayPilot:row?.private_data.replayPilot,fieldLootRules:field?freezeFieldGuarantees():undefined,delivery:region.boss?'inventory':'ground'}])).rows[0];
  }else{
   if(new Date(row.expires).getTime()-Date.now()<30000){row.data.expires_at=new Date(Date.now()+settings.permitSeconds*1000).toISOString();await c.query('UPDATE ow_permits SET expires=$1,data=$2 WHERE id=$3',[row.data.expires_at,row.data,row.id]);}
   if(row.build!==s.build){await c.query('UPDATE ow_permits SET build=$1 WHERE id=$2',[s.build,row.id]);row.build=s.build;}
@@ -294,7 +290,7 @@ export function createApp(pool:Pool,options:{fieldFreeze?:Partial<FieldFreeze>;p
  const crafting=awardCraftingLoot(s,{region:row.region,kind:rank==='rare'?'rare':m.boss?'boss':m.elite?'elite':'normal',dungeon:Boolean(s.dungeon?.instance),tide:isTideNightSpawn(s,k.source_id),worldTier:tier},row.private_data.craftingLoot);
  delta.materials??={};for(const[id,amount]of Object.entries(crafting.materials))delta.materials[id]=(delta.materials[id]??0)+amount;
  if(crafting.recipes.length)(delta.recipes??=[]).push(...crafting.recipes);
- const growth=awardProgression(s,{region:row.region,boss:m.boss,elite:m.elite,source:'world',sourceId:k.source_id,level:s.level},row.private_data.progressionRewards);
+ const growth=awardProgression(s,{region:row.region,boss:m.boss,elite:m.elite,source:'world',sourceId:k.source_id,level:s.level,allowReputation:!fieldFreeze.fieldEntry},row.private_data.progressionRewards);
  delta.progression??={materials:{},reputation:{}};
  for(const [id,amount] of Object.entries(growth.materials))delta.progression.materials[id]=(delta.progression.materials[id]??0)+amount;
  for(const [id,amount] of Object.entries(growth.reputation))delta.progression.reputation[id]=(delta.progression.reputation[id]??0)+amount;
@@ -306,16 +302,26 @@ export function createApp(pool:Pool,options:{fieldFreeze?:Partial<FieldFreeze>;p
  // 星潮夜入侵怪：必掉稀有及以上。
  const quality=isTideNightSpawn(s,k.source_id)&&rolled!=='legendary'?'rare':rolled;
  const qualities=isTideNightSpawn(s,k.source_id)?[quality!]:fieldRegionInfo(row.region)&&row.private_data.fieldLootRules?guaranteedFieldQualities(rank,row.private_data.fieldLootRules)??(quality?[quality]:[]):quality?[quality]:[];
+ const targetGearStart=rewards.length;
  for(const [gearIndex,quality]of qualities.entries()){
   const sea=isStarseaRegion(economyRegionOf(row.region)),picked=pickRegionalGearTemplate(templates,row.region,row.private_data.collectionDrops??equipmentDropRules),template=sea?picked:scaleWorldGear(picked,dropProfile);
   const gear:Gear=instantiateGearTemplate(template,randomUUID(),quality,[]);gear.origin={kind:'random'};
   // 星潮海：物品等级 = 怪物等级，阶段与主属性由物品等级决定。
   if(sea)applyItemPower(gear,m.monster?.level??s.level);
-  issueCombatGear(gear,gear.ilvl??m.monster?.level??1,dropProfile.maxAffixTier,s.level,row.region==='dragonbone-boss',row.private_data.itemRules);
+  issueCombatGear(gear,gear.ilvl??m.monster?.level??1,dropProfile.maxAffixTier,s.level,row.region==='dragonbone-boss',row.private_data.itemRules);attachHexAffixes(s,[gear],{region:row.region,kind:fieldRegionInfo(row.region)&&m.elite&&!m.boss?'elite':'normal'},row.private_data.hexLoot);
   const reward:Reward={id:randomUUID(),source_id:gearIndex===0?k.source_id:k.source_id+':gear:'+gearIndex,region:row.region,position:{x:m.x,y:m.y},gear};
   const direct=row.private_data.delivery==='inventory';
   if(direct)s.gear.push(gear);
   await c.query('INSERT INTO ow_rewards(id,character,source,data,claimed) VALUES($1,$2,$3,$4,$5)',[reward.id,s.id,reward.source_id,reward,direct]);rewards.push(reward);record.gear.push(structuredClone(gear));
+ }
+
+ if(m.boss&&row.region==='ss-map-boss-2'&&!s.progress.bosses.includes(row.region)){
+  const dropped=rewards.slice(targetGearStart),attached=attachHexAffixes(s,dropped.map(r=>r.gear),{kind:'mistBoss',region:row.region,first:true},row.private_data.hexLoot);
+  for(const gear of attached){
+   const reward=dropped.find(r=>r.gear.id===gear.id)!;
+   await c.query('UPDATE ow_rewards SET data=$1 WHERE id=$2 AND character=$3',[reward,reward.id,s.id]);
+   const index=record.gear.findIndex(g=>g.id===gear.id);if(index>=0)record.gear[index]=structuredClone(gear);
+  }
  }
  if(m.boss&&!s.progress.bosses.includes(row.region)){
  record.firstClear=true;
@@ -334,7 +340,7 @@ export function createApp(pool:Pool,options:{fieldFreeze?:Partial<FieldFreeze>;p
  });});
  app.get('/api/receipt/:id',async req=>{const who=await identity(req),s=await state(pool,who);const id=z.uuid().parse((req.params as any).id);const row=await pool.query('SELECT receipt FROM ow_receipts WHERE character=$1 AND command=$2',[s.id,id]);if(!row.rowCount)fail('NOT_FOUND','该操作尚未确认。',404);return row.rows[0].receipt;});
  app.post('/api/reward/claim',async req=>{const who=await identity(req),v=command.extend({reward_id:z.uuid()}).strict().parse(req.body);return write(who,v,v,async(c,s)=>{
- const r=(await c.query('SELECT * FROM ow_rewards WHERE id=$1 AND character=$2 FOR UPDATE',[v.reward_id,s.id])).rows[0];if(!r||r.claimed)fail('REWARD','战利品已领取或不存在。');if(s.gear.length>=settings.capacity)fail('CAPACITY','背包满了，整理后再领取。');assignGearAspect(r.data.gear,0);s.gear.push(r.data.gear);await c.query('UPDATE ow_rewards SET claimed=true,data=$2 WHERE id=$1',[v.reward_id,r.data]);return {};
+ const r=(await c.query('SELECT * FROM ow_rewards WHERE id=$1 AND character=$2 FOR UPDATE',[v.reward_id,s.id])).rows[0];if(!r||r.claimed)fail('REWARD','战利品已领取或不存在。');if(isLegacyHexSlot(r.data.gear.slot))fail('GEAR_RETIRED','旧独立海克斯样板保留在历史记录中。',410);if(currentGearCount(s.gear)>=settings.capacity)fail('CAPACITY','背包满了，整理后再领取。');assignGearAspect(r.data.gear,0);s.gear.push(r.data.gear);await c.query('UPDATE ow_rewards SET claimed=true,data=$2 WHERE id=$1',[v.reward_id,r.data]);return {};
  });});
  /** Upgrade and reroll only at the port workshop (2026-10-11, docs/forge-workshop.md): body carries where the hero stands, checked against forge landmarks like the bounty board. */
  const gearSchema=command.extend({gear_id:z.uuid(),region:z.string().min(1).max(120).optional(),position:z.object({x:z.number().finite(),y:z.number().finite()}).strict().optional()}).strict(),forgeReach=5;
@@ -343,13 +349,13 @@ export function createApp(pool:Pool,options:{fieldFreeze?:Partial<FieldFreeze>;p
  const rerollSchema=gearSchema.extend({affix_slot:z.number().int().nonnegative().max(8).optional()}).strict();
  app.post('/api/reward/claim-many',async req=>{const who=await identity(req),v=claimRewardsSchema.parse(req.body);return write(who,v,v,async(c,s)=>{
   const ids=[...new Set(v.reward_ids)],rows=(await c.query('SELECT * FROM ow_rewards WHERE id=ANY($1::uuid[]) AND character=$2 FOR UPDATE',[ids,s.id])).rows;
-  if(rows.length!==ids.length)fail('REWARD','部分战利品不存在或不属于当前角色。');
-  const pending=ids.map(id=>rows.find(r=>r.id===id)!).filter(r=>!r.claimed),space=Math.max(0,settings.capacity-s.gear.length);
+  if(rows.length!==ids.length)fail('REWARD','部分战利品不存在或不属于当前角色。');if(rows.some(r=>isLegacyHexSlot(r.data.gear.slot)))fail('GEAR_RETIRED','旧独立海克斯样板保留在历史记录中。',410);
+  const pending=ids.map(id=>rows.find(r=>r.id===id)!).filter(r=>!r.claimed),space=Math.max(0,settings.capacity-currentGearCount(s.gear));
   if(pending.length&&!space)fail('CAPACITY','背包满了，战利品留在地上和待领取里。');
   for(const row of pending.slice(0,space)){assignGearAspect(row.data.gear,0);s.gear.push(row.data.gear);await c.query('UPDATE ow_rewards SET claimed=true,data=$2 WHERE id=$1',[row.id,row.data]);}
   return {};
  });});
- app.get('/api/gear/salvage-batch/preview',async req=>{const s=await state(pool,await identity(req)),gear=batchSalvageCandidates(s);return {revision:s.revision,gear,material:gear.length*economy.salvageMaterial,protectedCount:s.gear.length-gear.length};});
+ app.get('/api/gear/salvage-batch/preview',async req=>{const s=await state(pool,await identity(req)),gear=batchSalvageCandidates(s);return {revision:s.revision,gear,material:gear.length*economy.salvageMaterial,protectedCount:currentGearCount(s.gear)-gear.length};});
  app.post('/api/gear/salvage-batch',async req=>{const who=await identity(req),v=command.extend({gear_ids:z.array(z.uuid()).min(1).max(200)}).strict().parse(req.body);
  return write(who,v,{...v,operation:'gear.salvage-batch'},async(c,s)=>{
   if(new Set(v.gear_ids).size!==v.gear_ids.length)fail('INPUT','请勿重复选择装备。',400);
@@ -360,7 +366,7 @@ export function createApp(pool:Pool,options:{fieldFreeze?:Partial<FieldFreeze>;p
   return {delta:{gold:0,xp:0,material,...(patterns.length?{patterns}:{})}};
  });});
  app.post('/api/gear/:action',async req=>{const who=await identity(req),v=rerollSchema.parse(req.body),action=(req.params as any).action;if(!['equip','unequip','lock','salvage','upgrade','reroll'].includes(action))fail('INPUT','未知装备操作。',400);
- if(action!=='reroll'&&v.affix_slot!==undefined)fail('INPUT','只有重铸可指定词缀槽。',400);return write(who,v,{...v,action},async(c,s)=>{const g=s.gear.find(g=>g.id===v.gear_id);if(!g)fail('GEAR','装备不存在。');if((isHexSlot(g.slot)||hexRuneById.has(g.base))&&!['lock','salvage'].includes(action))fail('GEAR','海克斯请使用专用穿脱操作，且不可强化或重铸。');const worn=Object.values(s.equipment).includes(g.id);const delta:Receipt['delta']={gold:0,xp:0,material:0};
+ if(action!=='reroll'&&v.affix_slot!==undefined)fail('INPUT','只有重铸可指定词缀槽。',400);return write(who,v,{...v,action},async(c,s)=>{const g=s.gear.find(g=>g.id===v.gear_id);if(!g)fail('GEAR','装备不存在。');if(isLegacyHexSlot(g.slot))fail('GEAR_RETIRED','旧独立海克斯样板已停用，历史数据仍保留。',410);const worn=Object.values(s.equipment).includes(g.id);const delta:Receipt['delta']={gold:0,xp:0,material:0};
  if(action==='equip'){if(s.level<(g.requiredLevel??1))fail('GEAR_LEVEL','需要角色等级 '+g.requiredLevel+' 才能穿戴。');if(g.slot==='weapon'){const p=ensureProgression(s);for(let i=1;i<p.weaponGrid.length;i++)if(p.weaponGrid[i]===g.id)p.weaponGrid[i]=null;}if(g.slot==='weapon')changeMainHand(s,g.id);else s.equipment[g.slot]=g.id;ensureProgression(s);s.build++;}
  if(action==='unequip'){if(worn){if(g.slot==='weapon')changeMainHand(s,undefined);else delete s.equipment[g.slot];ensureProgression(s);s.build++;}}
  if(action==='lock')g.locked=!g.locked;
@@ -377,18 +383,18 @@ export function createApp(pool:Pool,options:{fieldFreeze?:Partial<FieldFreeze>;p
  return {delta};
  });});
  app.get('/api/gear/:id/tip',async req=>{
-  const who=await identity(req),s=await state(pool,who),id=z.uuid().parse((req.params as {id:string}).id),gear=s.gear.find(g=>g.id===id);if(!gear)fail('GEAR','装备不在你的行囊中。',404);if(isHexSlot(gear.slot)||hexRuneById.has(gear.base))fail('GEAR','海克斯属性请读取公开目录与角色构筑。');
+  const who=await identity(req),s=await state(pool,who),id=z.uuid().parse((req.params as {id:string}).id),gear=s.gear.find(g=>g.id===id);if(!gear)fail('GEAR','装备不在你的行囊中。',404);if(isLegacyHexSlot(gear.slot))fail('GEAR_RETIRED','旧独立海克斯样板已停用，历史数据仍保留。',410);
   const replaces=s.gear.find(g=>g.id===s.equipment[gear.slot])??null,next=structuredClone(s);next.equipment[gear.slot]=gear.id;
   const current=resolveBuild(s).stats,equipped=resolveBuild(next).stats;
   const currentSets=getEquippedSets(s.gear.filter(g=>Object.values(s.equipment).includes(g.id)));
   const equippedSets=getEquippedSets(s.gear.filter(g=>Object.values(next.equipment).includes(g.id)));
   const inscription_info=gear.inscription?{name:effectAtomById.get(gear.inscription.atomId)!.name,description:scaledDescription(effectAtomById.get(gear.inscription.atomId)!,resolveAtomParts([{id:gear.inscription.atomId,tier:gear.inscription.tier,source:gear.id}])[0])}:undefined;
-  return {gear,verdict:compareVerdict(current,equipped),...(inscription_info?{inscription_info}:{}),reforge:(()=>{const reason=!gear.affixes.length?'本件还没有可重铸的副属性':!storyFeatureUnlocked(s,'forge')?storyFeatureReason(s,'forge'):s.level<inscriptionConfig.reroll.level?rerollLevel():'';return {gold:inscriptionConfig.reroll.gold,material:inscriptionConfig.reroll.material,level:inscriptionConfig.reroll.level,slot:gear.rerollSlot,allowed:!reason,reason};})(),primary_attribute:gearPrimaryAttribute(gear),revision:s.revision,ruleset_version:versions.rules,equipped:replaces?.id===gear.id,max_rank:gearMaxRank(gear,5),attributes:gearContribution(gear),effect_description:effectText[gear.effect],replaces,comparison:compareResolvedStats(current,equipped,gear.mainStat?[gear.mainStat.stat]:[]),currentSets,equippedSets};
+  return {gear,hexPreview:hexEquipPreview(s,gear),verdict:compareVerdict(current,equipped),...(inscription_info?{inscription_info}:{}),reforge:(()=>{const reason=!gear.affixes.length?'本件还没有可重铸的副属性':!storyFeatureUnlocked(s,'forge')?storyFeatureReason(s,'forge'):s.level<inscriptionConfig.reroll.level?rerollLevel():'';return {gold:inscriptionConfig.reroll.gold,material:inscriptionConfig.reroll.material,level:inscriptionConfig.reroll.level,slot:gear.rerollSlot,allowed:!reason,reason};})(),primary_attribute:gearPrimaryAttribute(gear),revision:s.revision,ruleset_version:versions.rules,equipped:replaces?.id===gear.id,max_rank:gearMaxRank(gear,5),attributes:gearContribution(gear),effect_description:effectText[gear.effect],replaces,comparison:compareResolvedStats(current,equipped,gear.mainStat?[gear.mainStat.stat]:[]),currentSets,equippedSets};
  });
- app.get('/api/gear/:id/preview',async req=>{const who=await identity(req),s=await state(pool,who),id=z.uuid().parse((req.params as any).id),g=s.gear.find(g=>g.id===id);if(!g)fail('GEAR','装备不存在。');if(isHexSlot(g.slot)||hexRuneById.has(g.base))fail('GEAR','海克斯不支持普通装备强化预览。');const equipped=structuredClone(s);equipped.equipment[g.slot]=g.id;const upgraded=structuredClone(s);const next=upgraded.gear.find(v=>v.id===id)!;if(next.rank<gearMaxRank(next,5))next.rank++;
+ app.get('/api/gear/:id/preview',async req=>{const who=await identity(req),s=await state(pool,who),id=z.uuid().parse((req.params as any).id),g=s.gear.find(g=>g.id===id);if(!g)fail('GEAR','装备不存在。');if(isLegacyHexSlot(g.slot))fail('GEAR_RETIRED','旧独立海克斯样板已停用，历史数据仍保留。',410);const equipped=structuredClone(s);equipped.equipment[g.slot]=g.id;const upgraded=structuredClone(s);const next=upgraded.gear.find(v=>v.id===id)!;if(next.rank<gearMaxRank(next,5))next.rank++;
  const worn=Object.values(s.equipment).includes(g.id),blocked=g.locked?'locked':worn?'equipped':isProgressionGearReferenced(s,g.id)?'grid':'';
  const currentBuild=resolveBuild(s),equippedBuild=resolveBuild(equipped);
- return {gear_id:g.id,revision:s.revision,ruleset_version:versions.rules,verdict:compareVerdict(currentBuild.stats,equippedBuild.stats),equipBlock:s.level<(g.requiredLevel??1)?'需要角色等级 '+g.requiredLevel+' 才能穿戴。':'',cost:gearUpgradeCost(g,upgradeCost),upgradeBlock:storyFeatureUnlocked(s,'forge')?'':storyFeatureReason(s,'forge'),current:currentBuild,equipped:equippedBuild,upgraded:resolveBuild(upgraded),max:g.rank>=gearMaxRank(g,5),salvage:{gear_id:g.id,material:economy.salvageMaterial,allowed:blocked==='',blocked}};});
+ return {gear_id:g.id,hexPreview:hexEquipPreview(s,g),revision:s.revision,ruleset_version:versions.rules,verdict:compareVerdict(currentBuild.stats,equippedBuild.stats),equipBlock:s.level<(g.requiredLevel??1)?'需要角色等级 '+g.requiredLevel+' 才能穿戴。':'',cost:gearUpgradeCost(g,upgradeCost),upgradeBlock:storyFeatureUnlocked(s,'forge')?'':storyFeatureReason(s,'forge'),current:currentBuild,equipped:equippedBuild,upgraded:resolveBuild(upgraded),max:g.rank>=gearMaxRank(g,5),salvage:{gear_id:g.id,material:economy.salvageMaterial,allowed:blocked==='',blocked}};});
  app.get('/api/skills/preview',async req=>{const who=await identity(req),s=await state(pool,who);return {revision:s.revision,ruleset_version:versions.rules,skills:resolveSkillAccess(s)};});
  app.post('/api/skills',async req=>{const who=await identity(req),v=command.extend({skills:z.array(z.string()).min(1).max(4)}).strict().parse(req.body);return write(who,v,{...v,action:'save-skills'},async(c,s)=>{
   if(new Set(v.skills).size!==v.skills.length||v.skills.some(id=>!skillCatalog.some(sk=>sk.id===id)))fail('SKILL','请选择一至四个不同的有效技能。');
@@ -415,7 +421,7 @@ export function createApp(pool:Pool,options:{fieldFreeze?:Partial<FieldFreeze>;p
   const cost=quote.cost!;s.gold-=cost.gold;s.material-=cost.material;s.skillRanks[v.skill_id]=quote.rank+1;s.build++;
   return {delta:{gold:-cost.gold,xp:0,material:-cost.material}};
  });});
- app.post('/api/task/claim',async req=>{const who=await identity(req),v=command.extend({task:z.string().min(1).max(80)}).strict().parse(req.body);return write(who,v,v,async(_c,s)=>{if(s.progress.tasks.includes(v.task))fail('CLAIMED','任务奖励已经领取。');const record=claimTask(s,v.task,v.command_id,new Date().toISOString());if(!record)fail('TASK','任务不存在或尚未完成目标。');return {delta:record.reward!};});});
+ app.post('/api/task/claim',async req=>{const who=await identity(req),v=command.extend({task:z.string().min(1).max(80),instance:z.uuid().optional()}).strict().parse(req.body);return write(who,v,v,async(_c,s)=>{if(s.starsea&&bountyRow(v.task)){const live=s.starsea.bounties.filter(b=>b.task===v.task&&b.acceptedAt!==undefined&&b.cooldownUntil===undefined&&(!v.instance||b.instance===v.instance));if(!live.length)fail('BOUNTY_GONE','这条悬赏已经领取或刷新。');if(live.length!==1)fail('BOUNTY_INSTANCE_REQUIRED','请从悬赏板选择具体条目。');const {row,reward}=claimBounty(s.starsea,live[0].instance,Date.now(),fail);s.gold+=reward.gold;s.material+=reward.material;applyXp(s,reward.xp);return {delta:reward,questCompletions:[{id:row.id,xp:reward.xp,gold:reward.gold,bountyInstance:live[0].instance}]};}if(s.progress.tasks.includes(v.task))fail('CLAIMED','任务奖励已经领取。');const record=claimTask(s,v.task,v.command_id,new Date().toISOString());if(!record)fail('TASK','任务不存在或尚未完成目标。');return {delta:record.reward!};});});
  app.post('/api/quest',async req=>{const who=await identity(req),v=command.extend({op:starseaQuestOpSchema,region:z.string().min(1).max(100),task:z.string().min(1).max(120).nullable().optional(),gate:z.string().min(1).max(120).optional(),retry:z.boolean().optional(),position:z.object({x:z.number().finite(),y:z.number().finite()}).optional(),target:z.string().min(1).max(120).optional(),choice:z.enum(['a','b']).optional()}).strict().parse(req.body);return write(who,v,{...v,operation:'starsea.quest'},async(c,s)=>{
   // 战斗步骤把任务波次追加进当前区域最新的野外授权，击杀仍由 /combat/report 校验。
   const row=['start','gate','interact','defense-finish'].includes(v.op)?(await c.query('SELECT * FROM ow_permits WHERE character=$1 AND region=$2 ORDER BY cycle DESC LIMIT 1 FOR UPDATE',[s.id,v.region])).rows[0]:undefined;
@@ -436,24 +442,26 @@ export function createApp(pool:Pool,options:{fieldFreeze?:Partial<FieldFreeze>;p
   if(!available){const row=(await c.query('SELECT private_data FROM ow_permits WHERE character=$1 AND region=$2 ORDER BY cycle DESC LIMIT 1',[s.id,region.id])).rows[0],p=row?.private_data.lastPosition;available=!!p&&region.landmarks.some(l=>l.kind==='safe'&&Math.hypot(l.x-p.x,l.y-p.y)<=3);}
   if(!available)fail('WAREHOUSE_LOCATION','请到港口或前哨仓库整理。');
   s.warehouse??=[];
-  if(action==='store'){const gear=s.gear.find(g=>g.id===v.gear_id);if(!gear)fail('GEAR','这件装备不在背包中。');if(Object.values(s.equipment).includes(gear.id)||isProgressionGearReferenced(s,gear.id))fail('GEAR_IN_USE','请先卸下装备或从武器盘移除。');s.gear=s.gear.filter(g=>g.id!==gear.id);s.warehouse.push(gear);}
-  else{const gear=s.warehouse.find(g=>g.id===v.gear_id);if(!gear)fail('GEAR','这件装备不在仓库中。');if(s.gear.length>=settings.capacity)fail('CAPACITY','背包满了，先存入或整理装备。');s.warehouse=s.warehouse.filter(g=>g.id!==gear.id);s.gear.push(withCurrentEquipmentNames(gear));}
+  if(action==='store'){const gear=s.gear.find(g=>g.id===v.gear_id);if(!gear)fail('GEAR','这件装备不在背包中。');if(isLegacyHexSlot(gear.slot))fail('GEAR_RETIRED','旧独立海克斯样板保留在历史记录中。',410);if(Object.values(s.equipment).includes(gear.id)||isProgressionGearReferenced(s,gear.id))fail('GEAR_IN_USE','请先卸下装备或从武器盘移除。');s.gear=s.gear.filter(g=>g.id!==gear.id);s.warehouse.push(gear);}
+  else{const gear=s.warehouse.find(g=>g.id===v.gear_id);if(!gear)fail('GEAR','这件装备不在仓库中。');if(isLegacyHexSlot(gear.slot))fail('GEAR_RETIRED','旧独立海克斯样板保留在历史记录中。',410);if(currentGearCount(s.gear)>=settings.capacity)fail('CAPACITY','背包满了，先存入或整理装备。');s.warehouse=s.warehouse.filter(g=>g.id!==gear.id);s.gear.push(withCurrentEquipmentNames(gear));}
   return {};
  });});
  app.post('/api/location',async req=>{const who=await identity(req),v=command.extend({region:z.string()}).strict().parse(req.body);return write(who,v,{...v,operation:'location'},async(c,s)=>{if(!regionUnlocked(s,v.region))fail('LOCKED','这张地图尚未解锁。');rememberRegion(s,v.region);return {};});});
  // 开场「坠星觉醒」：三选一定初始武器（只发一次），看完或跳过后标记完成；开场战斗本身不经服务端、不发奖励。
- app.post('/api/prologue',async req=>{const who=await identity(req),v=command.extend({weapon:z.enum(prologueFamilies).optional(),finish:z.boolean().default(false)}).strict().parse(req.body);if(!v.weapon&&!v.finish)fail('INPUT','请选择武器或结束开场。');return write(who,v,{...v,operation:'prologue'},async(_c,s)=>{if(v.weapon)choosePrologueWeapon(s,v.weapon);if(v.finish)finishPrologue(s);return {};});});
+ app.post('/api/prologue',async req=>{const who=await identity(req),v=command.extend({weapon:z.enum(prologueFamilies).optional(),finish:z.boolean().default(false)}).strict().parse(req.body);if(!v.weapon&&!v.finish)fail('INPUT','请选择武器或结束开场。');return write(who,v,{...v,operation:'prologue'},async(_c,s)=>{if(v.weapon)choosePrologueWeapon(s,v.weapon);if(v.finish){finishPrologue(s);if(fieldFreeze.fieldEntry){moveToHubPort(s);await arriveAtHub(_c,s);}}return {};});});
  // 本地验收检查点：只给 qa_ 开头的测试号、只在还没打开场的新角色上用，任务按正常完成流程走（packages/rules/dev-checkpoints.ts）。
  if(options.devCheckpoints)app.post('/api/dev/checkpoint',async req=>{const who=await identity(req),v=command.extend({checkpoint:z.enum(devCheckpointIds),weapon:z.enum(prologueFamilies)}).strict().parse(req.body);
   const username=String((await pool.query('SELECT username FROM ow_accounts WHERE id=$1',[who.account])).rows[0]?.username??'');if(!username.startsWith('qa_'))fail('DEV_CHECKPOINT','只有 qa_ 开头的测试号能跳检查点。',403);
   return write(who,v,{...v,operation:'dev.checkpoint'},async(_c,s)=>{const g=applyDevCheckpoint(s,v.checkpoint,v.weapon,Date.now());const delta:Receipt['delta']={gold:g.gold,xp:g.xp,material:0};s.gold+=delta.gold;applyXp(s,delta.xp);return {delta,questCompletions:g.completed};});});
- app.post('/api/safe',async req=>{const who=await identity(req),v=command.extend({region:z.string(),point:z.string()}).strict().parse(req.body);return write(who,v,v,async(c,s)=>{const sea=isStarseaRegion(v.region);if(sea?!s.starsea||!starseaRegionOpen(s.starsea,v.region):!s.progress.regions.includes(v.region))fail('LOCKED','据点尚未开放。');const r=regionById(v.region);if(!((r.id==='town'||sea)&&v.point==='')&&!r.landmarks.some(l=>l.kind==='safe'&&l.name===v.point))fail('SAFE','据点不存在。');s.progress.safe=v.region;if((r.id==='town'||sea)&&v.point==='')delete s.progress.safePoint;else s.progress.safePoint=v.point;return {};});});
- registerProgressionChallenges(app,{pool,identity,state,snapshot,write,fail,dungeonsEnabled:options.dungeons!==false});
+ app.post('/api/safe',async req=>{const who=await identity(req),v=command.extend({region:z.string(),point:z.string()}).strict().parse(req.body);return write(who,v,v,async(c,s)=>{if(fieldFreeze.fieldEntry&&v.region!==starseaHub)fail(HUB_FIELD_FROZEN.code,HUB_FIELD_FROZEN.message,409);const sea=isStarseaRegion(v.region);if(sea?!s.starsea||!starseaRegionOpen(s.starsea,v.region):!s.progress.regions.includes(v.region))fail('LOCKED','据点尚未开放。');const r=regionById(v.region);if(!((r.id==='town'||sea)&&v.point==='')&&!r.landmarks.some(l=>l.kind==='safe'&&l.name===v.point))fail('SAFE','据点不存在。');s.progress.safe=v.region;if((r.id==='town'||sea)&&v.point==='')delete s.progress.safePoint;else s.progress.safePoint=v.point;return {};});});
+ registerHubChart(app,{pool,identity,state,fail},hubNumbers);
+ registerHubOutside(app,{pool,identity,state,fail},hubNumbers);
+ registerProgressionChallenges(app,{pool,identity,state,snapshot,write,fail,fieldFreeze,dungeonsEnabled:options.dungeons!==false});
  registerField(app,{write,pool,identity,state,lease,fail,transaction,fieldFreeze});
  registerFieldActivities(app,{write,pool,identity,state,lease,fail,fieldFreeze});
  registerStageKeyService(app,{pool,identity,state,fail,write});
  registerCrafting(app,{pool,identity,state,fail,write,atForge,forgeReason:forgePlace});
- if(options.dungeons!==false)registerDungeons(app,{pool,identity,state,snapshot,lease,fail,origins},options.dungeons);
+ if(options.dungeons!==false)registerDungeons(app,{pool,identity,state,snapshot,lease,fail,origins,fieldFreeze,hubNumbers,testDungeonSeed:options.testDungeonSeed},options.dungeons);
  registerCombatReview(app,{pool,identity,state,fail});
  if(options.pacingLab)registerPacingLab(app,{pool,identity,state,fail},options.pacingLab);
  return app;

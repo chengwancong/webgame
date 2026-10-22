@@ -1,6 +1,6 @@
 import type {CharacterState,Stats,Skill} from '../contracts/index.ts';
 import {challengeProgressSchema,type ChallengeProgress,type ChallengeResult,type RaidRole} from '../contracts/progression-challenges.ts';
-import {challengeContent,seasonActive,type ChallengeDefinition} from '../content/progression-challenges.ts';
+import {challengeContent,seasonActive,seasonForTime,type ChallengeDefinition} from '../content/progression-challenges.ts';
 import {regionById} from '../content/index.ts';
 import {resolveBuild} from './index.ts';
 import {World} from '../simulation/index.ts';
@@ -32,7 +32,7 @@ export function consumeChallenge(s:CharacterState,d:ChallengeDefinition,now=Date
  for(const key of Object.keys(p.weekly))if(!key.endsWith(dates.week))delete p.weekly[key];
 }
 export function awardSeasonXp(s:CharacterState,amount:number,now=Date.now()){
- if(!seasonActive(now))return;const p=ensureChallengeProgress(s),id=challengeContent.season.id;
+ if(!seasonActive(now))return;const p=ensureChallengeProgress(s),id=seasonForTime(now).id;
  p.seasonXp[id]=(p.seasonXp[id]??0)+amount;
 }
 

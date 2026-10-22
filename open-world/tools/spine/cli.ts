@@ -15,7 +15,8 @@ import {pacingProfiles} from '../pacing/profiles.ts';
 import {referencePlayer} from './player.ts';
 import {readJson,review,data} from './io.ts';
 const [command,...args]=process.argv.slice(2),get=(key:string,fallback:string)=>args.find(a=>a.startsWith('--'+key+'='))?.slice(key.length+3)??fallback,apply=args.includes('--apply'),plan=get('plan',''),out=get('out',review+'/'+({bench:'S2',audit:'S2',normalize:'S3','solve-builds':'S4',monsters:'S5',progression:'S6',validate:'S7/V1',check:'S9'} as Record<string,string>)[command]);
-if(args.includes('--help')||!command){console.log('数值主干命令：targets、bench、audit、normalize、solve-builds、monsters、progression、validate、check。通用 --out=目录；写入必须 --apply --plan=计划路径；运行前确认没有其他重任务。bench支持 --builds / --player / --content；monsters支持 --player / --efficiencies；progression支持 --timeline-only；validate支持 --suite=all|builds|calendar|walls|field|budget。');}
+if(args.includes('--help')||!command){console.log('数值主干命令：targets、bench、audit、normalize、solve-builds、monsters、progression、validate、check、hub-rewards。通用 --out=目录；写入必须 --apply --plan=计划路径；运行前确认没有其他重任务。bench支持 --builds / --player / --content；monsters支持 --player / --efficiencies；progression支持 --timeline-only；validate支持 --suite=all|builds|calendar|walls|field|budget。');}
+else if(command==='hub-rewards'){const {runHubRewards}=await import('./hub-rewards.ts');await runHubRewards(args);}
 else if(apply&&plan){const value=await readJson(plan);await applySpinePlan('.',value.changes,spineSchemas,{apply:true,output:out});}
 else switch(command){
  case 'targets':await import('./targets-cli.ts');break;

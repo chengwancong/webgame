@@ -1,0 +1,36 @@
+/* U9 港口建设：左列 200px + 右侧固定详情区，整块 800×480，不滚动 */
+.hub-port-panel{width:800px;height:480px;max-height:none;display:flex;flex-direction:column;gap:var(--space-3);overflow:hidden}
+.hub-port-panel>*{flex:0 0 auto;min-width:0}
+.hub-port-body{flex:1 1 0;min-height:0;display:grid;grid-template-columns:200px minmax(0,1fr);gap:var(--space-4)}
+.hub-port-tabs{align-self:start;overflow:hidden}
+.hub-port-tabs button{justify-content:flex-start}
+.hub-port-tabs button>span:first-of-type{flex:1 1 auto;text-align:left}
+.hub-port-tabs button small{margin-left:auto}
+
+.hub-port-detail{min-width:0;min-height:0;display:flex;flex-direction:column;gap:var(--space-3);padding:var(--space-3) var(--space-4);overflow:hidden;background:var(--color-panel-secondary);border:var(--border-width) solid var(--color-border-subtle);border-radius:var(--radius-well)}
+.hub-port-detail__head{display:flex;align-items:baseline;gap:var(--space-3)}
+.hub-port-detail__head h3{margin:0;font-size:var(--font-size-h2);font-weight:var(--font-weight-bold)}
+.hub-port-detail__npc{color:var(--color-text-secondary);font-size:var(--font-size-caption)}
+.hub-port-rep{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:var(--space-3);color:var(--color-text-secondary);font-size:var(--font-size-caption)}
+
+.hub-tiers{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--space-2)}
+.hub-tier{display:grid;grid-template-columns:64px 88px minmax(0,1fr) 96px;align-items:center;gap:var(--space-3);min-height:var(--space-10);padding:var(--space-1) var(--space-3);background:var(--color-panel-raised);border:var(--border-width) solid var(--color-border);border-radius:var(--radius-control)}
+.hub-tier.is-claimable{border-color:var(--color-primary-border);background:color-mix(in srgb,var(--color-primary) 12%,var(--color-panel-raised))}
+.hub-tier.is-claimed{color:var(--color-text-secondary)}
+.hub-tier__need{color:var(--color-text-secondary);font-size:var(--font-size-caption)}
+.hub-tier__rewards{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:var(--font-size-caption)}
+.hub-tier__action{display:flex;justify-content:flex-end}
+
+.hub-collect{display:flex;flex-direction:column;gap:var(--space-2)}
+.hub-collect__head{display:flex;justify-content:space-between;align-items:baseline}
+.hub-collect__cells{display:flex;flex-wrap:wrap;gap:var(--space-2)}
+.hub-collect__cell{color:var(--color-border-strong);opacity:.55}
+.hub-collect__cell.is-owned{color:var(--color-info);opacity:1}
+
+.hub-systems{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--space-2)}
+.hub-system{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);min-height:var(--space-10);padding:var(--space-1) var(--space-3);background:var(--color-panel-raised);border:var(--border-width) solid var(--color-border);border-radius:var(--radius-control)}
+.hub-system.is-locked{color:var(--color-text-secondary)}
+.hub-system__reason{display:inline-flex;align-items:center;gap:var(--space-1);font-size:var(--font-size-caption)}
+
+.hub-port-msg{margin:auto 0 0;min-height:var(--space-5);font-size:var(--font-size-caption);color:var(--color-success)}
+.hub-port-msg.is-error{color:var(--color-danger)}

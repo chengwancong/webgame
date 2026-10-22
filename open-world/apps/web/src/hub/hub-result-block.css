@@ -1,0 +1,27 @@
+/* U6 结算页 hub 双栏：沿用 dungeon-diagnostics 的网格——左战利品，右本场记录。
+   选择器带 [data-panel] 抬高优先级，压过 .battle-result:has(.dungeon-diagnostic)。 */
+section.battle-result.hub-result[data-panel]{display:grid;width:min(var(--size-panel-max),calc(var(--stage-width,100vw) - var(--space-8)));height:calc(var(--stage-height,100vh) - var(--space-8));gap:0 var(--space-4);grid-template-rows:var(--battle-result-pixel104) var(--battle-result-pixel44) var(--battle-result-pixel40) minmax(0,1fr) var(--battle-result-pixel40) var(--battle-result-pixel44);grid-template-columns:minmax(0,3fr) minmax(0,2fr);grid-template-areas:"hero hero" "resources right" "caption right" "loot right" "message right" "footer footer";row-gap:var(--space-2)}
+section.battle-result.hub-result[data-panel]>.result-hero{grid-area:hero}
+section.battle-result.hub-result[data-panel]>.resource-row{grid-area:resources}
+section.battle-result.hub-result[data-panel]>.loot-caption{grid-area:caption}
+section.battle-result.hub-result[data-panel]>.loot-body{grid-area:loot}
+section.battle-result.hub-result[data-panel]>.result-message{grid-area:message}
+section.battle-result.hub-result[data-panel]>.result-footer{grid-area:footer}
+
+.hub-result-right{grid-area:right;min-width:0;min-height:0;display:flex;flex-direction:column;gap:var(--space-2);padding-inline-start:var(--space-3);border-inline-start:var(--border-width) solid var(--color-border-subtle)}
+.hub-records{flex:0 0 auto;list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--space-1)}
+.hub-record{display:grid;grid-template-columns:72px minmax(0,1fr);align-items:baseline;gap:var(--space-2);padding:var(--space-1) var(--space-2);background:var(--color-panel-inset);border-radius:var(--radius-well);font-size:var(--font-size-body)}
+.hub-record__key{display:inline-flex;align-items:center;gap:var(--space-1);color:var(--color-text-secondary);font-size:var(--font-size-caption)}
+.hub-record__value{min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.hub-record--collect .hub-record__value{display:flex;align-items:center;gap:var(--space-1)}
+.hub-record--collect .ui-icon{color:var(--color-info)}
+.hub-record--unlock{border:var(--border-width) solid var(--color-primary-border);background:color-mix(in srgb,var(--color-primary) 12%,var(--color-panel-inset))}
+.hub-record--unlock .hub-record__value{display:flex;flex-direction:column}
+.hub-record--unlock small{color:var(--color-text-secondary);font-size:var(--font-size-caption);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hub-result-extra{flex:1 1 0;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:var(--space-2)}
+.hub-result-extra .run-grade-block{display:flex;align-items:center;gap:var(--space-3)}
+.hub-result-extra .run-grade-info{display:flex;flex-direction:column;gap:var(--space-1)}
+.hub-result-extra .run-grade-hint{margin:0;color:var(--color-text-secondary);font-size:var(--font-size-caption)}
+.hub-result-extra .dungeon-diagnostic{padding-inline-start:0;border-inline-start:0;overflow:visible}
+
+.hub-result-footer .unlock-notice{color:var(--color-text-secondary);font-size:var(--font-size-caption)}

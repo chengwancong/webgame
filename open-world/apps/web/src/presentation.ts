@@ -1,6 +1,6 @@
 import {vitalsDisplay} from './vitals-display.ts';
 import {publicHexRunes} from '../../../packages/content/hex-runes.ts';
-import {hexCatalogById} from './hex-rune-view.ts';
+import {hexCatalogById,setHexContext} from './hex-rune-view.ts';
 import {seaDifficultyHtml,type SeaDifficultyView} from './sea-difficulty-view.ts';
 import {bountyHtml,type BountyView} from './bounty-view.ts';
 import {ShieldBarTracker} from './shield-feedback.ts';
@@ -14,12 +14,14 @@ import {trackerGoals} from './growth-cards.ts';
 import {settings} from '../../../packages/content/index.ts';
 import {settingsPanelHtml,autoSettingsHtml,keyLabel} from './ui/settings-panel.ts';
 import {loginPanelHtml,createCharacterPanelHtml,takeoverPanelHtml} from './ui/auth-panels.ts';
+import {loadAudioSettings} from './audio/settings.ts';
 import {panelHeaderHtml,confirmationHtml,buttonHtml,resourceAmountHtml,statusBadgeHtml,stateBlockHtml,sealEmblem} from './ui-components.ts';
 import type {IconName} from './ui/icons.ts';
 import type {Snapshot,GrowthPreview,Gear,Skill,GearTip,GearQuality,StoryView,TaskView} from '../../../packages/contracts/index.ts';
 import type {World} from '../../../packages/simulation/index.ts';
 import {distance} from '../../../packages/simulation/index.ts';
 import {regions,regionById,skillCatalog,effectText,type SkillSchool} from '../../../packages/content/index.ts';
+import {starseaHub} from '../../../packages/content/starsea/index.ts';
 import {invalidatePreviews} from './preview-guard.ts';
 import {renderSkills} from './skills-panel.ts';
 import {renderProgression} from './progression-panel.ts';
@@ -36,8 +38,6 @@ const sealIcons:Record<string,IconName>={rewards:'chest',bounty:'swords','sea-di
 const panelEmblem=(panel:string)=>panelEmblems[panel]?hudMenuIcon(panelEmblems[panel]):sealIcons[panel]?sealEmblem(sealIcons[panel]):undefined;
 import {nativeCoinHtml,updateNativeCoin} from './ui/native-coin.ts';
 import {TooltipController} from './tooltip-controller.ts';
-import {renderHexRuneTip} from './hex-rune-tip.ts';
-import type {HexSlot,HexTipPayload} from './hex-rune-slots.ts';
 import {GearCard} from './components/GearCard.ts';
 import {qualityLabels as qualityName} from './components/gear-metadata.ts';
 import {virtualizeInventory} from './components/virtual-inventory.ts';
@@ -54,7 +54,7 @@ import {gearSlotLabels as slotName,equipmentPartLabels,type GearSlotFilter} from
 import {gearAffixes,gearSetLabel,gearSetDetails,gearQuality,qualityLabels} from './components/gear-metadata.ts';
 import {renderTravel,travelHeader,initialTravelState,type TravelState,type TravelDropView} from './travel-browser.ts';
 
-export type PresentationModel={autoPreferences?:Pick<World,'radius'|'targetPriority'|'avoidElite'|'autoSkills'>;bounty?:BountyView;fieldMap?:FieldMapView;seaDifficulty?:SeaDifficultyView;seaTierPick?:number;hudModeOpen?:boolean;story?:StoryView;taskData?:TaskView;dungeonId?:string;dungeonBusy?:boolean;allyTarget?:{hp:number;maxHp:number;shield:number;position:{x:number;y:number};range:number};portraitURL?:string;figureURL?:string;appearance?:AppearanceUI;appearanceDirty?:boolean;accountOnly?:boolean;authReady?:boolean;authConnecting?:boolean;authError?:string;authReload?:boolean;world:World;snapshot?:Snapshot;loggedIn:boolean;panel:string;confirm:''|'salvage'|'dungeon-exit';confirmId:string;feed:string[];blocked:boolean;userPaused:boolean;processing:boolean;selected:string;skillFocus:string;skillCategory:SkillSchool|'all';skillTags?:string[];skillQuery?:string;skillFilter?:'all'|'active'|'eligible';skillLocked?:boolean;frozenSkills?:Skill[];skillOperation:''|'activate'|'upgrade'|'equip'|'unequip';skillOperationId:string;skillStatus:''|'success'|'error'|'pending';skillMessage:string;lastError:string;volume:number;reduced:boolean;autoPickup?:boolean;fieldReturnRegion?:string;dungeonRunning?:boolean;dungeonConnected?:boolean;binding?:string;bindingMessage?:string;bagTab:'bag'|'rewards';bag:BagUI;characterPart:Exclude<GearSlotFilter,''>;characterChooserOpen:boolean;hexChooser?:{slot:HexSlot;selected:string};characterDetailsOpen:boolean;slotFilter:GearSlotFilter;qualityFilter:GearQuality|'';trackerOpen:boolean;bindings:Record<string,string>;onSelect(id:string):void;previewGear(id:string):Promise<GrowthPreview>;previewGearTip(id:string):Promise<GearTip>;noticeError(e:unknown):void;currentSnapshot?():Snapshot|undefined;resyncSnapshot?():void;onConfirm(action:string,id:string):void;onCancelConfirm():void};
+export type PresentationModel={autoPreferences?:Pick<World,'radius'|'targetPriority'|'avoidElite'|'autoSkills'>;bounty?:BountyView;fieldMap?:FieldMapView;seaDifficulty?:SeaDifficultyView;seaTierPick?:number;hudModeOpen?:boolean;story?:StoryView;taskData?:TaskView;dungeonId?:string;dungeonBusy?:boolean;allyTarget?:{hp:number;maxHp:number;shield:number;position:{x:number;y:number};range:number};portraitURL?:string;figureURL?:string;appearance?:AppearanceUI;appearanceDirty?:boolean;accountOnly?:boolean;authReady?:boolean;authConnecting?:boolean;authError?:string;authReload?:boolean;world:World;snapshot?:Snapshot;loggedIn:boolean;panel:string;confirm:''|'salvage'|'dungeon-exit';confirmId:string;feed:string[];blocked:boolean;userPaused:boolean;processing:boolean;selected:string;skillFocus:string;skillCategory:SkillSchool|'all';skillTags?:string[];skillQuery?:string;skillFilter?:'all'|'active'|'eligible';skillLocked?:boolean;frozenSkills?:Skill[];skillOperation:''|'activate'|'upgrade'|'equip'|'unequip';skillOperationId:string;skillStatus:''|'success'|'error'|'pending';skillMessage:string;lastError:string;volume:number;reduced:boolean;autoPickup?:boolean;fieldReturnRegion?:string;dungeonRunning?:boolean;dungeonConnected?:boolean;binding?:string;bindingMessage?:string;bagTab:'bag'|'rewards';bag:BagUI;characterPart:Exclude<GearSlotFilter,''>;characterChooserOpen:boolean;characterDetailsOpen:boolean;slotFilter:GearSlotFilter;qualityFilter:GearQuality|'';trackerOpen:boolean;bindings:Record<string,string>;onSelect(id:string):void;previewGear(id:string):Promise<GrowthPreview>;previewGearTip(id:string):Promise<GearTip>;noticeError(e:unknown):void;currentSnapshot?():Snapshot|undefined;resyncSnapshot?():void;onConfirm(action:string,id:string):void;onCancelConfirm():void;hubPortalReady?:boolean;hubHidden?(entry:'today'|'port'):boolean;/** 港口 A1 菜单红点：今日（码头待领）、港口建设（可领阶级数） */hubBadges?:{today:number;port:number}};
 
 const $=(selector:string)=>document.querySelector(selector) as HTMLElement;
 const esc=(s:unknown)=>String(s).replace(/[&<>"']/g,v=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[v]!));
@@ -74,11 +74,11 @@ const hudMarkup=new WeakMap<Element,string>();
 function setHudMarkup(node:Element,html:string){if(hudMarkup.get(node)===html)return;node.innerHTML=html;hudMarkup.set(node,html);}
 
 
-type TipData=ItemTipData|HexTipPayload;
+const hexCatalog=hexCatalogById(publicHexRunes);
+type TipData=ItemTipData;
 const tooltipController=new TooltipController((target,tip)=>{
  const raw=target.dataset.tip;if(!raw)return;
  let data:TipData;try{data=JSON.parse(raw);}catch{tip.style.display='none';return;}
- if('hex' in data){tip.className='equipment-tip hex-tip';tip.innerHTML=renderHexRuneTip(data.hex.rune,data.hex.state);return;}
  if(data.item){tip.className='item-tip';tip.innerHTML=renderItemTip(target,data);return;}
  tip.innerHTML=`<b>${esc(data.title)}</b>${(data.rows??[]).map(([label,value])=>`<div class="row"><span>${esc(label)}</span><span class="num">${esc(value)}</span></div>`).join('')}`
   +(data.note?`<div class="dim">${esc(data.note)}</div>`:'')+(data.why?`<div class="why">${esc(data.why)}</div>`:'');
@@ -241,6 +241,7 @@ export function updateHud(h:PresentationModel) {
         return;
     }
     t.style.visibility = "visible";
+    setHexContext(hexCatalog,h.snapshot.hexActive);
     const e = h.snapshot, i = h.world, vitals=vitalsDisplay(i,e,Boolean(h.dungeonRunning)), d = Math.max(0, Math.min(1, vitals.hp / vitals.maxHp)), n = $("#vitals");
     n.querySelector<HTMLElement>(".who") || (n.innerHTML = `<button class="who character-entry" type="button" data-action="panel" data-id="character" aria-label="打开人物"><img src="${h.portraitURL || art("portrait-bust")}" alt="角色外观"><div class="identity"><b class="hero-name"></b><small>Lv. <span class="num hero-level"></span></small></div></button><div class="bars"><div class="meter hp" role="meter" aria-label="生命" aria-valuemin="0"><i></i><span class="shield-band"></span><span class="numv num"></span></div><div class="meter mp" role="meter" aria-label="能量" aria-valuemin="0"><i></i><span class="numv num"></span></div></div><div class="chips"><span class="chip shield" data-tip='{"title":"护盾","note":"优先于生命承受伤害"}'></span></div>`);
     const r = n.querySelector<HTMLElement>(".hero-name")!;
@@ -275,8 +276,14 @@ export function updateHud(h:PresentationModel) {
     setHudMarkup($('#hud-status'),hudStatusHtml(e,context,h.processing,h.blocked?'':i.stopReason));
     setHudMarkup($('#hud-dungeon-exit'),context==='dungeon'?buttonHtml('退出副本',{action:'hud-dungeon-exit',id:h.dungeonId,iconHtml:hudExitIcon,size:'icon',variant:'secondary',disabled:h.processing||h.dungeonBusy,attributes:{title:'退出副本'}}):'');
     const M = $("#sysbar");
-    M.dataset.ready !== "1" && (M.dataset.ready = "1", M.innerHTML = [["bag", "背包", "行囊", "bag"], ["skills", "技能", "技能", "build"], ["progression", "养成", "养成", "growth"], ["appearance", "外观", "外观", "appearance"], ["tasks", "任务", "任务", "goal"], ["settings", "设置", "设置", "settings"]].map(([P, I, D, G]) => `<button class="entry" data-action="panel" data-id="${P}" aria-label="${I}"><span class="entry-orb">${hudMenuIcon(G as Parameters<typeof hudMenuIcon>[0])}</span><span class="entry-name">${D}</span>${P === "bag" ? '<span class="badge num" hidden></span>' : ""}</button>`).join(""));
-    const A = M.querySelector<HTMLElement>(".badge")!;
+    const hubInPort=Boolean(h.hubPortalReady&&h.world.region.id===starseaHub);
+    const hubToday=hubInPort&&!h.hubHidden?.('today'),hubPort=hubInPort&&!h.hubHidden?.('port'),sysbarKey=`${hubInPort}:${hubToday}:${hubPort}`;t.dataset.hubPort=String(hubInPort);
+    if(M.dataset.ready !== "1" || M.dataset.hubKey !== sysbarKey){M.dataset.ready="1";M.dataset.hubKey=sysbarKey;const base=[["bag","背包","行囊","bag"],["skills","技能","技能","build"],["progression","养成","养成","growth"],["appearance","外观","外观","appearance"],["tasks","任务","任务","goal"],["settings","设置","设置","settings"]];const hubEntries:string[][]=hubInPort?[["hub-chart","航图","航图","goal"],...(hubToday?[["hub-today","今日","今日","growth"]]:[]),...(hubPort?[["hub-port","港口建设","港口建设","build"]]:[])]:[];M.innerHTML=[...base,...hubEntries].map(([P,I,D,G])=>`<button class="entry" data-action="panel" data-id="${P}" aria-label="${I}"><span class="entry-orb">${hudMenuIcon(G as Parameters<typeof hudMenuIcon>[0])}</span><span class="entry-name">${D}</span>${P==="bag"||P==="hub-port"?'<span class="badge num" hidden></span>':P==="hub-today"?'<span class="badge dot" hidden></span>':""}</button>`).join("");};
+    const A = M.querySelector<HTMLElement>("[data-id=bag] .badge")!;
+    // 港口 A1 红点：港口建设显示可领数，今日只亮点（码头有待领收益）
+    const hubPortBadge=M.querySelector<HTMLElement>("[data-id=hub-port] .badge"),hubTodayBadge=M.querySelector<HTMLElement>("[data-id=hub-today] .badge"),hb=h.hubBadges;
+    if(hubPortBadge){hubPortBadge.hidden=!hb?.port;hubPortBadge.textContent=String(hb?.port??0);hubPortBadge.setAttribute('aria-label',`可领取建设奖励 ${hb?.port??0} 项`);}
+    if(hubTodayBadge){hubTodayBadge.hidden=!hb?.today;hubTodayBadge.setAttribute('aria-label','码头有待领取收益');}
     A.hidden = e.rewards.length === 0, A.textContent = String(e.rewards.length); A.setAttribute('aria-label',`待领取装备 ${e.rewards.length} 件`); M.querySelector<HTMLElement>('[data-id=bag]')!.setAttribute('aria-label',`背包，装备 ${e.gear.length}/${e.capacity}，待领取 ${e.rewards.length} 件`);
     const F = $("#hud-gold");
     tweenNumber(F, e.gold, h.reduced), updateNativeCoin(F.parentElement!, e.gold, h.reduced);
@@ -312,8 +319,8 @@ export function renderPanel(view:PresentationModel&{crafting?:CraftingUI;travel?
   if(view.confirm==='dungeon-exit'){host.classList.add('open');host.innerHTML=confirmationHtml({title:'退出本次副本？',description:'退出后保留已确认收益，不能重新加入本场。',confirmLabel:'确认退出',confirmAction:'hud-dungeon-exit-confirm',confirmId:view.confirmId,cancelAction:'hud-dungeon-exit-cancel',cancelLabel:'继续挑战',danger:true,busy:view.dungeonBusy,disabled:view.dungeonBusy||view.dungeonId!==view.confirmId});return;}
   if(!view.panel){host.classList.remove('open');host.innerHTML='';invalidatePreviews();return;}
   host.classList.add('open');
-  let title='',body='';let gearToPreview:Gear|undefined;const s=view.snapshot;
-  if(view.panel==='login'){host.innerHTML=loginPanelHtml(Boolean(view.accountOnly),{ready:Boolean(view.authReady),connecting:Boolean(view.authConnecting),error:view.authError??'',reload:Boolean(view.authReload)});return;}
+  let title='',body='';let gearToPreview:Gear|undefined;const s=view.snapshot;if(s)setHexContext(hexCatalog,s.hexActive);
+  if(view.panel==='login'){host.innerHTML=loginPanelHtml(Boolean(view.accountOnly),{ready:Boolean(view.authReady),connecting:Boolean(view.authConnecting),error:view.authError??'',reload:Boolean(view.authReload),muted:loadAudioSettings().master<=0});return;}
   if(view.panel==='create'){host.innerHTML=createCharacterPanelHtml();return;}
   if(view.panel==='takeover'){host.innerHTML=takeoverPanelHtml();return;}
   if(!s)return;
@@ -327,14 +334,13 @@ export function renderPanel(view:PresentationModel&{crafting?:CraftingUI;travel?
     title=view.bagTab==='rewards'?'待领取战利品':view.bag.warehouseOpen?'仓库':'背包';
     if(view.bagTab==='bag'){
       const selection=bagSelection(s,view.bag,view.qualityFilter,view.slotFilter,view.bag.metadata);
-      const hexCatalog=hexCatalogById(publicHexRunes);
-      gearToPreview=selection.selected?.kind==='equipment'&&!Object.hasOwn(hexCatalog,selection.selected.gear.base)?selection.selected.gear:undefined;
-      body=BagPanel({hexCatalog,snapshot:s,ui:view.bag,quality:view.qualityFilter,slot:view.slotFilter,busy:view.processing,blocked:view.blocked,inTown:view.world.region.id==='town'||view.world.region.id==='ss-map-port',returnRegion:view.fieldReturnRegion,figureURL:view.figureURL});
+      gearToPreview=selection.selected?.kind==='equipment'?selection.selected.gear:undefined;
+      body=BagPanel({snapshot:s,ui:view.bag,quality:view.qualityFilter,slot:view.slotFilter,busy:view.processing,blocked:view.blocked,inTown:view.world.region.id==='town'||view.world.region.id==='ss-map-port',returnRegion:view.fieldReturnRegion,figureURL:view.figureURL});
     }else body=`<div class="bag-reward-toolbar">${buttonHtml('返回背包',{action:'bag-tab',id:'bag',size:'compact'})}<span>装备 ${s.gear.length} / ${s.capacity}</span></div><div class="gear-reward-list">${s.rewards.length?s.rewards.map(reward=>`<div class="gear-reward-row">${GearCard(reward.gear,{revision:s.revision,pending:true})}<div class="gear-reward-action"><span>${esc(regionById(reward.region).name)}</span>${buttonHtml('领取到背包',{action:'claim',id:reward.id,variant:'primary',disabled:s.gear.length>=s.capacity||view.blocked,busy:view.processing,busyLabel:'正在领取…'})}</div></div>`).join(''):stateBlockHtml({kind:'empty',title:'暂无待领取装备',message:'背包满时获得的装备会暂存于此。'})}</div>`;
   }
   else if(view.panel==='character'){
     title='人物';const selection=characterSelection(s,view.characterPart,view.selected);gearToPreview=view.characterChooserOpen?selection.selected:undefined;if(gearToPreview)view.onSelect(gearToPreview.id);
-    body=CharacterPanel(s,view.characterPart,view.selected,view.figureURL,view.processing||view.blocked,{chooserOpen:view.characterChooserOpen,hexCatalog:hexCatalogById(publicHexRunes),hexChooser:view.hexChooser,detailsOpen:view.characterDetailsOpen,blocked:view.blocked,recovering:view.processing,damage:{stats:view.world.enemies.length>0?view.world.stats:s.stats,skills:view.world.enemies.length>0?view.world.skills:s.resolvedSkills,telemetry:view.world.enemies.length>0?view.world.effectStats:null}});
+    body=CharacterPanel(s,view.characterPart,view.selected,view.figureURL,view.processing||view.blocked,{chooserOpen:view.characterChooserOpen,detailsOpen:view.characterDetailsOpen,blocked:view.blocked,recovering:view.processing,damage:{stats:view.world.enemies.length>0?view.world.stats:s.stats,skills:view.world.enemies.length>0?view.world.skills:s.resolvedSkills,telemetry:view.world.enemies.length>0?view.world.effectStats:null}});
   }
   else if(view.panel==='forge'){title='拾星港工坊';const craft=view.crafting,tabs=craft?craftingTabsHtml(craft):'';if(!craft||craft.tab==='upgrade'){const gear=forgeSelection(s,view.selected);gearToPreview=gear;if(gear)view.onSelect(gear.id);body=tabs+ForgePanel(s,gear,Boolean(view.processing||view.blocked));}else body=tabs+CraftingPanel(s,craft,Boolean(view.processing||view.blocked));}
   else if(view.panel==='skills'){title='技能';body=renderSkills({...view,snapshot:s});}
@@ -354,7 +360,7 @@ export function renderPanel(view:PresentationModel&{crafting?:CraftingUI;travel?
   if(view.confirm==='salvage'&&view.confirmId){
     const g=s.gear.find(v=>v.id===view.confirmId);
     if(g){
-      body+=confirmationHtml({title:'确认分解',description:'分解后无法恢复，获得的材料将放入背包。',detailsHtml:`<p><b>${esc(g.name)}${g.rank?' +'+g.rank:''}</b></p><p class="small">${(()=>{const hx=hexCatalogById(publicHexRunes)[g.base];return hx?`海克斯 · ${esc(hx.name)} · ${esc(hx.description)}`:`${slotName[g.slot]} · ${effectName[g.effect]}`})()}${g.rank?' · 已强化':''}</p>`,confirmLabel:'确认分解',confirmAction:'salvage',confirmId:g.id,cancelAction:'cancel-confirm',danger:true,busy:view.processing,disabled:view.blocked});
+      body+=confirmationHtml({title:'确认分解',description:'分解后无法恢复，获得的材料将放入背包。',detailsHtml:`<p><b>${esc(g.name)}${g.rank?' +'+g.rank:''}</b></p><p class="small">${(()=>{return `${slotName[g.slot]} · ${effectName[g.effect]}`})()}${g.rank?' · 已强化':''}</p>`,confirmLabel:'确认分解',confirmAction:'salvage',confirmId:g.id,cancelAction:'cancel-confirm',danger:true,busy:view.processing,disabled:view.blocked});
     }
   }
   if(view.bag.batch&&view.panel==='bag'){const quote=view.bag.batch;body+=confirmationHtml({title:'确认批量分解',description:'分解后无法恢复。已装备、锁定、强化、传奇、威能和武器盘装备均已排除。',detailsHtml:`<p>将分解 <b>${quote.gear.length}</b> 件普通、魔法或稀有装备，获得 <b>${quote.material}</b> 强化石；保护 ${quote.protectedCount} 件。</p><div class="batch-salvage-list" tabindex="0" aria-label="待分解装备清单">${quote.gear.map(g=>`<p>${esc(g.name)} · ${qualityName[g.quality]}</p>`).join('')||'<p>没有可批量分解的装备。</p>'}</div>`,confirmLabel:'确认分解 '+quote.gear.length+' 件',confirmAction:'bag-batch-salvage',cancelAction:'bag-batch-cancel',danger:true,busy:view.processing||view.bag.busy,disabled:view.blocked||!quote.gear.length||quote.revision!==s.revision});}

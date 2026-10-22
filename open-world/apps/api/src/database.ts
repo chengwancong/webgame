@@ -1,3 +1,5 @@
+import {migrateHub} from './hub-state.ts';
+import {migrateHubChart} from './hub-chart-service.ts';
 import {ensureStarsea} from '../../../packages/rules/starsea.ts';
 import {migrateWeaponSkills} from '../../../packages/rules/weapon-skills.ts';
 import {Pool,type PoolClient} from 'pg';
@@ -37,6 +39,8 @@ INSERT INTO ow_schema VALUES(3) ON CONFLICT DO NOTHING;
 CREATE TABLE IF NOT EXISTS ow_accounts(id uuid PRIMARY KEY,username text UNIQUE NOT NULL,password text NOT NULL);
 CREATE TABLE IF NOT EXISTS ow_sessions(token_hash text PRIMARY KEY,account uuid REFERENCES ow_accounts(id),expires timestamptz NOT NULL);
 CREATE TABLE IF NOT EXISTS ow_characters(id uuid PRIMARY KEY,account uuid UNIQUE REFERENCES ow_accounts(id),state jsonb NOT NULL);
+CREATE TABLE IF NOT EXISTS ow_hex_cooldowns(character uuid PRIMARY KEY REFERENCES ow_characters(id),scope text NOT NULL,data jsonb NOT NULL);
+INSERT INTO ow_schema VALUES(18) ON CONFLICT DO NOTHING;
 CREATE TABLE IF NOT EXISTS ow_controls(character uuid PRIMARY KEY REFERENCES ow_characters(id),lease uuid NOT NULL,session text NOT NULL,expires timestamptz NOT NULL);
 ALTER TABLE ow_controls ADD COLUMN IF NOT EXISTS client_id text NOT NULL DEFAULT '';
 CREATE TABLE IF NOT EXISTS ow_permits(id uuid PRIMARY KEY,character uuid REFERENCES ow_characters(id),region text NOT NULL,cycle integer NOT NULL,build integer NOT NULL,created timestamptz NOT NULL,expires timestamptz NOT NULL,sequence integer NOT NULL DEFAULT 0,tick integer NOT NULL DEFAULT 0,data jsonb NOT NULL,UNIQUE(character,region,cycle));
@@ -53,6 +57,7 @@ CREATE TABLE IF NOT EXISTS ow_field_sessions(character uuid REFERENCES ow_charac
 INSERT INTO ow_schema VALUES(14) ON CONFLICT DO NOTHING;
 CREATE INDEX IF NOT EXISTS ow_rewards_pending ON ow_rewards(character) WHERE NOT claimed;
 `);
+ await migrateHub(c);await migrateHubChart(c);
   // Run this correction once; row locks exclude simultaneous character writes.
   if(!(await c.query('SELECT 1 FROM ow_schema WHERE version=4')).rowCount){
   const characters=await c.query('SELECT id,state FROM ow_characters FOR UPDATE');

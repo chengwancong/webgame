@@ -11,7 +11,7 @@ import type {GearSlotFilter} from './equipment-slots.ts';
 
 export const bagCategories={all:'全部',equipment:'装备',consumables:'消耗品',materials:'材料',quest:'任务'} as const;
 export type BagCategory=keyof typeof bagCategories;
-export type BagDraft={category:BagCategory;selected:string;query:string;showZero:boolean;scrollTop:number;page?:number;island?:string};
+export type BagDraft={category:BagCategory;selected:string;query:string;showZero:boolean;scrollTop:number;page?:number;island?:string;hexOnly?:boolean};
 export const initialBagDraft=():BagDraft=>({category:'all',selected:'',query:'',showZero:false,scrollTop:0,page:0});
 export type TonicId=string;
 /** Consumables from the crafting table (tonic / resist / food); one buff per group may run at a time (server rule). */
@@ -61,7 +61,7 @@ export const materialGroupLabels:Record<string,string>={common:'通用',endgame:
 const relevant=(item:BagItem)=>item.quantity>0||(item.kind==='consumables'&&item.type==='tonic'&&item.remainingKills>0);
 export function bagItems(snapshot:Snapshot,draft:BagDraft,quality:GearQuality|'',slot:GearSlotFilter,metadata?:ProgressionView){
  const items=inventoryItems(snapshot,metadata),equipment=new Set(filterGear(snapshot.gear,quality,slot).map(gear=>gear.id)),query=draft.query.trim().toLocaleLowerCase();
- return items.filter(item=>(draft.category==='all'?relevant(item):draft.category===item.kind&&(relevant(item)||draft.category==='materials'&&draft.showZero))&&(!query||item.name.toLocaleLowerCase().includes(query)||item.kind==='equipment'&&matchesEquipmentSearch(item.gear.base,query))&&(draft.category!=='equipment'||item.kind==='equipment'&&equipment.has(item.gear.id))&&(draft.category!=='materials'||!draft.island||item.kind==='materials'&&item.group===draft.island));
+ return items.filter(item=>(draft.category==='all'?relevant(item):draft.category===item.kind&&(relevant(item)||draft.category==='materials'&&draft.showZero))&&(!query||item.name.toLocaleLowerCase().includes(query)||item.kind==='equipment'&&matchesEquipmentSearch(item.gear.base,query))&&(draft.category!=='equipment'||item.kind==='equipment'&&equipment.has(item.gear.id)&&(!draft.hexOnly||Boolean(item.gear.hex)))&&(draft.category!=='materials'||!draft.island||item.kind==='materials'&&item.group===draft.island));
 }
 export function bagCounts(items:BagItem[]){
  const counts:Record<BagCategory,number>={all:0,equipment:0,consumables:0,materials:0,quest:0};

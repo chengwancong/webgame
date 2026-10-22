@@ -1,0 +1,112 @@
+/**
+ * U9 港口建设面板（方案 B「左列建筑 · 右侧详情」）。
+ * 左列 5 项（工坊 / 船台 / 邮局 · n 阶、收藏、强度系统），有可领取阶级的建筑带红点；
+ * 右侧是固定尺寸的详情区，内容放不下时靠版面压缩而不是滚动。
+ */
+import {esc,buttonHtml,panelHeaderHtml,stateBlockHtml,statusBadgeHtml,tabsHtml} from '../ui-components.ts';
+import {iconHtml} from '../ui/icons.ts';
+import {meterHtml} from '../ui/graphics.ts';
+import type {HubPortView as PortView} from '../../../../packages/contracts/hub.ts';
+
+type PortBuilding = PortView['buildings'][number];
+
+export type PortSection = 'collectibles' | 'systems' | PortBuilding['id'];
+
+export type PortPanelState = {
+  view: PortView;
+  selected: string;
+  /** 正在领取的 `${building}:${tier}`；非空时所有领取按钮禁用 */
+  busyKey: string;
+  message: string;
+  messageTone: 'success' | 'error';
+};
+
+export const hasClaimable = (b: PortBuilding) => b.tiers.some(t => t.claimable && !t.claimed);
+/** 已达成的阶数 = 已领 + 可领（由服务端标记，客户端不拿声望去比门槛） */
+export const tiersReached = (b: PortBuilding) => b.tiers.filter(t => t.claimed || t.claimable).length;
+/** 声望条的目标：第一个还没领的阶的门槛；全部领完则取最高门槛 */
+export function repTarget(b: PortBuilding): number {
+  const next = b.tiers.find(t => !t.claimed);
+  return next?.threshold ?? b.tiers[b.tiers.length - 1]?.threshold ?? 0;
+}
+
+function tierRow(b: PortBuilding, t: PortBuilding['tiers'][number], busyKey: string): string {
+  const key = `${b.id}:${t.tier}`;
+  let action: string;
+  let cls = 'is-locked';
+  if (t.claimed) {
+    cls = 'is-claimed';
+    action = statusBadgeHtml('已领取', 'success', {iconHtml: iconHtml('check', {size: 16})});
+  } else if (t.claimable) {
+    cls = 'is-claimable';
+    action = buttonHtml('领取', {action: 'hub-port-claim', id: key, variant: 'primary', size: 'compact', busy: busyKey === key, busyLabel: '正在领取…', disabled: Boolean(busyKey) && busyKey !== key});
+  } else {
+    action = statusBadgeHtml('声望不足', 'neutral');
+  }
+  return `<li class="hub-tier ${cls}">
+    <b class="hub-tier__index">第 ${t.tier} 阶</b>
+    <span class="hub-tier__need">声望 ${t.threshold}</span>
+    <span class="hub-tier__rewards">${esc(t.rewards.join('、'))}</span>
+    <span class="hub-tier__action">${action}</span>
+  </li>`;
+}
+
+function buildingDetail(b: PortBuilding, busyKey: string): string {
+  const target = repTarget(b);
+  return `<div class="hub-port-detail__head"><h3>${esc(b.name)}</h3><span class="hub-port-detail__npc">${esc(b.npc)}</span></div>
+    <div class="hub-port-rep"><span>声望</span>${meterHtml({value: b.rep, max: target, label: `${b.name}声望`, valueText: 'end'})}</div>
+    <ol class="hub-tiers">${b.tiers.map(t => tierRow(b, t, busyKey)).join('')}</ol>`;
+}
+
+function collectionRow(label: string, owned: number, total: number): string {
+  const cells = Array.from({length: total}, (_, i) => `<span class="hub-collect__cell${i < owned ? ' is-owned' : ''}">${iconHtml('diamond', {size: 24})}</span>`).join('');
+  return `<div class="hub-collect"><div class="hub-collect__head"><b>${esc(label)}</b><span class="ui-number">${owned} / ${total}</span></div><div class="hub-collect__cells" role="img" aria-label="${esc(`${label} ${owned} / ${total}`)}">${cells}</div></div>`;
+}
+
+function collectiblesDetail(v: PortView): string {
+  const {lifeCrystal: lc, starCore: sc} = v.collectibles;
+  return `<div class="hub-port-detail__head"><h3>收藏</h3></div>${collectionRow('生命星晶', lc.owned, lc.total)}${collectionRow('星核', sc.owned, sc.total)}`;
+}
+
+function systemsDetail(v: PortView): string {
+  const body = v.systems.length
+    ? `<ul class="hub-systems">${v.systems.map(s => `<li class="hub-system${s.open ? '' : ' is-locked'}">
+        <b>${esc(s.name)}</b>
+        ${s.open ? statusBadgeHtml('已开放', 'success') : `<span class="hub-system__reason">${iconHtml('lock', {size: 16})}${esc(s.lockReason ?? '尚未开放')}</span>`}
+      </li>`).join('')}</ul>`
+    : stateBlockHtml({kind: 'empty', title: '暂无强度系统', message: '后续开放的强度系统会列在这里。', compact: true});
+  return `<div class="hub-port-detail__head"><h3>强度系统</h3></div>${body}`;
+}
+
+export function portPanelHtml(state: PortPanelState): string {
+  const {view, selected, busyKey} = state;
+  const lc = view.collectibles?.lifeCrystal;
+  const sc = view.collectibles?.starCore;
+
+  const items = [
+    ...view.buildings.map(b => ({
+      id: b.id as string, label: b.name, count: `${tiersReached(b)} 阶`,
+      attributes: hasClaimable(b) ? {'data-actionable': 'true', title: '有可领取的奖励'} : undefined,
+    })),
+    ...(lc && sc ? [{id: 'collectibles', label: '收藏', count: `${lc.owned + sc.owned}/${lc.total + sc.total}`}] : []),
+    {id: 'systems', label: '强度系统', count: view.systems.length ? `${view.systems.filter(s => s.open).length}/${view.systems.length}` : undefined},
+  ];
+  const active = items.some(i => i.id === selected) ? selected : items[0]?.id ?? '';
+
+  const building = view.buildings.find(b => b.id === active);
+  const detail = building ? buildingDetail(building, busyKey)
+    : active === 'collectibles' && lc && sc ? collectiblesDetail(view)
+    : systemsDetail(view);
+
+  const msg = state.message
+    ? `<p class="hub-port-msg is-${state.messageTone}" role="${state.messageTone === 'error' ? 'alert' : 'status'}">${esc(state.message)}</p>`
+    : '<p class="hub-port-msg" aria-hidden="true"></p>';
+
+  return `<section class="panel hub-port-panel" data-panel="hub-port" role="dialog" aria-modal="true" aria-label="港口建设" aria-busy="${Boolean(busyKey)}">
+  ${panelHeaderHtml('港口建设', {closeLabel: '关闭港口建设', closeAction: 'hub-port-close', closeDisabled: Boolean(busyKey), iconHtml: iconHtml('house', {size: 24})})}
+  <div class="hub-port-body">
+    ${tabsHtml({label: '港口建设分类', action: 'hub-port-select', selected: active, items, orientation: 'vertical', className: 'hub-port-tabs'})}
+    <div class="hub-port-detail" role="tabpanel">${detail}${msg}</div>
+  </div>
+</section>`;
+}

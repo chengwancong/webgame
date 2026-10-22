@@ -1,6 +1,6 @@
 import {reviewPath} from './review-path.ts';
 import {fieldActivityViewSchema} from '../packages/contracts/field-activities.ts';
-import {beforeAll,afterAll,it,expect} from 'vitest';
+import {beforeAll,afterAll,afterEach,it,expect} from 'vitest';
 import {randomUUID} from 'node:crypto';
 import {Pool} from 'pg';
 import {mkdir,writeFile} from 'node:fs/promises';
@@ -31,6 +31,11 @@ async function player(){const login=await app.inject({method:'POST',url:'/api/se
  const request=async(path:string,body?:unknown)=>app.inject({method:body===undefined?'GET':'POST',url:'/api/'+path,headers:{cookie},payload:body as any});const created=(await request('character',{name:'世界活动验收'})).json(),s=created;s.level=50;s.starsea.features.push('events');await pool.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[s,s.id]);const lease=(await request('control',{client_id:randomUUID()})).json().lease_id;
  const command=async(path:string,body:object,id=randomUUID())=>{const current=(await request('character')).json();return request(path,{command_id:id,revision:current.revision,lease_id:lease,...body});};
  return {id:s.id,lease,request,command};}
+afterEach(async()=>{await app.close();app=createApp(pool,{testLogin:true,dungeons:false});await app.ready();});
+/** Existing 64-cell QA arena places horde actors outside wake radius. A real
+ * semi-auto player must walk into range; never switch the executor to auto or
+ * teleport/kill actors to satisfy the settlement test. */
+function advanceWithPlayerDestinations(data:FieldActivity,maxTicks:number){let spent=0,inputs=0;while(data.status==='running'&&spent<maxTicks){const w=World.restore(data.battle!),target=w.enemies.filter(e=>e.alive&&e.reward).sort((a,b)=>Math.hypot(a.position.x-w.hero.position.x,a.position.y-w.hero.position.y)-Math.hypot(b.position.x-w.hero.position.x,b.position.y-w.hero.position.y))[0];if(target){w.go({...target.position});inputs++;}data.battle=w.exportCheckpoint();data.lastInputAt=data.startedAt+data.tick/30*1000;const before=data.tick;advanceFieldActivity(data,data.startedAt+(data.tick+15)/30*1000,15);spent+=data.tick-before;if(data.tick===before)throw Error('No executed ticks');}expect(inputs).toBeGreaterThan(0);}
 async function activity(character:string,target:string){return (await pool.query('SELECT data FROM ow_field_activities WHERE character=$1 AND target=$2',[character,target])).rows[0].data as FieldActivity;}
 async function save(data:FieldActivity){await pool.query('UPDATE ow_field_activities SET status=$1,data=$2 WHERE character=$3 AND target=$4',[data.status,data,data.character,data.target]);}
 it('opens a chest once per character with actual private 2–4 item rewards and command replay without duplicate ledger or rewards',async()=>{
@@ -45,7 +50,7 @@ for(const kind of ['defend','waves','horde'] as const)it(kind+' executes all rea
  expect((await p.request('field/activity/input',{lease_id:p.lease,instance:(await activity(p.id,target)).instance,complete:true})).statusCode).toBe(400);
  await app.close();const data=await activity(p.id,target);advanceFieldActivity(data,data.startedAt+1000,30);const checkpoint=data.battle!;expect(checkpoint.data.tick).toBeGreaterThan(0);await save(data);app=createApp(pool,{testLogin:true,dungeons:false});await app.ready();
  const responseViews=(await p.request('field/activity')).json().activities;for(const view of responseViews)fieldActivityViewSchema.parse(view);const restored=responseViews.find((a:any)=>a.target===target);expect(World.restore(restored.battle).hero).toEqual(World.restore(checkpoint).hero);expect(World.restore(restored.battle).enemies).toEqual(World.restore(checkpoint).enemies);expect(restored.tick).toBe(data.tick);await app.close();
- advanceFieldActivity(data,data.startedAt+300000,9000);expect(data.status,data.reason).toBe('success');expect(data.waves).toBe(data.waveCount);if(kind==='defend')expect(World.restore(data.battle!).defense!.complete).toBe(true);if(kind==='horde')expect(World.restore(data.battle!).enemies.filter(e=>e.reward)).toHaveLength(31);
+ if(kind==='horde')advanceWithPlayerDestinations(data,9000);else advanceFieldActivity(data,data.startedAt+300000,9000);expect(data.status,data.reason).toBe('success');expect(data.waves).toBe(data.waveCount);if(kind==='defend')expect(World.restore(data.battle!).defense!.complete).toBe(true);if(kind==='horde')expect(World.restore(data.battle!).enemies.filter(e=>e.reward)).toHaveLength(31);
  await save(data);app=createApp(pool,{testLogin:true,dungeons:false});await app.ready();const received=await p.command('field/activity/claim',{instance:data.instance});expect(received.statusCode,received.body).toBe(200);expect(received.json().rewards.length).toBeGreaterThanOrEqual(2);expect(received.json().snapshot.starsea.fieldFacts.complete_event).toContain(target);expect((await p.command('field/activity/claim',{instance:data.instance})).json().code).toBe('ACTIVITY_UNFINISHED');
 },20000);
 it('rare elites freeze 2–3 affixes, issue 3–5 items, obey private cooldown, rotate authored positions and keep changed loot isolated from an existing run',async()=>{
@@ -59,7 +64,7 @@ it('uses declared cooldown and radius changes, fails on actual movement outside 
  const p=await player(),row=worldTables.events.find(e=>e.id==='activity-waves')!,old=structuredClone(row);row.radius=2;row.cooldownSeconds=900;
  try{
   const started=await p.command('field/activity/start',{kind:'event',region,target:row.id,position:point});expect(started.statusCode,started.body).toBe(200);let data=await activity(p.id,row.id);expect((data.definition as typeof row).cooldownSeconds).toBe(900);
-  const moved=await p.request('field/activity/input',{lease_id:p.lease,instance:data.instance,mode:'manual',movement:{x:1,y:0}});expect(moved.statusCode,moved.body).toBe(200);fieldActivityViewSchema.parse(moved.json().activity);expect(moved.json().activity.battle).toBeUndefined();await app.close();data=await activity(p.id,row.id);advanceFieldActivity(data,data.startedAt+1000,30);expect(data.status).toBe('failed');expect(data.reason).toBe('离开活动范围');await save(data);app=createApp(pool,{testLogin:true,dungeons:false});await app.ready();
+  const moved=await p.request('field/activity/input',{lease_id:p.lease,instance:data.instance,mode:'semi',movement:{x:1,y:0}});expect(moved.statusCode,moved.body).toBe(200);fieldActivityViewSchema.parse(moved.json().activity);expect(moved.json().activity.battle).toBeUndefined();await app.close();data=await activity(p.id,row.id);advanceFieldActivity(data,data.startedAt+1000,30);expect(data.status).toBe('failed');expect(data.reason).toBe('离开活动范围');await save(data);app=createApp(pool,{testLogin:true,dungeons:false});await app.ready();
   const low=await player(),state=(await low.request('character')).json();state.level=1;state.starsea.features=[];state.starsea.done=[];await pool.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[state,low.id]);expect((await low.command('field/activity/start',{kind:'event',region,target:row.id,position:point})).json().code).toBe('FEATURE_LOCKED');expect((await pool.query('SELECT count(*)::int n FROM ow_field_activities WHERE character=$1',[low.id])).rows[0].n).toBe(0);
  }finally{Object.assign(row,old);}
 },20000);

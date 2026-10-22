@@ -1,6 +1,6 @@
 import type {Snapshot,TaskView} from '../../../packages/contracts/index.ts';
 import {api} from './network.ts';
-import {initialTaskUI,selectedTask,taskRows,type TaskMode,type TaskUI} from './task-model.ts';
+import {initialTaskUI,selectedTask,taskRows,stateKey,rowKey,type TaskMode,type TaskUI} from './task-model.ts';
 import {taskPanel} from './task-panel.ts';
 import {syncMarkup} from './task-dom.ts';
 import {stageBox} from './stage.ts';
@@ -17,7 +17,7 @@ export class TaskController{
   try{let [data,pending]=await Promise.all([api<TaskView>('tasks'),this.deps.pending()]);if(!background&&data.revision<(this.deps.snapshot()?.revision??0))data=await api<TaskView>('tasks');
    if(generation!==this.generation||owner!==this.deps.snapshot()?.id)return;
    if(data.characterId!==owner||!background&&data.revision<(this.deps.snapshot()?.revision??0))throw Error('任务状态已更新，请重新读取。');if(data.revision<(this.deps.snapshot()?.revision??0))this.requestedRevision=data.revision;
-   const recovered=data.archive.find(row=>this.ui.states[row.taskId]==='pending');if(recovered){this.ui.lastTask=recovered.taskId;this.ui.notice=`「${recovered.title}」领奖已确认，已收入档案。`;}this.data=data;const states:TaskUI['states']={};for(const row of data.current){if(pending.includes(row.taskId))states[row.taskId]='pending';else if(this.ui.states[row.taskId]==='failed'&&row.state==='ready')states[row.taskId]='failed';}this.ui.states=states;
+   const recovered=data.archive.find(row=>this.ui.states[stateKey(row)]==='pending');if(recovered){this.ui.lastTask=recovered.taskId;this.ui.notice=`「${recovered.title}」领奖已确认，已收入档案。`;}this.data=data;const states:TaskUI['states']={};for(const row of data.current){const k=stateKey(row);if(pending.includes(k))states[k]='pending';else if(this.ui.states[k]==='failed'&&row.state==='ready')states[k]='failed';}this.ui.states=states;
   }catch(error){if(generation===this.generation)this.ui.error=error instanceof Error?error.message:'任务信息读取失败。';}
   finally{if(generation===this.generation){this.ui.loading=false;this.deps.refresh();}}
  }
@@ -44,25 +44,25 @@ export class TaskController{
  }
  outside(target:EventTarget|null){if(this.ui.picker&&target instanceof Element&&!target.closest('.type-picker,.type-trigger')){this.captureDom();this.ui.picker=false;document.querySelector('.task-window .type-picker')?.remove();document.querySelector('.task-window .type-trigger')?.setAttribute('aria-expanded','false');}}
  async handle(action:string,id:string){this.captureDom();const view=this.ui.views[this.ui.mode];
-  if(action==='quest-select-task'){if(!taskRows(this.ui,this.data).some(row=>row.id===id))return;view.selected=id;this.ui.notice='';}
+  if(action==='quest-select-task'){if(!taskRows(this.ui,this.data).some(row=>rowKey(row)===id))return;view.selected=id;this.ui.notice='';}
   else if(action==='quest-mode'){if(!['current','archive'].includes(id))return;this.ui.mode=id as TaskMode;this.ui.picker=false;this.ui.notice='';}
   else if(action==='quest-toggle-types'){this.ui.picker=!this.ui.picker;this.ui.typeSearch='';this.deps.refresh();document.querySelector<HTMLInputElement>('.task-window #type-search')?.focus({preventScroll:true});return;}
   else if(action==='quest-type'){view.type=id;view.selected='';this.ui.picker=false;}
   else if(action==='quest-status'){if(!['all','available','active','ready','pending'].includes(id))return;view.status=id;view.selected='';}
   else if(action==='quest-reset-filters'){view.type='all';view.query='';view.status='all';view.selected='';}
   else if(action==='quest-refresh'){await this.load();return;}
-  else if(action==='quest-track'||action==='quest-untrack'||action==='quest-abandon'){if(this.deps.processing()||this.deps.blocked())return;await this.deps.quest?.(action==='quest-abandon'?'abandon':'track',action==='quest-untrack'?null:id);await this.load();return;}
+  else if(action==='quest-track'||action==='quest-untrack'||action==='quest-abandon'){if(this.deps.processing()||this.deps.blocked())return;const bounty=action==='quest-abandon'?this.data?.current.find(row=>row.bountyInstance===id):undefined;if(bounty?.bountyInstance){if(this.ui.busy||this.ui.loading||bounty.state!=='active'||!bounty.abandonable)return;this.ui.busy=true;this.ui.busyTask=bounty.bountyInstance;this.deps.refresh();try{await this.deps.write('bounty/abandon',{instance:bounty.bountyInstance});}finally{this.ui.busy=false;this.ui.busyTask='';}await this.load();return;}await this.deps.quest?.(action==='quest-abandon'?'abandon':'track',action==='quest-untrack'?null:id);await this.load();return;}
   else if(action==='quest-claim'){await this.claim(id);return;}
   else if(action==='quest-recover'){await this.deps.recover();await this.load();return;}
   else if(action==='quest-navigate'){const item=selectedTask(this.ui,this.data);if(item?.regionId===id)this.deps.navigate(id);return;}
-  else if(action==='quest-chain'||action==='quest-last-archive'){const taskId=action==='quest-last-archive'?this.ui.lastTask:id;const archived=this.data?.archive.find(r=>r.taskId===taskId),row=archived??this.data?.current.find(r=>r.taskId===taskId);if(!row)return;this.ui.mode=archived?'archive':'current';Object.assign(this.ui.views[this.ui.mode],{type:row.typeId,query:'',status:'all',selected:row.id});}
+  else if(action==='quest-chain'||action==='quest-last-archive'){const taskId=action==='quest-last-archive'?this.ui.lastTask:id;const archived=this.data?.archive.find(r=>r.taskId===taskId),row=archived??this.data?.current.find(r=>r.taskId===taskId);if(!row)return;this.ui.mode=archived?'archive':'current';Object.assign(this.ui.views[this.ui.mode],{type:row.typeId,query:'',status:'all',selected:rowKey(row)});}
   else return;
   this.deps.refresh();if(action==='quest-type')document.querySelector<HTMLElement>('.task-window .type-trigger')?.focus({preventScroll:true});
  }
- private async claim(id:string){const selected=selectedTask(this.ui,this.data),record=this.data?.current.find(row=>row.taskId===id);
-  if(this.ui.mode!=='current'||selected?.taskId!==id||record?.state!=='ready'||this.ui.busy||this.ui.loading||this.deps.blocked()||this.deps.processing())return;
+ private async claim(id:string){const selected=selectedTask(this.ui,this.data),record=this.data?.current.find(row=>stateKey(row)===id);
+  if(this.ui.mode!=='current'||!selected||stateKey(selected)!==id||record?.state!=='ready'||this.ui.busy||this.ui.loading||this.deps.blocked()||this.deps.processing())return;
   this.ui.busy=true;this.ui.busyTask=id;this.ui.error='';this.ui.notice='正在领取任务奖励…';this.deps.refresh();
-  try{const outcome=await this.deps.write('task/claim',{task:id});if(outcome==='success'){delete this.ui.states[id];this.ui.lastTask=id;this.ui.notice=`「${record.title}」领奖成功，已收入档案。`;}
+  try{const outcome=await (record.bountyInstance?this.deps.write('bounty/claim',{instance:record.bountyInstance}):this.deps.write('task/claim',{task:id}));if(outcome==='success'){delete this.ui.states[id];this.ui.lastTask=record.taskId;this.ui.notice=`「${record.title}」领奖成功，已收入档案。`;}
    else if(outcome==='pending'){this.ui.states[id]='pending';this.ui.notice='领取结果待确认，请核对后继续。';}
    else if(outcome!=='busy'){this.ui.states[id]='failed';this.ui.notice='领取未成功，正在核对最新任务状态。';}
    await this.load();
@@ -73,8 +73,8 @@ export class TaskController{
   if(event.key==='Escape'&&this.ui.picker){event.preventDefault();this.captureDom();this.ui.picker=false;this.deps.refresh();document.querySelector<HTMLElement>('.task-window .type-trigger')?.focus({preventScroll:true});return true;}
   if(event.target.closest('.desk-modes')&&['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();const mode=event.key==='Home'?'current':event.key==='End'?'archive':this.ui.mode==='current'?'archive':'current';void this.handle('quest-mode',mode);document.querySelector<HTMLElement>(`.task-window [data-mode="${mode}"]`)?.focus({preventScroll:true});return true;}
   if(!event.target.closest('.task-list')||!['ArrowUp','ArrowDown','Home','End'].includes(event.key))return false;
-  event.preventDefault();const rows=taskRows(this.ui,this.data),at=rows.findIndex(row=>row.id===this.ui.views[this.ui.mode].selected),index=event.key==='Home'?0:event.key==='End'?rows.length-1:Math.max(0,Math.min(rows.length-1,at+(event.key==='ArrowDown'?1:-1)));if(!rows[index])return true;
-  void this.handle('quest-select-task',rows[index].id);const button=Array.from(document.querySelectorAll<HTMLElement>('.task-list-row')).find(n=>n.dataset.id===rows[index].id),list=document.querySelector<HTMLElement>('.task-list');button?.focus({preventScroll:true});
+  event.preventDefault();const rows=taskRows(this.ui,this.data),at=rows.findIndex(row=>rowKey(row)===this.ui.views[this.ui.mode].selected),index=event.key==='Home'?0:event.key==='End'?rows.length-1:Math.max(0,Math.min(rows.length-1,at+(event.key==='ArrowDown'?1:-1)));if(!rows[index])return true;
+  void this.handle('quest-select-task',rowKey(rows[index]));const button=Array.from(document.querySelectorAll<HTMLElement>('.task-list-row')).find(n=>n.dataset.id===rowKey(rows[index])),list=document.querySelector<HTMLElement>('.task-list');button?.focus({preventScroll:true});
   if(button&&list){const r=stageBox(button),box=stageBox(list);if(r.top<box.top)list.scrollTop-=box.top-r.top;if(r.bottom>box.bottom)list.scrollTop+=r.bottom-box.bottom;this.captureDom();}return true;
  }
 }

@@ -93,7 +93,7 @@ export function starseaSpawns(m:StarseaMapSource,hardmode=false):Spawn[]{return 
 const starseaSubtitles:Record<string,string>={'ss-map-port':'群岛的主港，每次远航都从这里出发','ss-map-wind':'草坡上的旧船台，常年吹着海风','ss-map-mist':'雾铃声里的林间邮路','ss-map-forge':'炉火不熄的工坊之岛','ss-map-frost':'冻舰沉睡的冰原与观测站','ss-map-rift':'界隙撕开的废城与难民营','ss-map-dragon':'龙骨与旧航网守着的誓约之地'};
 export function starseaRegion(m:StarseaMapSource):Region{
  const at=(id:string)=>{const l=landmark(m,id);if(!l)throw Error(`Starsea map ${m.id} lacks landmark ${id}`);return {x:l.x,y:l.y};};
- const safe=m.kind==='boss'?at('safe'):at('landing'),portal=m.kind==='hub'?at('pier'):safe;
+ const safe=m.kind==='hub'?{x:14,y:20}:m.kind==='boss'?at('safe'):at('landing'),portal=m.kind==='hub'?at('stargate'):safe;
  // 首领场以地点为名，副标题写首领。
  const boss=m.kind==='boss'?starseaCampaign.bosses[m.chapter-1]:undefined;
  return {id:m.id,presentationKey:m.id,name:boss?m.theme.description:m.name,subtitle:boss?'首领 · '+boss.name:starseaSubtitles[m.id]??'',width:m.width,height:m.height,theme:'starsea-'+m.theme.key,safe,portal,bossPortal:m.kind==='island'?at('gate'):undefined,

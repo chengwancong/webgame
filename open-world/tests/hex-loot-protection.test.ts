@@ -1,0 +1,11 @@
+import {it,expect} from 'vitest';
+import {randomUUID} from 'node:crypto';
+import type {Gear,CharacterState} from '../packages/contracts/index.ts';
+import {acceptsPickup,defaultPickupFilter} from '../packages/rules/pickup-filter.ts';
+import {batchSalvageProtected} from '../packages/rules/salvage-batch.ts';
+const item=(hex=true):Gear=>({id:randomUUID(),base:'blade',name:'QA',slot:'weapon',quality:'common',attack:1,armor:0,effect:'none',rank:0,locked:false,affixes:[],origin:{kind:'random'},...(hex?{hex:{rune:'hex-aftershock',tier:'common'}}:{})});
+const filter={...defaultPickupFilter(),minimumQuality:'rare' as const};
+it('P49 keeps common HEX automatic pickup even with a rare threshold',()=>{const g=item(),before=structuredClone(g);expect(acceptsPickup(g,filter,'sword')).toBe(true);expect(g).toEqual(before);});
+it('P49 leaves common non-HEX quality filtering unchanged',()=>{expect(acceptsPickup(item(false),filter,'sword')).toBe(false);});
+it('P49 still respects excluded slots and own weapon filtering for HEX',()=>{expect(acceptsPickup(item(),{...filter,excludedSlots:['weapon']},'sword')).toBe(false);expect(acceptsPickup({...item(),base:'bow'},{...filter,ownWeaponOnly:true},'sword')).toBe(false);expect(acceptsPickup(item(),{...filter,ownWeaponOnly:true},null)).toBe(false);});
+it('P50 bulk protection includes unequipped unlocked unranked common and magic HEX',()=>{const s={equipment:{}} as CharacterState;for(const quality of ['common','magic'] as const)expect(batchSalvageProtected(s,{...item(),quality})).toBe(true);});

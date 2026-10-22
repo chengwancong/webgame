@@ -3,7 +3,8 @@ import {randomUUID} from 'node:crypto';
 import {World} from '../packages/simulation/index.ts';
 import {regionById} from '../packages/content/index.ts';
 import {hexRunes} from '../packages/content/hex-runes.ts';
-import {makeHexGear,equipHex,unequipHex,collectHexRules} from '../packages/rules/hex-runes.ts';
+import {collectHexRules} from '../packages/rules/hex-runes.ts';
+import {makeGear} from '../packages/rules/index.ts';
 import {skillSchema,type CharacterState,type Stats} from '../packages/contracts/index.ts';
 
 // Controlled execution/restore fixture, not a natural progression or TTK measurement.
@@ -19,7 +20,7 @@ const samples=hexRunes.filter(r=>['hex-chain-lightning','hex-aftershock','hex-de
 function fixture(base:string,quality:typeof qualities[number]){
  const state:CharacterState={id:randomUUID(),name:'QA',revision:0,build:1,level:30,xp:0,gold:0,material:0,
   gear:[],equipment:{},skills:[],skillRanks:{},progress:{kills:0,regions:['town'],bosses:[],safe:'town',tasks:[]}};
- const gear=makeHexGear(base,quality,randomUUID());state.gear.push(gear);equipHex(state,gear.id,'hex1');
+ const gear=makeGear(0,randomUUID());gear.quality='legendary';gear.origin={kind:'random'};gear.requiredLevel=25;gear.hex={rune:base,tier:quality};state.gear.push(gear);state.equipment.weapon=gear.id;
  const stats:Stats={hp:1000,attack:100,armor:0,speed:0,mana:100,regen:0,effects:[],rules:collectHexRules(state)};
  const world=new World({...regionById('meadow'),obstacles:[],safe:{x:10,y:10}},stats,[inputSkill],
   [0,1,2,3].map(i=>({id:'target-'+i,name:'QA target',kind:'melee',x:12+i,y:10,hp:i===3?1:100000,
@@ -58,7 +59,7 @@ for(const rune of samples)it.each(qualities)(`${rune.id} %s preserves in-flight 
  expect(ids.reduce((n,id)=>n+(w.effectStats[id]?.count??0),0)).toBeGreaterThan(0);
  expect(w.enemies[3]).toMatchObject({hp:0,alive:false});
  // Real equip resolver + World build synchronization, not deleting rules in the checkpoint.
- unequipHex(state,'hex1');
+ delete state.equipment.weapon;
  const off={...stats,rules:collectHexRules(state)};
  const hp=w.hero.hp,dead=w.enemies[3].id;
  for(const run of [w,restored])run.applyBuild(off,[inputSkill]);

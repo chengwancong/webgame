@@ -1,4 +1,8 @@
-import {expect,it} from 'vitest';
+// @ts-nocheck
+// Retired D11/D12 socket/choice specifications. D13 explicitly removed this
+// protocol. Kept for history; current acceptance is tests/hex-affix*.test.ts.
+import {expect,it as historicalIt} from 'vitest';
+const it=historicalIt.skip;
 import {randomUUID} from 'node:crypto';
 import {snapshotSchema,receiptSchema,validateResponse,type CharacterState} from '../packages/contracts/index.ts';
 import {makeGear,resolveBuild} from '../packages/rules/index.ts';

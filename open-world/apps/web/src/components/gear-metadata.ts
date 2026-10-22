@@ -4,8 +4,9 @@ import {gearSetIdentity} from '../../../../packages/content/set-effects.ts';
 import {getGearSet} from '../../../../packages/content/gear-sets.ts';
 import {pipsHtml,iconHtml,sectionTitleHtml,esc,statRowHtml,statusBadgeHtml} from '../ui-components.ts';
 import type {StatusTone} from '../ui/primitives.ts';
+import {qualityColors} from '../quality-colors.ts';
 export const qualityLabels:Record<GearQuality,string>={common:'普通',magic:'魔法',rare:'稀有',legendary:'传说'};
-export const qualityColors:Record<GearQuality,string>={common:'var(--color-rarity-common)',magic:'var(--color-rarity-magic)',rare:'var(--color-rarity-rare)',legendary:'var(--color-rarity-legendary)'};
+export {qualityColors};
 export function gearQuality(gear:Gear){return gear.quality??'common';}
 /** 换装总评由服务端给出，界面只挑中文标签与配色。 */
 const verdictLabels:Record<GearVerdict,string>={stronger:'更强',output:'更偏输出',sustain:'更偏续航',weaker:'较弱',even:'差不多'};

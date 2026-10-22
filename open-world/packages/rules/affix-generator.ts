@@ -1,6 +1,7 @@
 import {reinforcementSchema} from '../content/reinforcement.ts';
 import {statDefinition} from '../contracts/stats.ts';
-import {gearSlotSchema,isHexSlot} from '../contracts/gear-slots.ts';
+import {gearSlotSchema} from '../contracts/gear-slots.ts';
+import {isLegacyHexSlot as isHexSlot} from './legacy-hex.ts';
 import {statIdSchema} from '../contracts/stats.ts';
 import {randomInt} from 'node:crypto';
 import {z} from 'zod';

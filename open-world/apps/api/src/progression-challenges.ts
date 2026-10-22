@@ -1,4 +1,5 @@
 import type {FastifyInstance} from 'fastify';
+import type {FieldFreeze} from '../../../packages/contracts/field-freeze.ts';
 import type {Pool,PoolClient} from 'pg';
 import {randomUUID,randomInt} from 'node:crypto';
 import {z} from 'zod';
@@ -10,7 +11,7 @@ import {awardProgression} from '../../../packages/rules/deep-progression.ts';
 import {applyXp} from '../../../packages/rules/index.ts';
 
 type Identity={account:string;session:string;resume?:string};
-type Context={dungeonsEnabled?:boolean;pool:Pool;identity:(req:unknown)=>Promise<Identity>;state:(c:Pool|PoolClient,who:Identity,lock?:boolean)=>Promise<CharacterState>;snapshot:(c:Pool|PoolClient,s:CharacterState)=>Promise<Snapshot>;write:(who:Identity,input:z.infer<typeof command>,body:unknown,fn:(c:PoolClient,s:CharacterState)=>Promise<{delta?:Receipt['delta']}> )=>Promise<Receipt>;fail:(code:string,message:string,status?:number)=>never};
+type Context={fieldFreeze?:Readonly<FieldFreeze>;dungeonsEnabled?:boolean;pool:Pool;identity:(req:unknown)=>Promise<Identity>;state:(c:Pool|PoolClient,who:Identity,lock?:boolean)=>Promise<CharacterState>;snapshot:(c:Pool|PoolClient,s:CharacterState)=>Promise<Snapshot>;write:(who:Identity,input:z.infer<typeof command>,body:unknown,fn:(c:PoolClient,s:CharacterState)=>Promise<{delta?:Receipt['delta']}> )=>Promise<Receipt>;fail:(code:string,message:string,status?:number)=>never};
 const uuid=z.uuid(),raidCommand=command.extend({lobby_id:uuid}).strict();
 const zero=()=>({gold:0,xp:0,material:0});
 
@@ -23,7 +24,7 @@ export function registerProgressionChallenges(app:FastifyInstance,ctx:Context){
   if(!result.won)return zero();
   s.gold+=result.reward.gold;s.material+=result.reward.material;applyXp(s,result.reward.xp);
   p.bestTier=Math.max(p.bestTier,result.tier);awardSeasonXp(s,challengeContent.season.challengeXp);
-  const d=definition(result.challenge_id),growth=awardProgression(s,{region:d.region,boss:true,elite:true,source:d.kind});
+  const d=definition(result.challenge_id),growth=awardProgression(s,{region:d.region,boss:true,elite:true,source:d.kind,allowReputation:!ctx.fieldFreeze?.fieldEntry});
   return {...result.reward,progression:growth};
  };
  const lobbyView=(row:{id:string;leader:string;raid:string;created:Date|string;data:any}):RaidLobby=>{
@@ -57,7 +58,7 @@ export function registerProgressionChallenges(app:FastifyInstance,ctx:Context){
    if(!r)fail('SEASON','赛季奖励不存在。');if(!seasonActive())fail('SEASON','本赛季未开放。');
    const key=season.id+':'+r.id;if(p.seasonClaims.includes(key))fail('CLAIMED','赛季奖励已领取。');
    if((p.seasonXp[season.id]??0)<r.xp)fail('SEASON_XP','赛季进度不足。');
-   p.seasonClaims.push(key);s.gold+=r.gold;s.material+=r.material;const growth=awardProgression(s,{region:'abyss-boss',boss:false,elite:false,source:'season'});return {delta:{gold:r.gold,material:r.material,xp:0,progression:growth}};
+   p.seasonClaims.push(key);s.gold+=r.gold;s.material+=r.material;const growth=awardProgression(s,{region:'abyss-boss',boss:false,elite:false,source:'season',allowReputation:!ctx.fieldFreeze?.fieldEntry});return {delta:{gold:r.gold,material:r.material,xp:0,progression:growth}};
   });
  });
  const roleCapacity=(members:RaidLobby['members'],role:z.infer<typeof raidRoleSchema>)=>{if(members.filter(m=>m.role===role).length>=challengeContent.limits.raidRoles[role])fail('RAID_ROLE','该职责名额已满。');};

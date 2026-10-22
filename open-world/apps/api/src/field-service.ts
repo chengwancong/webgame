@@ -114,7 +114,7 @@ export function registerField(app:FastifyInstance,{write,pool,identity,state,lea
  for(const [op,run] of [['accept',(s:CharacterState,id:string)=>{acceptBounty(s.starsea!,id,Date.now(),fail);return {};}],['abandon',(s:CharacterState,id:string)=>{abandonBounty(s.starsea!,id,fail);return {};}],['claim',(s:CharacterState,id:string)=>{
   // Gold/material from the row, xp from the counted kills; no gear. Same transaction as the receipt.
   const {row,reward}=claimBounty(s.starsea!,id,Date.now(),fail);s.gold+=reward.gold;s.material+=reward.material;applyXp(s,reward.xp);
-  return {delta:{gold:reward.gold,xp:reward.xp,material:reward.material},questCompletions:[{id:row.id,xp:reward.xp,gold:reward.gold}]};}]] as const)
+  return {delta:{gold:reward.gold,xp:reward.xp,material:reward.material},questCompletions:[{id:row.id,xp:reward.xp,gold:reward.gold,bountyInstance:id}]};}]] as const)
   app.post('/api/bounty/'+op,async req=>{const who=await identity(req),v=z.object({...commandShape,instance:z.uuid()}).strict().parse(req.body);return write(who,v,{...v,operation:'bounty.'+op},async(_c,s)=>{if(op==='accept'&&fieldFreeze.bounties)fail('FIELD_FROZEN','该野外功能暂时停用。',409);if(!s.starsea)fail('STARSEA','星潮海尚未开放。');return run(s,v.instance);});});
  /** Free travel between unlocked waypoints of the current field map. Refused in
   * dungeons and while a quest wave is still fighting here; a full bag is allowed. */

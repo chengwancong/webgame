@@ -8,18 +8,15 @@ import {mainStatValues} from '../../../../packages/rules/main-stat-values.ts';
 import {effectText} from '../../../../packages/content/index.ts';
 import {skillTagLabel} from '../../../../packages/content/skill-tags.ts';
 import {formatBig} from '../../../../packages/content/big-number.ts';
+import {hexMarks} from '../hex-rune-view.ts';
 import {CharacterPaperdoll} from './CharacterPaperdoll.ts';
-import type {HexRuneView} from '../hex-rune-tip.ts';
-import type {HexSlot} from '../hex-rune-slots.ts';
-import {HexRuneChooser} from '../hex-rune-chooser.ts';
-import {hexChooserItemsFromSnapshot} from '../hex-rune-view.ts';
 import {GearDetails} from './GearDetails.ts';
 import {filterGear} from './GearFilter.ts';
 import {gearAffixes,gearQuality,qualityLabels} from './gear-metadata.ts';
 import {art} from '../ui-assets.ts';
 import {type SlotMark,statIcon,sectionTitleHtml,esc,buttonHtml,itemSlot,panelHeaderHtml,statusBadgeHtml,stateBlockHtml,statRowHtml} from '../ui-components.ts';
 import {equipmentPartLabels,runtimeSlotForPart,type GearSlotFilter} from '../equipment-slots.ts';
-export type CharacterPanelOptions={chooserOpen:boolean;detailsOpen:boolean;blocked:boolean;recovering?:boolean;damage?:{stats:Stats;skills:Skill[];telemetry:RuleTelemetry|null;sourceNames?:Record<string,string>};hexCatalog?:Record<string,HexRuneView>;hexChooser?:{slot:HexSlot;selected:string}};
+export type CharacterPanelOptions={chooserOpen:boolean;detailsOpen:boolean;blocked:boolean;recovering?:boolean;damage?:{stats:Stats;skills:Skill[];telemetry:RuleTelemetry|null;sourceNames?:Record<string,string>}};
 /** Main stat after reinforcement, mirroring `mainStatContribution` in packages/rules/main-stats.ts. Legacy gear without a main stat has none. */
 export function gearMainStat(gear:Gear){const value=mainStatValues(gear);return value?{stat:value.stat,value:value.effective}:undefined;}
 export const mainStatText=(stat:string,value:number)=>affixDisplayValue(stat,value);
@@ -58,18 +55,12 @@ function candidateDelta(gear:Gear,worn:Gear|undefined){
 /** Swap mode (2026-10-11, docs/character-equipment-ui.md 方案 B): part rail | candidates | worn → selected, side by side; the stats column steps aside until the chooser closes. */
 function swapView(snapshot:Snapshot,part:Exclude<GearSlotFilter,''>,selected:string,busy:boolean){
  const selection=characterSelection(snapshot,part,selected),label=part==='core'?'旧核心':equipmentPartLabels[part],slot=runtimeSlotForPart(part),worn=snapshot.gear.find(gear=>slot&&gear.id===snapshot.equipment[slot]);
- const rows=selection.items.length?selection.items.map(gear=>{const equipped=Object.values(snapshot.equipment).includes(gear.id),quality=gearQuality(gear),main=gearMainStat(gear);return itemSlot({action:'select',id:gear.id,pressed:gear.id===selection.selected?.id,label:gear.name+'，'+(equipped?'已装备':'未装备'),className:'character-candidate quality-'+quality,title:gear.name+'，'+(equipped?'已穿戴':'未装备'),marks:gear.locked?[{corner:'tl',kind:'lock',label:'已锁定'} as SlotMark]:[],extra:`<img src="${art('gear-'+gear.base)}" alt=""><span><b class="quality-${quality}">${esc(gear.name)}${gear.rank?' +'+gear.rank:''}</b><small>${main?esc(statLabels[main.stat]??main.stat)+' '+mainStatText(main.stat,main.value)+' · ':''}${qualityLabels[quality]}</small></span>${candidateDelta(gear,worn)}`});}).join(''):stateBlockHtml({kind:'empty',title:'暂无候选',message:'当前没有该部位的装备。',compact:true});
+ const rows=selection.items.length?selection.items.map(gear=>{const equipped=Object.values(snapshot.equipment).includes(gear.id),quality=gearQuality(gear),main=gearMainStat(gear);return itemSlot({action:'select',id:gear.id,pressed:gear.id===selection.selected?.id,label:gear.name+'，'+(equipped?'已装备':'未装备'),className:'character-candidate quality-'+quality,title:gear.name+'，'+(equipped?'已穿戴':'未装备'),marks:[...(gear.locked?[{corner:'tl',kind:'lock',label:'已锁定'} as SlotMark]:[]),...hexMarks(gear,snapshot)],extra:`<img src="${art('gear-'+gear.base)}" alt=""><span><b class="quality-${quality}">${esc(gear.name)}${gear.rank?' +'+gear.rank:''}</b><small>${main?esc(statLabels[main.stat]??main.stat)+' '+mainStatText(main.stat,main.value)+' · ':''}${qualityLabels[quality]}</small></span>${candidateDelta(gear,worn)}`});}).join(''):stateBlockHtml({kind:'empty',title:'暂无候选',message:'当前没有该部位的装备。',compact:true});
  const pair=Boolean(worn&&selection.selected&&selection.selected.id!==worn.id);
  const detail=selection.selected?GearDetails(selection.selected,snapshot,'character',busy):`<aside class="character-empty">${stateBlockHtml({kind:'empty',title:label+'未装备',message:'当前没有该部位的可穿戴装备。',compact:true})}</aside>`;
  return `<section class="character-chooser" role="region" aria-label="${label}装备候选">${panelHeaderHtml('更换'+label,{level:'section',closeAction:'character-chooser-close',closeLabel:'收起换装'})}<div class="character-candidate-hint">${sectionTitleHtml('候选',{count:`${selection.items.length} 件`})}${worn?'<small>▲▼ 为主属性与穿戴中相比</small>':''}</div><div class="character-candidate-grid" data-character-scroll="candidates-${part}">${rows}</div></section><section class="character-compare${pair?' has-pair':''}" aria-label="装备对比">${pair?wornCard(worn!)+'<span class="character-compare-arrow" aria-hidden="true">→</span>':''}${detail}</section>`;
 }
-/** HEX socket chooser (HEX-F01) takes the gear swap view's place; only with a non-empty catalog, so it stays inert before HEX-B02. */
-function hexChooserView(snapshot:Snapshot,options:CharacterPanelOptions,busy:boolean){
- const chooser=options.hexChooser,catalog=options.hexCatalog??{};
- if(!chooser||!Object.keys(catalog).length)return '';
- return HexRuneChooser({slot:chooser.slot,selected:chooser.selected||undefined,level:snapshot.level,items:hexChooserItemsFromSnapshot(snapshot,catalog),catalog,busy});
-}
 export function CharacterPanel(snapshot:Snapshot,part:Exclude<GearSlotFilter,''>,selected:string,figureURL:string|undefined,busy:boolean,options:CharacterPanelOptions={chooserOpen:false,detailsOpen:true,blocked:false}){
- const hex=hexChooserView(snapshot,options,busy),swapping=options.chooserOpen||Boolean(hex);
- return `<div class="character-panel${swapping?' is-swapping':''}"><section class="character-paperdoll${swapping?' chooser-open':''}" aria-label="人物与装备">${CharacterPaperdoll(snapshot,options.chooserOpen&&!hex?part:'',figureURL,options.hexCatalog,hex?options.hexChooser!.slot:'',busy)}</section>${hex||(options.chooserOpen?swapView(snapshot,part,selected,busy):summary(snapshot,options))}<footer class="character-footer">${options.blocked?`<span role="status">${statusBadgeHtml('连接待恢复，装备与属性待同步','warning',{variant:'inline'})}</span>${buttonHtml('恢复连接',{action:'recover',size:'compact',variant:'secondary',busy:options.recovering,busyLabel:'正在恢复…'})}`:''}</footer></div>`;
+ const swapping=options.chooserOpen;
+ return `<div class="character-panel${swapping?' is-swapping':''}"><section class="character-paperdoll${swapping?' chooser-open':''}" aria-label="人物与装备">${CharacterPaperdoll(snapshot,options.chooserOpen?part:'',figureURL)}</section>${options.chooserOpen?swapView(snapshot,part,selected,busy):summary(snapshot,options)}<footer class="character-footer">${options.blocked?`<span role="status">${statusBadgeHtml('连接待恢复，装备与属性待同步','warning',{variant:'inline'})}</span>${buttonHtml('恢复连接',{action:'recover',size:'compact',variant:'secondary',busy:options.recovering,busyLabel:'正在恢复…'})}`:''}</footer></div>`;
 }

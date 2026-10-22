@@ -19,7 +19,8 @@ it.each(qualities)('A2 %s counts distinct hit releases and executes the declared
  const hit=()=> (w as any).comboHit(w.enemies[0],100,undefined,'physical',false,[]);
  for(let i=0;i<every-1;i++)hit();expect(w.enemies[0].hp).toBe(1000);
  hit();expect(w.effectStats[r.id].count).toBe(1);
- expect(w.enemies[0].hp).toBe(1000-[60,70,80,105][qualities.indexOf(quality)]);
+ // D13 scales the authored damage paths by 0.5; triggers and geometry stay fixed.
+ expect(w.enemies[0].hp).toBe(1000-[30,35,40,53][qualities.indexOf(quality)]);
  if(quality==='rare'||quality==='legendary'){
   expect(w.effectStats[rules[1].id].count).toBe(1);expect(w.zones).toHaveLength(1);
   expect(w.zones[0]).toMatchObject({radius:quality==='legendary'?3.25:2.5,life:60,damage:0});
@@ -32,8 +33,8 @@ it.each(qualities)('S1 %s executes exact DOT budgets and the 180-tick ICD from f
  const copy=World.restore(JSON.parse(JSON.stringify(w.exportCheckpoint())));
  for(const run of [w,copy]){
   (run as any).fireEffects('hit',run.enemies[0],100);const hp=run.enemies.map(e=>e.hp);
-  expect(run.effectStats[r.id].count).toBe(1);expect(1000-hp[0]).toBe([50,60,120,150][qualities.indexOf(quality)]);
-  expect(1000-hp[1]).toBe(quality==='legendary'?300:0);expect(hp[2]).toBe(1000);
+  expect(run.effectStats[r.id].count).toBe(1);expect(1000-hp[0]).toBe([25,30,60,75][qualities.indexOf(quality)]);
+  expect(1000-hp[1]).toBe(quality==='legendary'?150:0);expect(hp[2]).toBe(1000);
   expect(run.hasStatus('e0','burn')).toBe(quality==='common'||quality==='magic');
   (run as any).fireEffects('hit',run.enemies[0],100);expect(run.enemies.map(e=>e.hp)).toEqual(hp);
  }

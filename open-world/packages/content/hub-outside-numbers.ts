@@ -1,0 +1,4 @@
+import {hubOutsideNumbersFileSchema} from '../contracts/hub-outside-numbers.ts';
+/** The application loads the exported workbook JSON only after B4 applies it. */
+export function parseHubOutsideNumbers(raw:unknown){const data=hubOutsideNumbersFileSchema.parse(raw),rep=Object.fromEntries(data.reputation.map(r=>[r.id,r.value]));return {dockRates:Object.fromEntries(data.dockRates.map(r=>[r.region,{goldPerHour:r.goldPerHour,materialsPerHour:r.materialsPerHour}])),commissionRep:rep.commissionRep,sideRep:rep.sideRep,commissionGoldScale:rep.commissionGoldScale??1,commissionXpShare:rep.commissionXpShare??.5,forgeRep:{craft:rep.craft,salvage:rep.salvage,enhance:rep.enhance,donate:rep.donate},donationOffers:Object.fromEntries(data.donationOffers.map(r=>[r.id,{materials:r.materials,rep:r.rep}])),recipeOffers:Object.fromEntries(data.recipeOffers.map(r=>[r.id,{tier:r.tier,...(r.gold===undefined?{}:{gold:r.gold}),...(r.material===undefined?{}:{material:r.material})}]))};}
+

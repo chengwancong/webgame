@@ -4,7 +4,10 @@ export type TaskDisplay=Omit<TaskEntry,'state'>&{state:TaskEntry['state']|'pendi
 export type TaskFilter={type:string;query:string;status:string;sort:string;selected:string;positions:Record<string,{top:number;left:number}>;listPositions:Record<string,number>};
 export type TaskUI={mode:TaskMode;picker:boolean;pickerScroll:number;typeSearch:string;loading:boolean;busy:boolean;busyTask:string;notice:string;error:string;lastTask:string;states:Record<string,'pending'|'failed'>;views:Record<TaskMode,TaskFilter>};
 export function initialTaskUI():TaskUI{const filter=():TaskFilter=>({type:'all',query:'',status:'all',sort:'recent',selected:'',positions:{},listPositions:{}});return {mode:'current',picker:false,pickerScroll:0,typeSearch:'',loading:false,busy:false,busyTask:'',notice:'',error:'',lastTask:'',states:{},views:{current:filter(),archive:filter()}};}
-export function currentTasks(ui:TaskUI,data?:TaskView):TaskDisplay[]{return (data?.current??[]).map(row=>({...row,state:ui.states[row.taskId]??row.state}));}
+// 悬赏实例与稳定任务 ID 分离：同一 taskId 可同时有多个悬赏实例，状态/选中/忙碌都按实例区分。
+export const stateKey=(row:{taskId:string;bountyInstance?:string})=>row.bountyInstance??row.taskId;
+export const rowKey=(row:{id:string;bountyInstance?:string})=>row.bountyInstance?`${row.id}#${row.bountyInstance}`:row.id;
+export function currentTasks(ui:TaskUI,data?:TaskView):TaskDisplay[]{return (data?.current??[]).map(row=>({...row,state:ui.states[stateKey(row)]??row.state}));}
 export function taskRows(ui:TaskUI,data?:TaskView):TaskDisplay[]{
  const view=ui.views[ui.mode];let rows:TaskDisplay[]=ui.mode==='archive'?[...data?.archive??[]]:currentTasks(ui,data);
  if(view.type!=='all')rows=rows.filter(row=>row.typeId===view.type);
@@ -14,6 +17,6 @@ export function taskRows(ui:TaskUI,data?:TaskView):TaskDisplay[]{
  if(ui.mode==='current')rows.sort((a,b)=>(a.series??'zz').localeCompare(b.series??'zz')||Number(a.state==='available')-Number(b.state==='available'));
  return rows;
 }
-export function selectedTask(ui:TaskUI,data?:TaskView){const rows=taskRows(ui,data);return rows.find(row=>row.id===ui.views[ui.mode].selected)??rows[0];}
+export function selectedTask(ui:TaskUI,data?:TaskView){const rows=taskRows(ui,data);return rows.find(row=>rowKey(row)===ui.views[ui.mode].selected)??rows[0];}
 export function visibleTaskTypes(ui:TaskUI,data?:TaskView):TaskType[]{const rows=ui.mode==='archive'?data?.archive??[]:data?.current??[],types=[...data?.types??[]];for(const row of rows)if(!types.some(t=>t.id===row.typeId))types.push({id:row.typeId,name:row.typeName,enabled:false,order:999,tone:'neutral',icon:'diamond'});return types.filter(type=>type.enabled||rows.some(row=>row.typeId===type.id)).sort((a,b)=>a.order-b.order);}
 export function taskListKey(ui:TaskUI){const v=ui.views[ui.mode];return JSON.stringify([v.type,v.query,v.status,v.sort]);}

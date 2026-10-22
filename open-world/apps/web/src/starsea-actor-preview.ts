@@ -2,28 +2,61 @@ import {MiniNativePreview} from './mini-native-renderer.ts';
 import type {WardrobeAction} from './wardrobe-renderer.ts';
 import {loadImage,loadJSON,type Asset,type Point} from './starsea-assets.ts';
 type AtlasFrame={frame:{x:number;y:number;w:number;h:number};spriteSourceSize:{x:number;y:number;w:number;h:number};sourceSize:{w:number;h:number}};
+/** 计算 native 资源在给定 action/phase 下应加载的 profile URL */
+export function nativeProfileFor(asset:Asset,action:string,phase:string):string{
+ const skill=asset.actions.skills?.[action];
+ return ((action==='death'?asset.runtime.profile:phase==='phase-enter'||phase==='phase-end'?asset.states[phase]?.profile:skill?.profiles?.[phase]??skill?.profile??asset.states?.[phase]?.profile??asset.runtime.profile)??'') as string;
+}
 export class StarseaActorPreview{
  readonly canvas=document.createElement('canvas');private native?:MiniNativePreview;private image?:HTMLImageElement;private atlas?:{frames:Record<string,AtlasFrame>};private sockets?:{actions:Record<string,Record<string,[number,number]>[]>};
  private asset?:Asset;private generation=0;private currentAction='idle';private frameIndex=0;private facing=-1;private loadedProfile='';private errors:string[]=[];
  constructor(readonly width=720,readonly height=480,readonly foot:Point={x:340,y:300}){this.canvas.width=width;this.canvas.height=height;}
+ /** action → WardrobeAction 映射（与 render() 逻辑一致） */
+ nativeMotion(action:string,phase:string):string{
+  const asset=this.asset;if(!asset)return action;
+  return action==='death'?'death':phase==='phase-enter'||phase==='phase-end'?'idle':asset.actions.skills?.[action]?'skill':asset.runtime.storyAdapter?.[action]??({talk:'attack',repair:'skill',read:'skill',point:'projectile'} as Record<string,string>)[action]??action;
+ }
+ /** 仅加载指定 profile，不依赖 action/phase 推导（供帧缓存使用） */
+ async loadProfile(asset:Asset,profile:string):Promise<boolean>{
+  this.asset=asset;
+  if(this.native&&profile===this.loadedProfile)return true;
+  this.native?.destroy();this.loadedProfile=profile;
+  const painter=new MiniNativePreview(this.canvas,{height:asset.runtime.displayHeight,footX:this.foot.x/this.width,footY:this.foot.y/this.height,fitBounds:false,profileUrl:profile});this.native=painter;
+  if(!asset.runtime.renderAppearance)throw Error('Native appearance missing: '+asset.id);
+  return painter.setAppearance(asset.runtime.renderAppearance);
+ }
  async load(asset:Asset,action='idle',phase='default'){
   const generation=++this.generation;this.asset=asset;this.errors=[];
   if(asset.runtime.kind==='native'){
-   const skill=asset.actions.skills?.[action];
-   const profile=action==='death'?asset.runtime.profile:phase==='phase-enter'||phase==='phase-end'?asset.states[phase]?.profile:skill?.profiles?.[phase]??skill?.profile??asset.states?.[phase]?.profile??asset.runtime.profile;
+   const profile=nativeProfileFor(asset,action,phase);
    if(this.native&&profile===this.loadedProfile)return true;
-   this.native?.destroy();this.loadedProfile=profile;
-   const painter=new MiniNativePreview(this.canvas,{height:asset.runtime.displayHeight,footX:this.foot.x/this.width,footY:this.foot.y/this.height,fitBounds:false,profileUrl:profile});this.native=painter;
-   if(!asset.runtime.renderAppearance)throw Error('Native appearance missing: '+asset.id);
-   const ready=await painter.setAppearance(asset.runtime.renderAppearance);if(generation!==this.generation)return false;if(!ready)throw Error(painter.errors.join('\n')||'Native appearance refused');return true;
+   const ready=await this.loadProfile(asset,profile);if(generation!==this.generation)return false;if(!ready)throw Error(this.native!.errors.join('\n')||'Native appearance refused');return true;
   }
   this.native?.destroy();this.native=undefined;this.loadedProfile='';
   if(!asset.runtime.image||!asset.runtime.atlas||!asset.runtime.sockets)throw Error('Atlas dependencies missing: '+asset.id);
   const [image,atlas,sockets]=await Promise.all([loadImage(asset.runtime.image),loadJSON<{frames:Record<string,AtlasFrame>}>(asset.runtime.atlas),loadJSON<{actions:Record<string,Record<string,[number,number]>[]>}>(asset.runtime.sockets)]);if(generation!==this.generation)return false;this.image=image;this.atlas=atlas;this.sockets=sockets;return true;
  }
+ /** 解析帧元数据，不绘制 */
+ resolveNative(action:string,clock:number,facing:number,phase:string,cast?:{elapsed:number;windup:number;recovery:number}):{motion:string;index:number;flipped:boolean}|undefined{
+  if(!this.native||!this.asset)return;
+  const mapped=this.nativeMotion(action,phase);
+  return this.native.resolveFrame({action:mapped as WardrobeAction,clock,facing,...(cast?{cast}:{})});
+ }
+ /** 以未翻转朝向绘制当前帧，返回边界和挂点（供帧缓存烘焙） */
+ bakeNative(action:string,clock:number,phase:string,cast?:{elapsed:number;windup:number;recovery:number}):{bounds:{x:number;y:number;w:number;h:number}|undefined;sockets:Record<string,Point>}|undefined{
+  if(!this.native||!this.asset)return;
+  const mapped=this.nativeMotion(action,phase);
+  const facing=this.native.unflippedFacing??1;
+  if(!this.native.drawFrame({action:mapped as WardrobeAction,clock,facing,...(cast?{cast}:{})}))return;
+  const bounds=this.native.frameBounds();
+  const result:Record<string,Point>={};
+  for(const name of ['feet','chest','hand','weapon','muzzle','head','rightHand','leftHand'] as const){const p=this.native.socket(name as Parameters<typeof this.native.socket>[0]);if(p)result[name]=p;}
+  Object.assign(result,this.native.boneSockets('ss_'));
+  return{bounds,sockets:result};
+ }
  render(action:string,clock:number,facing:number,phase='default',cast?:{elapsed:number;windup:number;recovery:number}){
   const asset=this.asset;if(!asset)return;this.facing=facing;
-  if(this.native){const mapped=action==='death'?'death':phase==='phase-enter'||phase==='phase-end'?'idle':asset.actions.skills?.[action]?'skill':asset.runtime.storyAdapter?.[action]??({talk:'attack',repair:'skill',read:'skill',point:'projectile'} as Record<string,string>)[action]??action;
+  if(this.native){const mapped=this.nativeMotion(action,phase);
    this.currentAction=mapped;return this.native.render({action:mapped as WardrobeAction,clock,facing,...(cast?{cast}:{})});
   }
   const ctx=this.canvas.getContext('2d')!;ctx.clearRect(0,0,this.width,this.height);const def=asset.runtime.actions?.[action];if(!def||!this.image||!this.atlas)return;

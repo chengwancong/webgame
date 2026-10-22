@@ -124,6 +124,14 @@ def main():
   for output, data in exported.items():
     f = seen[output]
     text, target = render(data), os.path.join(JSON_DIR, output)
+    if output in ['hub-chart.json', 'hub-outside-numbers.json']:
+      # Check the runtime mirror even when config/json is already current.
+      content_target = os.path.join(ROOT, '..', 'packages', 'content', output)
+      content_old = open(content_target, encoding='utf-8').read() if os.path.exists(content_target) else None
+      if content_old != text:
+        if check: stale.append('packages/content/' + output)
+        else:
+          with open(content_target, 'w', encoding='utf-8', newline='\n') as fh: fh.write(text)
     old = open(target, encoding='utf-8').read() if os.path.exists(target) else None
     if old == text: continue
     if check: stale.append(output)

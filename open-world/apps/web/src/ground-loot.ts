@@ -1,4 +1,4 @@
-import type {Reward,Vec} from '../../../packages/contracts/index.ts';
+import type {Gear,Reward,Vec} from '../../../packages/contracts/index.ts';
 import {distance,lineOfSight} from '../../../packages/simulation/navigation.ts';
 import type {Region} from '../../../packages/content/index.ts';
 import {settings} from '../../../packages/content/index.ts';
@@ -9,3 +9,16 @@ export function nearbyLoot(rewards:Reward[],region:Region,hero:Vec){return rewar
 export function groundLootArt(reward:Reward){return art('gear-'+reward.gear.base);}
 export function groundLootTexture(reward:Reward){return smallArt('gear-'+reward.gear.base);}
 export function lootLayout(rewards:Reward[]){const placed:{reward:Reward;x:number;y:number}[]=[];for(const reward of [...rewards].sort((a,b)=>a.id.localeCompare(b.id))){const bx=(reward.position.x-reward.position.y)*32,by=(reward.position.x+reward.position.y)*18;let x=bx,y=by;for(let n=0;n<=rewards.length*3;n++){x=bx+(n===0?0:((n-1)%3-1)*90);y=by-(n===0?0:(Math.floor((n-1)/3)+1)*100);if(!placed.some(p=>Math.abs(p.x-x)<86&&Math.abs(p.y-y)<94))break;}placed.push({reward,x,y});}return placed;}
+
+/** Ground label: HEX gear gets a leading diamond; the name is cut to 5 chars + ellipsis past 6 (diamond not counted). Hover shows the full name plus the mechanism name (rune id when the catalog has no entry). */
+export function groundLootLabel(gear:Pick<Gear,'name'|'hex'>,runeName?:string){
+ const name=gear.name,cut=name.length>6?name.slice(0,5)+'…':name;
+ if(!gear.hex)return {short:cut,full:name};
+ return {short:'◆'+cut,full:'◆'+name+'·'+(runeName||gear.hex.rune)};
+}
+/** Beam parameters per quality; common/magic only get a short beam when the drop carries a HEX. */
+export function lootPillar(quality:string,hasHex:boolean){
+ if(quality==='legendary')return {height:170,life:2200};
+ if(quality==='rare')return {height:120,life:1500};
+ return hasHex?{height:90,life:1200}:undefined;
+}

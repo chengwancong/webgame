@@ -4,11 +4,11 @@ import {statusEffectSchema,damageTypeSchema,type StatusEffect,type DamageCategor
 export const statusInstanceSchema=z.object({
  id:z.string(),sourceId:z.string(),targetId:z.string(),skill:z.string(),castId:z.number().int().nonnegative().optional(),
  vfxKey:z.string().optional(),effect:statusEffectSchema,started:z.number().int().nonnegative(),ends:z.number().int().nonnegative(),next:z.number().int().nonnegative(),
- typeAdd:z.number().nonnegative().optional(),baseEnds:z.number().int().nonnegative().optional(),emitted:z.number().int().nonnegative(),sourcePosition:z.object({x:z.number().finite(),y:z.number().finite()}),penetration:z.number().min(0).max(1),
+ typeAdd:z.number().nonnegative().optional(),hexDamageFactor:z.number().finite().nonnegative().optional(),baseEnds:z.number().int().nonnegative().optional(),emitted:z.number().int().nonnegative(),sourcePosition:z.object({x:z.number().finite(),y:z.number().finite()}),penetration:z.number().min(0).max(1),
 }).strict();
 export type StatusInstance=z.infer<typeof statusInstanceSchema>;
 /** comboDepth: >0 marks damage produced by a weapon combo; such hits never fire hit/crit/nth triggers. */
-export type DamageContext={typeAdd?:number;part?:number;statusKind?:StatusEffect['kind'];effectCrit?:boolean;category:DamageCategory;damageType:DamageType;penetration?:number;skill?:Skill;scaled?:boolean;comboDepth?:number};
+export type DamageContext={typeAdd?:number;hexDamageFactor?:number;part?:number;statusKind?:StatusEffect['kind'];effectCrit?:boolean;category:DamageCategory;damageType:DamageType;penetration?:number;skill?:Skill;scaled?:boolean;comboDepth?:number};
 export type ComboEcho={retarget?:boolean;at:number;skill:Skill;targetId?:string;position:Vec;rule:string};
 export type SkillSequence={origin?:Vec;direction?:Vec;sourceId:string;targetId?:string;skill:Skill;position:Vec;started:number;ends:number;next:number;index:number;castId?:number;vfxKey?:string};
 export function splitBudget(total:number,count:number,index:number){const base=Math.floor(total/count);return index===count-1?total-base*(count-1):base;}

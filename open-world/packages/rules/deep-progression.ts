@@ -1,3 +1,4 @@
+import {currentGearCount} from './current-inventory.ts';
 import {migrateCraftProgression,migrateCraftMaterials} from './crafting-migration.ts';
 import {craftConsumables,craftPolicy,craftText,craftCodex,craftMaterialById} from '../content/crafting.ts';
 import {activeCraftConsumables} from './crafting-consumables.ts';
@@ -67,8 +68,8 @@ const maxTalentPoints=60;
 export function talentPoints(s:CharacterState){return Math.min(maxTalentPoints,Math.min(50,Math.max(0,s.level-1))+s.progression!.reputationClaims.length);}
 function exclusiveTaken(s:CharacterState,t:typeof talentDefinitions[number]){return t.exclusive?talentDefinitions.find(x=>x.exclusive&&x.id!==t.id&&x.branch===t.branch&&x.tier===t.tier&&(s.progression!.talents[x.id]??0)>0):undefined;}
 function talentTierUnlocked(s:CharacterState,t:typeof talentDefinitions[number]){return talentDefinitions.filter(x=>x.branch===t.branch&&x.tier<t.tier).reduce((sum,x)=>sum+(s.progression!.talents[x.id]??0),0)>=t.required;}
-function gearOutput(s:CharacterState,base:string){
- requireRule(s.gear.length<settings.capacity,'背包满了，先整理背包');const template=progressionGearTemplates.find(g=>g.base===base);
+export function gearOutput(s:CharacterState,base:string){
+ requireRule(currentGearCount(s.gear)<settings.capacity,'背包满了，先整理背包');const template=progressionGearTemplates.find(g=>g.base===base);
  const g:Gear=template?{id:crypto.randomUUID(),base:template.base,name:template.name,slot:'weapon',attack:template.attack,armor:0,effect:'none',rank:0,locked:false,quality:base.startsWith('primal')?'legendary':'rare',affixes:[]}:makeGearByBase(base,crypto.randomUUID());
  const collection=collectionEquipment(base);if(collection){g.quality=equipmentRuntime.craftQuality;g.affixes=[];}
  if(s.starsea&&collection)applyItemPower(g,Math.min(s.level,islandBand(collection.tier*2,s.starsea.hardmode)[1]));
@@ -116,16 +117,16 @@ function perform(s:CharacterState,a:ProgressionAction):ProgressionCost{
 export function quoteProgressionAction(s:CharacterState,input:ProgressionAction){const action=progressionActionSchema.parse(input),copy=structuredClone(s);let c=free();try{c=perform(copy,action);requireRule(available(s.progression?s:({...s,progression:ensureProgression(structuredClone(s))}),c),'资源不足');return {action,cost:c,enabled:true,reason:'',next:copy};}catch(error){if(error instanceof ProgressionError)return {action,cost:c,enabled:false,reason:error.message,next:structuredClone(s)};throw error;}}
 export function applyProgressionAction(s:CharacterState,input:ProgressionAction):Receipt['delta']{const a=progressionActionSchema.parse(input),copy=structuredClone(s);ensureProgression(copy);const before=structuredClone(copy),c=perform(copy,a);requireRule(available(before,c),'资源不足');charge(copy,c);ensureProgression(copy);copy.build++;if(s.progression)copy.progression=Object.assign(s.progression,copy.progression);Object.assign(s,copy);const materials:Record<string,number>={};for(const id of new Set([...Object.keys(before.progression!.materials),...Object.keys(copy.progression!.materials)])){const n=(copy.progression!.materials[id]??0)-(before.progression!.materials[id]??0);if(n)materials[id]=n;}const reputation:Record<string,number>={};for(const id of Object.keys(copy.progression!.reputation)){const n=(copy.progression!.reputation[id]??0)-(before.progression!.reputation[id]??0);if(n)reputation[id]=n;}return {gold:s.gold-before.gold,xp:0,material:s.material-before.material,progression:{materials,reputation}};}
 export function previewProgressionAction(s:CharacterState,a:ProgressionAction):ProgressionPreview{const quote=quoteProgressionAction(s,a),before=resolveBuild(s).stats,after=quote.enabled?resolveBuild(quote.next).stats:before;return {revision:s.revision,ruleset_version:versions.rules,action:quote.action,cost:quote.cost,enabled:quote.enabled,reason:quote.reason,summary:quote.enabled?'可以执行':quote.reason,before:{attack:before.attack,hp:before.hp,armor:before.armor},after:{attack:after.attack,hp:after.hp,armor:after.armor}};}
-export function awardProgression(s:CharacterState,meta:{region:string;boss:boolean;elite:boolean;source?:'world'|'high'|'nightmare'|'raid'|'season';sourceId?:string;level?:number},rewardConfig=cfg.rewards){
+export function awardProgression(s:CharacterState,meta:{region:string;boss:boolean;elite:boolean;source?:'world'|'high'|'nightmare'|'raid'|'season';sourceId?:string;level?:number;allowReputation?:boolean},rewardConfig=cfg.rewards){
  const p=ensureProgression(s),materials:Record<string,number>={},reputation:Record<string,number>={};
  const add=(values:Record<string,number>)=>{for(const[id,n]of Object.entries(migrateCraftMaterials({...values}))){const before=p.materials[id]??0,stack=craftMaterialById.get(id)?.stack,amount=stack?Math.max(0,Math.min(n,stack-before)):n;if(amount){p.materials[id]=before+amount;materials[id]=(materials[id]??0)+amount;}}};
  const source=meta.source??'world';add(rewardConfig.world);if(meta.elite)add(rewardConfig.elite);if(meta.boss)add(rewardConfig.boss);if(source!=='world')add(rewardConfig[source]);
- const region=faction(meta.region);if(cfg.factions.some(x=>x.id===region)){const n=meta.boss?30:meta.elite?5:1;p.reputation[region]=(p.reputation[region]??0)+n;reputation[region]=n;}
+ const region=faction(meta.region);if(meta.allowReputation!==false&&cfg.factions.some(x=>x.id===region)){const n=meta.boss?30:meta.elite?5:1;p.reputation[region]=(p.reputation[region]??0)+n;reputation[region]=n;}
  const discovery=meta.sourceId?discoveryKey(meta.region+':'+meta.sourceId):undefined;
  if(discovery&&!p.discoveries.includes(discovery))p.discoveries.push(discovery);
  for(const id of Object.keys(p.buffs))if(p.buffs[id]>0)p.buffs[id]--;
  // Deterministic, earned challenge loot. No unrevealed candidates or RNG are published.
- if(meta.boss&&(source==='high'||source==='raid')){const base=source==='raid'?'primal-blade':(['forest','tundra'].includes(region)?'omega-bow':'omega-blade');if(s.gear.length<settings.capacity)gearOutput(s,base);else add({omega_fragment:cfg.professionsRewards.fullInventoryFragments});}
+ if(meta.boss&&(source==='high'||source==='raid')){const base=source==='raid'?'primal-blade':(['forest','tundra'].includes(region)?'omega-bow':'omega-blade');if(currentGearCount(s.gear)<settings.capacity)gearOutput(s,base);else add({omega_fragment:cfg.professionsRewards.fullInventoryFragments});}
  return {materials,reputation};
 }
 function glyphRadius(rank:number){return rank>=15?4:2;}

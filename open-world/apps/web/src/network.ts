@@ -1,3 +1,4 @@
+import {stampHexCooldownView} from './hex-cooldown-import.ts';
 import {validateResponse,type Snapshot,type Permit,type Receipt} from '../../../packages/contracts/index.ts';
 export class ApiFailure extends Error{constructor(public code:string,message:string,public status:number){super(message);}}
 // location.origin 不带 user:pass@：地址栏含口令时，相对路径 fetch 会被浏览器直接拒绝（测试服 Basic Auth）。
@@ -14,7 +15,7 @@ async function once<T>(path:string,body?:unknown,resumeLease?:string):Promise<T>
   throw new ApiFailure('SERVER','游戏服务暂时不可用（HTTP '+response.status+'），请稍后恢复连接。',response.status);
  }
  if(v===undefined)throw new ApiFailure('SERVER','服务器返回内容无法读取，请稍后恢复连接。',response.status);
- try{return validateResponse(path,v) as T;}catch(error){console.error('API response validation failed',path,error);throw new ApiFailure('PROTOCOL','服务器返回了不兼容的数据，请刷新页面后恢复连接。',409);}
+ try{const out=validateResponse(path,v) as T;{const h=response.headers.get('x-aw-server-now'),n=h===null||h.trim()===''?NaN:Number(h);stampHexCooldownView(out,undefined,Number.isFinite(n)?n:undefined);}return out;}catch(error){console.error('API response validation failed',path,error);throw new ApiFailure('PROTOCOL','服务器返回了不兼容的数据，请刷新页面后恢复连接。',409);}
  }catch(e){if(e instanceof ApiFailure)throw e;if(timedOut)throw new ApiFailure('NETWORK','服务器响应超时，请恢复连接后继续。',0);throw new ApiFailure('NETWORK','连接中断，请恢复连接后继续。',0);}finally{clearTimeout(timer);}
 }
 export async function api<T>(path:string,body?:unknown,resumeLease?:string):Promise<T>{

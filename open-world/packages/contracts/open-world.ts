@@ -65,7 +65,7 @@ export type WorldTierChoice=z.infer<typeof worldTierChoiceSchema>;
 const multiplier=z.number().min(1).finite();
 /** Player-chosen world tier (grind-feel §3, numeric-flow §8): a declared difficulty modifier,
  * never hidden level scaling. Rewards grow slower than threat. */
-export const worldTiersSchema=z.object({source:z.string().min(1),switchAt:z.array(z.enum(['port','outpost'])).min(1),outpostReach:positive,growth:z.object({afterTier:z.number().int().positive(),maxTier:z.number().int().min(5).max(100),name:id,hp:multiplier,attack:multiplier,reward:multiplier}).strict().optional(),tiers:z.array(z.object({tier:z.number().int().min(1).max(100),name:id,
+export const worldTiersSchema=z.object({source:z.string().min(1),switchAt:z.array(z.enum(['port','outpost','stargate'])).min(1),outpostReach:positive,growth:z.object({afterTier:z.number().int().positive(),maxTier:z.number().int().min(5).max(100),name:id,hp:multiplier,attack:multiplier,reward:multiplier}).strict().optional(),tiers:z.array(z.object({tier:z.number().int().min(1).max(100),name:id,
  unlock:z.discriminatedUnion('kind',[z.object({kind:z.literal('default')}).strict(),z.object({kind:z.literal('boss'),value:id,text:z.string().min(1)}).strict(),z.object({kind:z.literal('hardmode'),text:z.string().min(1)}).strict(),z.object({kind:z.literal('hardmode_bosses'),level:z.number().int().positive(),bosses:z.array(id).min(1),text:z.string().min(1)}).strict()]),
  /** 一句话说明：玩家语言，说这档海是什么感觉，不写倍率。 */
  summary:z.string().min(1),

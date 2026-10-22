@@ -1,0 +1,11 @@
+/* U4 星门副本目标行（hub-hud.ts）。放在 #dungeon-hud 顶部，宽度跟随副本 HUD，不另定层级。 */
+.hub-hud-row{display:flex;flex-direction:column;gap:var(--space-1);margin-block:var(--space-1)}
+.hub-hud-main{display:flex;align-items:baseline;gap:var(--space-2);min-width:0;font-size:var(--font-size-body);color:var(--color-text-primary)}
+.hub-hud-text{flex:1 1 auto;min-width:0;font-weight:var(--font-weight-semibold);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hub-hud-progress{margin-left:var(--space-2);font-weight:var(--font-weight-bold);color:var(--color-emphasis);font-variant-numeric:tabular-nums}
+/* 时限、段数、下一波都是等宽数字，切换时不挤动目标文字 */
+.hub-hud-time,.hub-hud-segment,.hub-hud-wave-next{flex:0 0 auto;font-size:var(--font-size-caption);font-variant-numeric:tabular-nums;color:var(--color-text-secondary)}
+.hub-hud-time{min-width:4ch;font-weight:var(--font-weight-bold);color:var(--color-text-primary)}
+.hub-hud-time.is-danger{color:var(--color-danger)}
+.hub-hud-wave-next{color:var(--color-warning);font-weight:var(--font-weight-semibold)}
+.hub-hud-beacon,.hub-hud-opening{min-width:0}

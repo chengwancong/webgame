@@ -9,7 +9,7 @@ export class AppearanceError extends Error{constructor(public code:string,messag
 const bundles=new Map(appearanceContent.bundles.map(b=>[b.id,b]));
 function eligible(s:CharacterState,b:typeof appearanceContent.bundles[number]){
  const condition=b.unlock;
- return condition.type==='starter'||condition.type==='gear'&&s.gear.some(g=>g.base===condition.base)||condition.type==='region'&&s.progress.regions.includes(condition.region)||condition.type==='boss'&&s.progress.bosses.includes(condition.boss);
+ return condition.type==='starter'||condition.type==='gear'&&s.gear.some(g=>g.base===condition.base)||condition.type==='region'&&s.progress.regions.includes(condition.region)||condition.type==='boss'&&s.progress.bosses.includes(condition.boss)||condition.type==='nodeFirstClear'&&Boolean(s.starsea?.seen.includes('hub-node:'+condition.node));
 }
 // Called by additive migration and transaction boundaries. Collection survives
 // later salvage; no resource is unlocked merely because an asset exists.

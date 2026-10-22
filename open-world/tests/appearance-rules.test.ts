@@ -5,6 +5,7 @@ import {appearanceSlots} from '../packages/contracts/appearance.ts';
 import type {CharacterState} from '../packages/contracts/index.ts';
 import {makeGear,resolveBuild} from '../packages/rules/index.ts';
 import {ensureProgression} from '../packages/rules/deep-progression.ts';
+import {newStarseaState} from '../packages/rules/starsea.ts';
 import {ensureAppearance,resolveAppearance,previewAppearance,applyAppearance,appearanceView} from '../packages/rules/appearance.ts';
 function player():CharacterState{
  const gear=[0,1,2,3,4,5].map(i=>makeGear(i,randomUUID()));
@@ -36,12 +37,12 @@ it('rejects incompatible weapon cosmetics and resolves automatic fallback after 
  s.equipment.weapon=s.gear.find(g=>g.base==='blade')!.id;expect(resolveAppearance(s).parts.weapon.setId).toBe('100011');
  delete s.equipment.weapon;expect(resolveAppearance(s)).toMatchObject({family:'fist',parts:{weapon:{setId:'100061'}}});
 });
-it('owns only starters and confirmed equipment or regions, persisting collection after salvage',()=>{
+it('owns only starters and confirmed equipment or node first clears, persisting collection after salvage',()=>{
  const s=player(),view=appearanceView(s);expect(view.catalog.filter(b=>b.owned).length).toBeLessThan(view.catalog.length);
  const collection=appearanceContent.bundles.find(b=>b.unlock.type==='gear'&&b.unlock.base==='charm')!;
  expect(s.appearance!.unlocked).toContain(collection.id);s.gear=s.gear.filter(g=>g.base!=='charm');expect(appearanceView(s).catalog.find(b=>b.id===collection.id)!.owned).toBe(true);
- const region=appearanceContent.bundles.find(b=>b.unlock.type==='region')!;expect(()=>previewAppearance(s,{head:region.id})).toThrow('尚未收集');
- if(region.unlock.type!=='region')throw Error('Test configuration');s.progress.regions.push(region.unlock.region);ensureAppearance(s);expect(()=>previewAppearance(s,{head:region.id})).not.toThrow();
+ const node=appearanceContent.bundles.find(b=>b.unlock.type==='nodeFirstClear')!;expect(()=>previewAppearance(s,{head:node.id})).toThrow('尚未收集');
+ if(node.unlock.type!=='nodeFirstClear')throw Error('Test configuration');s.starsea=newStarseaState();s.starsea.seen.push('hub-node:'+node.unlock.node);ensureAppearance(s);expect(()=>previewAppearance(s,{head:node.id})).not.toThrow();
 });
 
 // 脸固定：穿戴只换衣服/鞋/武器；后发跟脸，背饰跟衣服。

@@ -1,3 +1,4 @@
+import {currentGearCount} from './current-inventory.ts';
 import {randomInt,randomUUID} from 'node:crypto';
 import type {CharacterState,Gear} from '../contracts/index.ts';
 import {versions} from '../contracts/index.ts';
@@ -93,7 +94,7 @@ function validate(s:CharacterState,a:CraftAction,p:Plan,place:CraftPlace){
   for(const[selected,choices]of [[a.slot,r.options.slots],[a.tendency,r.options.tendencies],[a.element,r.options.elements]] as const)need(!selected||choices?.includes(selected),'CRAFT_UNKNOWN',r.unlockHint);
   // 修复是原地重铸开场武器：不占背包，也不受地城阶段上限（只做一次，强度见 tools/spine/repair-weapon-check.ts）。
   if(r.output.repair)need(craftRepairTarget(s)&&p.template,'CRAFT_LOCKED',repairTargetText);
-  else if(r.output.kind==='gear'){need(p.template,'CRAFT_UNKNOWN',r.unlockHint);need(s.gear.length<settings.capacity,'BAG_FULL',craftText.bagFull);need((r.output.level??1)<=(place.maxCraftLevel??0),'CRAFT_STAGE',craftText.stage);}
+  else if(r.output.kind==='gear'){need(p.template,'CRAFT_UNKNOWN',r.unlockHint);need(currentGearCount(s.gear)<settings.capacity,'BAG_FULL',craftText.bagFull);need((r.output.level??1)<=(place.maxCraftLevel??0),'CRAFT_STAGE',craftText.stage);}
  }
  if(a.op==='exchange'){const m=craftMaterials.find(m=>m.id===a.to)!;need(craftIslandOpen(s,m.island),'CRAFT_LOCKED',craftText.exchangeLocked);}
  if(a.op==='masterwork.apply'||a.op==='masterwork.reroll'){

@@ -1,8 +1,9 @@
 import type {Permit,Snapshot} from '../../../packages/contracts/index.ts';
+import {importSnapshotHexCooldowns} from './hex-cooldown-import.ts';
 import {World} from '../../../packages/simulation/index.ts';
 
 /** A renewed permit owns the clock, report cursor and spawn epoch together. */
-export function adoptCombatPermit(current:World,previous:Permit|undefined,permit:Permit,snapshot:Pick<Snapshot,'stats'|'resolvedSkills'|'build'>){
+export function adoptCombatPermit(current:World,previous:Permit|undefined,permit:Permit,snapshot:Pick<Snapshot,'stats'|'resolvedSkills'|'build'|'hexCooldowns'>){
  if(permit.region!==current.region.id||permit.build!==snapshot.build)throw Error('战斗授权与当前构筑不一致，请恢复连接。');
  // A routine renewal must preserve in-flight casts and their paid cooldowns.
  if(previous?.build!==snapshot.build)current.applyBuild(snapshot.stats,snapshot.resolvedSkills);
@@ -11,6 +12,8 @@ export function adoptCombatPermit(current:World,previous:Permit|undefined,permit
   const intent=current.movementIntent(),remaining=(until:number)=>permit.from_tick+Math.max(0,until-current.tick);
   world=new World(current.region,snapshot.stats,snapshot.resolvedSkills,permit.spawns,permit.completed,permit.seed);
   world.tick=permit.from_tick;
+  for(const [key,until] of Object.entries(current.comboReady))if(key.startsWith('hex:'))world.comboReady[key]=remaining(until);
+  importSnapshotHexCooldowns(world,snapshot);
   world.hero={...current.hero,position:{...current.hero.position},shieldUntil:remaining(current.hero.shieldUntil),actionUntil:remaining(current.hero.actionUntil)};
   world.cooldowns=Object.fromEntries(Object.entries(current.cooldowns).map(([id,until])=>[id,remaining(until)]));
   world.heroSlowUntil=remaining(current.heroSlowUntil);world.radius=current.radius;world.avoidElite=current.avoidElite;world.targetPriority=current.targetPriority;world.autoSkills=current.autoSkills;

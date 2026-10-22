@@ -1,24 +1,30 @@
-/* HEX sockets (U-01) under the paperdoll plus the HEX tip art. Character-only; the shared slot primitive is untouched. */
-.hex-slot-row{display:flex;justify-content:center;gap:var(--space-3);padding:var(--space-2) var(--space-4);flex:0 0 auto;border-top:var(--border-width) solid var(--color-border-subtle)}
-.hex-slot-row>.hex-slot{position:relative;display:grid;grid-template-columns:var(--size-icon-slot) minmax(0,1fr);align-items:center;gap:var(--space-2);width:178px;min-height:64px;padding:var(--space-1) var(--space-2);text-align:left;border:var(--border-width) solid var(--color-border);border-radius:var(--radius-slot);background:var(--item-surface,var(--color-panel-raised))}
-.hex-slot-row>.hex-slot:hover:not(:disabled){border-color:var(--quality-color,var(--color-border-strong))}
-.hex-slot-row>.hex-slot[aria-pressed=true]{border-color:var(--color-highlight);box-shadow:inset 0 0 0 var(--border-width) var(--color-highlight)}
-.hex-slot-row>.hex-slot.empty{border-style:dashed;background:var(--color-panel-inset)}
-.hex-slot-row>.hex-slot.is-locked{border-style:dashed;background:var(--color-panel-inset);opacity:.62;cursor:not-allowed}
-.hex-slot-art{display:grid;place-items:center;width:var(--size-icon-slot);height:var(--size-icon-slot)}
-.hex-slot-art>.hex-rune-icon{width:100%;height:100%}
-.hex-slot.empty .hex-slot-art,.hex-slot.is-locked .hex-slot-art{opacity:.45;filter:grayscale(1)}
-.hex-slot-copy{display:flex;flex-direction:column;min-width:0}
-.hex-slot-copy small{position:static;inset:auto;font-size:var(--font-size-micro);color:var(--color-text-secondary);text-align:left}
-.hex-slot-copy b{overflow:hidden;font-size:var(--font-size-caption);font-weight:var(--font-weight-bold);line-height:var(--font-line-heading);white-space:nowrap;text-overflow:ellipsis;color:var(--color-text-primary)}
-.hex-slot.empty .hex-slot-copy b,.hex-slot.is-locked .hex-slot-copy b{font-weight:var(--font-weight-semibold);color:var(--color-text-secondary)}
+/* HEX as a gear affix (d13): tip row, corner badge on paperdoll / bag cells, resonance line. No sockets any more. */
 .equip-tip-art.hex-tip-art{padding:var(--space-1)}
 .hex-tip-art>.hex-rune-icon{width:100%;height:100%}
-/* Inside the paperdoll footer the row sits left of the legacy core entry; the footer grows past its 60px basis to fit 64px sockets. */
-.character-paper-footer:has(>.hex-slot-row){flex-basis:auto}
-.character-paper-footer>.hex-slot-row{padding:0;border-top:0;justify-content:flex-start;min-width:0}
-/* Socket chooser: reuses the character chooser columns; the art cell is the hex icon instead of a gear sprite. */
-.hex-candidate .hex-slot-art{width:40px;height:40px;flex:none}
-.hex-candidate.is-under-level{opacity:.7}
-.hex-chooser-actions{display:flex;align-items:center;gap:var(--space-2);margin-top:var(--space-2)}
-.hex-chooser-hint{margin:0;color:var(--color-text-secondary)}
+/* Tip row under the ordinary affixes: hexagon icon + quality-coloured name + one-line effect; greyed when the server marks it inactive. */
+.equip-tip-hex{margin-top:var(--space-2)}
+.equip-tip-hex-row{display:flex;align-items:flex-start;gap:var(--space-2)}
+.equip-tip-hex-art{flex:none;width:32px;height:32px}
+.equip-tip-hex-art>.hex-rune-icon{width:100%;height:100%}
+.equip-tip-hex-copy{min-width:0}
+.equip-tip-hex-copy b{font-size:var(--font-size-caption);font-weight:var(--font-weight-bold)}
+.equip-tip-hex-copy small{font-size:var(--font-size-micro);font-weight:var(--font-weight-semibold);color:var(--color-text-secondary)}
+.equip-tip-hex-copy p{margin:2px 0 0}
+.equip-tip-hex.is-inactive .equip-tip-hex-row,.equip-tip-header.is-inactive .hex-tip-art{opacity:.55;filter:grayscale(1)}
+.equip-tip-hex.is-inactive .equip-tip-hex-copy b{color:var(--color-text-secondary)}
+.equip-tip-hex .hex-inactive-note{color:var(--color-text-secondary);font-weight:var(--font-weight-semibold)}
+/* Corner badge (SlotMark kind "hex"). */
+.ui-slot-mark--hex{padding:0;background:none;border:0;box-shadow:none}
+/* HEX sits top-right (d13); when another top-right mark (equipped / candidate count) shares the corner, step left of it. */
+.ui-slot-mark--tr:not(.ui-slot-mark--hex)~.ui-slot-mark--hex.ui-slot-mark--tr,.ui-slot-mark--hex.ui-slot-mark--tr:has(~.ui-slot-mark--tr:not(.ui-slot-mark--hex)){right:calc(var(--size-corner-mark) + var(--space-1) + var(--border-width))}
+.ui-slot-mark--hex .hex-badge-icon{display:block;width:calc(var(--size-corner-mark) + 2px);height:calc(var(--size-corner-mark) + 2px);filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}
+.bag-hexbtn .hex-badge-icon{width:100%;height:100%}
+.hex-resonance{margin:0;font-size:var(--font-size-micro);color:var(--color-text-secondary)}
+.hex-playstyle-tag{display:inline-block;padding:0 8px;border:1px solid currentColor;border-radius:999px;font-weight:600;color:var(--accent,#d9b36c)}
+.hex-prereq-missing{color:#e5736a;margin:4px 0 0}
+.hex-flavor{margin:6px 0 0;font-style:italic;opacity:.75}
+.hex-preview ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.hex-preview-row{display:flex;justify-content:space-between;gap:8px}
+.hex-preview-row.is-activate .hex-preview-state{color:var(--color-success,#5fbf6a)}
+.hex-preview-row.is-deactivate{opacity:.7}
+.hex-preview-row.is-deactivate .hex-preview-state,.hex-preview-row.is-unchanged .hex-preview-state{color:var(--color-text-secondary)}

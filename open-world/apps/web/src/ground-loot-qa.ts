@@ -9,8 +9,9 @@ import {loadWorldFont} from './ui/world-text.ts';
 // Read-only visual fixture: the production renderer and artwork, no login or rewards API.
 const definitions=[['blade','苍风之刃','weapon'],['coat','守望轻甲','armor'],['omega-blade','方阵长剑','weapon'],['primal-blade','原初长剑','weapon'],['bow','穿云弓','weapon'],['charm','雷纹护符','accessory'],['core','余烬之心','core'],['shield','回响之核','core'],['omega-bow','方阵林地弓','weapon']] as const;
 const rewards:Reward[]=definitions.map(([base,name,slot],i)=>{
+ const hex=i===8?{rune:'qa-hex',tier:'common' as const}:undefined;
  const x=160+i%5*240,y=270+Math.floor(i/5)*240;
- return {id:'fixture-'+i,source_id:'fixture-'+i,region:'loot-qa',position:{x:x/64+y/36,y:y/36-x/64},gear:{id:'fixture-'+i,base,name,slot,attack:0,armor:0,effect:'none',rank:0,locked:false,quality:'common',affixes:[]}};
+ return {id:'fixture-'+i,source_id:'fixture-'+i,region:'loot-qa',position:{x:x/64+y/36,y:y/36-x/64},gear:{id:'fixture-'+i,base,name,slot,attack:0,armor:0,effect:'none',rank:0,locked:false,quality:'common',affixes:[],...(hex?{hex}:{})}};
 });
 document.body.style.cssText='margin:0;background:'+resolvedToken('Color.PanelInset');
 const heading=document.createElement('p');heading.textContent='地面道具图标 · 正式渲染器只读验收';heading.style.cssText='position:absolute;left:24px;top:8px;color:'+resolvedToken('Color.TextPrimary')+';font-family:'+resolvedToken('Font.Family');document.body.append(heading);

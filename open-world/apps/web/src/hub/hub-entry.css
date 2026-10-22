@@ -1,0 +1,18 @@
+/* 星门 / 航图改造的样式入口：与 ui-entry.css 同一层序，主程序与 hub-review.html 都只引这一个文件。 */
+@layer tokens, legacy, components;
+@import url('./chart-panel.css') layer(components);
+@import url('./port-panel.css') layer(components);
+@import url('./today-panel.css') layer(components);
+@import url('./commission-panel.css') layer(components);
+@import url('./hub-result-block.css') layer(components);
+@import url('./hub-hud.css') layer(components);
+@import url('./hub-return.css') layer(components);
+
+@layer components {
+  /* 港口里隐藏小地图（M15 §3.1：港口是单屏主城，靠 A1 菜单和传送门交互）；presentation.ts 在 #hud 上写 data-hub-port */
+  #hud[data-hub-port="true"] #minimapbox{display:none}
+  /* A1「今日」只亮红点不写数字（hud.css 的 .badge 尺寸改成小圆点） */
+  #sysbar .entry .badge.dot{min-width:var(--space-3);width:var(--space-3);height:var(--space-3);padding:0}
+  /* 加载中 / 出错 / 未开放的整页状态 */
+  .hub-state-panel{width:480px;max-height:none;display:flex;flex-direction:column;gap:var(--space-3);overflow:hidden}
+}

@@ -1,3 +1,4 @@
+import {buildHubDungeonDefinitions} from './hub-dungeon-templates.ts';
 import {augmentPolicySchema} from '../contracts/run-augments.ts';
 import {dungeonAugmentPublicSchema as augmentPublic,dungeonAugmentExtraSchema as augmentExtra} from './dungeon-augments.ts';
 import {z} from 'zod';
@@ -54,6 +55,7 @@ export function resolveDungeonContent(raw:unknown):{definitions:DungeonDefinitio
  const visit=(id:string,path:Set<string>)=>{if(path.has(id))throw Error('Cyclic dungeon prerequisites '+id);const next=new Set([...path,id]);for(const required of definitions.find(d=>d.id===id)!.requires)visit(required,next);};for(const d of definitions)visit(d.id,new Set());
  return {definitions,runtime:content.runtime,version:content.version};
 }
-export const dungeonContent=resolveDungeonContent(source);
+const legacyDungeonContent=resolveDungeonContent(source);
+export const dungeonContent={...legacyDungeonContent,definitions:buildHubDungeonDefinitions(legacyDungeonContent.definitions)};
 
 export {dungeonAugmentPolicy,dungeonAugmentExtra,resolveRunAugmentPolicy} from './dungeon-augments.ts';

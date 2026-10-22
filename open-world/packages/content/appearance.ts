@@ -15,6 +15,7 @@ const unlock=z.discriminatedUnion('type',[
  z.object({type:z.literal('gear'),base:id}).strict(),
  z.object({type:z.literal('region'),region:id}).strict(),
  z.object({type:z.literal('boss'),boss:id}).strict(),
+ z.object({type:z.literal('nodeFirstClear'),node:id}).strict(),
 ]);
 export const appearanceConfigSchema=z.object({version:z.number().int().positive(),defaultSet:id,fallbackFamily:z.enum(weaponFamilies),defaultWeaponSets:z.record(z.enum(weaponFamilies),id),bundles:z.array(z.object({id,back:z.enum(['hair','gear','none']),name:z.string().min(1),slots:z.array(appearanceSlotSchema).min(1),weaponFamilies:z.array(z.enum(weaponFamilies)).min(1),unlock,unlockHint:z.string().min(1)}).strict()).min(1),equipment:z.record(id,z.object({family:z.enum(weaponFamilies).optional(),setId:id}).strict())}).strict().superRefine((value,ctx)=>{
  const sets=new Map(value.bundles.map(b=>[b.id,b]));
@@ -32,6 +33,7 @@ export const appearanceConfigSchema=z.object({version:z.number().int().positive(
   if(b.unlock.type==='region'&&!regionIds.has(b.unlock.region))add('Unknown unlock region: '+b.id);
   const requirement=b.unlock;
   if(requirement.type==='boss'&&!regions.some(r=>r.boss&&r.id===requirement.boss))add('Unknown unlock boss: '+b.id);
+  if(requirement.type==='nodeFirstClear'&&!/^(wind|mist|forge|frost|rift|dragon)-gate$/.test(requirement.node))add('Unknown unlock node: '+b.id);
  }
  for(const [base,mapping] of Object.entries(value.equipment)){
   if(!bases.has(base))add('Unknown equipment appearance mapping: '+base);

@@ -8,7 +8,8 @@ import {skillSchema,type Stats} from '../packages/contracts/index.ts';
 import {regionById} from '../packages/content/index.ts';
 import {describeAspectRule} from '../packages/content/aspect-description.ts';
 import {hexRuneById,publicHexRunes} from '../packages/content/hex-runes.ts';
-import {makeHexGear,collectHexRules,equipHex} from '../packages/rules/hex-runes.ts';
+import {collectHexRules} from '../packages/rules/hex-runes.ts';
+import {makeGear} from '../packages/rules/index.ts';
 import type {CharacterState} from '../packages/contracts/index.ts';
 const skills=['basic','spell'].map(id=>skillSchema.parse({id,name:id,description:'controlled',kind:'single',damage:100,range:4,radius:0,cooldown:1,cost:0,windup:0,duration:1,mechanics:{damageType:'physical',targeting:'enemy',statuses:[]}}));
 const rule=(extra:object={})=>effectRuleSchema.parse({id:'hex-first-test',source:'gear-first',name:'controlled',description:'controlled',trigger:'hit',chance:1,icd:0,action:{type:'heal',ratio:.1,ref:'maxHp'},vfxKey:'hex/first',...extra});
@@ -76,15 +77,15 @@ it('unequipping removes HEX buffs/owned fields immediately but preserves ICD and
 });
 it.each(['common','magic'] as const)('formal %s movement and control pair keeps exact parameters and only applies the D11 ten-percent resonance',q=>{
  const s:CharacterState={id:'qa-first',name:'controlled',revision:0,build:1,level:30,xp:0,gold:0,material:0,gear:[],equipment:{},skills:[],skillRanks:{},progress:{kills:0,regions:['town'],bosses:[],safe:'town',tasks:[]}};
- for(const [i,id] of ['hex-footfall-heal','hex-control-to-shield'].entries()){const g=makeHexGear(id,q,randomUUID());s.gear.push(g);equipHex(s,g.id,i?'hex2':'hex1');}
+ for(const [i,id] of ['hex-footfall-heal','hex-control-to-shield'].entries()){const g=makeGear(i?2:0,randomUUID());g.quality=q;g.origin={kind:'random'};g.requiredLevel=20;g.hex={rune:id,tier:q};s.gear.push(g);s.equipment[g.slot]=g.id;}
  const rules=collectHexRules(s),w=fixture(rules),move=rules[0],shield=rules[1];
  expect(move.action.type).toBe('heal');
  if(move.action.type!=='heal')throw Error('Expected formal healing action');
- expect(move.action.ratio).toBeCloseTo(.011,15); // IEEE-754 multiplication; actual restored HP below remains exact.
+ expect(move.action.ratio).toBeCloseTo(.0055,15); // D13 half-scale plus one resonance; actual restored HP remains exact.
  expect(shield.action.type).toBe('shield');
- hit(w);w.effectMoved=q==='common'?10:9;w.step();expect(w.hero.hp).toBe(111);
+ hit(w);w.step();w.effectMoved=q==='common'?10:9;w.step();expect(w.hero.hp).toBe(106);
  w.applyStatus(w.enemies[0].id,{kind:'root',duration:90,strength:0,scope:'hit',cleanse:true},w.playerId,'spell',w.skills[1]);
- expect(w.hero.shield).toBe(q==='common'?55:66);
+ expect(w.hero.shield).toBe(q==='common'?28:33);
  expect(w.hero.shieldUntil-w.tick).toBe(240);
  w.hero.shield=0;w.tick+=10;
  w.applyStatus(w.enemies[1].id,{kind:'stun',duration:90,strength:0,scope:'hit',cleanse:true},w.playerId,'spell',w.skills[1]);
@@ -92,14 +93,20 @@ it.each(['common','magic'] as const)('formal %s movement and control pair keeps 
  const restored=World.restore(JSON.parse(JSON.stringify(w.exportCheckpoint())));
  expect(restored.exportCheckpoint()).toEqual(w.exportCheckpoint());
 });
-it('publishes only two tiers for new entries, preserves existing high-quality items, and rejects unreleased issuance',()=>{
+it('publishes only two tiers for new entries and preserves existing high-quality catalogue definitions',()=>{
  for(const id of ['hex-footfall-heal','hex-control-to-shield','hex-cast-hit-relay']){
   const publicRune=publicHexRunes.find(r=>r.id===id)!;
   expect(Object.keys(publicRune.tiers)).toEqual(['common','magic']);expect(publicRune.playstyle).toBeTruthy();expect(publicRune.flavor).toBeTruthy();
-  expect(()=>makeHexGear(id,'rare','invalid')).toThrow('尚未开放');
+  expect(hexRuneById.get(id)!.tiers.rare).toBeUndefined();
  }
- expect(makeHexGear('hex-aftershock','legendary',randomUUID()).requiredLevel).toBe(25);
+ expect(hexRuneById.get('hex-aftershock')!.tiers.legendary!.requiredLevel).toBe(25);
  expect(hexRuneById.get('hex-aftershock')!.tiers.common.rules[0].countScope).toBe('target');
+});
+it('formal movement healing advances from real movement input before combat, not a fabricated distance counter',()=>{
+ const w=fixture(hexRuneById.get('hex-footfall-heal')!.tiers.magic.rules);
+ w.control(0,1);for(let i=0;i<310;i++)w.step();
+ expect(w.effectMoved).toBeGreaterThanOrEqual(9);expect(w.hero.hp).toBe(105);
+ expect(w.effectStats['hex-footfall-heal-magic']?.count).toBe(1);expect(w.hexCombat).toBeUndefined();
 });
 it('neutral marks are owner-bound, expire, survive reconnect and consume exactly once before a follow-up cooldown operation',()=>{
  const mark=rule({id:'hex-mark-create',source:'own',filter:{attackSources:['cast']},action:{type:'mark',key:'relay',duration:150}});
@@ -122,29 +129,31 @@ it('keeps one mechanism ICD across quality and item swaps, including reconnect',
  const common=hexRuneById.get('hex-control-to-shield')!.tiers.common.rules[0],magic=hexRuneById.get('hex-control-to-shield')!.tiers.magic.rules[0];
  const w=fixture([{...common,source:'gear-1'}]);
  w.applyStatus(w.enemies[0].id,{kind:'stun',duration:10,strength:0,scope:'hit',cleanse:true},w.playerId,'spell',w.skills[1]);
- expect(w.hero.shield).toBe(50);w.hero.shield=0;w.tick=10;
+ expect(w.hero.shield).toBe(25);w.hero.shield=0;w.tick=10;
  replaceCombatBuild(w,{stats:{...w.stats,rules:[{...magic,source:'gear-2'}]},skills:w.skills});
  const restored=World.restore(JSON.parse(JSON.stringify(w.exportCheckpoint())));
  for(const run of [w,restored]){
   run.applyStatus(run.enemies[1].id,{kind:'root',duration:10,strength:0,scope:'hit',cleanse:true},run.playerId,'spell',run.skills[1]);
   expect(run.hero.shield).toBe(0);run.tick=60;
   run.applyStatus(run.enemies[0].id,{kind:'root',duration:10,strength:0,scope:'hit',cleanse:true},run.playerId,'spell',run.skills[1]);
-  expect(run.hero.shield).toBe(60);
+  expect(run.hero.shield).toBe(30);
  }
  expect(restored.exportCheckpoint()).toEqual(w.exportCheckpoint());
 });
 it.each(['common','magic'] as const)('executes formal relay %s bonuses without changing base damage or consuming on the other class',q=>{
  const rules=hexRuneById.get('hex-cast-hit-relay')!.tiers[q].rules,w=fixture(rules);
  expect(w.cast('spell',w.enemies[0])).toBe(true);w.step();expect(hit(w,1)).toBe(100);
- expect(hit(w)).toBe(q==='common'?130:140);
+ expect(hit(w)).toBe(q==='common'?115:120);
  w.tick=30;expect(w.cast('spell',w.enemies[0])).toBe(true);
- const before=w.enemies[0].hp;w.step();expect(before-w.enemies[0].hp).toBe(q==='common'?120:125);
+ const before=w.enemies[0].hp;w.step();expect(before-w.enemies[0].hp).toBe(q==='common'?110:113);
 });
 it.each(['common','magic'] as const)('formal D12 mark %s uses shadow damage, a neutral mark, and one cooldown refund',q=>{
  const w=fixture(hexRuneById.get('hex-mark-relay')!.tiers[q].rules);
- w.cooldowns.basic=1000;w.cooldowns.spell=1000;
+ // A real 1000-frame cooldown, not a 1-frame skill with a forged deadline.
+ // The unchanged 15-frame refund is below D10's 40% per-cast ceiling.
+ for(const skill of w.skills){skill.cooldown=1000;(w as any).spendCooldown(skill);}
  hit(w,1);expect(w.effectMarks).toHaveLength(1);
- expect(hit(w)).toBe(q==='common'?140:150);
+ expect(hit(w)).toBe(q==='common'?120:125);
  expect(w.cooldowns.basic+w.cooldowns.spell).toBe(1985);
  expect(w.events.find(e=>e.ruleId?.endsWith('-consume')&&e.type==='hit_resolved')?.damageType).toBe('shadow');
  expect(hit(w)).toBe(100);expect(w.cooldowns.basic+w.cooldowns.spell).toBe(1985);
@@ -154,7 +163,7 @@ it.each(['common','magic'] as const)('formal D12 rift %s stays at its initial po
  for(const e of w.enemies)w.applyStatus(e.id,{kind:'root',duration:1000,strength:0,scope:'hit',cleanse:true},'fixture');
  hit(w);w.tick=299;const before=w.enemies[0].hp;w.step();
  expect(w.zones).toHaveLength(1);const origin={...w.zones[0].position};
- const amount=q==='common'?25:30;expect(before-w.enemies[0].hp).toBe(amount);
+ const amount=q==='common'?13:15;expect(before-w.enemies[0].hp).toBe(amount);
  w.hero.position={x:5,y:5};
  for(let i=0;i<15;i++)w.step();expect(before-w.enemies[0].hp).toBe(amount);expect(w.zones[0].position).toEqual(origin);
  for(let i=0;i<15;i++)w.step();expect(before-w.enemies[0].hp).toBe(amount*2);
@@ -167,7 +176,7 @@ it.each(['common','magic'] as const)('formal D12 bees %s travel, ignore interven
  hit(w,1);const before=w.enemies.map(e=>e.hp),count=q==='common'?3:4;expect(w.projectiles).toHaveLength(count);
  const restored=World.restore(JSON.parse(JSON.stringify(w.exportCheckpoint())));
  for(let i=0;i<30;i++){w.step();restored.step();}
- expect(before[0]-w.enemies[0].hp).toBe(20*count);expect(w.enemies[1].hp).toBe(before[1]);
+ expect(before[0]-w.enemies[0].hp).toBe(10*count);expect(w.enemies[1].hp).toBe(before[1]);
  expect(w.statuses.find(s=>s.targetId===w.enemies[0].id&&s.effect.kind==='slow')?.effect).toMatchObject({strength:.2,duration:45});
  expect(restored.exportCheckpoint()).toEqual(w.exportCheckpoint());
 });
@@ -180,6 +189,6 @@ it('D12 bees retarget after death, disappear without targets, and cannot survive
   const before=w.enemies[1].hp;
   for(let i=0;i<30;i++)w.step();
   expect(w.projectiles).toHaveLength(0);
-  expect(before-w.enemies[1].hp).toBe(mode==='retarget'?60:0);
+  expect(before-w.enemies[1].hp).toBe(mode==='retarget'?30:0);
  }
 });
