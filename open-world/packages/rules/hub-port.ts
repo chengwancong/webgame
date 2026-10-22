@@ -12,7 +12,9 @@ export const hubTierClaimed=(s:CharacterState,building:HubBuildingId,tier:number
 export const hubFleetLimit=(s:CharacterState)=>1+Number(hubTierClaimed(s,'shipyard',1))+Number(hubTierClaimed(s,'shipyard',3));
 export const hubCommissionSlots=(s:CharacterState)=>hubTierClaimed(s,'post',2)?5:4;
 export const hubAugmentRerolls=(s:CharacterState)=>Number(hubTierClaimed(s,'shipyard',2));
-export const hubDockOpen=(h:HubState)=>Boolean(h.chart.cleared['mist-story-1']);
+// 功能开放只看玩到哪，不挂剧情任务（2026-10-22 任务引导降级）：工坊首次回港即开，码头击败风栖关口后开。
+export const hubForgeOpen=(h:HubState)=>Object.keys(h.chart.cleared).length>0;
+export const hubDockOpen=(h:HubState)=>Boolean(h.chart.cleared['wind-gate']);
 export const hubCommissionsOpen=(h:HubState)=>Boolean(h.chart.cleared['mist-gate']);
 export function addHubReputation(h:HubState,building:HubBuildingId,amount:number){requireHub(Number.isSafeInteger(amount)&&amount>=0,'HUB_REP','港口声望数值不合法。');h.port.rep[building]+=amount;}
 function rewards(building:HubBuildingId,tier:number){
@@ -24,8 +26,8 @@ function rewards(building:HubBuildingId,tier:number){
 }
 export function hubPortView(s:CharacterState,h:HubState):HubPortView{
  return {buildings:hubBuildings.map(b=>({...b,rep:h.port.rep[b.id],tiers:progressionConfig.reputationThresholds.slice(1).map((threshold,i)=>{const tier=i+1,claimed=hubTierClaimed(s,b.id,tier);return {tier,threshold,rewards:rewards(b.id,tier),claimed,claimable:!claimed&&h.port.rep[b.id]>=threshold};})})),collectibles:{lifeCrystal:{owned:Math.min(12,ownedCrystalSources(s,'life').length),total:12},starCore:{owned:Math.min(6,ownedCrystalSources(s,'core').length),total:6}},systems:[
-  {id:'forge',name:'工坊强化',open:Boolean(h.chart.cleared['wind-story-1']),...(!h.chart.cleared['wind-story-1']?{lockReason:'先通关 风栖 · 剧情 1'}:{})},
-  {id:'dock',name:'码头派遣',open:hubDockOpen(h),...(!hubDockOpen(h)?{lockReason:'先通关 雾铃 · 剧情 1'}:{})},
+  {id:'forge',name:'工坊强化',open:hubForgeOpen(h),...(!hubForgeOpen(h)?{lockReason:'从星门打完第一个节点回港后开放'}:{})},
+  {id:'dock',name:'码头派遣',open:hubDockOpen(h),...(!hubDockOpen(h)?{lockReason:'击败风栖关口首领后开放'}:{})},
   {id:'commissions',name:'委托板',open:hubCommissionsOpen(h),...(!hubCommissionsOpen(h)?{lockReason:'先通关 雾铃 · 关口首领'}:{})},
   ...(['grid','summons','aspects'] as const).map(id=>({id,name:{grid:'武器盘与突破',summons:'召唤石',aspects:'威能'}[id],open:storyFeatureUnlocked(s,id),...(!storyFeatureUnlocked(s,id)?{lockReason:storyFeatureReason(s,id)}:{})})),
   {id:'character',name:'角色突破',open:true},{id:'paragon',name:'巅峰等级',open:s.level>=50,...(s.level<50?{lockReason:'角色达到 50 级开放'}:{})},

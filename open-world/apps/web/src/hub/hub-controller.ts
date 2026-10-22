@@ -258,7 +258,8 @@ export class HubController {
   /**
    * 回到拾星港后调用：读今日视图里的 returnQueue，有可播放的条目就打开 hub-return 面板逐条播放。
    * after = 播完要打开的面板（结算页「下一节点」回到航图）；不传时若别的面板正开着就不打断，等下次回港再播（服务端会保留队列）。
-   * 对白表里查不到台词的对白条目不显示，直接确认出队。返回是否打开了队列面板。
+   * 对白条目（kind='dialogue'）HUB 模式降级：不打开多句对白窗口，直接确认出队（奖励链不变），
+   * 有台词时最多弹一行轻 toast（说话人：第一句，截断）。unlock / settlement 条目保持原有面板流程。
    */
   async showReturnQueue(after = ''): Promise<boolean> {
     if (this.off('today')) return false;
@@ -267,9 +268,17 @@ export class HubController {
     const queue = this.slots.today.view?.returnQueue ?? [];
     const items: {item: HubReturnItem; lines: ReturnLine[]}[] = [];
     for (const item of queue) {
-      const lines = item.kind === 'dialogue' ? returnLines(item.dialogueId, this.deps.playerName?.()) : [];
-      if (item.kind === 'dialogue' && !lines.length) { void postReturnAck(item.kind, returnAckId(item)); continue; }
-      items.push({item, lines});
+      if (item.kind === 'dialogue') {
+        // HUB 降级：对白不开窗口，直接 ack；有台词时显示一行 toast。
+        const lines = returnLines(item.dialogueId, this.deps.playerName?.());
+        if (lines.length) {
+          const first = lines[0];
+          this.deps.notice((first.speaker ? first.speaker + '：' : '') + first.text);
+        }
+        void postReturnAck(item.kind, returnAckId(item));
+        continue;
+      }
+      items.push({item, lines: []});
     }
     if (items.length < queue.length) this.slots.today.stale = true;
     const panel = this.deps.panel?.() ?? '';

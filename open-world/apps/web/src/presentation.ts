@@ -256,7 +256,7 @@ export function updateHud(h:PresentationModel) {
     s.textContent = `护盾 ${Math.ceil(i.hero.shield)}`, s.style.visibility = i.hero.shield > 0 ? "visible" : "hidden";
     const context=hudContext(i.region,Boolean(h.dungeonRunning),['battle-result','dungeon-result'].includes(h.panel));
     t.dataset.context=context;
-    const f=$('#tracker');f.setAttribute('aria-label','任务追踪');setHudMarkup(f,questTrackerHtml(h.taskData,trackerGoals(e)));
+    const f=$('#tracker');f.setAttribute('aria-label','任务追踪');{const hubMode=Boolean(h.hubPortalReady&&h.world.region.id===starseaHub);f.dataset.collapsed=hubMode&&!h.trackerOpen?'1':'';const inner=questTrackerHtml(h.taskData,trackerGoals(e));setHudMarkup(f,hubMode?`<button type="button" class="tracker-chip" data-action="tracker-toggle" aria-expanded="${h.trackerOpen}" aria-controls="tracker-body">任务</button>${h.trackerOpen?`<div id="tracker-body">${inner}</div>`:'<div id="tracker-body" hidden></div>'}`:`<div id="tracker-body">${inner}</div>`);}
     if(lastRegionId!==i.region.id){lastRegionId=i.region.id;$('#zoneBanner').innerHTML=`<div class="zone-banner"><h1>${esc(i.region.name)}</h1><small>${esc(i.region.subtitle)}</small></div>`;}
     const T = i.enemies.find(P => P.boss && P.alive);
     $("#bossBox").innerHTML = T ? `<div class="bossbar plate"><div class="head"><b>${esc(T.name)}</b> <span class="num small">${Math.ceil(T.hp)} / ${T.maxHp}</span></div><div class="meter"><i style="transform:scaleX(${Math.max(0, T.hp / T.maxHp)})"></i></div></div>` : "";

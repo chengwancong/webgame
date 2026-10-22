@@ -70,9 +70,9 @@ export function buildHubDungeonDefinitions(base:DungeonDefinition[]):DungeonDefi
     if(!originals.length)throw Error('Missing hub story steps '+node);
     const all:HubStoryStep[]=[];
     for(const taskId of [...new Set(originals.map(s=>s.task))]){const task=tasks.find(t=>t.id===taskId);if(!task)throw Error('Missing story task '+taskId);const group=originals.filter(s=>s.task===taskId),accept=dialogueLines(task.dialog_accept??''),complete=dialogueLines(task.dialog_complete??'');
-     if(accept.length)all.push({task:taskId,seq:0,op:'talk',key:'intro',label:task.goal,npc:task.giver,landmark:group[0].landmark,dialogueGroup:task.dialog_accept,dialogue:accept});
-     all.push(...group);
-     if(complete.length)all.push({task:taskId,seq:999,op:'talk',key:'complete-dialogue',label:task.title,npc:task.giver,landmark:group.at(-1)?.landmark,dialogueGroup:task.dialog_complete,dialogue:complete});
+     // 任务引导降级（2026-10-22）：不再插入「找 NPC 按 E」的接取/交付对白步骤；接取对白只取一行，挂在本任务第一步上显示。
+     void complete;const steps=structuredClone(group);if(accept.length){steps[0].dialogueGroup=task.dialog_accept;steps[0].dialogue=accept.slice(0,1);}
+     all.push(...steps);
     }
     const parts:HubStorySegment[]=[];
     for(const part of storyChunks(all,regionById(island))){const id='hub-map-'+node+'-'+(parts.length+1);if(!regions.some(r=>r.id===id))registerDungeonRegion(cropHubStoryRegion(regionById(island),id,part,level),island);parts.push({steps:structuredClone(part),region:id});}

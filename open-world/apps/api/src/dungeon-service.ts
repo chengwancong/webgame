@@ -112,7 +112,7 @@ export class DungeonService{
   const p=hubGatherPoints(w,s.definition,s.stage).find(x=>x.id===id),hero=w.players.get(player);
   if(!p||!hero?.active||hero.hero.hp<=0||distance(hero.hero.position,p)>2)this.ctx.fail('HUB_GATHER','请靠近当前段的采集点。');
   if(h.gathered.includes(id))return;
-  const character=await this.character(c,player),progress=await readHubState(c,player);if(!hubDockOpen(progress))this.ctx.fail('HUB_GATHER_LOCKED','雾铃剧情一通关后开放采集。');
+  const character=await this.character(c,player),progress=await readHubState(c,player);if(!hubDockOpen(progress))this.ctx.fail('HUB_GATHER_LOCKED','击败风栖关口首领后开放采集。');
   ensureProgression(character);const material=craftMaterials.find(m=>m.id===p.material)!,before=character.progression!.materials[p.material]??0,amount=Math.min(material.stack-before,randomInt(craftGathering.min,craftGathering.max+1)+Math.floor(ensureCrafting(character).professions.gathering.level/craftGathering.bonusEvery));if(amount<=0)this.ctx.fail('CRAFT_MATERIAL','材料堆叠已满。');character.progression!.materials[p.material]=before+amount;h.gathered.push(id);h.gatherAmounts??={};h.gatherAmounts[p.material]=(h.gatherAmounts[p.material]??0)+amount;const profession=craftingXp(character,'gathering',craftGathering.xp);
   const delta={gold:0,xp:0,material:0,materials:{[p.material]:amount},professions:{gathering:profession},node:{id,gathered:true as const}};this.accrue(this.member(s,player),delta);await this.changeCharacter(c,character,s,'gather:'+id,delta);
  }

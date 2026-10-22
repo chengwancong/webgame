@@ -4,7 +4,7 @@ import {craftRecipes,craftMaterialById} from '../content/crafting.ts';
 import {progressionConfig} from '../content/deep-progression.ts';
 import {ensureProgression} from './deep-progression.ts';
 import {craftIslandOpen,craftRecipeKnown} from './crafting.ts';
-import {addHubReputation} from './hub-port.ts';
+import {addHubReputation,hubForgeOpen} from './hub-port.ts';
 import {requireHub,HubOutsideError,type HubState} from './hub-state.ts';
 import {resolveBuild} from './index.ts';
 
@@ -15,7 +15,7 @@ export type HubPortEconomy={
  recipeOffers?:Record<string,{tier:number;gold?:number;material?:number}>;
 };
 function atPort(s:CharacterState,h:HubState){
- requireHub(!s.dungeon?.instance,'BUILD_LOCKED','请先结束当前副本。');requireHub(s.starsea?.location?.map==='ss-map-port','HUB_PLACE','请回到拾星港工坊办理。');requireHub(Boolean(h.chart.cleared['wind-story-1']),'HUB_FORGE_LOCKED','先通关 风栖 · 剧情 1，开放工坊。');
+ requireHub(!s.dungeon?.instance,'BUILD_LOCKED','请先结束当前副本。');requireHub(s.starsea?.location?.map==='ss-map-port','HUB_PLACE','请回到拾星港工坊办理。');requireHub(hubForgeOpen(h),'HUB_FORGE_LOCKED','从星门打完第一个节点回港后开放工坊。');
 }
 /** Root routes the existing reputation.donate command here inside write().
  * target=forge, value=server-authored offer ID, no arbitrary client-priced quantity. */

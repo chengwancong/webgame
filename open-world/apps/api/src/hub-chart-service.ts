@@ -12,7 +12,7 @@ import {hubDay,requireHub,HubOutsideError,type HubState} from '../../../packages
 import {applySkillRecovery} from '../../../packages/rules/skill-recovery.ts';
 import {applyXp,ensureProgression} from '../../../packages/rules/index.ts';
 import {crystalSources,ownedCrystalSources} from '../../../packages/rules/crystal-progress.ts';
-import {addHubReputation} from '../../../packages/rules/hub-port.ts';
+import {addHubReputation,hubForgeOpen} from '../../../packages/rules/hub-port.ts';
 import {countHubCommissionNodeClear} from '../../../packages/rules/hub-commissions.ts';
 import {readHubState,saveHubState} from './hub-state.ts';
 import {transaction} from './database.ts';
@@ -92,7 +92,7 @@ export async function settleHubNode(c:PoolClient,s:CharacterState,input:{nodeId:
  // D4 freezes only additional rewards before B4. Existing kill rewards remain payable in pending runs.
  const multiplier=applied?2:1,paid=entry.rows[0].data.alreadyPaid??{gold:0,xp:0,material:0};for(const key of ['gold','xp','material'] as const)requireHub(Number.isSafeInteger(paid[key])&&paid[key]>=0&&(!budgetReady||paid[key]<=reward[key]),'HUB_REWARD_BUDGET','本场已发收益与冻结预算不符。');if(budgetReady){s.gold+=reward.gold*multiplier-paid.gold;s.material+=reward.material*multiplier-paid.material;applyXp(s,reward.xp*multiplier-paid.xp);}addHubReputation(h,'shipyard',reward.rep);const shardCount=reward.shards+Number((entry.rows[0].data.shardRoll??randomInt(4294967296)/4294967296)<(reward.shardChance??0));if(shardCount){const pool:string[]=entry.rows[0].data.shardPool??hubChartContent.shards.map(x=>x.id),offset=(entry.rows[0].data.shardOffset??randomInt(Math.max(1,pool.length)))%pool.length;for(let i=0;i<shardCount;i++){const shard=pool[(offset+i)%pool.length];h.chart.shards[shard]=(h.chart.shards[shard]??0)+1;}}
  if(Object.keys(h.chart.cleared).filter(id=>id.startsWith('wind-nest-')).length>=2){const g=recordHubFact(s,'hub-gate:wind-nests',now);s.gold+=g.gold;applyXp(s,g.xp);archiveQuestCompletions(s,g.completed,input.instanceId,new Date(now).toISOString());}
- if(st&&h.chart.cleared['wind-story-1']&&!st.features.includes('forge'))st.features.push('forge');
+ if(st&&hubForgeOpen(h)&&!st.features.includes('forge'))st.features.push('forge');
  countHubCommissionNodeClear(h,node.id,input.instanceId,reward.xp);const unlock=queueHubUnlocks(s,h).find(i=>i.kind==='unlock'),next=hubRecommended(s,h),shards=input.shards??entry.rows[0].data.shards??[];const retryReason=currentGearCount(s.gear)>=settings.capacity?'先回港整理':shards.some((id:string)=>(h.chart.shards[id]??0)<shards.filter((x:string)=>x===id).length)?'残页不足':undefined;
  const response:HubSettlement={nodeId:node.id,firstClear,firstClearRewards:rewards,dailyBonus:{applied,used:h.chart.daily.nodes.length,limit:HUB_DAILY_FIRST_CLEAR_LIMIT},collectibles,rep:[{building:'shipyard',delta:reward.rep},...(sideRep?[{building:'post' as const,delta:sideRep}]:[])],...(unlock?.kind==='unlock'?{unlock:{id:unlock.id,title:unlock.title,text:unlock.text}}:{}),retry:{allowed:!retryReason,...(retryReason?{reason:retryReason}:{})},...(next?{next:{nodeId:next.id,name:next.name}}:{})};
  await saveHubState(c,s.id,h);await c.query('INSERT INTO ow_hub_node_settlements(character,instance,response) VALUES($1,$2,$3)',[s.id,input.instanceId,response]);return response;

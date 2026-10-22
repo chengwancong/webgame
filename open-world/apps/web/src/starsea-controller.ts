@@ -284,7 +284,10 @@ export class StarseaController{
  guide(){const g:{x:number;y:number;label:string;arrow?:boolean;distance?:number}|undefined=this.rawGuide();if(!g||g.arrow!==undefined)return g;const p=this.phaseOf(g,g.label);return {...g,arrow:p.arrow,distance:p.distance};}
  private rawGuide(){
   const scene=this.sceneGuide();if(scene)return scene;
-  const v=this.view,step=this.waveStep??v?.step,r=this.deps.world().region;if(!v||!isStarseaRegion(r.id))return undefined;if(!step){const near=v.recommend;if(!near)return;return near.map===r.id&&near.point?{...near.point,label:near.label}:undefined;}
+  const v=this.view,step=this.waveStep??v?.step,r=this.deps.world().region;if(!v||!isStarseaRegion(r.id))return undefined;
+  // 港口/HUB 模式：不返回任务驱动目标，避免把任务箭头保留在拾星港场景
+  if(r.id===starseaHub)return undefined;
+  if(!step){const near=v.recommend;if(!near)return;return near.map===r.id&&near.point?{...near.point,label:near.label}:undefined;}
   if(step.map===r.id){const p=step===this.waveStep?step.points[0]:this.target();if(!p)return undefined;const d=step.defense&&this.defending?this.deps.world().defense:null;
    if(d&&!d.failed&&d.heldTicks>=d.requiredTicks){const w=this.deps.world(),foe=w.enemies.filter(e=>e.alive&&d.enemyIds.includes(e.id)).sort((a,b)=>distance(a.position,w.hero.position)-distance(b.position,w.hero.position))[0];if(foe)return {x:Math.round(foe.position.x),y:Math.round(foe.position.y),label:'袭击者'};}
    const label=step.op==='choose'?'分岔口 · 选路':step.op==='talk'?p.label:step.op==='wave'?(step.defense?thing(p):'战斗区域'):step.op==='boss'?step.label:authored(step)??verb(p)+thing(p);return {x:p.x,y:p.y,label};}

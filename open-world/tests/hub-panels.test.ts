@@ -770,26 +770,25 @@ describe('回港队列', () => {
     expect(returnItemHtml({item: queue[2], lines, line: 1, left: 1})).toContain('知道了');
   });
 
-  it('逐条播放、逐条 ack；查不到台词的对白直接出队；播完打开 after 面板', async () => {
+  it('对白条目 HUB 降级：直接 ack + toast，不开对白窗口；unlock/away 仍走面板；播完打开 after 面板', async () => {
     serve(undefined, {'hub/today': fixtureToday({returnQueue: queue})});
     let panel = '';
     const {ctrl, deps} = makeController();
     deps.panel.mockImplementation(() => panel);
     deps.open.mockImplementation((p: string) => { panel = p; });
     await expect(ctrl.showReturnQueue('hub-chart')).resolves.toBe(true);
+    // 两条 dialogue 均立即 ack（无台词的 + 有台词的）
+    expect(acks()).toContainEqual(['dialogue', '没有这组对白']);
+    expect(acks()).toContainEqual(['dialogue', 'hub:first-return:1']);
+    // 有台词的对白显示 toast
+    expect(deps.notice).toHaveBeenCalledWith(expect.stringContaining('铜铃'));
+    // 面板队列只剩 unlock + away
     expect(panel).toBe('hub-return');
-    expect(acks()).toEqual([['dialogue', '没有这组对白']]);
     expect(ctrl.returnView?.item.kind).toBe('unlock');
-    expect(ctrl.returnView?.left).toBe(3);
+    expect(ctrl.returnView?.left).toBe(2);
 
     await ctrl.handle('hub-return-next', '', 'hub-return');
     expect(acks()).toContainEqual(['unlock', 'unlock:forge']);
-    expect(ctrl.returnView?.item.kind).toBe('dialogue');
-    const lineCount = ctrl.returnView!.lines.length;
-    for (let i = 1; i < lineCount; i++) { expect(ctrl.escapeStep('hub-return')).toBe(true); expect(ctrl.returnView?.line).toBe(i); }
-    expect(acks()).not.toContainEqual(['dialogue', 'hub:first-return:1']);
-    expect(ctrl.escapeStep('hub-return')).toBe(true);
-    expect(acks()).toContainEqual(['dialogue', 'hub:first-return:1']);
     expect(ctrl.returnView?.item.kind).toBe('away');
 
     await ctrl.handle('hub-return-next', '', 'hub-return');

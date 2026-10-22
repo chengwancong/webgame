@@ -31,7 +31,7 @@ function collectHours(f:HubFleet,hours:number,rate:HubDockRate):HubDockReward{
 function credit(s:CharacterState,reward:HubDockReward){s.gold+=reward.gold;const p=ensureProgression(s);for(const[id,n]of Object.entries(reward.materials))p.materials[id]=(p.materials[id]??0)+n;}
 /** Mutations are called under character row lock with the normal idempotent command receipt. */
 export function commandHubDock(s:CharacterState,h:HubState,input:{op:'send'|'collect'|'quick';fleet?:number;region?:ChartRegionId},rates:HubDockRates={},now=Date.now()):HubDockReward{
- requireHub(hubDockOpen(h),'HUB_DOCK_LOCKED','先通关 雾铃 · 剧情 1，开放码头派遣。');
+ requireHub(hubDockOpen(h),'HUB_DOCK_LOCKED','击败风栖关口首领后开放码头派遣。');
  const fleet=input.fleet??1;requireHub(Number.isInteger(fleet)&&fleet>=1&&fleet<=hubFleetLimit(s),'HUB_FLEET','这支船队尚未开放。');
  const found=h.dock.fleets.find(f=>f.fleet===fleet);
  if(input.op==='send'){
