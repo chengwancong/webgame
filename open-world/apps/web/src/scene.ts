@@ -54,8 +54,8 @@ import {StarseaStoryRenderer,starseaPortObjects} from './starsea-story-renderer.
 import {QuestGuide} from './quest-guide.ts';
 import {InteractBubble} from './interact-bubble.ts';
 import {worldLabels} from './hud-avoidance.ts';
-import {KillStreak,KillStreakRenderer} from './kill-streak.ts';
-import {BossPhaseBanner,BossPhaseBannerRenderer} from './boss-phase-banner.ts';
+import {KillStreak,KillStreakRenderer,KILL_STREAK_ART_KEY,preloadKillStreakArt} from './kill-streak.ts';
+import {BossPhaseBanner,BossPhaseBannerRenderer,BOSS_BANNER_ART_KEY,BOSS_BANNER_SHIELD_ART_KEY,preloadBossBannerArt} from './boss-phase-banner.ts';
 import {project,unproject} from './iso.ts';
 import {LegacyActorArt,preloadLegacyActorArt} from './legacy-actor-art.ts';
 export type {StarseaSceneView,StarseaSceneObject,StarseaSceneActor} from './starsea-runtime-assets.ts';
@@ -83,6 +83,8 @@ export class WorldScene extends Phaser.Scene {
  private numbers?:WorldNumbers;private damageNumbersCreated=0;private backdropFrames=0;private heroDeathPlayback=new HeroDeathPlayback();
  private killStreak=new KillStreak();private killStreakRenderer?:KillStreakRenderer;private _killStreakRose=false;
  private bossPhaseBanner=new BossPhaseBanner();private bossPhaseBannerRenderer?:BossPhaseBannerRenderer;
+ // A5 宝箱怪：追踪 wake 动画状态，per-enemy-id
+ private mimicWaking=new Set<string>();private mimicWakeDone=new Set<string>();
  private chunkDecorations=new Map<string,Phaser.GameObjects.GameObject[]>();private actors=new Map<string,ActorView>();private chunks=new Map<string,Phaser.GameObjects.Container>();private health?:Phaser.GameObjects.Graphics;private groundMarks?:Phaser.GameObjects.Graphics;private shieldBars=new ShieldBarTracker();private logicTimes:number[]=[];private renderTimes:number[]=[];private transient?:Phaser.GameObjects.Graphics;private keys:Record<string,Phaser.Input.Keyboard.Key>={};private regionId='';private accumulator=0;private debugFrame=0;private frames:number[]=[];
  constructor(private bridge:ViewBridge){super('world');}
  private makeEffects(){this.effectFactory=this.bridge.effectFactory;return this.effectFactory?this.effectFactory(this,(id,name)=>this.effectPoint(id,name),()=>this.heroEffectPose()):new SkillEffects(this,()=>this.bridge.motionReduced,(id,name,release)=>this.effectPoint(id,name,release),()=>this.heroEffectPose(),kind=>this.bridge.sound(kind));}
@@ -97,6 +99,9 @@ export class WorldScene extends Phaser.Scene {
   this.load.image('road-ground',environment.textures.road);
   this.load.image('meadow-ground',environment.textures.grass);
   this.load.image('world-props',environment.textures.props);
+  // A1 连斩图集 / A2 首领横幅底图
+  preloadKillStreakArt(this);
+  preloadBossBannerArt(this);
  }
  create(){
  this.vignette=this.add.graphics().setScrollFactor(0).setDepth(20000);
@@ -216,7 +221,7 @@ export class WorldScene extends Phaser.Scene {
  for(const item of items.slice(1)){container.remove(item);}
  this.chunkDecorations.set(`${cx},${cy}`,items.slice(1));this.chunks.set(`${cx},${cy}`,container); // props are retained per region, terrain chunks can unload independently
  }
- private resetRegion(){this.spoils?.clear();this.networkMotion.reset();this.localPrediction.reset();this.networkSequence=-1;this.fieldEventEffects?.destroy();this.fieldEventEffects=undefined;this.feedback.reset();this.numbers?.reset();this.killStreak.reset();this.bossPhaseBanner.reset();this.questGuide?.destroy();this.questGuide=undefined;this.interactBubble?.destroy();this.interactBubble=undefined;this.storyRenderer?.destroy();this.storyRenderer=undefined;this.starSeaStory?.destroy();this.starSeaStory=undefined;this.starSeaWorld?.destroy();this.starSeaWorld=undefined;this.planeScene?.destroy();this.planeScene=undefined;for(const a of this.actors.values())this.destroyActor(a);this.actors.clear();for(const c of this.chunks.values())c.destroy(true);this.chunks.clear();this.chunkDecorations.clear();this.groundLoot?.clear();
+ private resetRegion(){this.spoils?.clear();this.networkMotion.reset();this.localPrediction.reset();this.networkSequence=-1;this.fieldEventEffects?.destroy();this.fieldEventEffects=undefined;this.feedback.reset();this.numbers?.reset();this.killStreak.reset();this.bossPhaseBanner.reset();this.mimicWaking.clear();this.mimicWakeDone.clear();this.questGuide?.destroy();this.questGuide=undefined;this.interactBubble?.destroy();this.interactBubble=undefined;this.storyRenderer?.destroy();this.storyRenderer=undefined;this.starSeaStory?.destroy();this.starSeaStory=undefined;this.starSeaWorld?.destroy();this.starSeaWorld=undefined;this.planeScene?.destroy();this.planeScene=undefined;for(const a of this.actors.values())this.destroyActor(a);this.actors.clear();for(const c of this.chunks.values())c.destroy(true);this.chunks.clear();this.chunkDecorations.clear();this.groundLoot?.clear();
  // Region decoration nodes are tagged separately through their depths.
  this.skillEffects?.destroy();
  for(const child of [...(this.children?.list??[])])child.destroy();
@@ -232,6 +237,8 @@ export class WorldScene extends Phaser.Scene {
  /** Old-campaign regions hold the same loading lock until the atlases of the actors they open with have arrived. */
  private awaitLegacyArt(){
   const world=this.bridge.world,region=world.region.id,arts=new Set<string>(['hero',...world.enemies.map(e=>e.art),...world.region.spawns.map(s=>s.art)].filter((art):art is string=>Boolean(art)));
+  // A5：宝箱怪用 hub-mimic 图集（服务端 art 字段为模板 art，客户端按 name 覆盖）
+  if(world.enemies.some(e=>e.name==='宝箱怪'))arts.add('hub-mimic');
   for(const [key,rows] of Object.entries(worldTables))if(key!=='source')for(const row of rows as any[])if(row.region===region)for(const spec of [...(row.pack??[]),...(row.guards??[]),...(row.waves?.flat()??[]),...(row.template?[{template:row.template}]:[])]){const art=world.rules.monsters.templates.find(t=>t.id===spec.template)?.art;if(art)arts.add(art);}
   const generation=++this.legacyGeneration;this.legacyLoading=false;
   let status:Phaser.GameObjects.Text|undefined;
@@ -247,7 +254,7 @@ export class WorldScene extends Phaser.Scene {
    return;}
   for(const [key,rows]of Object.entries(worldTables))if(key!=='source')for(const row of rows as any[])if(row.region===region){for(const id of [row.kind==='gather'?gatherArt(row):row.resource,row.openResource,row.activeResource,row.cooldownResource,row.startEffect,row.successEffect,row.failureEffect,row.prop])if(id)resources.add(id);const templates=[...(row.pack??[]),...(row.guards??[]),...(row.waves?.flat()??[]),...(row.template?[{template:row.template}]:[])];for(const spec of templates){const art=this.bridge.world.rules.monsters.templates.find(t=>t.id===spec.template)?.art;if(art)resources.add(art);}}
   for(const spawn of this.bridge.world.region.spawns)if(spawn.art)resources.add(spawn.art);
-  for(const enemy of this.bridge.world.enemies)if(enemy.art)resources.add(enemy.art);
+  for(const enemy of this.bridge.world.enemies){if(enemy.art)resources.add(enemy.art);if(enemy.name==='宝箱怪')resources.add('hub-mimic');}
   for(const chest of this.bridge.world.region.keyChests??[]){resources.add(chest.resource);resources.add(chest.openResource);}
   for(const object of this.bridge.starSea?.()?.objects??[])resources.add(object.artId);
   const missing=starseaRuntimeMissing(this,[...resources]);
@@ -304,10 +311,23 @@ export class WorldScene extends Phaser.Scene {
  for(const [id,actor] of this.actors)if(id!=='hero'&&actor.art==='hero'&&!partyIds.has(id)){this.destroyActor(actor);this.actors.delete(id);this.partyCasts.delete(id);}
  for(const e of world.enemies){
  if(world.region.activationRadius&&!inWorldViewport(e.position,cameraView(this.cameras.main))){const old=this.actors.get(e.id);if(old){this.destroyActor(old);this.actors.delete(e.id);}continue;}
- const view=this.actors.get(e.id),profile=(catalog.actors as any)[e.art];
+ // A5 宝箱怪：名称精确匹配时覆盖 art → hub-mimic
+ const resolvedArt=e.name==='宝箱怪'?'hub-mimic':e.art;
+ const view=this.actors.get(e.id),profile=(catalog.actors as any)[resolvedArt];
  if(!e.alive){if(!view)continue;view.deathAt??=world.tick;
-  if(world.tick-view.deathAt>=Math.ceil((view.native?.duration('death')??profile.actions.death/profile.fps)*30)+6){this.destroyActor(view);this.actors.delete(e.id);continue;}}
- this.syncActor(e.id,e.position,e.alive?e.action:'death',e.facing,e.hp,e.maxHp,false,e.elite,e.boss,e.art,e.actionUntil,e.currentPhase??1,e.shield??0,e.monster?.affixes??[]);
+  if(world.tick-view.deathAt>=Math.ceil((view.native?.duration('death')??profile?.actions.death/profile?.fps)*30)+6){this.destroyActor(view);this.actors.delete(e.id);this.mimicWaking.delete(e.id);this.mimicWakeDone.delete(e.id);continue;}}
+ // A5 宝箱怪 wake 状态机：首次出现播放 wake 一次，之后动作间隙保持 wake_9
+ let syncAction=e.alive?e.action:'death';
+ if(resolvedArt==='hub-mimic'&&e.alive){
+  if(!this.mimicWaking.has(e.id)&&!this.mimicWakeDone.has(e.id)){this.mimicWaking.add(e.id);syncAction='wake';}
+  else if(this.mimicWaking.has(e.id)){
+   const actor=this.actors.get(e.id);
+   if(actor&&!actor.sprite.anims.isPlaying&&actor.sprite.anims.currentAnim?.key===resolvedArt+'-wake'){this.mimicWaking.delete(e.id);this.mimicWakeDone.add(e.id);}
+   syncAction='wake';}
+  }
+ this.syncActor(e.id,e.position,syncAction,e.facing,e.hp,e.maxHp,false,e.elite,e.boss,resolvedArt,e.actionUntil,e.currentPhase??1,e.shield??0,e.monster?.affixes??[]);
+ // 苏醒后空闲：停在张嘴的 wake_9，不回到伪装闭箱循环
+ if(resolvedArt==='hub-mimic'&&e.alive&&this.mimicWakeDone.has(e.id)&&!['move','attack','hurt','skill'].includes(e.action)){const actor=this.actors.get(e.id);if(actor?.sprite.anims.isPlaying)actor.sprite.anims.stop();if(actor&&actor.sprite.frame?.name!=='wake_9'&&actor.sprite.texture.has('wake_9'))actor.sprite.setFrame('wake_9');}
  }
  for(const child of (this.children?.list??[])){if(child instanceof Phaser.GameObjects.Image&&child.data?.get('occluder')){const b=child.getBounds();const hidden=b.contains(p.x,p.y-35)&&child.depth>p.y;child.setAlpha(hidden?.42:1);}}
  this.fieldEventEffects??=new FieldEventEffects(this);this.fieldEventEffects.draw(this.starSeaView?.effects??[],world.tick);

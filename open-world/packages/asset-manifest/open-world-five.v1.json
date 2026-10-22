@@ -63721,6 +63721,2067 @@
       },
       "accepted": false,
       "status": "imported-dynamic"
+    },
+    {
+      "id": "ow-art-hub-hunt-pylon",
+      "name": "狩猎引雷桩",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-fp/source/a4-pylon.png",
+        "sha256": "78ed5019d3e58e0ce2af5acba9343440c86f15a7f861443de6ff4130bf1241ae",
+        "bytes": 2055443,
+        "width": 1536,
+        "height": 1024,
+        "alpha": true,
+        "mode": "imagegen",
+        "adjustments": [
+          "Reference: existing wind hound, ice patrol, fine chest and rift obelisk; painted low-saturation stone and brass.",
+          "Alpha values below 8 cleared; proportional crops and bottom-center placement in 160x256 frames.",
+          "Six generated blue-white arc layers composited over the identical idle body; no procedural SVG scene drawing.",
+          "Broken state fitted to 148px width; fixed ground y252, anchor bottom-center.",
+          "Runtime PNGs tagged sRGB, straight alpha; hidden RGB cleared on alpha zero pixels."
+        ]
+      },
+      "sourceMode": "imagegen",
+      "displayWidth": 80,
+      "files": [
+        {
+          "path": ".runtime/art-fp/source/a4-pylon.png",
+          "sha256": "78ed5019d3e58e0ce2af5acba9343440c86f15a7f861443de6ff4130bf1241ae",
+          "bytes": 2055443,
+          "width": 1536,
+          "height": 1024,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/hunt-pylon.png",
+          "sha256": "08e36accf634b8655e156499d43abea007058418a9953839b288340498200701",
+          "bytes": 196337,
+          "width": 656,
+          "height": 520,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/hunt-pylon.json",
+          "sha256": "2838936fa17d3be078a6e1ca27d70a80530e14cd79736439c2760fc4e4d168c5",
+          "bytes": 3169
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/hunt-pylon-idle.png",
+          "sha256": "faf1cccdccd556715c17e210808d2b206505c9fc48adb417b6e6ff9d68df0912",
+          "bytes": 52303,
+          "width": 160,
+          "height": 256,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/hunt-pylon-broken.png",
+          "sha256": "9f8f79e116485b411687809c87cee2e007e222c1a8e53282f4036461725dde69",
+          "bytes": 31319,
+          "width": 160,
+          "height": 256,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/hunt-pylon-idle.png",
+        "width": 160,
+        "height": 256,
+        "anchor": [
+          0.5,
+          1
+        ],
+        "displayWidth": 80,
+        "displayHeight": 128,
+        "states": [
+          "default",
+          "broken",
+          "charge"
+        ],
+        "image": "/art/hub-fun/hunt-pylon.png",
+        "atlas": "/art/hub-fun/hunt-pylon.json",
+        "stateFiles": {
+          "broken": "/art/hub-fun/hunt-pylon-broken.png"
+        },
+        "initialFrame": "pylon-idle",
+        "stateFrames": {
+          "default": [
+            "pylon-idle"
+          ],
+          "broken": [
+            "pylon-broken"
+          ],
+          "charge": [
+            "pylon-charge-0",
+            "pylon-charge-1",
+            "pylon-charge-2",
+            "pylon-charge-3",
+            "pylon-charge-4",
+            "pylon-charge-5"
+          ]
+        },
+        "fps": 10,
+        "premultipliedAlpha": false
+      },
+      "accepted": false,
+      "status": "imported",
+      "notes": [
+        "ART-FP art delivered; frontend state/animation wiring by Claude. Static default file remains compatible with sprite manifest consumer."
+      ]
+    },
+    {
+      "id": "hub-mimic",
+      "name": "宝箱怪",
+      "island": "shared",
+      "kind": "actor",
+      "category": "monster",
+      "group": "monsters",
+      "displayHeight": 128,
+      "source": {
+        "path": ".runtime/art-fp/source/a5-wake.png",
+        "sha256": "495b2a018cbe507196b8e28589d45907c5e3ee23cba68e9ab7428ae93e50e852",
+        "bytes": 1869952,
+        "width": 1983,
+        "height": 793,
+        "alpha": true,
+        "mode": "imagegen",
+        "referenceAssetId": "ow-art-fine-chest-closed",
+        "adjustments": [
+          "Local SP33 preview and 819 family atlas search did not yield a stylistically suitable chest creature; no download.",
+          "Six generated action sheets preserve existing chest wood/brass/teal-gem design, add rounded teeth, eyes, tongue and feet.",
+          "Crop true alpha, clear alpha<8 speckles, proportional 204px body normalization, 256px source canvas and stable foot anchor (128,232).",
+          "Move frames retain explicit hop offsets; idle holds closed chest with short blink; skill aliases attack for manifest compatibility.",
+          "Sockets are approximate painted visual landmarks, not claimed as native animation or combat timing.",
+          "Runtime PNGs tagged sRGB, straight alpha; hidden RGB cleared on alpha zero pixels.",
+          "Main connected subject masks remove neighbouring cell fragments before trim; 54px black silhouette checked."
+        ],
+        "sheets": [
+          {
+            "path": ".runtime/art-fp/source/a5-idle.png",
+            "sha256": "5d45278e9bfb5a07937975110c66628a001cc22c2fcd74e2528e0e6af8285ab4",
+            "bytes": 1530365,
+            "width": 1295,
+            "height": 1214,
+            "alpha": true
+          },
+          {
+            "path": ".runtime/art-fp/source/a5-wake.png",
+            "sha256": "495b2a018cbe507196b8e28589d45907c5e3ee23cba68e9ab7428ae93e50e852",
+            "bytes": 1869952,
+            "width": 1983,
+            "height": 793,
+            "alpha": true
+          },
+          {
+            "path": ".runtime/art-fp/source/a5-move.png",
+            "sha256": "26567f336873daa5af94d7be2fa0b6f761dfefb48b31676c260f461d18f777f0",
+            "bytes": 2284630,
+            "width": 1536,
+            "height": 1024,
+            "alpha": true
+          },
+          {
+            "path": ".runtime/art-fp/source/a5-attack.png",
+            "sha256": "95f42eee3f19844fba75d9833f88da60dd5a1b050ac1f42c9ca7061cbcbd9e23",
+            "bytes": 2246893,
+            "width": 1536,
+            "height": 1024,
+            "alpha": true
+          },
+          {
+            "path": ".runtime/art-fp/source/a5-hurt.png",
+            "sha256": "e5bdeb0757e11b3ebe8bf174299259c4054dd9592963909cb3919dc0e328f5c9",
+            "bytes": 1756202,
+            "width": 1254,
+            "height": 1254,
+            "alpha": true
+          },
+          {
+            "path": ".runtime/art-fp/source/a5-death.png",
+            "sha256": "95131df03326699525292d83be8a36d71d3a6d68a42dbec35ca2c6e1027537c9",
+            "bytes": 1468472,
+            "width": 1254,
+            "height": 1254,
+            "alpha": true
+          }
+        ]
+      },
+      "sourceMode": "imagegen",
+      "files": [
+        {
+          "path": ".runtime/art-fp/source/a5-idle.png",
+          "sha256": "5d45278e9bfb5a07937975110c66628a001cc22c2fcd74e2528e0e6af8285ab4",
+          "bytes": 1530365,
+          "width": 1295,
+          "height": 1214,
+          "alpha": true
+        },
+        {
+          "path": ".runtime/art-fp/source/a5-wake.png",
+          "sha256": "495b2a018cbe507196b8e28589d45907c5e3ee23cba68e9ab7428ae93e50e852",
+          "bytes": 1869952,
+          "width": 1983,
+          "height": 793,
+          "alpha": true
+        },
+        {
+          "path": ".runtime/art-fp/source/a5-move.png",
+          "sha256": "26567f336873daa5af94d7be2fa0b6f761dfefb48b31676c260f461d18f777f0",
+          "bytes": 2284630,
+          "width": 1536,
+          "height": 1024,
+          "alpha": true
+        },
+        {
+          "path": ".runtime/art-fp/source/a5-attack.png",
+          "sha256": "95f42eee3f19844fba75d9833f88da60dd5a1b050ac1f42c9ca7061cbcbd9e23",
+          "bytes": 2246893,
+          "width": 1536,
+          "height": 1024,
+          "alpha": true
+        },
+        {
+          "path": ".runtime/art-fp/source/a5-hurt.png",
+          "sha256": "e5bdeb0757e11b3ebe8bf174299259c4054dd9592963909cb3919dc0e328f5c9",
+          "bytes": 1756202,
+          "width": 1254,
+          "height": 1254,
+          "alpha": true
+        },
+        {
+          "path": ".runtime/art-fp/source/a5-death.png",
+          "sha256": "95131df03326699525292d83be8a36d71d3a6d68a42dbec35ca2c6e1027537c9",
+          "bytes": 1468472,
+          "width": 1254,
+          "height": 1254,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/mimic.png",
+          "sha256": "dd11f959c0cc179b2d97175c767b4d3c980b3a5d2f576b10e71cdfde973b5c30",
+          "bytes": 2724420,
+          "width": 1820,
+          "height": 1560,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/mimic.json",
+          "sha256": "077920868e633b65953277956f4653c25a9e086db4b31da88482edb0f1d33e05",
+          "bytes": 13131
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/mimic.sockets.json",
+          "sha256": "48581f05bdceeb22de3defe1b4215458884d50970edef509eeeeff7f6124cdac",
+          "bytes": 25844
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/mimic.profile.json",
+          "sha256": "45c29118ca1dfadbd63348706203b90af895e03982124a201be31a880e2f097c",
+          "bytes": 3036
+        }
+      ],
+      "runtime": {
+        "kind": "atlas",
+        "id": "hub-mimic",
+        "name": "宝箱怪",
+        "image": "/art/hub-fun/mimic.png",
+        "atlas": "/art/hub-fun/mimic.json",
+        "sockets": "/art/hub-fun/mimic.sockets.json",
+        "profile": "/art/hub-fun/mimic.profile.json",
+        "displayHeight": 128,
+        "referenceHeight": 256,
+        "anchor": [
+          0.5,
+          0.90625
+        ],
+        "scale": 0.5,
+        "nativeFacing": -1,
+        "fps": 10,
+        "frameSize": 256,
+        "premultipliedAlpha": false,
+        "actions": {
+          "idle": {
+            "frames": [
+              "idle_0",
+              "idle_0",
+              "idle_0",
+              "idle_0",
+              "idle_0",
+              "idle_0",
+              "idle_0",
+              "idle_0",
+              "idle_0",
+              "idle_0",
+              "idle_0",
+              "idle_0",
+              "idle_0",
+              "idle_0",
+              "idle_1",
+              "idle_2",
+              "idle_3",
+              "idle_0"
+            ],
+            "fps": 6,
+            "loop": true,
+            "count": 18,
+            "duration": 3,
+            "source": "imagegen authored keyframes; technical alignment",
+            "fallback": false
+          },
+          "wake": {
+            "frames": [
+              "wake_0",
+              "wake_1",
+              "wake_2",
+              "wake_3",
+              "wake_4",
+              "wake_5",
+              "wake_6",
+              "wake_7",
+              "wake_8",
+              "wake_9"
+            ],
+            "fps": 10,
+            "loop": false,
+            "count": 10,
+            "duration": 1.0,
+            "source": "imagegen authored keyframes; technical alignment",
+            "fallback": false
+          },
+          "move": {
+            "frames": [
+              "move_0",
+              "move_1",
+              "move_2",
+              "move_3",
+              "move_4",
+              "move_5"
+            ],
+            "fps": 10,
+            "loop": true,
+            "count": 6,
+            "duration": 0.6,
+            "source": "imagegen authored keyframes; technical alignment",
+            "fallback": false
+          },
+          "attack": {
+            "frames": [
+              "attack_0",
+              "attack_1",
+              "attack_2",
+              "attack_3",
+              "attack_4",
+              "attack_5"
+            ],
+            "fps": 10,
+            "loop": false,
+            "count": 6,
+            "duration": 0.6,
+            "source": "imagegen authored keyframes; technical alignment",
+            "fallback": false
+          },
+          "hurt": {
+            "frames": [
+              "hurt_0",
+              "hurt_1",
+              "hurt_2",
+              "hurt_3"
+            ],
+            "fps": 12,
+            "loop": false,
+            "count": 4,
+            "duration": 0.3333333333333333,
+            "source": "imagegen authored keyframes; technical alignment",
+            "fallback": false
+          },
+          "death": {
+            "frames": [
+              "death_0",
+              "death_1",
+              "death_2",
+              "death_3",
+              "death_4",
+              "death_5"
+            ],
+            "fps": 8,
+            "loop": false,
+            "count": 6,
+            "duration": 0.75,
+            "source": "imagegen authored keyframes; technical alignment",
+            "fallback": false
+          },
+          "skill": {
+            "frames": [
+              "attack_0",
+              "attack_1",
+              "attack_2",
+              "attack_3",
+              "attack_4",
+              "attack_5"
+            ],
+            "fps": 10,
+            "loop": false,
+            "count": 6,
+            "duration": 0.6,
+            "source": "compatibility alias of attack; no extra skill design",
+            "fallback": false
+          }
+        }
+      },
+      "actions": {
+        "idle": {
+          "duration": 3,
+          "loop": true
+        },
+        "wake": {
+          "duration": 1.0,
+          "loop": false
+        },
+        "move": {
+          "duration": 0.6,
+          "loop": true
+        },
+        "attack": {
+          "duration": 0.6,
+          "loop": false
+        },
+        "hurt": {
+          "duration": 0.3333333333333333,
+          "loop": false
+        },
+        "death": {
+          "duration": 0.75,
+          "loop": false
+        },
+        "skill": {
+          "duration": 0.6,
+          "loop": false
+        }
+      },
+      "accepted": false,
+      "status": "imported",
+      "notes": [
+        "Art ready, frontend mapping by Claude: only hub treasure instance monster whose name is exactly 宝箱怪 -> identity hub-mimic; preserve server template and statistics.",
+        "Play wake once; disguised idle before activation, awake hold wake_9 after activation; do not revert to disguise between attacks."
+      ]
+    },
+    {
+      "id": "fx-hub-rockfall",
+      "name": "落石预警与冲击",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-hd/source/rock-split.png",
+        "sha256": "406850387630d04fc8cf094d863084dc5aa6f2286dc0444b086b06cad6f6ac05",
+        "bytes": 298042,
+        "width": 528,
+        "height": 426,
+        "alpha": true,
+        "mode": "local-library-adapted",
+        "adjustments": [
+          "ART-HD: low saturation adaptation, fixed frame canvas, straight alpha, transparent RGB zeroed, embedded sRGB ICC.",
+          "See art-hd-decisions.md and local source/prompts.json for provenance."
+        ],
+        "provenance": {
+          "rock": {
+            "path": "apps/web/public/art/open-world/five-islands/sprites/ow-art-mist-rocks-split.png",
+            "sha256": "406850387630d04fc8cf094d863084dc5aa6f2286dc0444b086b06cad6f6ac05",
+            "bytes": 298042,
+            "width": 528,
+            "height": 426,
+            "alpha": true
+          },
+          "dustManifest": "packages/asset-manifest/combat-physical-fx.json",
+          "dustSource": {
+            "library": "084-1509122",
+            "animation": "animation",
+            "originalPath": "G:/webgame/abyss-walker-migration/Q版日式手游SPINE特效300套/084-1509122/1509122.json",
+            "originalSha256": "9d104701ffe23c1afee4dda7d4ca3dabd4eba14e179dc8d2cd3448107e26fd2c",
+            "originalAtlasSha256": "5af148056603ddd5224994b2ec062316a46f2978df32a9d66e73dee47ba4717d",
+            "sheetSha256": "971b55b5370a983e53fbd10f5bb4d066d1d7e0c6a31498fa3c427714bf633779",
+            "frameTableSha256": "04594694d1ca10fa8b8e2a1b5b80729e78ef94bc76a02459431269fd98e7d50d",
+            "mode": "spine-runtime-export",
+            "conversion": [],
+            "fallbackReason": null,
+            "slotFilter": "ground-dust",
+            "adaptation": "Visible browser, original 30 FPS timeline; selected source slots only. Runtime tint/scale/rotation/mirroring/cropping; no repaint."
+          },
+          "dustImage": {
+            "path": "apps/web/public/art/effects/combat-physical/ground-dust.png",
+            "sha256": "971b55b5370a983e53fbd10f5bb4d066d1d7e0c6a31498fa3c427714bf633779",
+            "bytes": 221942,
+            "width": 1024,
+            "height": 2560,
+            "alpha": true
+          },
+          "sampleFrames": [
+            0,
+            2,
+            5,
+            8,
+            11,
+            14
+          ]
+        }
+      },
+      "sourceMode": "local-library-adapted",
+      "displayWidth": 256,
+      "files": [
+        {
+          "path": "apps/web/public/art/hub-fun/hunt-rockfall.png",
+          "sha256": "573bb5e4dacf49f65ef0651f4f0fee6bd76621756913083c781e073601a26a04",
+          "bytes": 196409,
+          "width": 1890,
+          "height": 620,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/hunt-rockfall.json",
+          "sha256": "7858290cc5355475555b660c9a0167a16edc0698fc2fd84c41d87c612e50f94a",
+          "bytes": 6421
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/rock-warn-0.png",
+          "sha256": "e70e772cbe3ab696da81a346ff44d626d9a5477ccbcdeb3a6dbaf3d7d27cdc68",
+          "bytes": 4477,
+          "width": 256,
+          "height": 128,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/rock-warn-0.png",
+        "width": 256,
+        "height": 128,
+        "anchor": [
+          0.5,
+          0.5
+        ],
+        "displayWidth": 256,
+        "displayHeight": 128,
+        "states": [
+          "warn",
+          "fall",
+          "impact"
+        ],
+        "image": "/art/hub-fun/hunt-rockfall.png",
+        "atlas": "/art/hub-fun/hunt-rockfall.json",
+        "initialFrame": "rock-warn-0",
+        "stateFrames": {
+          "warn": [
+            "rock-warn-0",
+            "rock-warn-1",
+            "rock-warn-2",
+            "rock-warn-3",
+            "rock-warn-4",
+            "rock-warn-5"
+          ],
+          "fall": [
+            "rock-fall-0",
+            "rock-fall-1",
+            "rock-fall-2",
+            "rock-fall-3"
+          ],
+          "impact": [
+            "rock-impact-0",
+            "rock-impact-1",
+            "rock-impact-2",
+            "rock-impact-3",
+            "rock-impact-4",
+            "rock-impact-5"
+          ]
+        },
+        "fps": 5,
+        "premultipliedAlpha": false,
+        "stateFps": {
+          "warn": 5,
+          "fall": 16,
+          "impact": 12
+        },
+        "frameAnchors": {
+          "rock-warn-*": [
+            0.5,
+            0.5
+          ],
+          "rock-fall-*": [
+            0.5,
+            1
+          ],
+          "rock-impact-*": [
+            0.5,
+            0.67
+          ]
+        },
+        "frameDisplaySizes": {
+          "rock-warn-*": [
+            256,
+            128
+          ],
+          "rock-fall-*": [
+            80,
+            128
+          ],
+          "rock-impact-*": [
+            128,
+            96
+          ]
+        }
+      },
+      "accepted": false,
+      "status": "producer-reviewed",
+      "notes": [
+        "ART-HD; art ready, frontend wiring by Claude."
+      ],
+      "batch": "ART-HD"
+    },
+    {
+      "id": "ow-art-hub-rock-rubble",
+      "name": "落石碎堆",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-hd/source/rock-split.png",
+        "sha256": "406850387630d04fc8cf094d863084dc5aa6f2286dc0444b086b06cad6f6ac05",
+        "bytes": 298042,
+        "width": 528,
+        "height": 426,
+        "alpha": true,
+        "mode": "local-library-adapted",
+        "adjustments": [
+          "ART-HD: low saturation adaptation, fixed frame canvas, straight alpha, transparent RGB zeroed, embedded sRGB ICC.",
+          "See art-hd-decisions.md and local source/prompts.json for provenance."
+        ],
+        "provenance": {
+          "rock": {
+            "path": "apps/web/public/art/open-world/five-islands/sprites/ow-art-mist-rocks-split.png",
+            "sha256": "406850387630d04fc8cf094d863084dc5aa6f2286dc0444b086b06cad6f6ac05",
+            "bytes": 298042,
+            "width": 528,
+            "height": 426,
+            "alpha": true
+          },
+          "dustManifest": "packages/asset-manifest/combat-physical-fx.json",
+          "dustSource": {
+            "library": "084-1509122",
+            "animation": "animation",
+            "originalPath": "G:/webgame/abyss-walker-migration/Q版日式手游SPINE特效300套/084-1509122/1509122.json",
+            "originalSha256": "9d104701ffe23c1afee4dda7d4ca3dabd4eba14e179dc8d2cd3448107e26fd2c",
+            "originalAtlasSha256": "5af148056603ddd5224994b2ec062316a46f2978df32a9d66e73dee47ba4717d",
+            "sheetSha256": "971b55b5370a983e53fbd10f5bb4d066d1d7e0c6a31498fa3c427714bf633779",
+            "frameTableSha256": "04594694d1ca10fa8b8e2a1b5b80729e78ef94bc76a02459431269fd98e7d50d",
+            "mode": "spine-runtime-export",
+            "conversion": [],
+            "fallbackReason": null,
+            "slotFilter": "ground-dust",
+            "adaptation": "Visible browser, original 30 FPS timeline; selected source slots only. Runtime tint/scale/rotation/mirroring/cropping; no repaint."
+          },
+          "dustImage": {
+            "path": "apps/web/public/art/effects/combat-physical/ground-dust.png",
+            "sha256": "971b55b5370a983e53fbd10f5bb4d066d1d7e0c6a31498fa3c427714bf633779",
+            "bytes": 221942,
+            "width": 1024,
+            "height": 2560,
+            "alpha": true
+          },
+          "sampleFrames": [
+            0,
+            2,
+            5,
+            8,
+            11,
+            14
+          ]
+        }
+      },
+      "sourceMode": "local-library-adapted",
+      "displayWidth": 80,
+      "files": [
+        {
+          "path": "apps/web/public/art/hub-fun/hunt-rockfall.png",
+          "sha256": "573bb5e4dacf49f65ef0651f4f0fee6bd76621756913083c781e073601a26a04",
+          "bytes": 196409,
+          "width": 1890,
+          "height": 620,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/hunt-rockfall.json",
+          "sha256": "7858290cc5355475555b660c9a0167a16edc0698fc2fd84c41d87c612e50f94a",
+          "bytes": 6421
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/rock-rubble.png",
+          "sha256": "bf15b7463c202d004ccccac7e5a965024ec287f1e1d9fd3894ee34f2fb8ae2e4",
+          "bytes": 12640,
+          "width": 160,
+          "height": 96,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/rock-rubble.png",
+        "width": 160,
+        "height": 96,
+        "anchor": [
+          0.5,
+          1
+        ],
+        "displayWidth": 80,
+        "displayHeight": 48,
+        "states": [
+          "default"
+        ],
+        "image": "/art/hub-fun/hunt-rockfall.png",
+        "atlas": "/art/hub-fun/hunt-rockfall.json",
+        "initialFrame": "rock-rubble",
+        "stateFrames": {
+          "default": [
+            "rock-rubble"
+          ]
+        },
+        "fps": 0,
+        "premultipliedAlpha": false,
+        "holdMs": 3000
+      },
+      "accepted": false,
+      "status": "producer-reviewed",
+      "notes": [
+        "ART-HD; art ready, frontend wiring by Claude."
+      ],
+      "batch": "ART-HD"
+    },
+    {
+      "id": "ow-art-hub-gather-wind-ore",
+      "name": "风栖矿点",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-hd/source/d4-wind-ore.png",
+        "sha256": "8a1a626953315a3044af78306ba722e0a5a616257318afbefd1f4df3e041c1ec",
+        "bytes": 1235177,
+        "width": 1536,
+        "height": 1024,
+        "alpha": true,
+        "mode": "imagegen",
+        "adjustments": [
+          "ART-HD: low saturation adaptation, fixed frame canvas, straight alpha, transparent RGB zeroed, embedded sRGB ICC.",
+          "See art-hd-decisions.md and local source/prompts.json for provenance."
+        ]
+      },
+      "sourceMode": "imagegen",
+      "displayWidth": 64,
+      "files": [
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.png",
+          "sha256": "d80e117569de7498e6298f3c13cd034152208a00278e5ba213c4e764e92b18fb",
+          "bytes": 381175,
+          "width": 1982,
+          "height": 264,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.json",
+          "sha256": "22428fc326bb4fbbf346fba036314466fc34dac0c6588903b46c5bf1694aec61",
+          "bytes": 9130
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-wind-ore.png",
+          "sha256": "7c96ebbf3f5841b213fee72d817bfcd8fda68ef73e3c8d26f87025cf5c739b62",
+          "bytes": 20791,
+          "width": 128,
+          "height": 128,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/gather-wind-ore.png",
+        "width": 128,
+        "height": 128,
+        "anchor": [
+          0.5,
+          1
+        ],
+        "displayWidth": 64,
+        "displayHeight": 64,
+        "states": [
+          "default",
+          "done"
+        ],
+        "image": "/art/hub-fun/gather-nodes.png",
+        "atlas": "/art/hub-fun/gather-nodes.json",
+        "initialFrame": "gather-wind-ore",
+        "stateFrames": {
+          "default": [
+            "gather-wind-ore"
+          ],
+          "done": [
+            "gather-wind-ore-done"
+          ]
+        },
+        "fps": 0,
+        "premultipliedAlpha": false
+      },
+      "accepted": false,
+      "status": "producer-reviewed",
+      "notes": [
+        "ART-HD; art ready, frontend wiring by Claude."
+      ],
+      "batch": "ART-HD"
+    },
+    {
+      "id": "ow-art-hub-gather-wind-plant",
+      "name": "风栖植物",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-hd/source/d4-wind-plant.png",
+        "sha256": "89569b84bdda9a762e041a17138bcd6cab7a5b315d6a7f37208c06361036c6bf",
+        "bytes": 1411971,
+        "width": 1536,
+        "height": 1024,
+        "alpha": true,
+        "mode": "imagegen",
+        "adjustments": [
+          "ART-HD: low saturation adaptation, fixed frame canvas, straight alpha, transparent RGB zeroed, embedded sRGB ICC.",
+          "See art-hd-decisions.md and local source/prompts.json for provenance."
+        ]
+      },
+      "sourceMode": "imagegen",
+      "displayWidth": 64,
+      "files": [
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.png",
+          "sha256": "d80e117569de7498e6298f3c13cd034152208a00278e5ba213c4e764e92b18fb",
+          "bytes": 381175,
+          "width": 1982,
+          "height": 264,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.json",
+          "sha256": "22428fc326bb4fbbf346fba036314466fc34dac0c6588903b46c5bf1694aec61",
+          "bytes": 9130
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-wind-plant.png",
+          "sha256": "86b3e3bc1a1e4589d3ec27c07fa773d3e1bc10cb21793ea210296891715d98bc",
+          "bytes": 24056,
+          "width": 128,
+          "height": 128,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/gather-wind-plant.png",
+        "width": 128,
+        "height": 128,
+        "anchor": [
+          0.5,
+          1
+        ],
+        "displayWidth": 64,
+        "displayHeight": 64,
+        "states": [
+          "default",
+          "done"
+        ],
+        "image": "/art/hub-fun/gather-nodes.png",
+        "atlas": "/art/hub-fun/gather-nodes.json",
+        "initialFrame": "gather-wind-plant",
+        "stateFrames": {
+          "default": [
+            "gather-wind-plant"
+          ],
+          "done": [
+            "gather-wind-plant-done"
+          ]
+        },
+        "fps": 0,
+        "premultipliedAlpha": false
+      },
+      "accepted": false,
+      "status": "producer-reviewed",
+      "notes": [
+        "ART-HD; art ready, frontend wiring by Claude."
+      ],
+      "batch": "ART-HD"
+    },
+    {
+      "id": "ow-art-hub-gather-mist-ore",
+      "name": "雾铃矿点",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-hd/source/d4-mist-ore.png",
+        "sha256": "6d0ebb1062466070e230bd83fe97be56dcaae4c8865626dc746e68e41f4924fb",
+        "bytes": 1648375,
+        "width": 1536,
+        "height": 1024,
+        "alpha": true,
+        "mode": "imagegen",
+        "adjustments": [
+          "ART-HD: low saturation adaptation, fixed frame canvas, straight alpha, transparent RGB zeroed, embedded sRGB ICC.",
+          "See art-hd-decisions.md and local source/prompts.json for provenance."
+        ]
+      },
+      "sourceMode": "imagegen",
+      "displayWidth": 64,
+      "files": [
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.png",
+          "sha256": "d80e117569de7498e6298f3c13cd034152208a00278e5ba213c4e764e92b18fb",
+          "bytes": 381175,
+          "width": 1982,
+          "height": 264,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.json",
+          "sha256": "22428fc326bb4fbbf346fba036314466fc34dac0c6588903b46c5bf1694aec61",
+          "bytes": 9130
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-mist-ore.png",
+          "sha256": "032f565f56acfcbe21214a54bedbfb2ac53426b59ae7d0463c65a11c41fe0f5d",
+          "bytes": 22599,
+          "width": 128,
+          "height": 128,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/gather-mist-ore.png",
+        "width": 128,
+        "height": 128,
+        "anchor": [
+          0.5,
+          1
+        ],
+        "displayWidth": 64,
+        "displayHeight": 64,
+        "states": [
+          "default",
+          "done"
+        ],
+        "image": "/art/hub-fun/gather-nodes.png",
+        "atlas": "/art/hub-fun/gather-nodes.json",
+        "initialFrame": "gather-mist-ore",
+        "stateFrames": {
+          "default": [
+            "gather-mist-ore"
+          ],
+          "done": [
+            "gather-mist-ore-done"
+          ]
+        },
+        "fps": 0,
+        "premultipliedAlpha": false
+      },
+      "accepted": false,
+      "status": "producer-reviewed",
+      "notes": [
+        "ART-HD; art ready, frontend wiring by Claude."
+      ],
+      "batch": "ART-HD"
+    },
+    {
+      "id": "ow-art-hub-gather-mist-plant",
+      "name": "雾铃植物",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-hd/source/d4-mist-plant.png",
+        "sha256": "472f28ad694c01b802069e73a357371329cddca8860d420bc0bffc5d48fea8f3",
+        "bytes": 1736187,
+        "width": 1536,
+        "height": 1024,
+        "alpha": true,
+        "mode": "imagegen",
+        "adjustments": [
+          "ART-HD: low saturation adaptation, fixed frame canvas, straight alpha, transparent RGB zeroed, embedded sRGB ICC.",
+          "See art-hd-decisions.md and local source/prompts.json for provenance."
+        ]
+      },
+      "sourceMode": "imagegen",
+      "displayWidth": 64,
+      "files": [
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.png",
+          "sha256": "d80e117569de7498e6298f3c13cd034152208a00278e5ba213c4e764e92b18fb",
+          "bytes": 381175,
+          "width": 1982,
+          "height": 264,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.json",
+          "sha256": "22428fc326bb4fbbf346fba036314466fc34dac0c6588903b46c5bf1694aec61",
+          "bytes": 9130
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-mist-plant.png",
+          "sha256": "1bf096e383542d7339a736ba34ed69f61e8eb8f28dfed118a136d82b8c1f706e",
+          "bytes": 29609,
+          "width": 128,
+          "height": 128,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/gather-mist-plant.png",
+        "width": 128,
+        "height": 128,
+        "anchor": [
+          0.5,
+          1
+        ],
+        "displayWidth": 64,
+        "displayHeight": 64,
+        "states": [
+          "default",
+          "done"
+        ],
+        "image": "/art/hub-fun/gather-nodes.png",
+        "atlas": "/art/hub-fun/gather-nodes.json",
+        "initialFrame": "gather-mist-plant",
+        "stateFrames": {
+          "default": [
+            "gather-mist-plant"
+          ],
+          "done": [
+            "gather-mist-plant-done"
+          ]
+        },
+        "fps": 0,
+        "premultipliedAlpha": false
+      },
+      "accepted": false,
+      "status": "producer-reviewed",
+      "notes": [
+        "ART-HD; art ready, frontend wiring by Claude."
+      ],
+      "batch": "ART-HD"
+    },
+    {
+      "id": "ow-art-hub-gather-forge-ore",
+      "name": "赤炉矿点",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-hd/source/d4-forge-ore.png",
+        "sha256": "852abd3d5bdf38652d8832841d2c0fe19d6ceaa02bd4806dd09d145420c485e0",
+        "bytes": 1422992,
+        "width": 1536,
+        "height": 1024,
+        "alpha": true,
+        "mode": "imagegen",
+        "adjustments": [
+          "ART-HD: low saturation adaptation, fixed frame canvas, straight alpha, transparent RGB zeroed, embedded sRGB ICC.",
+          "See art-hd-decisions.md and local source/prompts.json for provenance."
+        ]
+      },
+      "sourceMode": "imagegen",
+      "displayWidth": 64,
+      "files": [
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.png",
+          "sha256": "d80e117569de7498e6298f3c13cd034152208a00278e5ba213c4e764e92b18fb",
+          "bytes": 381175,
+          "width": 1982,
+          "height": 264,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.json",
+          "sha256": "22428fc326bb4fbbf346fba036314466fc34dac0c6588903b46c5bf1694aec61",
+          "bytes": 9130
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-forge-ore.png",
+          "sha256": "6c7a1333336ef6cf9fbd4f39600d1d555a955f31dd6beb9e1be79c66deb8f0c7",
+          "bytes": 18202,
+          "width": 128,
+          "height": 128,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/gather-forge-ore.png",
+        "width": 128,
+        "height": 128,
+        "anchor": [
+          0.5,
+          1
+        ],
+        "displayWidth": 64,
+        "displayHeight": 64,
+        "states": [
+          "default",
+          "done"
+        ],
+        "image": "/art/hub-fun/gather-nodes.png",
+        "atlas": "/art/hub-fun/gather-nodes.json",
+        "initialFrame": "gather-forge-ore",
+        "stateFrames": {
+          "default": [
+            "gather-forge-ore"
+          ],
+          "done": [
+            "gather-forge-ore-done"
+          ]
+        },
+        "fps": 0,
+        "premultipliedAlpha": false
+      },
+      "accepted": false,
+      "status": "producer-reviewed",
+      "notes": [
+        "ART-HD; art ready, frontend wiring by Claude."
+      ],
+      "batch": "ART-HD"
+    },
+    {
+      "id": "ow-art-hub-gather-forge-plant",
+      "name": "赤炉植物",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-hd/source/d4-forge-plant.png",
+        "sha256": "7a85c1785dea6561324f5756c5c5ef4ab30bf749bb98f73aa5b5abd179d6ddd3",
+        "bytes": 1574871,
+        "width": 1536,
+        "height": 1024,
+        "alpha": true,
+        "mode": "imagegen",
+        "adjustments": [
+          "ART-HD: low saturation adaptation, fixed frame canvas, straight alpha, transparent RGB zeroed, embedded sRGB ICC.",
+          "See art-hd-decisions.md and local source/prompts.json for provenance."
+        ]
+      },
+      "sourceMode": "imagegen",
+      "displayWidth": 64,
+      "files": [
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.png",
+          "sha256": "d80e117569de7498e6298f3c13cd034152208a00278e5ba213c4e764e92b18fb",
+          "bytes": 381175,
+          "width": 1982,
+          "height": 264,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.json",
+          "sha256": "22428fc326bb4fbbf346fba036314466fc34dac0c6588903b46c5bf1694aec61",
+          "bytes": 9130
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-forge-plant.png",
+          "sha256": "f8138eeed0cea1bf93353c2faf149cd05da8c9962cb096b363d3868aae98f68e",
+          "bytes": 22242,
+          "width": 128,
+          "height": 128,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/gather-forge-plant.png",
+        "width": 128,
+        "height": 128,
+        "anchor": [
+          0.5,
+          1
+        ],
+        "displayWidth": 64,
+        "displayHeight": 64,
+        "states": [
+          "default",
+          "done"
+        ],
+        "image": "/art/hub-fun/gather-nodes.png",
+        "atlas": "/art/hub-fun/gather-nodes.json",
+        "initialFrame": "gather-forge-plant",
+        "stateFrames": {
+          "default": [
+            "gather-forge-plant"
+          ],
+          "done": [
+            "gather-forge-plant-done"
+          ]
+        },
+        "fps": 0,
+        "premultipliedAlpha": false
+      },
+      "accepted": false,
+      "status": "producer-reviewed",
+      "notes": [
+        "ART-HD; art ready, frontend wiring by Claude."
+      ],
+      "batch": "ART-HD"
+    },
+    {
+      "id": "ow-art-hub-gather-frost-ore",
+      "name": "霜镜矿点",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-hd/source/d4-frost-ore.png",
+        "sha256": "6f8e8216ceb92f07dae42b9d682f46a47e10ee60252e8bb02e87fddd552f9f50",
+        "bytes": 1648229,
+        "width": 1536,
+        "height": 1024,
+        "alpha": true,
+        "mode": "imagegen",
+        "adjustments": [
+          "ART-HD: low saturation adaptation, fixed frame canvas, straight alpha, transparent RGB zeroed, embedded sRGB ICC.",
+          "See art-hd-decisions.md and local source/prompts.json for provenance."
+        ]
+      },
+      "sourceMode": "imagegen",
+      "displayWidth": 64,
+      "files": [
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.png",
+          "sha256": "d80e117569de7498e6298f3c13cd034152208a00278e5ba213c4e764e92b18fb",
+          "bytes": 381175,
+          "width": 1982,
+          "height": 264,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.json",
+          "sha256": "22428fc326bb4fbbf346fba036314466fc34dac0c6588903b46c5bf1694aec61",
+          "bytes": 9130
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-frost-ore.png",
+          "sha256": "67a2b5a64bdd249bae4b15108f0447ccf8c34d68155ab5668a4355b88e2298ee",
+          "bytes": 26201,
+          "width": 128,
+          "height": 128,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/gather-frost-ore.png",
+        "width": 128,
+        "height": 128,
+        "anchor": [
+          0.5,
+          1
+        ],
+        "displayWidth": 64,
+        "displayHeight": 64,
+        "states": [
+          "default",
+          "done"
+        ],
+        "image": "/art/hub-fun/gather-nodes.png",
+        "atlas": "/art/hub-fun/gather-nodes.json",
+        "initialFrame": "gather-frost-ore",
+        "stateFrames": {
+          "default": [
+            "gather-frost-ore"
+          ],
+          "done": [
+            "gather-frost-ore-done"
+          ]
+        },
+        "fps": 0,
+        "premultipliedAlpha": false
+      },
+      "accepted": false,
+      "status": "producer-reviewed",
+      "notes": [
+        "ART-HD; art ready, frontend wiring by Claude."
+      ],
+      "batch": "ART-HD"
+    },
+    {
+      "id": "ow-art-hub-gather-frost-plant",
+      "name": "霜镜植物",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-hd/source/d4-frost-plant.png",
+        "sha256": "e34798d81d19c68ab15163d43fe9b39fd254a738f802a3739e5caebdc49a24f8",
+        "bytes": 1447512,
+        "width": 1536,
+        "height": 1024,
+        "alpha": true,
+        "mode": "imagegen",
+        "adjustments": [
+          "ART-HD: low saturation adaptation, fixed frame canvas, straight alpha, transparent RGB zeroed, embedded sRGB ICC.",
+          "See art-hd-decisions.md and local source/prompts.json for provenance."
+        ]
+      },
+      "sourceMode": "imagegen",
+      "displayWidth": 64,
+      "files": [
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.png",
+          "sha256": "d80e117569de7498e6298f3c13cd034152208a00278e5ba213c4e764e92b18fb",
+          "bytes": 381175,
+          "width": 1982,
+          "height": 264,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.json",
+          "sha256": "22428fc326bb4fbbf346fba036314466fc34dac0c6588903b46c5bf1694aec61",
+          "bytes": 9130
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-frost-plant.png",
+          "sha256": "e2eba5d5d7f4aba5cdff3ce967925c8cb69848ca88a0cceccc61e3e345dfe013",
+          "bytes": 28864,
+          "width": 128,
+          "height": 128,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/gather-frost-plant.png",
+        "width": 128,
+        "height": 128,
+        "anchor": [
+          0.5,
+          1
+        ],
+        "displayWidth": 64,
+        "displayHeight": 64,
+        "states": [
+          "default",
+          "done"
+        ],
+        "image": "/art/hub-fun/gather-nodes.png",
+        "atlas": "/art/hub-fun/gather-nodes.json",
+        "initialFrame": "gather-frost-plant",
+        "stateFrames": {
+          "default": [
+            "gather-frost-plant"
+          ],
+          "done": [
+            "gather-frost-plant-done"
+          ]
+        },
+        "fps": 0,
+        "premultipliedAlpha": false
+      },
+      "accepted": false,
+      "status": "producer-reviewed",
+      "notes": [
+        "ART-HD; art ready, frontend wiring by Claude."
+      ],
+      "batch": "ART-HD"
+    },
+    {
+      "id": "ow-art-hub-gather-rift-ore",
+      "name": "沉星矿点",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-hd/source/d4-rift-ore.png",
+        "sha256": "dabef5320b5c1d261991427f7b0eccc7fa6bf9a00825088278cada5d60e35452",
+        "bytes": 1538583,
+        "width": 1536,
+        "height": 1024,
+        "alpha": true,
+        "mode": "imagegen",
+        "adjustments": [
+          "ART-HD: low saturation adaptation, fixed frame canvas, straight alpha, transparent RGB zeroed, embedded sRGB ICC.",
+          "See art-hd-decisions.md and local source/prompts.json for provenance."
+        ]
+      },
+      "sourceMode": "imagegen",
+      "displayWidth": 64,
+      "files": [
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.png",
+          "sha256": "d80e117569de7498e6298f3c13cd034152208a00278e5ba213c4e764e92b18fb",
+          "bytes": 381175,
+          "width": 1982,
+          "height": 264,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.json",
+          "sha256": "22428fc326bb4fbbf346fba036314466fc34dac0c6588903b46c5bf1694aec61",
+          "bytes": 9130
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-rift-ore.png",
+          "sha256": "7df171c603fa8755abc53ff37568923ba380e67019b70bcedcbdece70ffd730d",
+          "bytes": 23089,
+          "width": 128,
+          "height": 128,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/gather-rift-ore.png",
+        "width": 128,
+        "height": 128,
+        "anchor": [
+          0.5,
+          1
+        ],
+        "displayWidth": 64,
+        "displayHeight": 64,
+        "states": [
+          "default",
+          "done"
+        ],
+        "image": "/art/hub-fun/gather-nodes.png",
+        "atlas": "/art/hub-fun/gather-nodes.json",
+        "initialFrame": "gather-rift-ore",
+        "stateFrames": {
+          "default": [
+            "gather-rift-ore"
+          ],
+          "done": [
+            "gather-rift-ore-done"
+          ]
+        },
+        "fps": 0,
+        "premultipliedAlpha": false
+      },
+      "accepted": false,
+      "status": "producer-reviewed",
+      "notes": [
+        "ART-HD; art ready, frontend wiring by Claude."
+      ],
+      "batch": "ART-HD"
+    },
+    {
+      "id": "ow-art-hub-gather-rift-plant",
+      "name": "沉星植物",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-hd/source/d4-rift-plant.png",
+        "sha256": "df108afe74aecc8994a8e4b0f83db4de05797e5f64f2b699a3a0ee86e37b6aeb",
+        "bytes": 1638405,
+        "width": 1536,
+        "height": 1024,
+        "alpha": true,
+        "mode": "imagegen",
+        "adjustments": [
+          "ART-HD: low saturation adaptation, fixed frame canvas, straight alpha, transparent RGB zeroed, embedded sRGB ICC.",
+          "See art-hd-decisions.md and local source/prompts.json for provenance."
+        ]
+      },
+      "sourceMode": "imagegen",
+      "displayWidth": 64,
+      "files": [
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.png",
+          "sha256": "d80e117569de7498e6298f3c13cd034152208a00278e5ba213c4e764e92b18fb",
+          "bytes": 381175,
+          "width": 1982,
+          "height": 264,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.json",
+          "sha256": "22428fc326bb4fbbf346fba036314466fc34dac0c6588903b46c5bf1694aec61",
+          "bytes": 9130
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-rift-plant.png",
+          "sha256": "782a36316cdc5ee41c33072276ca9715d5201984fad648ebffe0d6d55c3811d0",
+          "bytes": 30641,
+          "width": 128,
+          "height": 128,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/gather-rift-plant.png",
+        "width": 128,
+        "height": 128,
+        "anchor": [
+          0.5,
+          1
+        ],
+        "displayWidth": 64,
+        "displayHeight": 64,
+        "states": [
+          "default",
+          "done"
+        ],
+        "image": "/art/hub-fun/gather-nodes.png",
+        "atlas": "/art/hub-fun/gather-nodes.json",
+        "initialFrame": "gather-rift-plant",
+        "stateFrames": {
+          "default": [
+            "gather-rift-plant"
+          ],
+          "done": [
+            "gather-rift-plant-done"
+          ]
+        },
+        "fps": 0,
+        "premultipliedAlpha": false
+      },
+      "accepted": false,
+      "status": "producer-reviewed",
+      "notes": [
+        "ART-HD; art ready, frontend wiring by Claude."
+      ],
+      "batch": "ART-HD"
+    },
+    {
+      "id": "ow-art-hub-gather-dragon-ore",
+      "name": "龙眠矿点",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-hd/source/d4-dragon-ore.png",
+        "sha256": "48b2f31ee0fbf409c18f00f5693dd92dd32a43b6d3a53820f863d4dff26b4140",
+        "bytes": 1722432,
+        "width": 1536,
+        "height": 1024,
+        "alpha": true,
+        "mode": "imagegen",
+        "adjustments": [
+          "ART-HD: low saturation adaptation, fixed frame canvas, straight alpha, transparent RGB zeroed, embedded sRGB ICC.",
+          "See art-hd-decisions.md and local source/prompts.json for provenance."
+        ]
+      },
+      "sourceMode": "imagegen",
+      "displayWidth": 64,
+      "files": [
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.png",
+          "sha256": "d80e117569de7498e6298f3c13cd034152208a00278e5ba213c4e764e92b18fb",
+          "bytes": 381175,
+          "width": 1982,
+          "height": 264,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.json",
+          "sha256": "22428fc326bb4fbbf346fba036314466fc34dac0c6588903b46c5bf1694aec61",
+          "bytes": 9130
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-dragon-ore.png",
+          "sha256": "46a1afe004dd4adf4e0644f11e76b7df65f6abfd877a90b4e979382cf429333d",
+          "bytes": 25207,
+          "width": 128,
+          "height": 128,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/gather-dragon-ore.png",
+        "width": 128,
+        "height": 128,
+        "anchor": [
+          0.5,
+          1
+        ],
+        "displayWidth": 64,
+        "displayHeight": 64,
+        "states": [
+          "default",
+          "done"
+        ],
+        "image": "/art/hub-fun/gather-nodes.png",
+        "atlas": "/art/hub-fun/gather-nodes.json",
+        "initialFrame": "gather-dragon-ore",
+        "stateFrames": {
+          "default": [
+            "gather-dragon-ore"
+          ],
+          "done": [
+            "gather-dragon-ore-done"
+          ]
+        },
+        "fps": 0,
+        "premultipliedAlpha": false
+      },
+      "accepted": false,
+      "status": "producer-reviewed",
+      "notes": [
+        "ART-HD; art ready, frontend wiring by Claude."
+      ],
+      "batch": "ART-HD"
+    },
+    {
+      "id": "ow-art-hub-gather-dragon-plant",
+      "name": "龙眠植物",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-hd/source/d4-dragon-plant.png",
+        "sha256": "640c5a1871efa945b683aa4a6926af5fc4041c0804e873d248e1bb295cc96ea2",
+        "bytes": 1620518,
+        "width": 1536,
+        "height": 1024,
+        "alpha": true,
+        "mode": "imagegen",
+        "adjustments": [
+          "ART-HD: low saturation adaptation, fixed frame canvas, straight alpha, transparent RGB zeroed, embedded sRGB ICC.",
+          "See art-hd-decisions.md and local source/prompts.json for provenance."
+        ]
+      },
+      "sourceMode": "imagegen",
+      "displayWidth": 64,
+      "files": [
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.png",
+          "sha256": "d80e117569de7498e6298f3c13cd034152208a00278e5ba213c4e764e92b18fb",
+          "bytes": 381175,
+          "width": 1982,
+          "height": 264,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-nodes.json",
+          "sha256": "22428fc326bb4fbbf346fba036314466fc34dac0c6588903b46c5bf1694aec61",
+          "bytes": 9130
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/gather-dragon-plant.png",
+          "sha256": "be27ae1d850be40ade42a6b1860b0e9a61205b5b5de49818340ebd6b43406418",
+          "bytes": 25477,
+          "width": 128,
+          "height": 128,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/gather-dragon-plant.png",
+        "width": 128,
+        "height": 128,
+        "anchor": [
+          0.5,
+          1
+        ],
+        "displayWidth": 64,
+        "displayHeight": 64,
+        "states": [
+          "default",
+          "done"
+        ],
+        "image": "/art/hub-fun/gather-nodes.png",
+        "atlas": "/art/hub-fun/gather-nodes.json",
+        "initialFrame": "gather-dragon-plant",
+        "stateFrames": {
+          "default": [
+            "gather-dragon-plant"
+          ],
+          "done": [
+            "gather-dragon-plant-done"
+          ]
+        },
+        "fps": 0,
+        "premultipliedAlpha": false
+      },
+      "accepted": false,
+      "status": "producer-reviewed",
+      "notes": [
+        "ART-HD; art ready, frontend wiring by Claude."
+      ],
+      "batch": "ART-HD"
+    },
+    {
+      "id": "ow-art-hub-tide-beacon",
+      "name": "怪潮信标",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-hd/source/d1-beacon.png",
+        "sha256": "9a5520b8ca905a4ca56bddf34f7a2a3403efd6b51af9bbeda4462ee11eef3d29",
+        "bytes": 1918341,
+        "width": 1536,
+        "height": 1024,
+        "alpha": true,
+        "mode": "imagegen",
+        "adjustments": [
+          "ART-HD: low saturation adaptation, fixed frame canvas, straight alpha, transparent RGB zeroed, embedded sRGB ICC.",
+          "See art-hd-decisions.md and local source/prompts.json for provenance."
+        ]
+      },
+      "sourceMode": "imagegen",
+      "displayWidth": 96,
+      "files": [
+        {
+          "path": "apps/web/public/art/hub-fun/tide-beacon.png",
+          "sha256": "367620fe141206bde880f3f7e32ac27b5e965193e1cdf7d4ebb8075a27a89a8c",
+          "bytes": 630704,
+          "width": 1962,
+          "height": 780,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/tide-beacon.json",
+          "sha256": "ecbe6a91aaef39b5b353529ca7670643b76170bdec06ff579200b67096759250",
+          "bytes": 8662
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/beacon-full-0.png",
+          "sha256": "c65d10713b215c189448f7ca636eb265cfb1be38f4f8e4c539887052a1ba5b47",
+          "bytes": 63443,
+          "width": 192,
+          "height": 256,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/beacon-full-0.png",
+        "width": 192,
+        "height": 256,
+        "anchor": [
+          0.5,
+          1
+        ],
+        "displayWidth": 96,
+        "displayHeight": 128,
+        "states": [
+          "full",
+          "damaged",
+          "critical",
+          "hit",
+          "broken",
+          "aura"
+        ],
+        "image": "/art/hub-fun/tide-beacon.png",
+        "atlas": "/art/hub-fun/tide-beacon.json",
+        "initialFrame": "beacon-full-0",
+        "stateFrames": {
+          "full": [
+            "beacon-full-0",
+            "beacon-full-1",
+            "beacon-full-2",
+            "beacon-full-3",
+            "beacon-full-4",
+            "beacon-full-5"
+          ],
+          "damaged": [
+            "beacon-damaged-0",
+            "beacon-damaged-1",
+            "beacon-damaged-2",
+            "beacon-damaged-3",
+            "beacon-damaged-4",
+            "beacon-damaged-5"
+          ],
+          "critical": [
+            "beacon-critical-0",
+            "beacon-critical-1",
+            "beacon-critical-2",
+            "beacon-critical-3",
+            "beacon-critical-4",
+            "beacon-critical-5"
+          ],
+          "hit": [
+            "beacon-hit-0",
+            "beacon-hit-1",
+            "beacon-hit-2"
+          ],
+          "broken": [
+            "beacon-broken"
+          ],
+          "aura": [
+            "beacon-aura"
+          ]
+        },
+        "fps": 8,
+        "premultipliedAlpha": false,
+        "stateFps": {
+          "full": 8,
+          "damaged": 10,
+          "critical": 16,
+          "hit": 16,
+          "broken": 0,
+          "aura": 0
+        },
+        "frameAnchors": {
+          "beacon-aura": [
+            0.5,
+            0.5
+          ]
+        },
+        "frameDisplaySizes": {
+          "beacon-aura": [
+            128,
+            64
+          ]
+        }
+      },
+      "accepted": false,
+      "status": "producer-reviewed",
+      "notes": [
+        "ART-HD; art ready, frontend wiring by Claude."
+      ],
+      "batch": "ART-HD"
+    },
+    {
+      "id": "ow-art-hub-hunt-flood",
+      "name": "涨潮水面",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-hd/source/d2-water.png",
+        "sha256": "e56b2ce18c44f43e9e20f28dcc2d607307501e46a15423dff8f15b4c61b1b668",
+        "bytes": 1887110,
+        "width": 1254,
+        "height": 1254,
+        "alpha": false,
+        "mode": "imagegen",
+        "adjustments": [
+          "ART-HD: low saturation adaptation, fixed frame canvas, straight alpha, transparent RGB zeroed, embedded sRGB ICC.",
+          "See art-hd-decisions.md and local source/prompts.json for provenance."
+        ]
+      },
+      "sourceMode": "imagegen",
+      "displayWidth": 128,
+      "files": [
+        {
+          "path": "apps/web/public/art/hub-fun/hunt-flood.png",
+          "sha256": "fb69ebeb85467e5429362578cf67742a563f5286dea3626c75d0e84d5790fd27",
+          "bytes": 84250,
+          "width": 1982,
+          "height": 136,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/hunt-flood.json",
+          "sha256": "59c2841ee2eb01499e138dfc632fa2a0b9a5177b9246a30f57b61873c77cabd8",
+          "bytes": 8166
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/flood-water-0.png",
+          "sha256": "85a19de398fdd98b8eee383f748b1d43d04ee6b47395a8e9324b22d3bb50fa41",
+          "bytes": 10104,
+          "width": 128,
+          "height": 64,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/flood-water-0.png",
+        "width": 128,
+        "height": 64,
+        "anchor": [
+          0.5,
+          0.5
+        ],
+        "displayWidth": 128,
+        "displayHeight": 72,
+        "states": [
+          "water",
+          "warn",
+          "recede"
+        ],
+        "image": "/art/hub-fun/hunt-flood.png",
+        "atlas": "/art/hub-fun/hunt-flood.json",
+        "initialFrame": "flood-water-0",
+        "stateFrames": {
+          "water": [
+            "flood-water-0",
+            "flood-water-1",
+            "flood-water-2",
+            "flood-water-3",
+            "flood-water-4",
+            "flood-water-5",
+            "flood-water-6",
+            "flood-water-7"
+          ],
+          "warn": [
+            "flood-warn-0",
+            "flood-warn-1",
+            "flood-warn-2",
+            "flood-warn-3"
+          ],
+          "recede": [
+            "flood-recede-0",
+            "flood-recede-1",
+            "flood-recede-2",
+            "flood-recede-3"
+          ]
+        },
+        "fps": 8,
+        "premultipliedAlpha": false,
+        "stateFps": {
+          "water": 8,
+          "warn": 2,
+          "recede": 8
+        },
+        "projection": [
+          32,
+          18
+        ],
+        "tileStep": [
+          64,
+          36
+        ]
+      },
+      "accepted": false,
+      "status": "producer-reviewed",
+      "notes": [
+        "ART-HD; art ready, frontend wiring by Claude."
+      ],
+      "batch": "ART-HD"
+    },
+    {
+      "id": "fx-hub-flood-splash",
+      "name": "涉水水花",
+      "island": "shared",
+      "kind": "sprite",
+      "category": "landmark",
+      "source": {
+        "path": ".runtime/art-hd/source/water_splash_01.png",
+        "sha256": "34f506331e6263e94dc3bddba2fe7c90338c5482254430d103a6d46ac4576494",
+        "bytes": 510,
+        "width": 51,
+        "height": 51,
+        "alpha": true,
+        "mode": "local-library-adapted",
+        "adjustments": [
+          "ART-HD: low saturation adaptation, fixed frame canvas, straight alpha, transparent RGB zeroed, embedded sRGB ICC.",
+          "See art-hd-decisions.md and local source/prompts.json for provenance."
+        ],
+        "provenance": [
+          {
+            "path": "G:\\webgame\\abyss-walker-migration\\Q版日式手游SPINE特效300套\\055-1400112\\0\\water_splash_01.png",
+            "sha256": "34f506331e6263e94dc3bddba2fe7c90338c5482254430d103a6d46ac4576494",
+            "reuse": "painted water splash alpha"
+          },
+          {
+            "path": "G:\\webgame\\abyss-walker-migration\\Q版日式手游SPINE特效300套\\055-1400112\\0\\water_splash_02.png",
+            "sha256": "461f60903ae4e99536c59d8eb7683b4b46b750f5cdc7d6644bb2d16ac3b96cc1",
+            "reuse": "painted water splash alpha"
+          },
+          {
+            "path": "G:\\webgame\\abyss-walker-migration\\Q版日式手游SPINE特效300套\\055-1400112\\0\\water_splash_03.png",
+            "sha256": "6fe0e034e5bef1abd3502ef752aba262d1437331e1c56cb415f2151f3cf294a0",
+            "reuse": "painted water splash alpha"
+          },
+          {
+            "path": "G:\\webgame\\abyss-walker-migration\\Q版日式手游SPINE特效300套\\055-1400112\\0\\water_splash_05.png",
+            "sha256": "b50e62276a9a1b6e3bd029f0a0fea7a8f69ee0d56a47981836cf2d0adf164b39",
+            "reuse": "painted water splash alpha"
+          },
+          {
+            "path": "G:\\webgame\\abyss-walker-migration\\Q版日式手游SPINE特效300套\\055-1400112\\0\\water_splash_07.png",
+            "sha256": "7f2c49bc1e5251c8fabda8e20b903aaaffb8f152a9c0fef68cb9ad9b546cf3aa",
+            "reuse": "painted water splash alpha"
+          },
+          {
+            "path": "G:\\webgame\\abyss-walker-migration\\Q版日式手游SPINE特效300套\\055-1400112\\0\\water_splash_08.png",
+            "sha256": "bc0a8e956c1dcbd5c5a4f657da43edbe997dfd0971323e4d060b0b9370d46501",
+            "reuse": "painted water splash alpha"
+          }
+        ],
+        "supportingFiles": [
+          {
+            "path": ".runtime/art-hd/source/water-circle.png",
+            "sha256": "f6e1e41e6ab02a5957834e90ae62d227b4bff34a64227a276194a5ab6b607419",
+            "bytes": 2490,
+            "width": 46,
+            "height": 46,
+            "alpha": true
+          }
+        ]
+      },
+      "sourceMode": "local-library-adapted",
+      "displayWidth": 48,
+      "files": [
+        {
+          "path": "apps/web/public/art/hub-fun/hunt-flood.png",
+          "sha256": "fb69ebeb85467e5429362578cf67742a563f5286dea3626c75d0e84d5790fd27",
+          "bytes": 84250,
+          "width": 1982,
+          "height": 136,
+          "alpha": true
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/hunt-flood.json",
+          "sha256": "59c2841ee2eb01499e138dfc632fa2a0b9a5177b9246a30f57b61873c77cabd8",
+          "bytes": 8166
+        },
+        {
+          "path": "apps/web/public/art/hub-fun/flood-splash-0.png",
+          "sha256": "a766ff2ab430f38537289231301c15a724d19c1cf2755618dbec56beb5976663",
+          "bytes": 3097,
+          "width": 96,
+          "height": 48,
+          "alpha": true
+        }
+      ],
+      "runtime": {
+        "kind": "sprite",
+        "file": "/art/hub-fun/flood-splash-0.png",
+        "width": 96,
+        "height": 48,
+        "anchor": [
+          0.5,
+          0.75
+        ],
+        "displayWidth": 48,
+        "displayHeight": 24,
+        "states": [
+          "splash"
+        ],
+        "image": "/art/hub-fun/hunt-flood.png",
+        "atlas": "/art/hub-fun/hunt-flood.json",
+        "initialFrame": "flood-splash-0",
+        "stateFrames": {
+          "splash": [
+            "flood-splash-0",
+            "flood-splash-1",
+            "flood-splash-2",
+            "flood-splash-3",
+            "flood-splash-4",
+            "flood-splash-5"
+          ]
+        },
+        "fps": 12,
+        "premultipliedAlpha": false
+      },
+      "accepted": false,
+      "status": "producer-reviewed",
+      "notes": [
+        "ART-HD; art ready, frontend wiring by Claude."
+      ],
+      "batch": "ART-HD"
     }
   ],
   "pending": [],
@@ -63730,13 +65791,15 @@
     "browser": false
   },
   "counts": {
-    "imported": 494,
+    "imported": 496,
     "pending": 0,
     "independentNewImages": 99,
     "materialVariants": 321,
     "regionalNpcs": 40,
     "actorVariants": 40,
-    "rigPoses": 4
+    "rigPoses": 4,
+    "hubFunAssets": 2,
+    "hubFunOriginalSheets": 7
   },
   "production": {
     "builder": "tools/build-five-island-art.mjs",

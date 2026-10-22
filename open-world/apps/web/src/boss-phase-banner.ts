@@ -8,9 +8,19 @@ import {worldTextResolution} from './ui/world-text.ts';
 import {STAGE} from './stage.ts';
 import {screenOrigin} from './world-chunks.ts';
 
-// ─── 美术占位 ───────────────────────────────────────────────────────────────
-/** 后换底图 PNG（1200×160）时只改此常量；'' = 纯色占位。 */
-export const BOSS_BANNER_ART_KEY = '';
+// ─── 美术 ─────────────────────────────────────────────────────────────────────
+/** A2 狂暴阶段横幅底图 key（/art/hub-fun/boss-banner.png，1200×160）。 */
+export const BOSS_BANNER_ART_KEY = 'boss-banner';
+/** A2 护盾破碎提示横幅底图 key（/art/hub-fun/boss-banner-shield.png）。 */
+export const BOSS_BANNER_SHIELD_ART_KEY = 'boss-banner-shield';
+
+/** 在 scene.preload() 里调用；两张图同批预加载。 */
+export function preloadBossBannerArt(scene: Phaser.Scene): void {
+  if (!scene.textures.exists(BOSS_BANNER_ART_KEY))
+    scene.load.image(BOSS_BANNER_ART_KEY, '/art/hub-fun/boss-banner.png');
+  if (!scene.textures.exists(BOSS_BANNER_SHIELD_ART_KEY))
+    scene.load.image(BOSS_BANNER_SHIELD_ART_KEY, '/art/hub-fun/boss-banner-shield.png');
+}
 
 const BANNER_DURATION = 66;  // ~2.2s × 30 Hz
 const FADE_IN = 9;
@@ -85,12 +95,16 @@ export class BossPhaseBanner {
 // ─── Phaser 渲染层 ───────────────────────────────────────────────────────────
 const uiColor = (name: TokenName) => Number.parseInt(resolvedToken(name).slice(1), 16);
 const BANNER_H = 80;
+// 安全区：源图 1200×160，x240–960/y24–136；显示 600×80 时对应源比 0.5
+// 文字居中绘制在 safe zone，底图可有或无。
 const VIGNETTE_ALPHA = 0.18;
 
 export class BossPhaseBannerRenderer {
   private bar: Phaser.GameObjects.Graphics;
+  private bannerImg?: Phaser.GameObjects.Image;        // 狂暴底图（phase banner）
+  private shieldImg?: Phaser.GameObjects.Image;        // 护盾破碎底图（announce banner）
   private label: Phaser.GameObjects.Text;
-  private vignette: Phaser.GameObjects.Graphics | undefined;
+  private _vignetteRef: () => Phaser.GameObjects.Graphics | undefined;
 
   constructor(
     private scene: Phaser.Scene,
@@ -98,93 +112,80 @@ export class BossPhaseBannerRenderer {
     vignetteRef: () => Phaser.GameObjects.Graphics | undefined,
   ) {
     const fontFamily = resolvedToken('Font.Family');
+    this.bar = scene.add.graphics().setScrollFactor(0).setDepth(19600).setAlpha(0);
+    this.label = scene.add.text(STAGE.width / 2, 72, '', {
+      resolution: worldTextResolution(), fontFamily, fontSize: '22px', fontStyle: 'bold',
+      color: '#' + uiColor('Color.World.Text').toString(16).padStart(6, '0'),
+      stroke: '#' + uiColor('Color.World.Ink').toString(16).padStart(6, '0'),
+      strokeThickness: 4, align: 'center',
+    }).setOrigin(0.5, 0.5).setScrollFactor(0).setDepth(19601).setAlpha(0);
 
-    this.bar = scene.add.graphics()
-      .setScrollFactor(0)
-      .setDepth(19600)
-      .setAlpha(0);
+    if (scene.textures.exists(BOSS_BANNER_ART_KEY))
+      this.bannerImg = scene.add.image(0, 0, BOSS_BANNER_ART_KEY).setScrollFactor(0).setDepth(19599).setAlpha(0).setOrigin(0.5, 0.5);
+    if (scene.textures.exists(BOSS_BANNER_SHIELD_ART_KEY))
+      this.shieldImg = scene.add.image(0, 0, BOSS_BANNER_SHIELD_ART_KEY).setScrollFactor(0).setDepth(19599).setAlpha(0).setOrigin(0.5, 0.5);
 
-    this.label = scene.add.text(
-      STAGE.width / 2,
-      72,
-      '',
-      {
-        resolution: worldTextResolution(),
-        fontFamily,
-        fontSize: '22px',
-        fontStyle: 'bold',
-        color: '#' + uiColor('Color.World.Text').toString(16).padStart(6, '0'),
-        stroke: '#' + uiColor('Color.World.Ink').toString(16).padStart(6, '0'),
-        strokeThickness: 4,
-        align: 'center',
-      },
-    ).setOrigin(0.5, 0.5).setScrollFactor(0).setDepth(19601).setAlpha(0);
-
-    // 暂存 vignette 引用获取函数
     this._vignetteRef = vignetteRef;
   }
-
-  private _vignetteRef: () => Phaser.GameObjects.Graphics | undefined;
 
   update(tick: number): void {
     const info = this.banner.currentInfo;
     const alpha = this.banner.alpha(tick);
 
     if (!info || alpha <= 0) {
-      this.bar.setAlpha(0);
-      this.label.setAlpha(0);
+      this.bar.setAlpha(0); this.label.setAlpha(0);
+      this.bannerImg?.setAlpha(0); this.shieldImg?.setAlpha(0);
       return;
     }
 
-    // 横幅底图（占位：纯色半透明条）
-    const camera = this.scene.cameras.main;
-    const origin = screenOrigin(camera);
+    const camera = this.scene.cameras.main, origin = screenOrigin(camera);
     const bw = camera.width / camera.zoom;
-    // 横幅放在屏幕上部约 22% 处，避开顶部首领血条。
     const top = Math.round(camera.height / camera.zoom * 0.22) - BANNER_H / 2;
+    const cx = origin.x + bw / 2, cy = origin.y + top + BANNER_H / 2;
 
-    this.bar.clear()
-      .setPosition(origin.x, origin.y)
-      .setAlpha(alpha);
-    // 中段实色，左右各 8 条由透明渐到实色（简单渐隐）
-    const w = 40;
-    this.bar.fillStyle(0x000000, 0.55);
-    this.bar.fillRect(8 * w, top, bw - 16 * w, BANNER_H);
-    for (let i = 0; i < 8; i++) {
-      this.bar.fillStyle(0x000000, (i + 1) / 8 * 0.55);
-      this.bar.fillRect(i * w, top, w, BANNER_H);
-      this.bar.fillRect(bw - (i + 1) * w, top, w, BANNER_H);
+    // 底图选择：announce（text 字段存在）→ 护盾色；phase → 狂暴暖色
+    const isShield = Boolean(info.text);
+    const activeImg = isShield ? this.shieldImg : this.bannerImg;
+
+    if (activeImg) {
+      // 图片缩放到 600×80 安全显示尺寸（源 1200×160，安全区 x240–960/y24–136）
+      activeImg.setDisplaySize(Math.min(bw, 600), BANNER_H).setPosition(cx, cy).setAlpha(alpha);
+      this.bar.setAlpha(0);
+    } else {
+      // 回退：纯色半透明条
+      this.bar.clear().setPosition(origin.x, origin.y).setAlpha(alpha);
+      const sw = 40;
+      this.bar.fillStyle(0x000000, 0.55);
+      this.bar.fillRect(8 * sw, top, bw - 16 * sw, BANNER_H);
+      for (let i = 0; i < 8; i++) {
+        this.bar.fillStyle(0x000000, (i + 1) / 8 * 0.55);
+        this.bar.fillRect(i * sw, top, sw, BANNER_H);
+        this.bar.fillRect(bw - (i + 1) * sw, top, sw, BANNER_H);
+      }
     }
+    // 另一张图隐藏
+    (isShield ? this.bannerImg : this.shieldImg)?.setAlpha(0);
 
     const phaseLabel = info.text ?? (info.phase === 2
       ? `${info.bossName} · 狂暴`
       : `${info.bossName} · 第${info.phase}阶段`);
+    this.label.setText(phaseLabel).setPosition(cx, cy).setAlpha(alpha);
 
-    this.label
-      .setText(phaseLabel)
-      .setPosition(origin.x + bw / 2, origin.y + top + BANNER_H / 2)
-      .setAlpha(alpha);
-
-    // 短暂暗角加深
     const vig = this._vignetteRef();
     if (vig) {
       vig.setPosition(origin.x, origin.y);
-      const w = camera.width / camera.zoom;
-      const h = camera.height / camera.zoom;
-      const vigAlpha = alpha * VIGNETTE_ALPHA;
+      const vw = bw, vh = camera.height / camera.zoom, vigAlpha = alpha * VIGNETTE_ALPHA;
       for (let i = 0; i < 6; i++) {
         const inset = i * 8;
         vig.fillStyle(0x000000, vigAlpha * (1 - i / 6) ** 2);
-        vig.fillRect(inset, inset, 6, h - inset * 2);
-        vig.fillRect(w - inset - 6, inset, 6, h - inset * 2);
-        vig.fillRect(inset, inset, w - inset * 2, 6);
-        vig.fillRect(inset, h - inset - 6, w - inset * 2, 6);
+        vig.fillRect(inset, inset, 6, vh - inset * 2); vig.fillRect(vw - inset - 6, inset, 6, vh - inset * 2);
+        vig.fillRect(inset, inset, vw - inset * 2, 6); vig.fillRect(inset, vh - inset - 6, vw - inset * 2, 6);
       }
     }
   }
 
   destroy(): void {
-    this.bar.destroy();
-    this.label.destroy();
+    this.bar.destroy(); this.label.destroy();
+    this.bannerImg?.destroy(); this.shieldImg?.destroy();
   }
 }

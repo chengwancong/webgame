@@ -26,7 +26,7 @@ const planes={assets:(planeGreybox.assets as PlaneEntry[]).map(g=>{
 export const openWorldRuntimeAssets=([...(wind.assets as unknown as RawArt[]),...(five.assets as unknown as RawArt[]),...(planes.assets as unknown as RawArt[])]).map(asset=>{
  const runtime={...asset.runtime},group=asset.kind==='actor'&&['monster','elite','rare','dungeon-boss','regional-npc'].includes(asset.category)?asset.category==='regional-npc'?'npc':asset.category==='dungeon-boss'?'bosses':'monsters':asset.kind==='effect'?'vfx':asset.kind==='ground'?'scenes':'props';
  if(['sprite','ground','mask','symbol'].includes(asset.kind)){
-  const states=Array.isArray(runtime.states)?runtime.states:['default'];runtime.kind='prop';runtime.states=Object.fromEntries(states.map(name=>[name,{kind:'image',file:runtime.file,anchor:runtime.anchor,displayHeight:runtime.displayHeight,visible:true}]));
+  const states=Array.isArray(runtime.states)?runtime.states:['default'];runtime.kind='prop';runtime.states=Object.fromEntries(states.map(name=>[name,{kind:'image',file:runtime.stateFiles?.[name]??runtime.file,anchor:runtime.anchor,displayHeight:runtime.displayHeight,visible:true}]));
  }
  if(asset.kind==='effect')runtime.kind='effect';
  runtime.tint??=runtime.material?.tint;runtime.wash??=runtime.material?.wash;

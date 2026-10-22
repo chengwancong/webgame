@@ -30,7 +30,7 @@ export type RunView=Omit<DungeonView,'chests'>&Partial<Omit<HubDungeonPublic,'ch
 /** 星门副本采集点：服务端判定 2 格内可采（dungeon-service gatherHub）。 */
 const hubGatherReach=2;
 /** FP4 引雷桩：交互距离同服务端 2 格；美术占位 A4 用裂隙方尖碑，正式图到位只改这里。 */
-const hubPylonReach=2,HUB_PYLON_ART='ow-art-rift-rift-obelisk';
+const hubPylonReach=2,HUB_PYLON_ART='ow-art-hub-hunt-pylon';
 
 /** Challenge-season tier input (string, keyed by entry id) -> tier for the dungeon catalogue; undefined when absent or not a positive integer. */
 export function challengeTierPick(tiers:Record<string,string|number|undefined>,id:string):number|undefined{const raw=tiers[id];if(raw===undefined||raw==='')return undefined;const n=Number(raw);return Number.isInteger(n)&&n>0?n:undefined;}
@@ -139,7 +139,13 @@ export class DungeonController{
  private near(p:{x:number;y:number},reach:number){const h=this.deps.world().hero.position;return Math.hypot(p.x-h.x,p.y-h.y)<=reach;}
  chestObjects(){return [...this.chests.map(ch=>({id:'dungeon-chest:'+ch.id,artId:ch.resource,position:ch.position,name:ch.name,label:ch.claimed?'已开启':'开启宝箱',reach:this.chestReach,enabled:!ch.claimed})),...this.gatherObjects(),...this.pylonObjects()];}
  /** FP4 狩猎引雷桩（站 2 格内读条 2 秒击碎）。美术占位 A4：裂隙方尖碑；碎了就不再显示。 */
- private pylonObjects(){return (this.instance?.hunt?.pylons??[]).filter(p=>!p.broken).map(p=>({id:'dungeon-pylon:'+p.id,artId:HUB_PYLON_ART,position:{x:p.x,y:p.y},name:'引雷桩',label:'击碎引雷桩',reach:hubPylonReach,enabled:true}));}
+ private pylonObjects(){
+  return (this.instance?.hunt?.pylons??[]).map(p=>p.broken
+    // 已碎裂：保留为不可交互对象（state:'broken'；prop渲染器当前将所有state映射到同一静态图，暂显示idle图，待adapter支持stateFiles后可补全）
+    ?{id:'dungeon-pylon:'+p.id,artId:HUB_PYLON_ART,position:{x:p.x,y:p.y},name:'碎裂引雷桩',label:'',reach:hubPylonReach,enabled:false,state:'broken'}
+    // 完好：可交互（prop渲染器为静态图；atlas charge动画待starsea-story-renderer支持后可补全）
+    :{id:'dungeon-pylon:'+p.id,artId:HUB_PYLON_ART,position:{x:p.x,y:p.y},name:'引雷桩',label:'击碎引雷桩',reach:hubPylonReach,enabled:true,state:'default'});
+ }
  nearestPylon(){return this.instance?.hunt?.pylons?.find(p=>!p.broken&&this.near(p,hubPylonReach));}
  /** 星门副本的采集点（已采的不显示）。素材图沿用野外采集点的占位画法。 */
  private gatherObjects(){const f=this.instance;if(!f?.gatherPoints)return [];const area=f.definition.area;return f.gatherPoints.filter(p=>!p.gathered).map(p=>({id:'dungeon-gather:'+p.id,artId:gatherArt({region:area,material:p.material}),position:{x:p.x,y:p.y},name:materialName(p.material),label:'采集',reach:hubGatherReach,enabled:true}));}

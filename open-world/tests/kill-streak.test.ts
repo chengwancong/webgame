@@ -3,8 +3,10 @@ import {
   KillStreak,
   KILL_STREAK_CHAIN_WINDOW,
   KILL_STREAK_MIN_SHOW,
+  KILL_STREAK_ART_KEY,
   killStreakTierLabel,
   killStreakTierIndex,
+  killStreakTierFrame,
   KILL_STREAK_TIERS,
 } from '../apps/web/src/kill-streak.ts';
 
@@ -154,5 +156,34 @@ describe('KillStreak', () => {
     expect(KILL_STREAK_TIERS.length).toBe(4);
     expect(KILL_STREAK_TIERS[0].min).toBe(10);
     expect(KILL_STREAK_TIERS[3].min).toBe(100);
+  });
+});
+
+describe('killStreakTierFrame（A1 图集帧映射）', () => {
+  it('KILL_STREAK_ART_KEY 已填入', () => {
+    expect(KILL_STREAK_ART_KEY).toBe('kill-streak');
+  });
+
+  it('3–9 → streak-tier-1（tier-1 兜底）', () => {
+    for (let n = 3; n <= 9; n++) expect(killStreakTierFrame(n)).toBe('streak-tier-1');
+  });
+
+  it('10 → streak-tier-1（阈值0 对应 tier-1）', () => {
+    expect(killStreakTierFrame(10)).toBe('streak-tier-1');
+  });
+
+  it('25 → streak-tier-2', () => {
+    expect(killStreakTierFrame(25)).toBe('streak-tier-2');
+    expect(killStreakTierFrame(49)).toBe('streak-tier-2');
+  });
+
+  it('50 → streak-tier-3', () => {
+    expect(killStreakTierFrame(50)).toBe('streak-tier-3');
+    expect(killStreakTierFrame(99)).toBe('streak-tier-3');
+  });
+
+  it('100 → streak-tier-4', () => {
+    expect(killStreakTierFrame(100)).toBe('streak-tier-4');
+    expect(killStreakTierFrame(999)).toBe('streak-tier-4');
   });
 });

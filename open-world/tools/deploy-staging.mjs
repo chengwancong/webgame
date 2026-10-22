@@ -6,6 +6,10 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {committedVersions,assertReleaseVersions} from './deploy-versions.ts';
 const root=path.resolve(fileURLToPath(new URL('../..',import.meta.url))),project=path.join(root,'open-world'),out='G:/webgame/aw-deploy';
+// A source-only release worktree may share an already installed local preview.
+// Its existing service script still enforces checkout ownership; no guard is bypassed.
+const localServiceRoot=path.resolve(process.env.AW_LOCAL_SERVICE_ROOT??project);
+if(!existsSync(path.join(localServiceRoot,'tools/local-service.mjs')))throw Error('Local preview service root is invalid');
 const flags=new Set(process.argv.slice(2)),allowed=['--skip-web','--skip-api','--full-web','--no-mirror','--dry-run','--pull-backup'];
 for(const flag of flags)if(!allowed.includes(flag))throw Error(`Unknown option: ${flag}`);
 const ssh=process.platform==='win32'?'C:/Program Files/Git/usr/bin/ssh.exe':'ssh',scp=process.platform==='win32'?'C:/Program Files/Git/usr/bin/scp.exe':'scp';
@@ -34,8 +38,8 @@ try{
   const source=path.join(artifact,'web-source.tgz');run('git',['archive','--format=tar.gz','--output='+source,head,...webEntries,'open-world/packages','open-world/config','open-world/package.json','open-world/tsconfig.json']);run('tar',['-xzf',source,'-C',snapshot]);
   const work=path.join(snapshot,'open-world');for(const item of ['node_modules','apps/web/public','assets','.design'])if(!existsSync(path.join(work,item)))symlinkSync(path.join(project,item),path.join(work,item),'junction');
   const dist=path.join(artifact,'web-dist');
-  try{run(process.execPath,[path.join(project,'tools/local-service.mjs'),'stop'],{cwd:project});run(process.execPath,[path.join(project,'node_modules/vite/bin/vite.js'),'build','--config',path.join(work,'apps/web/vite.config.ts'),'--outDir',dist,'--emptyOutDir'],{cwd:work});}
-  finally{run(process.execPath,[path.join(project,'tools/local-service.mjs'),'start'],{cwd:project});}
+  try{run(process.execPath,[path.join(localServiceRoot,'tools/local-service.mjs'),'stop'],{cwd:localServiceRoot});run(process.execPath,[path.join(project,'node_modules/vite/bin/vite.js'),'build','--config',path.join(work,'apps/web/vite.config.ts'),'--outDir',dist,'--emptyOutDir'],{cwd:work});}
+  finally{run(process.execPath,[path.join(localServiceRoot,'tools/local-service.mjs'),'start'],{cwd:localServiceRoot});}
   writeFileSync(path.join(dist,'build-info.json'),JSON.stringify({source:head,versions:expectedVersions,release}));
   const files=[];function walk(dir,prefix=''){for(const e of readdirSync(dir,{withFileTypes:true})){const name=prefix+e.name;if(e.isDirectory())walk(path.join(dir,e.name),name+'/');else if(e.isFile())files.push(name);else throw Error('Unexpected artifact entry: '+name);}}walk(dist);
   const python="import os,json,hashlib\nroot=os.path.expanduser('~/abyss/open-world/deploy/web-dist')\nm={}\nfor d,_,files in os.walk(root):\n for f in files:\n  p=os.path.join(d,f)\n  with open(p,'rb') as h:m[os.path.relpath(p,root)]=hashlib.file_digest(h,'sha256').hexdigest()\nprint(json.dumps(m))";
@@ -77,7 +81,7 @@ rollback() {
   ${api?`if [ "$switched" = 1 ]; then mv /home/ubuntu/abyss/open-world "$stage/failed-open-world"; mv "$previous" /home/ubuntu/abyss/open-world; fi`:`if [ "$switched" = 1 ]; then mv /home/ubuntu/abyss/open-world/deploy/web-dist "$stage/failed-web"; mv "$previous" /home/ubuntu/abyss/open-world/deploy/web-dist; fi`}
   docker tag abyss-staging-api:before-${release} abyss-staging-api:latest
   cd /home/ubuntu/abyss/open-world/deploy
-  docker compose up -d --no-build --force-recreate api
+  docker compose up -d --no-deps --no-build --force-recreate api
   docker compose up -d --no-deps --no-build --force-recreate caddy
  fi
  exit "$code"
@@ -96,7 +100,7 @@ mv "$stage/open-world/deploy/web-dist" /home/ubuntu/abyss/open-world/deploy/web-
 switched=1
 cd /home/ubuntu/abyss/open-world/deploy
 echo "RESTORE $(date -Is)"
-docker compose up -d --no-build --force-recreate api
+docker compose up -d --no-deps --no-build --force-recreate api
 ${api?'docker compose up -d --no-deps --no-build --force-recreate caddy':''}
 for n in $(seq 1 40); do
  if docker compose exec -T api node --input-type=module -e ${quote(healthCheck)}; then

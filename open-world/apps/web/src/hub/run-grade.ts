@@ -55,20 +55,15 @@ export function gradeRun(elapsedSeconds: number, kind: string | undefined, parti
 
 // ─── HTML 辅助（仅字符串，无 DOM）──────────────────────────────────────────
 
-/** 美术占位 A3：圆形描边 + 大字母章印。后换图集只改此函数。 */
-export function gradeStampHtml(grade: RunGrade): string {
-  const color: Record<RunGrade, string> = {
-    S: '#f0bf4f',  // Color.Primary 金
-    A: '#c0c8d0',  // 银
-    B: '#c47a38',  // 铜
-  };
-  const c = color[grade];
-  // SVG 圆圈 + 字母占位（A3 到位后替换为 <img>）
-  return `<span class="run-grade-stamp run-grade-${grade.toLowerCase()}" aria-label="评价${grade}" style="display:inline-block;line-height:1">` +
-    `<svg viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">` +
-    `<circle cx="32" cy="32" r="28" fill="none" stroke="${c}" stroke-width="4"/>` +
-    `<text x="32" y="44" text-anchor="middle" font-family="serif" font-size="36" font-weight="bold" fill="${c}">${grade}</text>` +
-    `</svg></span>`;
+/**
+ * A3 评价章印。默认显示 128px；紧凑场合可通过 size 参数或 CSS 缩至 64px。
+ * 使用 /art/hub-fun/grade-{s,a,b}.png，图片缺失时不会显示（无回退占位）。
+ */
+export function gradeStampHtml(grade: RunGrade, size = 128): string {
+  const g = grade.toLowerCase();
+  return `<span class="run-grade-stamp run-grade-${g}" aria-label="评价${grade}" style="display:inline-block;line-height:1">` +
+    `<img src="/art/hub-fun/grade-${g}.png" alt="${grade}" width="${size}" height="${size}" draggable="false">` +
+    `</span>`;
 }
 
 /** 生成本场评价完整 HTML 片段，注入 hub-result-right 的 extra 区。 */

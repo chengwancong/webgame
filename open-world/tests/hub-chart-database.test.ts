@@ -80,7 +80,9 @@ it('persists all twenty node facts, caps daily bonuses at ten and never regrants
  const order=['wind-story-1','wind-story-2','wind-story-3','wind-nest-1','wind-nest-2','wind-nest-3','wind-gate','wind-hunt','wind-tide','mist-story-1','mist-story-2','mist-story-3','mist-nest-1','mist-nest-2','mist-nest-3','mist-hunt','mist-tide','mist-gate','wind-treasure','mist-treasure'];
  let bonuses=0;for(const node of order){const instance=await enter(id,node);const result=hubSettlementSchema.parse(await settle(id,node,instance));expect(result.firstClear).toBe(true);bonuses+=Number(result.dailyBonus.applied);}expect(bonuses).toBe(10);
  const h=await readHubState(pool,id);expect(Object.keys(h.chart.cleared)).toHaveLength(20);expect(h.chart.daily.nodes).toHaveLength(10);const s=(await pool.query('SELECT state FROM ow_characters WHERE id=$1',[id])).rows[0].state as CharacterState;expect(s.starsea!.seen.filter(x=>x.startsWith('hub-node:'))).toHaveLength(20);expect(ownedCrystalSources(s,'life')).toHaveLength(4);expect(s.appearance?.unlocked).toEqual(expect.arrayContaining(['400106','400104']));expect(s.starsea!.seen.some(x=>x.includes('skipped-by-freeze'))).toBe(false);
+ const materialPacks=tasks.filter(t=>/^hub-gate-reward-(wind|mist)$/.test(t.id));expect(materialPacks).toHaveLength(2);for(const pack of materialPacks)for(const [material,amount]of Object.entries(pack.reward_materials??{}))expect(s.progression!.materials[material]).toBe(amount);
  const again=await settle(id,'mist-gate',await enter(id,'mist-gate'));expect(again.firstClear).toBe(false);expect(again.firstClearRewards).toEqual([]);expect(again.collectibles).toEqual([]);
+ const after=(await pool.query('SELECT state FROM ow_characters WHERE id=$1',[id])).rows[0].state as CharacterState;expect(after.progression!.materials).toEqual(s.progression!.materials);for(const pack of materialPacks)expect(after.starsea!.done.filter(task=>task===pack.id)).toHaveLength(1);
 });
 
 

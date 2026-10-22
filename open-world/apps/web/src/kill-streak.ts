@@ -7,9 +7,21 @@ import {resolvedToken,type TokenName} from './ui/tokens.ts';
 import {worldTextResolution} from './ui/world-text.ts';
 import {screenOrigin} from './world-chunks.ts';
 
-// ─── 美术占位 ───────────────────────────────────────────────────────────────
-/** 后换图集时只改此常量；目前为文字占位。 */
-export const KILL_STREAK_ART_KEY = '';  // '' = 文字占位；填入 atlas key 后换图
+// ─── 美术 ─────────────────────────────────────────────────────────────────────
+/** A1 连斩图集 key（对应 /art/hub-fun/kill-streak.{png,json}）。 */
+export const KILL_STREAK_ART_KEY = 'kill-streak';
+
+/** 在 scene.preload() 里调用；若 key 已存在则跳过重复加载。 */
+export function preloadKillStreakArt(scene: Phaser.Scene): void {
+  if (!KILL_STREAK_ART_KEY || scene.textures.exists(KILL_STREAK_ART_KEY)) return;
+  scene.load.atlas(KILL_STREAK_ART_KEY, '/art/hub-fun/kill-streak.png', '/art/hub-fun/kill-streak.json');
+}
+
+/** 根据当前 n 返回对应的图集帧名（tier glyph）。 */
+export function killStreakTierFrame(n: number): string {
+  const idx = Math.max(0, killStreakTierIndex(n));  // -1（3–9）映射到 0 → tier-1
+  return `streak-tier-${idx + 1}`;
+}
 
 // ─── 纯逻辑 ─────────────────────────────────────────────────────────────────
 export const KILL_STREAK_CHAIN_WINDOW = 90;  // 3 秒 × 30 Hz
@@ -96,91 +108,123 @@ const FADE_WINDOW = 30;  // 链断后 1 秒（30 tick）淡出
 
 const uiColor = (name: TokenName) => Number.parseInt(resolvedToken(name).slice(1), 16);
 
+// 图集帧高度（源图像素）→ 显示高度（px）
+const TIER_DISPLAY_H = 48;   // 源96px → 显示48px
+const DIGIT_DISPLAY_H = 36;  // 源72px → 显示36px
+
 /** 在场景右侧中部渲染连斩计数（scrollFactor 0，固定屏幕位置）。 */
 export class KillStreakRenderer {
   private text: Phaser.GameObjects.Text;
   private tierText: Phaser.GameObjects.Text;
+  // 图集可用时替换文字
+  private atlasSprites?: {tier: Phaser.GameObjects.Sprite; x: Phaser.GameObjects.Sprite; digits: Phaser.GameObjects.Sprite[]};
 
   constructor(private scene: Phaser.Scene, private streak: KillStreak, private motionReduced: () => boolean) {
-    const x = 0, y = 0;  // 每帧按相机换算到屏幕右侧中部
-
+    const x = 0, y = 0;
     const fontFamily = resolvedToken('Font.Family');
-
     this.text = scene.add.text(x, y, '', {
-      resolution: worldTextResolution(),
-      fontFamily,
-      fontSize: '32px',
-      fontStyle: 'bold',
+      resolution: worldTextResolution(), fontFamily, fontSize: '32px', fontStyle: 'bold',
       color: '#' + uiColor('Color.Combat.Elite').toString(16).padStart(6, '0'),
       stroke: '#' + uiColor('Color.World.Ink').toString(16).padStart(6, '0'),
-      strokeThickness: 4,
-      align: 'right',
+      strokeThickness: 4, align: 'right',
     }).setOrigin(1, 0.5).setScrollFactor(0).setDepth(19500).setAlpha(0);
-
     this.tierText = scene.add.text(x, y - 26, '', {
-      resolution: worldTextResolution(),
-      fontFamily,
-      fontSize: '18px',
-      fontStyle: 'bold',
+      resolution: worldTextResolution(), fontFamily, fontSize: '18px', fontStyle: 'bold',
       color: '#' + uiColor('Color.World.Text').toString(16).padStart(6, '0'),
       stroke: '#' + uiColor('Color.World.Ink').toString(16).padStart(6, '0'),
-      strokeThickness: 3,
-      align: 'right',
+      strokeThickness: 3, align: 'right',
     }).setOrigin(1, 0.5).setScrollFactor(0).setDepth(19500).setAlpha(0);
+
+    if (KILL_STREAK_ART_KEY && scene.textures.exists(KILL_STREAK_ART_KEY)) {
+      const k = KILL_STREAK_ART_KEY;
+      const mk = (frame: string) => scene.add.sprite(0, 0, k, frame).setScrollFactor(0).setDepth(19500).setAlpha(0);
+      this.atlasSprites = {
+        tier: mk('streak-tier-1'),
+        x: mk('streak-x'),
+        digits: [mk('streak-digit-0'), mk('streak-digit-0'), mk('streak-digit-0'), mk('streak-digit-0')],
+      };
+    }
   }
 
   /**
    * 每帧调用。tick 为世界 tick（用于计算淡出）。
-   * motionOk 时 rose=true 会做缩放弹动，否则直接切换。
+   * motionOk 时 rose=true 会做缩放弹动（层级升级），减少动态时直接切换。
    */
   update(tick: number, rose: boolean): void {
     const s = this.streak;
+    const hideAll = () => {
+      this.text.setAlpha(0); this.tierText.setAlpha(0);
+      if (this.atlasSprites) {this.atlasSprites.tier.setAlpha(0); this.atlasSprites.x.setAlpha(0); for (const d of this.atlasSprites.digits) d.setAlpha(0);}
+    };
 
-    if (!s.visible) {
-      this.text.setAlpha(0);
-      this.tierText.setAlpha(0);
-      return;
-    }
+    if (!s.visible) {hideAll(); return;}
 
     const idle = s.idleTicks(tick);
     const chainActive = idle <= KILL_STREAK_CHAIN_WINDOW;
-
-    // 淡出：链断后 FADE_WINDOW 内线性淡出
     let alpha: number;
-    if (chainActive) {
-      alpha = 1;
-    } else {
-      const fadeT = (idle - KILL_STREAK_CHAIN_WINDOW) / FADE_WINDOW;
-      alpha = Math.max(0, 1 - fadeT);
-    }
+    if (chainActive) {alpha = 1;}
+    else {const fadeT = (idle - KILL_STREAK_CHAIN_WINDOW) / FADE_WINDOW; alpha = Math.max(0, 1 - fadeT);}
+    if (alpha <= 0) {hideAll(); return;}
 
-    if (alpha <= 0) {
-      this.text.setAlpha(0);
-      this.tierText.setAlpha(0);
+    const cam = this.scene.cameras.main, origin = screenOrigin(cam);
+    const rx = origin.x + cam.width / cam.zoom - 24;
+    const cy = origin.y + cam.height / cam.zoom / 2;
+
+    if (this.atlasSprites) {
+      // ── 图集渲染路径 ──────────────────────────────────────────────────────
+      this.text.setAlpha(0); this.tierText.setAlpha(0);
+      const as = this.atlasSprites;
+
+      // tier glyph（行一：48px 高）
+      const tierFrame = killStreakTierFrame(s.n);
+      as.tier.setFrame(tierFrame).setAlpha(alpha).setOrigin(1, 0.5);
+      if (as.tier.height > 0) as.tier.setScale(TIER_DISPLAY_H / as.tier.height);
+      as.tier.setPosition(rx, cy - TIER_DISPLAY_H / 2 - 4).setScrollFactor(0);
+
+      // 数字行（行二：× + digits，右对齐，36px 高）
+      const countStr = String(s.n);
+      const digitCount = Math.min(countStr.length, as.digits.length);
+
+      // 隐藏多余 digit 槽
+      for (let i = digitCount; i < as.digits.length; i++) as.digits[i].setAlpha(0);
+
+      // 设置帧后计算各 sprite 宽度，从右向左排列
+      as.x.setFrame('streak-x').setAlpha(alpha).setOrigin(1, 0.5);
+      if (as.x.height > 0) as.x.setScale(DIGIT_DISPLAY_H / as.x.height);
+      for (let i = 0; i < digitCount; i++) {
+        const d = as.digits[i];
+        d.setFrame(`streak-digit-${countStr[i]}`).setAlpha(alpha).setOrigin(1, 0.5);
+        if (d.height > 0) d.setScale(DIGIT_DISPLAY_H / d.height);
+      }
+
+      // 从右向左布局：最后一位数字 → 前一位 → … → "×"
+      let cx = rx;
+      for (let i = digitCount - 1; i >= 0; i--) {
+        as.digits[i].setPosition(cx, cy + DIGIT_DISPLAY_H / 2 + 2).setScrollFactor(0);
+        cx -= as.digits[i].displayWidth + 1;
+      }
+      as.x.setPosition(cx, cy + DIGIT_DISPLAY_H / 2 + 2).setScrollFactor(0);
+
+      // 层级升级弹动（仅 tier sprite）
+      if (rose && !this.motionReduced()) {
+        const baseScale = as.tier.scaleX;
+        as.tier.setScale(baseScale * 1.4);
+        this.scene.tweens.add({targets: as.tier, scaleX: baseScale, scaleY: baseScale, duration: 220, ease: 'Back.Out'});
+      }
       return;
     }
 
-    // 相机有缩放：scrollFactor 0 的对象也要按 screenOrigin 换算，否则会偏出屏幕。
-    const cam = this.scene.cameras.main, origin = screenOrigin(cam);
-    const x = origin.x + cam.width / cam.zoom - 24, y = origin.y + cam.height / cam.zoom / 2;
-    this.text.setText(`×${s.n}`).setPosition(x, y).setAlpha(alpha);
-    this.tierText.setText(s.label).setPosition(x, y - 26).setAlpha(alpha);
-
+    // ── 文字回退路径 ──────────────────────────────────────────────────────────
+    this.text.setText(`×${s.n}`).setPosition(rx, cy).setAlpha(alpha);
+    this.tierText.setText(s.label).setPosition(rx, cy - 26).setAlpha(alpha);
     if (rose && !this.motionReduced()) {
-      // 短暂缩放弹动（层级升级提示）
-      this.text.setScale(1.4);
-      this.tierText.setScale(1.4);
-      this.scene.tweens.add({
-        targets: [this.text, this.tierText],
-        scaleX: 1, scaleY: 1,
-        duration: 220,
-        ease: 'Back.Out',
-      });
+      this.text.setScale(1.4); this.tierText.setScale(1.4);
+      this.scene.tweens.add({targets: [this.text, this.tierText], scaleX: 1, scaleY: 1, duration: 220, ease: 'Back.Out'});
     }
   }
 
   destroy(): void {
-    this.text.destroy();
-    this.tierText.destroy();
+    this.text.destroy(); this.tierText.destroy();
+    if (this.atlasSprites) {this.atlasSprites.tier.destroy(); this.atlasSprites.x.destroy(); for (const d of this.atlasSprites.digits) d.destroy();}
   }
 }

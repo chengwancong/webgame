@@ -19,9 +19,9 @@ export async function hubRuntimeNumbersHash(){
 export function assertHubChangeScope(changes:HubRewardPlan['changes']){
  const seen=new Set<string>();for(const c of changes){const key=c.path.join('.');if(c.file!=='apps/api/src/hex-loot.json'||c.path.length!==3||c.path[0]!=='policy'||c.path[1]!=='sources'||!['elite','event','dungeonChest','rare'].includes(String(c.path[2])))throw Error('HUB may change only the four ordinary HEX source probabilities.');if(seen.has(key))throw Error('Duplicate HUB change path '+key);seen.add(key);for(const value of [c.before,c.after])if(typeof value!=='number'||!Number.isFinite(value)||value<0||value>1)throw Error('HEX probability must be finite in [0,1].');}
 }
-export async function assertHubAppliedWorkbooks(planHash:string){
- const manifest=JSON.parse(await readFile('.runtime/hub-b0-b4-20261021/b4-workbooks/'+planHash+'/applied-workbooks.json','utf8'));
- const expected=['config/excel/航图.xlsx','config/excel/任务.xlsx','config/excel/港口收益.xlsx'];
+export async function assertHubAppliedWorkbooks(planHash:string,requiresTasks=false){
+ const manifest=JSON.parse(await readFile('.runtime/b4/workbooks/'+planHash+'/applied-workbooks.json','utf8'));
+ const expected=['config/excel/航图.xlsx','config/excel/港口收益.xlsx',...(requiresTasks?['config/excel/任务.xlsx']:[])];
  if(manifest.planHash!==planHash||!manifest.files||Object.keys(manifest.files).length!==expected.length)throw Error('Missing or stale applied workbook manifest.');
  for(const file of expected)if(manifest.files[file]!==digest(await readFile(file)))throw Error('Workbook changed since this plan was applied: '+file);
  for(const name of ['hub-chart.json','hub-outside-numbers.json']){const source=JSON.parse(await readFile('config/json/'+name,'utf8')),runtime=JSON.parse(await readFile('packages/content/'+name,'utf8'));if(JSON.stringify(ordered(source))!==JSON.stringify(ordered(runtime)))throw Error('Config/runtime mirror mismatch: '+name);}

@@ -81,22 +81,25 @@ describe('runGradeHtml', () => {
     expect(runGradeHtml(200, undefined)).toBe('');
   });
 
-  it('S 评价包含 run-grade-s 与字母 S', () => {
+  it('S 评价包含 run-grade-s 与 grade-s.png img', () => {
     const html = runGradeHtml(100, 'abyss');
     expect(html).toContain('run-grade-s');
-    expect(html).toContain('>S<');
+    expect(html).toContain('grade-s.png');
+    expect(html).toContain('alt="S"');
   });
 
-  it('A 评价包含「距 S 还差」提示', () => {
+  it('A 评价包含「距 S 还差」提示与 grade-a.png', () => {
     const html = runGradeHtml(200, 'hunt');  // 超 120s（S线）80s → A
     expect(html).toContain('可得 S');
     expect(html).toContain('run-grade-a');
+    expect(html).toContain('grade-a.png');
   });
 
-  it('B 评价包含「可得 A」和「可得 S」双提示', () => {
+  it('B 评价包含「可得 A」和「可得 S」双提示与 grade-b.png', () => {
     const html = runGradeHtml(300, 'hunt');  // 超 240s → B
     expect(html).toContain('可得 A');
     expect(html).toContain('可得 S');
+    expect(html).toContain('grade-b.png');
   });
 });
 

@@ -4,8 +4,8 @@
 
 | 编号 | 用途 | 规格 | 风格参照 | 当前占位 | 登记位置 | 状态 |
 |---|---|---|---|---|---|---|
-| A1 | 连斩字效：「连斩」「横扫」「无双」「神威」四档字样 + 0–9 数字 | 透明 PNG 图集；字样高 96px，数字高 72px；四档由暖白→浅金→橙金→棱彩渐强 | 现有伤害数字的描边与字重；手绘符记的柔和描边 | 文字（世界显示 Token 字体 + 描边） | `apps/web/src/kill-streak.ts`（FP1） | 待生产 |
-| A2 | 首领阶段横幅底图 | 透明 PNG，1200×160，左右渐隐，中间可放 2 行字 | 奶白浅金横条，边缘手绘笔触，暗红点缀 | 纯色半透明条 + 文字 | `apps/web/src/boss-phase-banner.ts`（FP2） | 待生产 |
-| A3 | 本场评价章 S / A / B | 透明 PNG，每枚 256×256 | 手绘印章感：S 金、A 银、B 铜，带少量星屑 | 圆形描边 + 大字母 | `apps/web/src/hub/run-grade.ts`（FP3） | 待生产 |
-| A4 | 狩猎引雷桩（完整 / 碎裂两态 + 带电循环 6 帧） | 透明 PNG 图集，单帧 160×256，锚点底部中心 | 星潮海场景摆件比例；蓝白电弧 | 裂隙方尖碑 `ow-art-rift-rift-obelisk`（不着色），碎了不显示 | `apps/web/src/dungeon-controller.ts` `HUB_PYLON_ART` | 待生产 |
-| A5 | 宝箱怪（待机伪装 / 苏醒 / 攻击 / 受击 / 死亡） | 与现有怪物图集同规格 | 现有航图宝箱外形 + 牙齿舌头，卡通不惊悚 | 本区精英模板的现有图集，名称改「宝箱怪」；苏醒时借 `danger_started` 圈 1 秒 | 服务端 `apps/api/src/dungeon-service.ts` `finishHubChest`（生成名 `宝箱怪`）；前端按名称/模板换图集时登记到 `packages/asset-manifest/actors.ts` | 待生产 |
+| A1 | 连斩字效：「连斩」「横扫」「无双」「神威」四档字样 + 0–9 数字 | 透明 PNG 图集；字样高 96px，数字高 72px；四档由暖白→浅金→橙金→棱彩渐强 | 现有伤害数字的描边与字重；手绘符记的柔和描边 | 文字（世界显示 Token 字体 + 描边） | `apps/web/src/kill-streak.ts`（FP1） | 已交 GPT（handoff/art-fp-a1-a5.md） |
+| A2 | 首领阶段横幅底图 | 透明 PNG，1200×160，左右渐隐，中间可放 2 行字 | 奶白浅金横条，边缘手绘笔触，暗红点缀 | 纯色半透明条 + 文字 | `apps/web/src/boss-phase-banner.ts`（FP2） | 已交 GPT（handoff/art-fp-a1-a5.md） |
+| A3 | 本场评价章 S / A / B | 透明 PNG，每枚 256×256 | 手绘印章感：S 金、A 银、B 铜，带少量星屑 | 圆形描边 + 大字母 | `apps/web/src/hub/run-grade.ts`（FP3） | 已交 GPT（handoff/art-fp-a1-a5.md） |
+| A4 | 狩猎引雷桩（完整 / 碎裂两态 + 带电循环 6 帧） | 透明 PNG 图集，单帧 160×256，锚点底部中心 | 星潮海场景摆件比例；蓝白电弧 | 裂隙方尖碑 `ow-art-rift-rift-obelisk`（不着色），碎了不显示 | `apps/web/src/dungeon-controller.ts` `HUB_PYLON_ART` | 已交 GPT（handoff/art-fp-a1-a5.md） |
+| A5 | 宝箱怪（待机伪装 / 苏醒 / 攻击 / 受击 / 死亡） | 与现有怪物图集同规格 | 现有航图宝箱外形 + 牙齿舌头，卡通不惊悚 | 本区精英模板的现有图集，名称改「宝箱怪」；苏醒时借 `danger_started` 圈 1 秒 | 服务端 `apps/api/src/dungeon-service.ts` `finishHubChest`（生成名 `宝箱怪`）；前端按名称/模板换图集时登记到 `packages/asset-manifest/actors.ts` | 已交 GPT（handoff/art-fp-a1-a5.md） |

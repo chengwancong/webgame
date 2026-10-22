@@ -3,6 +3,7 @@ import {existsSync,readFileSync} from 'node:fs';
 import {randomUUID} from 'node:crypto';
 import {Pool} from 'pg';
 import {createApp} from '../apps/api/src/app.ts';
+import {loadHubOutsideNumbers} from '../apps/api/src/hub-numbers.ts';
 import {migrate,transaction} from '../apps/api/src/database.ts';
 import {readHubState,saveHubState} from '../apps/api/src/hub-state.ts';
 import {newHubState} from '../packages/rules/hub-state.ts';
@@ -13,12 +14,11 @@ import {progressionConfig} from '../packages/content/deep-progression.ts';
 import {validateResponse} from '../packages/contracts/index.ts';
 
 const dsn=process.env.AW_DATABASE_URL;if(!dsn)throw Error('HUB economy API checks require isolated real PostgreSQL.');
-const schema='qa_hub_port_economy_'+randomUUID().replaceAll('-',''),owner=new Pool({connectionString:dsn,max:1}),pool=new Pool({connectionString:dsn,options:'-c search_path='+schema,max:2}),app=createApp(pool,{testLogin:true,dungeons:false});
-// B4 推导产出 hub-outside-numbers.json 之前整份验收挂起（标 skip，不算通过）；文件一出现就必须真实跑过。
-const numbersFile=new URL('../packages/content/hub-outside-numbers.json',import.meta.url),published=existsSync(numbersFile),it=published?vitestIt:vitestIt.skip;
+const schema='qa_hub_port_economy_'+randomUUID().replaceAll('-',''),owner=new Pool({connectionString:dsn,max:1}),pool=new Pool({connectionString:dsn,options:'-c search_path='+schema,max:2}),app=createApp(pool,{testLogin:true,dungeons:false,hubNumbers:loadHubOutsideNumbers()});
+// B4 已落唯一源：缺失产物直接失败，不再允许跳过经济验收。
+const numbersFile=new URL('../packages/content/hub-outside-numbers.json',import.meta.url),published=existsSync(numbersFile),it=vitestIt;if(!published)throw Error('B4 outside numbers must exist; economy acceptance cannot skip.');
 let numbers:ReturnType<typeof parseHubOutsideNumbers>;
 beforeAll(async()=>{
- if(!published)return;
  numbers=parseHubOutsideNumbers(JSON.parse(readFileSync(numbersFile,'utf8')));
  if(!Object.keys(numbers.donationOffers).length||!Object.keys(numbers.recipeOffers).length)throw Error('B4 must publish real donation and recipe offers before this acceptance test.');
  await owner.query('CREATE SCHEMA '+schema);await migrate(pool);await app.ready();

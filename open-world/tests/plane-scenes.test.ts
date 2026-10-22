@@ -8,10 +8,10 @@ import {NavigationGrid} from '../packages/simulation/navigation-grid.ts';
 import {worldTables} from '../packages/content/world-tables.ts';
 
 describe('plane scenes (箱庭位面 greybox)',()=>{
- it('every wind nest gate leads to a registered two-stage plane dungeon that returns to its island',()=>{
+ it('every wind nest gate leads to a registered two-stage plane dungeon that returns to the port (HUB rework)',()=>{
   for(const gate of worldTables.planeGates.filter(g=>g.region==='ss-map-wind'&&g.kind==='nest')){
    const d=dungeonContent.definitions.find(d=>d.id===gate.plane)!;expect(d,gate.plane).toBeTruthy();
-   expect(d.policy.returnRegion).toBe(gate.region);expect(d.stages.length).toBe(2);
+   expect(d.policy.returnRegion).toBe('ss-map-port');expect(d.stages.length).toBe(2);
    for(const id of d.stages){expect(planeMaps[id]?.kit).toBe(gate.style);expect(dungeonRegionInfo(id)).toBe(gate.region);}
    expect(regionById(d.stages[1]).spawns.some(s=>s.boss)).toBe(true);
   }
