@@ -27,7 +27,7 @@ export async function recordHubMutation(c:PoolClient,s:CharacterState,body:any,r
  if(op==='crafting.action'&&body.action?.op==='craft')recordHubOutsideActivity(h,'craft',numbers,result.delta?.gear?.length??body.action.count??1);
  const removed=before.gear.filter(g=>!s.gear.some(n=>n.id===g.id)).length;
  if(removed&&(/salvage/.test(op)||body.action==='salvage'))recordHubOutsideActivity(h,'salvage',numbers,removed);
- const enhanced=s.gear.filter(g=>g.rank>(before.gear.find(old=>old.id===g.id)?.rank??g.rank)).length;
+ const enhanced=s.slotRanks?Object.keys(s.slotRanks).filter(slot=>(s.slotRanks as Record<string,number>)[slot]>((before.slotRanks as Record<string,number>|undefined)?.[slot]??0)).length:s.gear.filter(g=>g.rank>(before.gear.find(old=>old.id===g.id)?.rank??g.rank)).length;
  if(enhanced){recordHubOutsideActivity(h,'enhance',numbers,enhanced);facts.push('hub-gate:enhance');}
  if(s.gear.some(g=>isHexAffixedGear(g)&&Object.values(s.equipment).includes(g.id)))facts.push('hub-gate:equip-hex');
  if(JSON.stringify(s.progression?.talents)!==JSON.stringify(before.progression?.talents))facts.push('hub-gate:talent');

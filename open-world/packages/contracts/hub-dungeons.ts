@@ -19,5 +19,8 @@ export const hubDungeonPublicSchema=z.object({
   hunt:z.object({mechanic:z.enum(['rockfall','flood','pylon']),pylons:z.array(z.object({id:z.string(),x:z.number(),y:z.number(),broken:z.boolean()}).strict()).optional()}).strict().optional(),
   /** 读条：寻宝开箱或狩猎击碎引雷桩（id 以 hub-pylon- 开头）；剩余与总秒数（服务端 2 秒读条，离开 2 格或倒下即取消） */
   opening:z.object({id:z.string(),left:z.number().nonnegative(),total:z.number().positive()}).strict().optional(),
+  /** M17 Z4 探索物件：秘藏 id=hub-cache-<节点>、锁门 id=hub-door-<门 id>，交互目标就是 id（2 格内）。
+   * 秘藏 hidden=没走近（半埋，不可交互）、glint=5 格内（可开）、opened；锁门 locked / open，key 为所需钥匙的航区。 */
+  explore:z.object({props:z.array(z.object({id:z.string().regex(/^hub-(cache|door)-/),kind:z.enum(['cache','door']),x:z.number(),y:z.number(),state:z.enum(['hidden','glint','opened','locked','open']),key:z.string().optional(),keyName:z.string().optional()}).strict())}).strict().optional(),
 }).strict();
 export type HubDungeonPublic=z.infer<typeof hubDungeonPublicSchema>;

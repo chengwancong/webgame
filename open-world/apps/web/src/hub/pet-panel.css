@@ -1,0 +1,47 @@
+/* Z3 宠物面板样式 */
+
+/* 外容器 */
+.pet-panel{display:flex;flex-direction:column;gap:var(--space-4)}
+
+/* 阵容区 */
+.pet-lineup{display:flex;flex-direction:column;gap:var(--space-3)}
+.pet-lineup__slots{display:flex;gap:var(--space-2);align-items:flex-start}
+.pet-lineup__main{flex:0 0 auto}
+.pet-lineup__support{display:flex;flex-direction:column;gap:var(--space-2);flex:0 0 auto}
+
+/* 宠物格（阵容 + 图鉴） */
+.pet-card{display:flex;flex-direction:column;gap:var(--space-1);padding:var(--space-2);border-radius:var(--radius-card);border:var(--border-width) solid var(--color-border-strong);background:var(--color-panel);cursor:pointer}
+.pet-card.is-active{border-color:var(--color-primary-border);background:var(--color-primary-top)}
+.pet-card.is-empty{opacity:.5;cursor:default}
+.pet-card--main{min-width:80px}
+.pet-card--support{min-width:64px;flex-direction:row;align-items:center}
+.pet-card__img{width:48px;height:48px;object-fit:contain;image-rendering:pixelated;flex:0 0 auto}
+.pet-card--support .pet-card__img{width:32px;height:32px}
+.pet-card__name{font-size:var(--font-size-caption);font-weight:var(--font-weight-bold);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pet-card__tier{font-size:var(--font-size-caption);color:var(--color-text-secondary)}
+.pet-card__remove-btn{margin-top:auto}
+.pet-card--main .pet-card__info{display:flex;flex-direction:column;gap:var(--space-1)}
+
+/* 空槽提示 */
+.pet-slot-empty{display:flex;align-items:center;justify-content:center;border-radius:var(--radius-card);border:var(--border-width) dashed var(--color-border-strong);color:var(--color-text-disabled);font-size:var(--font-size-caption)}
+.pet-slot-empty--main{width:80px;height:96px}
+.pet-slot-empty--support{width:64px;height:40px}
+
+/* 流派选择区（仅上阵宠物） */
+.pet-flows{display:flex;flex-wrap:wrap;gap:var(--space-1);margin-top:var(--space-1)}
+.pet-flow-btn{flex:1 1 auto;min-width:0;font-size:var(--font-size-caption)}
+.pet-flow-btn.is-active{background:var(--color-primary);color:var(--color-primary-text);border-color:var(--color-primary-border)}
+
+/* 已拥有列表 */
+.pet-owned{display:flex;flex-direction:column;gap:var(--space-2)}
+.pet-owned__list{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:var(--space-2)}
+
+/* 图鉴 */
+.pet-catalog{display:flex;flex-direction:column;gap:var(--space-2)}
+.pet-catalog__list{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:var(--space-2)}
+.pet-catalog-entry{display:flex;flex-direction:column;align-items:center;gap:var(--space-1);padding:var(--space-2);border-radius:var(--radius-card);border:var(--border-width) solid var(--color-border-strong);background:var(--color-panel)}
+.pet-catalog-entry.is-owned{border-color:var(--color-primary-border)}
+.pet-catalog-entry.is-locked{opacity:.4}
+.pet-catalog-entry__img{width:40px;height:40px;object-fit:contain;image-rendering:pixelated}
+.pet-catalog-entry__name{font-size:var(--font-size-caption);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.pet-catalog-entry__element{font-size:var(--font-size-caption);color:var(--color-text-secondary)}

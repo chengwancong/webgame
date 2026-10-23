@@ -1,3 +1,7 @@
+import {migrateZhangjianState,zhangjianSwitchBlock} from './zhangjian-state.ts';
+import {loadoutRequestSchema,petsRequestSchema,slotUpgradeRequestSchema,type RankSlot} from '../../../packages/contracts/zhangjian.ts';
+import {ensureLoadouts,saveLoadout,renameLoadout,applyLoadout,loadoutView,slotsView,slotUpgradeQuote,petsView,setPetLineup,setPetFlow} from '../../../packages/rules/zhangjian.ts';
+import {catchUpAffixNodes,isRankSlot,slotRank} from '../../../packages/rules/zhangjian-build.ts';
 import {serverHexCombatStats} from '../../../packages/simulation/hex-combat-stats.ts';
 import {currentGearCount} from '../../../packages/rules/current-inventory.ts';
 import {freezeHexLoot,attachHexAffixes} from './hex-loot.ts';
@@ -129,13 +133,13 @@ export function createApp(pool:Pool,options:{hubNumbers?:HubOutsideNumbers;testD
  app.setErrorHandler((e,req,reply)=>{if(e instanceof z.ZodError)return reply.code(400).send({code:'INPUT',message:'输入格式不正确，请检查后重试。'});if(e instanceof HubOutsideError)return reply.code(409).send({code:e.code,message:e.message});if(e instanceof AppearanceError)return reply.code(409).send({code:e.code,message:e.message});if(e instanceof ProgressionError||e instanceof StarseaError||e instanceof HexGearError)return reply.code(409).send({code:e.code,message:e.message});if(e instanceof Fault){req.log.warn({code:e.code,request:req.id,command_id:(req.body as any)?.command_id,permit_id:(req.body as any)?.permit_id},'business request rejected');return reply.code(e.status).send({code:e.code,message:e.message});}
  req.log.error({err:e,request:req.id},'request failed');reply.code(500).send({code:'SERVER',message:'服务暂时不可用，操作未完成，请重试。'});});
  async function identity(req:any):Promise<Identity>{const token=req.cookies.aw_session;if(!token)fail('AUTH','请先登录。',401);const session=sha(token);const r=await pool.query('SELECT account FROM ow_sessions WHERE token_hash=$1 AND expires>now()',[session]);if(!r.rowCount)fail('AUTH','登录已过期，请重新登录。',401);return {account:r.rows[0].account,session,resume:z.uuid().optional().parse(req.headers['x-aw-resume-lease'])};}
- async function state(c:Pool|PoolClient,who:Identity,lock=false):Promise<CharacterState>{const r=await c.query('SELECT state FROM ow_characters WHERE account=$1'+(lock?' FOR UPDATE':''),[who.account]);if(!r.rowCount)fail('CHARACTER','请先创建角色。',404);const s:CharacterState=r.rows[0].state;s.gear=s.gear.map(withCurrentEquipmentNames);ensureProgression(s);ensureAppearance(s);ensureStarsea(s);return s;}
+ async function state(c:Pool|PoolClient,who:Identity,lock=false):Promise<CharacterState>{if(!lock)return transaction(pool,tx=>state(tx,who,true));const r=await c.query('SELECT state FROM ow_characters WHERE account=$1 FOR UPDATE',[who.account]);if(!r.rowCount)fail('CHARACTER','请先创建角色。',404);const s:CharacterState=r.rows[0].state;await migrateZhangjianState(c as PoolClient,s);s.gear=s.gear.map(withCurrentEquipmentNames);ensureProgression(s);ensureAppearance(s);ensureStarsea(s);return s;}
  async function snapshot(c:Pool|PoolClient,s:CharacterState):Promise<Snapshot>{ensureProgression(s);const rewards=await c.query('SELECT data FROM ow_rewards WHERE character=$1 AND NOT claimed ORDER BY id',[s.id]);ensureStarsea(s);const currentRegion=resumeRegion(s),field={region:currentRegion,gathered:s.field?.region===currentRegion?[...s.field.gathered]:[]};const {taskJournal,...visible}=s;if(visible.starsea){const {trackedManually,...publicStarsea}=visible.starsea;visible.starsea=publicStarsea;}return {...visible,fieldFreeze,hexCooldowns:await readHexCooldowns(c,s.id),hex:s.hex?{awardedTasks:s.hex.awardedTasks??[],...(s.hex.pity?{pity:s.hex.pity}:{})}:undefined,hexActive:resolveHexActive(s),equipment:Object.fromEntries(ordinaryGearSlots.flatMap(slot=>s.equipment[slot]?[[slot,s.equipment[slot]]]:[])),warehouse:s.warehouse?.filter(g=>!isLegacyHexSlot(g.slot)),field,lastRegion:currentRegion,gear:s.gear.filter(g=>!isLegacyHexSlot(g.slot)).map(withCurrentEquipmentNames),...resolveBuild(s),bossAccess:resolveBossAccess(s.progress),rewards:rewards.rows.filter(r=>!isLegacyHexSlot(r.data.gear.slot)).map(r=>({...r.data,gear:withCurrentEquipmentNames(r.data.gear)})),capacity:settings.capacity,resolvedAppearance:resolveAppearance(s),starseaView:starseaView(s),skillRecovery:skillRecoveryView(s),craftGoal:craftGoalView(s),worldView:resolveWorldPhase(s),worldTierChoices:worldTierChoices(s)};}
  // 心跳每 15 秒；浏览器后台标签页会把定时器压到约每分钟一次，租约须覆盖两次以上被压后的心跳间隔。
  const controlLeaseSeconds=150;
  async function lease(c:Pool|PoolClient,s:CharacterState,who:Identity,id:string){const r=await c.query('SELECT lease,session,expires FROM ow_controls WHERE character=$1',[s.id]);const control=r.rows[0];if(!control||control.lease!==id||control.session!==who.session||new Date(control.expires).getTime()<=Date.now())fail('CONTROL','角色控制已失效，请重新获取或接管。');}
  async function save(c:PoolClient,s:CharacterState){await c.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[s,s.id]);}
- async function write(who:Identity,input:z.infer<typeof command>,body:unknown,fn:(c:PoolClient,s:CharacterState)=>Promise<{delta?:Receipt['delta'];rewards?:Reward[];spawns?:Spawn[];questCompletions?:QuestCompletion[]}>):Promise<Receipt>{
+ async function write(who:Identity,input:z.infer<typeof command>,body:unknown,fn:(c:PoolClient,s:CharacterState)=>Promise<{delta?:Receipt['delta'];rewards?:Reward[];spawns?:Spawn[];questCompletions?:QuestCompletion[];zhangjian?:Record<string,unknown>}>):Promise<Receipt>{
  return transaction(pool,async c=>{const s=await state(c,who,true),fingerprint=sha(stable(body));const old=await c.query('SELECT fingerprint,receipt FROM ow_receipts WHERE character=$1 AND command=$2',[s.id,input.command_id]);
  if(old.rowCount){if(old.rows[0].fingerprint!==fingerprint)fail('COMMAND_CONFLICT','同一操作编号不能使用不同内容。');return old.rows[0].receipt;}
  await lease(c,s,who,who.resume??input.lease_id);if(s.revision!==input.revision)fail('REVISION','角色状态已更新，请刷新后重试。');
@@ -147,7 +151,7 @@ export function createApp(pool:Pool,options:{hubNumbers?:HubOutsideNumbers;testD
  if(s.starsea){const cleared=await c.query('SELECT DISTINCT camp FROM ow_camp_cycles WHERE character=$1 AND cleared_at IS NOT NULL',[s.id]);for(const {camp} of cleared.rows){const g=recordCampFact(s,camp);if(g.completed.length){s.gold+=g.gold;applyXp(s,g.xp);result.delta??={gold:0,xp:0,material:0};result.delta.gold+=g.gold;result.delta.xp+=g.xp;(result.questCompletions??=[]).push(...g.completed);}}}
  result.delta??={gold:0,xp:0,material:0};const inventoryGain=recordHexInventoryFacts(s,beforeGear);s.gold+=inventoryGain.gold;applyXp(s,inventoryGain.xp);result.delta.gold+=inventoryGain.gold;result.delta.xp+=inventoryGain.xp;(result.questCompletions??=[]).push(...inventoryGain.completed);
  if(result.questCompletions?.length)archiveQuestCompletions(s,result.questCompletions,input.command_id,new Date().toISOString());recordTaskCompletions(s,beforeTasks,new Date().toISOString());ensureProgression(s);ensureAppearance(s);evaluateUnlocks(s);if(s.build!==priorBuild&&!(body as any).permit_id)await c.query('UPDATE ow_permits SET build=$1 WHERE character=$2',[s.build,s.id]);s.revision++;await save(c,s);
- const receipt:Receipt={command_id:input.command_id,revision:s.revision,delta:result.delta??{gold:0,xp:0,material:0},rewards:result.rewards??[],snapshot:await snapshot(c,s),...(result.spawns?.length?{spawns:result.spawns}:{})};
+ const receipt:Receipt={...(result.zhangjian?{zhangjian:result.zhangjian}:{}),command_id:input.command_id,revision:s.revision,delta:result.delta??{gold:0,xp:0,material:0},rewards:result.rewards??[],snapshot:await snapshot(c,s),...(result.spawns?.length?{spawns:result.spawns}:{})};
  await c.query('INSERT INTO ow_receipts VALUES($1,$2,$3,$4)',[s.id,input.command_id,fingerprint,receipt]);
  await c.query('INSERT INTO ow_ledger(character,command,delta) VALUES($1,$2,$3)',[s.id,input.command_id,receipt.delta]);return receipt;
  });}
@@ -347,6 +351,39 @@ export function createApp(pool:Pool,options:{hubNumbers?:HubOutsideNumbers;testD
  const atForge=(s:CharacterState,v:{region?:string;position?:{x:number;y:number}})=>{if(s.dungeon?.instance||s.dungeon?.pendingResult||!v.region||!v.position)return false;let r;try{r=regionById(v.region);}catch{return false;}return (r.landmarks??[]).some(l=>l.kind==='forge'&&Math.hypot(l.x-v.position!.x,l.y-v.position!.y)<=forgeReach);};
  const forgePlace='请到拾星港工坊进行强化和重铸。',rerollLevel=()=>'重铸需要角色等级 '+inscriptionConfig.reroll.level+'。';
  const rerollSchema=gearSchema.extend({affix_slot:z.number().int().nonnegative().max(8).optional()}).strict();
+ // M17 minimal commands retain the existing lease, revision and persisted receipt path.
+ const zWrite=async(who:Identity,v:{command_id:string},operation:string,fn:Parameters<typeof write>[3])=>{
+  const current=await state(pool,who),control=(await pool.query('SELECT lease FROM ow_controls WHERE character=$1 AND session=$2 AND expires>now()',[current.id,who.session])).rows[0];
+  if(!control)fail('CONTROL','角色控制已失效，请重新获取或接管。');
+  const receipt=await write(who,{command_id:v.command_id,revision:current.revision,lease_id:control.lease},{...v,operation},fn);
+  return {revision:receipt.revision,...(receipt as Receipt&{zhangjian?:Record<string,unknown>}).zhangjian};
+ };
+ const upgradeSlot=(s:CharacterState,slot:RankSlot)=>{
+  if(!storyFeatureUnlocked(s,'forge'))fail('STORY_LOCKED',storyFeatureReason(s,'forge'));
+  const q=slotUpgradeQuote(s,slot,upgradeCost);if(q.block||!q.cost)fail('SLOT',q.block??'无法强化。');
+  if(s.gold<q.cost.gold||s.material<q.cost.material)fail('COST','金币或强化石不足。');
+  s.gold-=q.cost.gold;s.material-=q.cost.material;s.slotRanks![slot]=q.rank+1;s.build++;
+  const g=s.gear.find(g=>g.id===s.equipment[slot])!,reached=catchUpAffixNodes(s,g,reinforceAffixNode);
+  return {delta:{gold:-q.cost.gold,xp:0,material:-q.cost.material},reached};
+ };
+ app.get('/api/loadout',async req=>{const s=await state(pool,await identity(req));ensureLoadouts(s);return loadoutView(s,resolveBuild(s).stats,await zhangjianSwitchBlock(pool,s));});
+ app.post('/api/loadout',async req=>{const who=await identity(req),v=loadoutRequestSchema.parse(req.body);return zWrite(who,v,'loadout.'+v.op,async(c,s)=>{
+  let result;if(v.op==='apply'){const block=await zhangjianSwitchBlock(c,s);if(block)fail('LOADOUT_LOCKED',block);const applied=applyLoadout(s,v.index);for(const id of applied.equipped){const g=s.gear.find(g=>g.id===id);if(g)catchUpAffixNodes(s,g,reinforceAffixNode);}result={applied:v.index,skipped:applied.skipped};}
+  else if(v.op==='save')saveLoadout(s,v.index,v.name);else {if(!v.name)fail('INPUT','请输入方案名称。',400);renameLoadout(s,v.index,v.name);}
+  return {zhangjian:{loadout:loadoutView(s,resolveBuild(s).stats,await zhangjianSwitchBlock(c,s)),...(result?{result}:{})}};
+ });});
+ app.get('/api/slots',async req=>slotsView(await state(pool,await identity(req)),upgradeCost));
+ app.post('/api/slot/upgrade',async req=>{const who=await identity(req),v=slotUpgradeRequestSchema.parse(req.body);return zWrite(who,v,'gear.slot-upgrade',async(c,s)=>{
+  if(await zhangjianSwitchBlock(c,s))fail('SLOT','请先结束当前实例。');
+  if(s.starsea?.location?.map!=='ss-map-port')fail('FORGE_PLACE',forgePlace);
+  const result=upgradeSlot(s,v.slot);return {delta:result.delta,zhangjian:{slots:slotsView(s,upgradeCost),reached:result.reached}};
+ });});
+ app.get('/api/pets',async req=>petsView(await state(pool,await identity(req))));
+ app.post('/api/pets',async req=>{const who=await identity(req),v=petsRequestSchema.parse(req.body);return zWrite(who,v,'gear.pets',async(c,s)=>{
+  if(await zhangjianSwitchBlock(c,s))fail('PET','请先结束当前实例。');
+  try{if(v.op==='lineup')setPetLineup(s,v.active,v.support);else setPetFlow(s,v.family,v.flow);}catch(e){fail('PET',e instanceof Error?e.message:'宠物设置无效。',400);}
+  return {zhangjian:{pets:petsView(s)}};
+ });});
  app.post('/api/reward/claim-many',async req=>{const who=await identity(req),v=claimRewardsSchema.parse(req.body);return write(who,v,v,async(c,s)=>{
   const ids=[...new Set(v.reward_ids)],rows=(await c.query('SELECT * FROM ow_rewards WHERE id=ANY($1::uuid[]) AND character=$2 FOR UPDATE',[ids,s.id])).rows;
   if(rows.length!==ids.length)fail('REWARD','部分战利品不存在或不属于当前角色。');if(rows.some(r=>isLegacyHexSlot(r.data.gear.slot)))fail('GEAR_RETIRED','旧独立海克斯样板保留在历史记录中。',410);
@@ -367,11 +404,11 @@ export function createApp(pool:Pool,options:{hubNumbers?:HubOutsideNumbers;testD
  });});
  app.post('/api/gear/:action',async req=>{const who=await identity(req),v=rerollSchema.parse(req.body),action=(req.params as any).action;if(!['equip','unequip','lock','salvage','upgrade','reroll'].includes(action))fail('INPUT','未知装备操作。',400);
  if(action!=='reroll'&&v.affix_slot!==undefined)fail('INPUT','只有重铸可指定词缀槽。',400);return write(who,v,{...v,action},async(c,s)=>{const g=s.gear.find(g=>g.id===v.gear_id);if(!g)fail('GEAR','装备不存在。');if(isLegacyHexSlot(g.slot))fail('GEAR_RETIRED','旧独立海克斯样板已停用，历史数据仍保留。',410);const worn=Object.values(s.equipment).includes(g.id);const delta:Receipt['delta']={gold:0,xp:0,material:0};
- if(action==='equip'){if(s.level<(g.requiredLevel??1))fail('GEAR_LEVEL','需要角色等级 '+g.requiredLevel+' 才能穿戴。');if(g.slot==='weapon'){const p=ensureProgression(s);for(let i=1;i<p.weaponGrid.length;i++)if(p.weaponGrid[i]===g.id)p.weaponGrid[i]=null;}if(g.slot==='weapon')changeMainHand(s,g.id);else s.equipment[g.slot]=g.id;ensureProgression(s);s.build++;}
+ if(action==='equip'){if(s.level<(g.requiredLevel??1))fail('GEAR_LEVEL','需要角色等级 '+g.requiredLevel+' 才能穿戴。');if(g.slot==='weapon'){const p=ensureProgression(s);for(let i=1;i<p.weaponGrid.length;i++)if(p.weaponGrid[i]===g.id)p.weaponGrid[i]=null;}if(g.slot==='weapon')changeMainHand(s,g.id);else s.equipment[g.slot]=g.id;catchUpAffixNodes(s,g,reinforceAffixNode);ensureProgression(s);s.build++;}
  if(action==='unequip'){if(worn){if(g.slot==='weapon')changeMainHand(s,undefined);else delete s.equipment[g.slot];ensureProgression(s);s.build++;}}
  if(action==='lock')g.locked=!g.locked;
  if(action==='salvage'){if(g.locked||worn||isProgressionGearReferenced(s,g.id))fail('PROTECTED','请先解除锁定、卸下装备并从武器盘移除。');delta.patterns=learnCraftPattern(s,g);collectRubbing(s,g);s.gear=s.gear.filter(v=>v.id!==g.id);s.material+=economy.salvageMaterial;delta.material=economy.salvageMaterial;}
- if(action==='upgrade'){if(!storyFeatureUnlocked(s,'forge'))fail('STORY_LOCKED',storyFeatureReason(s,'forge'));if(!atForge(s,v))fail('FORGE_PLACE',forgePlace);if(g.rank>=gearMaxRank(g,5))fail('MAX_RANK','已达到本品质强化上限。');const cost=gearUpgradeCost(g,upgradeCost);if(s.gold<cost.gold||s.material<cost.material)fail('COST','金币或强化石不足。');s.gold-=cost.gold;s.material-=cost.material;delta.gold=-cost.gold;delta.material=-cost.material;g.rank++;reinforceAffixNode(g);s.build++;}
+ if(action==='upgrade'){if(!worn||!isRankSlot(g.slot))fail('SLOT','先穿上再强化：强化等级记在部位上');if(!atForge(s,v))fail('FORGE_PLACE',forgePlace);Object.assign(delta,upgradeSlot(s,g.slot).delta);}
  if(action==='reroll'){
   if(!storyFeatureUnlocked(s,'forge'))fail('STORY_LOCKED',storyFeatureReason(s,'forge'));if(!atForge(s,v))fail('FORGE_PLACE',forgePlace);if(s.level<inscriptionConfig.reroll.level)fail('REFORGE_LEVEL',rerollLevel());
   const cost={gold:inscriptionConfig.reroll.gold,material:inscriptionConfig.reroll.material};
@@ -391,10 +428,10 @@ export function createApp(pool:Pool,options:{hubNumbers?:HubOutsideNumbers;testD
   const inscription_info=gear.inscription?{name:effectAtomById.get(gear.inscription.atomId)!.name,description:scaledDescription(effectAtomById.get(gear.inscription.atomId)!,resolveAtomParts([{id:gear.inscription.atomId,tier:gear.inscription.tier,source:gear.id}])[0])}:undefined;
   return {gear,hexPreview:hexEquipPreview(s,gear),verdict:compareVerdict(current,equipped),...(inscription_info?{inscription_info}:{}),reforge:(()=>{const reason=!gear.affixes.length?'本件还没有可重铸的副属性':!storyFeatureUnlocked(s,'forge')?storyFeatureReason(s,'forge'):s.level<inscriptionConfig.reroll.level?rerollLevel():'';return {gold:inscriptionConfig.reroll.gold,material:inscriptionConfig.reroll.material,level:inscriptionConfig.reroll.level,slot:gear.rerollSlot,allowed:!reason,reason};})(),primary_attribute:gearPrimaryAttribute(gear),revision:s.revision,ruleset_version:versions.rules,equipped:replaces?.id===gear.id,max_rank:gearMaxRank(gear,5),attributes:gearContribution(gear),effect_description:effectText[gear.effect],replaces,comparison:compareResolvedStats(current,equipped,gear.mainStat?[gear.mainStat.stat]:[]),currentSets,equippedSets};
  });
- app.get('/api/gear/:id/preview',async req=>{const who=await identity(req),s=await state(pool,who),id=z.uuid().parse((req.params as any).id),g=s.gear.find(g=>g.id===id);if(!g)fail('GEAR','装备不存在。');if(isLegacyHexSlot(g.slot))fail('GEAR_RETIRED','旧独立海克斯样板已停用，历史数据仍保留。',410);const equipped=structuredClone(s);equipped.equipment[g.slot]=g.id;const upgraded=structuredClone(s);const next=upgraded.gear.find(v=>v.id===id)!;if(next.rank<gearMaxRank(next,5))next.rank++;
+ app.get('/api/gear/:id/preview',async req=>{const who=await identity(req),s=await state(pool,who),id=z.uuid().parse((req.params as any).id),g=s.gear.find(g=>g.id===id);if(!g)fail('GEAR','装备不存在。');if(isLegacyHexSlot(g.slot))fail('GEAR_RETIRED','旧独立海克斯样板已停用，历史数据仍保留。',410);const equipped=structuredClone(s);equipped.equipment[g.slot]=g.id;const upgraded=structuredClone(s);const next=upgraded.gear.find(v=>v.id===id)!;if(isRankSlot(g.slot)&&s.equipment[g.slot]===g.id&&slotRank(upgraded,g.slot)<gearMaxRank(next,5)){upgraded.slotRanks![g.slot]=slotRank(upgraded,g.slot)+1;catchUpAffixNodes(upgraded,next,reinforceAffixNode);}
  const worn=Object.values(s.equipment).includes(g.id),blocked=g.locked?'locked':worn?'equipped':isProgressionGearReferenced(s,g.id)?'grid':'';
  const currentBuild=resolveBuild(s),equippedBuild=resolveBuild(equipped);
- return {gear_id:g.id,hexPreview:hexEquipPreview(s,g),revision:s.revision,ruleset_version:versions.rules,verdict:compareVerdict(currentBuild.stats,equippedBuild.stats),equipBlock:s.level<(g.requiredLevel??1)?'需要角色等级 '+g.requiredLevel+' 才能穿戴。':'',cost:gearUpgradeCost(g,upgradeCost),upgradeBlock:storyFeatureUnlocked(s,'forge')?'':storyFeatureReason(s,'forge'),current:currentBuild,equipped:equippedBuild,upgraded:resolveBuild(upgraded),max:g.rank>=gearMaxRank(g,5),salvage:{gear_id:g.id,material:economy.salvageMaterial,allowed:blocked==='',blocked}};});
+ return {gear_id:g.id,hexPreview:hexEquipPreview(s,g),revision:s.revision,ruleset_version:versions.rules,verdict:compareVerdict(currentBuild.stats,equippedBuild.stats),equipBlock:s.level<(g.requiredLevel??1)?'需要角色等级 '+g.requiredLevel+' 才能穿戴。':'',cost:gearUpgradeCost({rank:isRankSlot(g.slot)?slotRank(s,g.slot):g.rank,ilvl:g.ilvl},upgradeCost),upgradeBlock:storyFeatureUnlocked(s,'forge')?'':storyFeatureReason(s,'forge'),current:currentBuild,equipped:equippedBuild,upgraded:resolveBuild(upgraded),max:(isRankSlot(g.slot)?slotRank(s,g.slot):g.rank)>=gearMaxRank(g,5),salvage:{gear_id:g.id,material:economy.salvageMaterial,allowed:blocked==='',blocked}};});
  app.get('/api/skills/preview',async req=>{const who=await identity(req),s=await state(pool,who);return {revision:s.revision,ruleset_version:versions.rules,skills:resolveSkillAccess(s)};});
  app.post('/api/skills',async req=>{const who=await identity(req),v=command.extend({skills:z.array(z.string()).min(1).max(4)}).strict().parse(req.body);return write(who,v,{...v,action:'save-skills'},async(c,s)=>{
   if(new Set(v.skills).size!==v.skills.length||v.skills.some(id=>!skillCatalog.some(sk=>sk.id===id)))fail('SKILL','请选择一至四个不同的有效技能。');

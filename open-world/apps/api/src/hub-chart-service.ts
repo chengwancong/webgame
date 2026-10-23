@@ -1,3 +1,7 @@
+import {backfillZhangjian,awardExplorePets} from './zhangjian-state.ts';
+import {grantPetXp,nodeExploreFields,regionExplore} from '../../../packages/rules/zhangjian.ts';
+import {petForm} from '../../../packages/rules/zhangjian-build.ts';
+import {petFamilyById} from '../../../packages/content/zhangjian.ts';
 import {currentGearCount} from '../../../packages/rules/current-inventory.ts';
 import {createHash,randomInt} from 'node:crypto';
 import type {PoolClient,Pool} from 'pg';
@@ -69,7 +73,7 @@ export async function refundHubEntry(c:PoolClient,s:CharacterState,entry:FrozenH
  if(quotaKey&&s.challengeProgress?.daily[quotaKey])s.challengeProgress.daily[quotaKey]=Math.max(0,s.challengeProgress.daily[quotaKey]-1);
  stored.refundedAt=now;await c.query('UPDATE ow_hub_entries SET data=$1 WHERE character=$2 AND instance=$3',[stored,s.id,instanceId]);await saveHubState(c,s.id,h);return {refunded:true,shards,...(quotaKey?{quotaKey}:{})};
 }
-export async function settleHubNode(c:PoolClient,s:CharacterState,input:{nodeId:string;instanceId:string;seconds:number;shards?:string[];challenge?:'high'|'nightmare'},now=Date.now(),numbers:HubOutsideNumbers=pendingHubOutsideNumbers):Promise<HubSettlement>{
+export async function settleHubNode(c:PoolClient,s:CharacterState,input:{nodeId:string;instanceId:string;seconds:number;exploreRewards?:string[];shards?:string[];challenge?:'high'|'nightmare'},now=Date.now(),numbers:HubOutsideNumbers=pendingHubOutsideNumbers):Promise<HubSettlement>{
  const previous=await c.query('SELECT response FROM ow_hub_node_settlements WHERE character=$1 AND instance=$2',[s.id,input.instanceId]);if(previous.rowCount)return previous.rows[0].response;
  const node=hubNodeById.get(input.nodeId);requireHub(node,'HUB_NODE','副本对应的航图节点不存在。');requireHub(Number.isFinite(input.seconds)&&input.seconds>=0,'HUB_TIME','通关计时不合法。');
  const entry=await c.query('SELECT data FROM ow_hub_entries WHERE character=$1 AND instance=$2',[s.id,input.instanceId]);requireHub(entry.rowCount&&entry.rows[0].data.nodeId===node.id,'HUB_ENTRY','找不到本场星门出发记录。');
@@ -79,8 +83,9 @@ export async function settleHubNode(c:PoolClient,s:CharacterState,input:{nodeId:
  h.chart.cleared[node.id]={firstAt:h.chart.cleared[node.id]?.firstAt??new Date(now).toISOString(),bestSeconds:Math.min(seconds,h.chart.cleared[node.id]?.bestSeconds??seconds)};
  const day=hubDay(now);h.chart.daily={day,nodes:[...hubDaily(h,now)]};let applied=false;
  if(h.chart.daily.nodes.length<HUB_DAILY_FIRST_CLEAR_LIMIT&&!h.chart.daily.nodes.includes(node.id)){const added=await c.query('INSERT INTO ow_hub_daily_node_clears(character,day,node,instance) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING RETURNING node',[s.id,day,node.id,input.instanceId]);if(added.rowCount){h.chart.daily.nodes.push(node.id);applied=true;}}
- const rewards:string[]=[],collectibles:HubSettlement['collectibles']=[],st=s.starsea;let sideRep=0;
+ const rewards:string[]=[...(input.exploreRewards??[])],collectibles:HubSettlement['collectibles']=[],st=s.starsea;let sideRep=0;
  if(firstClear){
+  backfillZhangjian(s,h,rewards);
   rewards.push(...node.firstClearReward);if(st){const gained=recordHubNodeFact(s,node.id,now);s.gold+=gained.gold;applyXp(s,gained.xp);rewards.push(...gained.messages);archiveQuestCompletions(s,gained.completed,input.instanceId,new Date(now).toISOString());sideRep+=completedSideReputation(h,gained.completed,numbers);
    if(node.kind==='gate'){const boss=node.region==='wind'?'ss-map-boss-1':'ss-map-boss-2';if(!st.bosses.includes(boss))st.bosses.push(boss);const next=node.region==='wind'?'ss-map-mist':'ss-map-forge';if(!st.islands.includes(next))st.islands.push(next);const dialogueId=node.region==='wind'?'ss-c01-t06:accept':'ss-c02-t06:accept';h.chart.returnQueue.push({id:dialogueId,item:{kind:'dialogue',dialogueId}});}
    if(node.id==='wind-story-1'){h.chart.returnQueue.push({id:'ss-c01-t02:accept',item:{kind:'dialogue',dialogueId:'ss-c01-t02:accept'}});h.chart.returnQueue.push({id:'hub:first-return:1',item:{kind:'dialogue',dialogueId:'hub:first-return:1'}});}
@@ -91,6 +96,7 @@ export async function settleHubNode(c:PoolClient,s:CharacterState,input:{nodeId:
  }
  // D4 freezes only additional rewards before B4. Existing kill rewards remain payable in pending runs.
  const multiplier=applied?2:1,paid=entry.rows[0].data.alreadyPaid??{gold:0,xp:0,material:0};for(const key of ['gold','xp','material'] as const)requireHub(Number.isSafeInteger(paid[key])&&paid[key]>=0&&(!budgetReady||paid[key]<=reward[key]),'HUB_REWARD_BUDGET','本场已发收益与冻结预算不符。');if(budgetReady){s.gold+=reward.gold*multiplier-paid.gold;s.material+=reward.material*multiplier-paid.material;applyXp(s,reward.xp*multiplier-paid.xp);}addHubReputation(h,'shipyard',reward.rep);const shardCount=reward.shards+Number((entry.rows[0].data.shardRoll??randomInt(4294967296)/4294967296)<(reward.shardChance??0));if(shardCount){const pool:string[]=entry.rows[0].data.shardPool??hubChartContent.shards.map(x=>x.id),offset=(entry.rows[0].data.shardOffset??randomInt(Math.max(1,pool.length)))%pool.length;for(let i=0;i<shardCount;i++){const shard=pool[(offset+i)%pool.length];h.chart.shards[shard]=(h.chart.shards[shard]??0)+1;}}
+ const forms=Object.fromEntries(Object.entries(s.pets?.owned??{}).map(([id,p])=>[id,petForm(p.level)]));for(const up of grantPetXp(s,budgetReady?reward.xp*multiplier:paid.xp)){if(forms[up.family]!==petForm(up.level))rewards.push(petFamilyById.get(up.family)!.name+'升到 '+up.level+' 级，'+(petForm(up.level)==='adult'?'成年了':'觉醒了'));}awardExplorePets(s,h,rewards);
  if(Object.keys(h.chart.cleared).filter(id=>id.startsWith('wind-nest-')).length>=2){const g=recordHubFact(s,'hub-gate:wind-nests',now);s.gold+=g.gold;applyXp(s,g.xp);archiveQuestCompletions(s,g.completed,input.instanceId,new Date(now).toISOString());}
  if(st&&hubForgeOpen(h)&&!st.features.includes('forge'))st.features.push('forge');
  countHubCommissionNodeClear(h,node.id,input.instanceId,reward.xp);const unlock=queueHubUnlocks(s,h).find(i=>i.kind==='unlock'),next=hubRecommended(s,h),shards=input.shards??entry.rows[0].data.shards??[];const retryReason=currentGearCount(s.gear)>=settings.capacity?'先回港整理':shards.some((id:string)=>(h.chart.shards[id]??0)<shards.filter((x:string)=>x===id).length)?'残页不足':undefined;
@@ -107,7 +113,7 @@ export function ackHubReturn(s:CharacterState,h:HubState,input:{kind:'unlock'|'d
 type Identity={account:string;session:string};
 type Context={pool:Pool;identity:(req:any)=>Promise<Identity>;state:(c:Pool|PoolClient,who:Identity,lock?:boolean)=>Promise<CharacterState>;fail:(code:string,message:string,status?:number)=>never};
 export function registerHubChart(app:FastifyInstance,ctx:Context,numbers:HubOutsideNumbers=pendingHubOutsideNumbers){
- app.get('/api/hub/chart',async req=>{const s=await ctx.state(ctx.pool,await ctx.identity(req)),h=await readHubState(ctx.pool,s.id);return chartViewSchema.parse(hubChartView(s,h));});
+ app.get('/api/hub/chart',async req=>{const s=await ctx.state(ctx.pool,await ctx.identity(req)),h=await readHubState(ctx.pool,s.id);const view=hubChartView(s,h);for(const region of view.regions){region.explore=regionExplore(h,region.id);for(const node of region.nodes)Object.assign(node,nodeExploreFields(h,node.id));}return chartViewSchema.parse(view);});
  const command=async(req:any,body:{command_id:string},operation:string,fn:(s:CharacterState,h:HubState)=>unknown)=>{const who=await ctx.identity(req);try{return await transaction(ctx.pool,async c=>{const s=await ctx.state(c,who,true);return hubCommand(c,s,body.command_id,{operation,...body},async()=>{requireHub(!s.dungeon?.instance,'BUILD_LOCKED','请先结束当前副本。');const h=await readHubState(c,s.id),result=fn(s,h);s.revision++;await saveHubState(c,s.id,h);await c.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[s,s.id]);return result;});});}catch(e){if(e instanceof HubOutsideError)ctx.fail(e.code,e.message,409);throw e;}};
  app.post('/api/hub/sea-tier',async req=>{const v=hubSeaTierRequestSchema.parse(req.body);return command(req,v,'hub.sea-tier',(s,h)=>{requireHub(s.starsea?.location?.map==='ss-map-port','HUB_PLACE','请回到港口星门切换海域难度。');requireHub(worldTierUnlocked(s,v.tier),'HUB_TIER_LOCKED','所选海域难度尚未开放。');s.world??=worldProgressSchema.parse({});s.world.worldTier=v.tier;return {ok:true,tier:v.tier};});});
  app.post('/api/hub/return-ack',async req=>{const v=hubReturnAckRequestSchema.parse(req.body);return command(req,v,'hub.return-ack',(s,h)=>{ackHubReturn(s,h,v,Date.now(),numbers);return {ok:true};});});

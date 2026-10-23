@@ -182,6 +182,7 @@ export function switchGuard(){if(!String(versions.rules).startsWith('ow-')||Numb
 function localOut(output:string){const path=resolve(output),inside=relative(resolve('.runtime'),path);if(isAbsolute(inside)||inside.startsWith('..'))throw Error('Raw HUB number evidence must remain under .runtime');return path;}
 async function exclusive(path:string,value:unknown){await writeFile(path,JSON.stringify(value,null,2)+'\n',{flag:'wx'});}
 export async function runHubRewards(args:string[]){
+ if(args.includes("--zhangjian"))return (await import("./zhangjian-numbers.ts")).runZhangjianNumbers(args);
  const get=(key:string,fallback='')=>args.find(a=>a.startsWith('--'+key+'='))?.slice(key.length+3)??fallback;
  if(['--derive','--measure-combat','--verify','--apply','--correction','--requirements'].filter(action=>args.includes(action)).length!==1)throw Error('Exactly one HUB action is required.');
  if(args.includes('--requirements')){console.log(JSON.stringify({schema:'tools/spine/hub-reward-schema.ts',required},null,2));return;}

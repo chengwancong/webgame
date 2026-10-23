@@ -22,9 +22,11 @@ import {resolveWeaponCombos} from './weapon-combos.ts';
 import {mainHandWeapon} from './weapon-skills.ts';
 import type {BuildEffectSelection} from '../contracts/build-projection.ts';
 import {buildSourcePartsSchema} from '../contracts/build-sources.ts';
+import {withSlotRank,resonanceTier,resonanceStats,petBuildParts} from './zhangjian-build.ts';
 export type BuildStatPart={source:string;phase:'affix'|'main'|'set'|'progression';stat:string;value:number};
 export function collectBuildParts(s:CharacterState,selection:BuildEffectSelection={}){
- const worn=s.gear.filter(g=>Object.values(s.equipment).includes(g.id)),stats:BuildStatPart[]=[],zones:{source:string;zone:DamageZone}[]=[],sets:SetBonus[]=[];
+ // M17 Z2：主属性强化按部位等级（withSlotRank）；共鸣与宠物被动走 main 阶段。
+ const worn=s.gear.filter(g=>Object.values(s.equipment).includes(g.id)).map(g=>withSlotRank(s,g)),stats:BuildStatPart[]=[],zones:{source:string;zone:DamageZone}[]=[],sets:SetBonus[]=[];
  for(const g of worn){for(const a of g.affixes)stats.push({source:g.id,phase:'affix',stat:a.stat,value:a.value});const main=mainStatContribution(g);if(main)stats.push({source:g.id,phase:'main',stat:main.stat,value:main.effective});}
  for(const set of getEquippedSets(worn)){const definition=gearSets.find(d=>d.id===set.setId)!;for(const n of set.activeBonuses){const bonus=definition.bonuses.find(b=>b.pieces===n)!;sets.push(bonus);for(const [stat,value]of Object.entries(bonus.stats??{}))if(typeof value==='number')stats.push({source:set.setId+':'+n,phase:'set',stat,value});for(const zone of bonus.zones??[])zones.push({source:set.setId+':'+n,zone});}}
  const unified=unifiedSetParts(worn,selection.withoutFourSets);stats.push(...unified.stats);zones.push(...unified.zones);
@@ -32,8 +34,9 @@ export function collectBuildParts(s:CharacterState,selection:BuildEffectSelectio
  const talentRules=talentDefinitions.filter(t=>t.parts&&(s.progression?.talents[t.id]??0)>0).flatMap(t=>t.parts!.rules.map(r=>({...r,source:t.id})));
  const sourceRules=sources.flatMap(s=>{const list=s.parts.rules.map(r=>({...r,source:s.source}));if(s.parts.flags||s.parts.statusOverrides)list.push(sourceRuleSchema.parse({id:s.source+'-state',name:s.name,description:s.name,source:s.source,tier:1,trigger:'passive',chance:1,icd:0,filter:s.parts.flagFilter??{},when:[],action:{type:'buff',duration:1,maxStacks:1,mods:{},...(s.parts.flags?{flags:Object.fromEntries(Object.entries(s.parts.flags).filter(([k])=>k!=='unsharedProjectiles'))}:{}),...(s.parts.statusOverrides?{statusOverrides:s.parts.statusOverrides}:{})},scale:[],vfxKey:'player/ward'}));return list;});
  const progression=collectProgressionParts(s);for(const m of progression.mods)stats.push({source:m.skill??m.zone??'progression',phase:'progression',stat:m.stat,value:m.value});
+ stats.push(...resonanceStats(resonanceTier(s).tier));const pets=petBuildParts(s);stats.push(...pets.stats);
  const combos=resolveWeaponCombos(s,mainHandWeapon(s)),hex=collectHexRules(s);
- return {worn,stats,sets,zones,progression,combos,hex,unified,sources,sourceRules,talentRules,inscriptionAtoms,rules:overrideEffectRules([...combos.map(comboToEffect),...resolveAtomParts([...unified.atoms,...inscriptionAtoms,...sources.flatMap(s=>s.parts.atoms.map(a=>({...a,source:s.source})))]),...unified.rules,...sourceRules,...talentRules,...hex],overrides),conditional:stats.flatMap((p,i)=>{const def=statRegistry.find(d=>d.id===p.stat);return def?.cond?[{id:p.source+':'+p.stat+':'+i,pool:'cond' as const,value:p.value,when:def.cond}]:[]}),patches,overrides};
+ return {worn,stats,sets,zones,progression,combos,hex,unified,sources,sourceRules,talentRules,inscriptionAtoms,rules:overrideEffectRules([...pets.rules,...combos.map(comboToEffect),...resolveAtomParts([...unified.atoms,...inscriptionAtoms,...sources.flatMap(s=>s.parts.atoms.map(a=>({...a,source:s.source})))]),...unified.rules,...sourceRules,...talentRules,...hex],overrides),conditional:stats.flatMap((p,i)=>{const def=statRegistry.find(d=>d.id===p.stat);return def?.cond?[{id:p.source+':'+p.stat+':'+i,pool:'cond' as const,value:p.value,when:def.cond}]:[]}),patches,overrides};
 }
 export type BuildParts=ReturnType<typeof collectBuildParts>;
 /** Preserve legacy arithmetic order; new main percentages form one sum per stat. */
@@ -52,7 +55,7 @@ export function applyBuildParts(s:CharacterState,base:Stats,parts:BuildParts):St
  for(const def of statRegistry){const value=numericStat(out,def.id);if(value&&def.cap!==null)(out as unknown as Record<string,unknown>)[def.id]=Math.min(def.cap,value);}
  const {rules,conditional:dynamic}=resolveAttributeEffects(out);
  dynamic.push(...parts.unified.conditional,...parts.sources.flatMap(s=>s.parts.conditional));
- if(dynamic.length)out.conditional=[...(out.conditional??[]),...dynamic];if(parts.unified.atoms.length||parts.unified.rules.length||parts.sourceRules.length||parts.talentRules.length||parts.inscriptionAtoms.length||parts.hex.length||rules.length)out.rules=[...parts.rules,...overrideEffectRules(rules,parts.overrides,{'atom-thorns':['stat-thorns']})];return out;
+ if(dynamic.length)out.conditional=[...(out.conditional??[]),...dynamic];if(parts.unified.atoms.length||parts.unified.rules.length||parts.sourceRules.length||parts.talentRules.length||parts.inscriptionAtoms.length||parts.hex.length||parts.rules.some(r=>r.id.startsWith('pet-'))||rules.length)out.rules=[...parts.rules,...overrideEffectRules(rules,parts.overrides,{'atom-thorns':['stat-thorns']})];return out;
 }
 
 export function applyAttributeSkill(skill:import('../contracts/index.ts').Skill,stats:Stats){

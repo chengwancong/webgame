@@ -1,3 +1,4 @@
+import {starseaAsset} from './starsea-runtime-assets.ts';
 import {dungeonSocketURL} from './recovery-policy.ts';
 import {dungeonFrameNotices} from './dungeon-feedback.ts';
 import {dungeonArtEntrances} from '../../../packages/content/world-tables.ts';
@@ -31,6 +32,8 @@ export type RunView=Omit<DungeonView,'chests'>&Partial<Omit<HubDungeonPublic,'ch
 const hubGatherReach=2;
 /** FP4 引雷桩：交互距离同服务端 2 格；美术占位 A4 用裂隙方尖碑，正式图到位只改这里。 */
 const hubPylonReach=2,HUB_PYLON_ART='ow-art-hub-hunt-pylon';
+/** 秘藏 / 锁门的图：正式图登记后自动用上，否则用占位。 */
+function exploreArt(p:{kind:'cache'|'door';key?:string;state:string}){const open=p.state==='opened',ids=p.kind==='cache'?['ow-art-hub-cache',open?'ow-art-fine-chest-open':'ow-art-fine-chest-closed',open?'ow-art-chest-open':'ow-art-chest-closed']:['ow-art-hub-door-'+(p.key??'mist'),'ow-art-rocks-split','ow-art-rocks'];return ids.find(id=>starseaAsset(id))??ids[ids.length-1];}
 
 /** Challenge-season tier input (string, keyed by entry id) -> tier for the dungeon catalogue; undefined when absent or not a positive integer. */
 export function challengeTierPick(tiers:Record<string,string|number|undefined>,id:string):number|undefined{const raw=tiers[id];if(raw===undefined||raw==='')return undefined;const n=Number(raw);return Number.isInteger(n)&&n>0?n:undefined;}
@@ -137,7 +140,7 @@ export class DungeonController{
  /** 星门寻宝要站在 2 格内读条 2 秒（hub-dungeon-runtime），旧副本宝箱 3 格 */
  private get chestReach(){return this.instance?.keyChests?2:3;}
  private near(p:{x:number;y:number},reach:number){const h=this.deps.world().hero.position;return Math.hypot(p.x-h.x,p.y-h.y)<=reach;}
- chestObjects(){return [...this.chests.map(ch=>({id:'dungeon-chest:'+ch.id,artId:ch.resource,position:ch.position,name:ch.name,label:ch.claimed?'已开启':'开启宝箱',reach:this.chestReach,enabled:!ch.claimed})),...this.gatherObjects(),...this.pylonObjects()];}
+ chestObjects(){return [...this.chests.map(ch=>({id:'dungeon-chest:'+ch.id,artId:ch.resource,position:ch.position,name:ch.name,label:ch.claimed?'已开启':'开启宝箱',reach:this.chestReach,enabled:!ch.claimed})),...this.gatherObjects(),...this.pylonObjects(),...this.exploreObjects()];}
  /** FP4 狩猎引雷桩（站 2 格内读条 2 秒击碎）。美术占位 A4：裂隙方尖碑；碎了就不再显示。 */
  private pylonObjects(){
   return (this.instance?.hunt?.pylons??[]).map(p=>p.broken
@@ -146,6 +149,13 @@ export class DungeonController{
     // 完好：可交互（prop渲染器为静态图；atlas charge动画待starsea-story-renderer支持后可补全）
     :{id:'dungeon-pylon:'+p.id,artId:HUB_PYLON_ART,position:{x:p.x,y:p.y},name:'引雷桩',label:'击碎引雷桩',reach:hubPylonReach,enabled:true,state:'default'});
  }
+ /** M17 Z4 秘藏与锁门。正式图（ART-HF A27/A28）未到时：秘藏借宝箱图，锁门借石堆；锁门没钥匙也可交互，由服务端回「需要 X」。 */
+ private exploreObjects(){
+  return (this.instance?.explore?.props??[]).map(p=>{const cache=p.kind==='cache',art=exploreArt(p),usable=cache?p.state==='glint':p.state==='locked';
+   return {id:'dungeon-explore:'+p.id,artId:art,position:{x:p.x,y:p.y},name:cache?'秘藏':'锁门',label:usable?(cache?'打开秘藏':'开门'+(p.keyName?'（需要'+p.keyName+'）':'')):'',reach:hubPylonReach,enabled:usable,state:p.state};});
+ }
+ nearestExplore(){return this.instance?.explore?.props.find(p=>(p.kind==='cache'?p.state==='glint':p.state==='locked')&&this.near(p,hubPylonReach));}
+ openExplore(id:string){this.input({kind:'interact',target:id});}
  nearestPylon(){return this.instance?.hunt?.pylons?.find(p=>!p.broken&&this.near(p,hubPylonReach));}
  /** 星门副本的采集点（已采的不显示）。素材图沿用野外采集点的占位画法。 */
  private gatherObjects(){const f=this.instance;if(!f?.gatherPoints)return [];const area=f.definition.area;return f.gatherPoints.filter(p=>!p.gathered).map(p=>({id:'dungeon-gather:'+p.id,artId:gatherArt({region:area,material:p.material}),position:{x:p.x,y:p.y},name:materialName(p.material),label:'采集',reach:hubGatherReach,enabled:true}));}
@@ -154,7 +164,7 @@ export class DungeonController{
  breakPylon(id:string){this.input({kind:'interact',target:id});}
  nearestChest(){return this.chests.filter(ch=>!ch.claimed&&this.near(ch.position,this.chestReach)).sort((a,b)=>Math.hypot(a.position.x-this.deps.world().hero.position.x,a.position.y-this.deps.world().hero.position.y)-Math.hypot(b.position.x-this.deps.world().hero.position.x,b.position.y-this.deps.world().hero.position.y))[0];}
  openChest(id:string){this.input({kind:'interact',target:id});}
- interact(){const chest=this.nearestChest();if(chest){this.openChest(chest.id);return;}const pylon=this.nearestPylon();if(pylon){this.breakPylon(pylon.id);return;}const point=this.nearestGather();if(point){this.gather(point.id);return;}const frame=this.instance;if(!frame)return;const self=frame.actors.find(a=>a.id===this.selfId),downed=frame.actors.filter(a=>a.downed&&a.id!==this.selfId&&self&&Math.hypot(a.position.x-self.position.x,a.position.y-self.position.y)<=frame.definition.policy.rescue.range).sort((a,b)=>a.id===this.allyTarget?-1:b.id===this.allyTarget?1:a.id.localeCompare(b.id))[0];if(downed)this.input({kind:'rescue',target:downed.id});else this.deps.notice(frame.checkpoint?'在副本面板准备后进入下一层。':'靠近倒地队友后交互救援。');}
+ interact(){const chest=this.nearestChest();if(chest){this.openChest(chest.id);return;}const pylon=this.nearestPylon();if(pylon){this.breakPylon(pylon.id);return;}const prop=this.nearestExplore();if(prop){this.openExplore(prop.id);return;}const point=this.nearestGather();if(point){this.gather(point.id);return;}const frame=this.instance;if(!frame)return;const self=frame.actors.find(a=>a.id===this.selfId),downed=frame.actors.filter(a=>a.downed&&a.id!==this.selfId&&self&&Math.hypot(a.position.x-self.position.x,a.position.y-self.position.y)<=frame.definition.policy.rescue.range).sort((a,b)=>a.id===this.allyTarget?-1:b.id===this.allyTarget?1:a.id.localeCompare(b.id))[0];if(downed)this.input({kind:'rescue',target:downed.id});else this.deps.notice(frame.checkpoint?'在副本面板准备后进入下一层。':'靠近倒地队友后交互救援。');}
  go(position:{x:number;y:number}){this.input({kind:'go',x:position.x,y:position.y});}
  beforeUnload(){if(!this.running||this.instance!.definition.mode!=='simulation')return;const payload={command_id:crypto.randomUUID(),lease_id:this.deps.lease(),op:'leave',instance_id:this.instance!.id};navigator.sendBeacon('/api/dungeons/command',new Blob([JSON.stringify(payload)],{type:'application/json'}));}
  private hubBlocks=new HubBlockStore(id=>api('dungeons/'+encodeURIComponent(id)+'/result'),id=>{if(this.instance?.id===id&&this.deps.panel()==='dungeon-result')this.deps.refresh();});

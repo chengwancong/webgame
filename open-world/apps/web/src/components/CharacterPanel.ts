@@ -16,7 +16,7 @@ import {gearAffixes,gearQuality,qualityLabels} from './gear-metadata.ts';
 import {art} from '../ui-assets.ts';
 import {type SlotMark,statIcon,sectionTitleHtml,esc,buttonHtml,itemSlot,panelHeaderHtml,statusBadgeHtml,stateBlockHtml,statRowHtml} from '../ui-components.ts';
 import {equipmentPartLabels,runtimeSlotForPart,type GearSlotFilter} from '../equipment-slots.ts';
-export type CharacterPanelOptions={chooserOpen:boolean;detailsOpen:boolean;blocked:boolean;recovering?:boolean;damage?:{stats:Stats;skills:Skill[];telemetry:RuleTelemetry|null;sourceNames?:Record<string,string>}};
+export type CharacterPanelOptions={chooserOpen:boolean;detailsOpen:boolean;blocked:boolean;recovering?:boolean;damage?:{stats:Stats;skills:Skill[];telemetry:RuleTelemetry|null;sourceNames?:Record<string,string>};/** Z1 出战方案 */loadoutView?:import('../../../../packages/contracts/zhangjian.ts').LoadoutView;/** Z3 有宠物时显示入口 */petsEntry?:boolean};
 /** Main stat after reinforcement, mirroring `mainStatContribution` in packages/rules/main-stats.ts. Legacy gear without a main stat has none. */
 export function gearMainStat(gear:Gear){const value=mainStatValues(gear);return value?{stat:value.stat,value:value.effective}:undefined;}
 export const mainStatText=(stat:string,value:number)=>affixDisplayValue(stat,value);
@@ -60,7 +60,27 @@ function swapView(snapshot:Snapshot,part:Exclude<GearSlotFilter,''>,selected:str
  const detail=selection.selected?GearDetails(selection.selected,snapshot,'character',busy):`<aside class="character-empty">${stateBlockHtml({kind:'empty',title:label+'未装备',message:'当前没有该部位的可穿戴装备。',compact:true})}</aside>`;
  return `<section class="character-chooser" role="region" aria-label="${label}装备候选">${panelHeaderHtml('更换'+label,{level:'section',closeAction:'character-chooser-close',closeLabel:'收起换装'})}<div class="character-candidate-hint">${sectionTitleHtml('候选',{count:`${selection.items.length} 件`})}${worn?'<small>▲▼ 为主属性与穿戴中相比</small>':''}</div><div class="character-candidate-grid" data-character-scroll="candidates-${part}">${rows}</div></section><section class="character-compare${pair?' has-pair':''}" aria-label="装备对比">${pair?wornCard(worn!)+'<span class="character-compare-arrow" aria-hidden="true">→</span>':''}${detail}</section>`;
 }
+/** Z1 出战方案页签（顶部）。loadoutView 缺失时不渲染。 */
+function loadoutTabsHtml(lv:import('../../../../packages/contracts/zhangjian.ts').LoadoutView,busy:boolean,petsEntry=false):string{
+ const DEFAULT_NAMES=['方案一','方案二','方案三'];
+ const items=lv.slots.map((s,i)=>{
+  const name=s.name||DEFAULT_NAMES[i];
+  const dirty=i===lv.active&&lv.dirty;
+  const mark=dirty?'<span class="loadout-tab__dot" aria-label="未保存" title="有未保存的改动">●</span>':'';
+  const canSwitch=lv.canSwitch||i===lv.active;
+  return {id:String(i),label:name,markHtml:mark,disabled:busy||(!canSwitch&&i!==lv.active),attributes:(!lv.canSwitch&&i!==lv.active&&lv.switchBlock)?{title:lv.switchBlock}:undefined};
+ });
+ const tabNav=`<nav class="loadout-tabs" role="tablist" aria-label="出战方案">${items.map(item=>`<button type="button" class="loadout-tab${lv.active===Number(item.id)?' is-active':''}" role="tab" data-action="${lv.slots[Number(item.id)]?.empty?'loadout-save':'loadout-apply'}" data-id="${esc(item.id)}" aria-selected="${lv.active===Number(item.id)}" ${item.disabled?'disabled':''}${item.attributes?.title?` title="${esc(item.attributes.title)}"`:''}>
+  <span>${esc(item.label)}</span>${item.markHtml??''}</button>`).join('')}</nav>`;
+ const saveBtn=buttonHtml('保存到此方案',{action:'loadout-save',id:String(lv.active),size:'compact',variant:'secondary',disabled:busy||!lv.dirty});
+ const renameBtn=buttonHtml('改名',{action:'loadout-rename',id:String(lv.active),size:'compact',variant:'secondary',disabled:busy});
+ return `<div class="loadout-bar">${tabNav}<div class="loadout-bar__actions">${saveBtn}${renameBtn}${petsEntry?buttonHtml('宠物',{action:'panel',id:'pets',size:'compact',variant:'secondary'}):''}</div></div>`;
+}
+
 export function CharacterPanel(snapshot:Snapshot,part:Exclude<GearSlotFilter,''>,selected:string,figureURL:string|undefined,busy:boolean,options:CharacterPanelOptions={chooserOpen:false,detailsOpen:true,blocked:false}){
  const swapping=options.chooserOpen;
- return `<div class="character-panel${swapping?' is-swapping':''}"><section class="character-paperdoll${swapping?' chooser-open':''}" aria-label="人物与装备">${CharacterPaperdoll(snapshot,options.chooserOpen?part:'',figureURL)}</section>${options.chooserOpen?swapView(snapshot,part,selected,busy):summary(snapshot,options)}<footer class="character-footer">${options.blocked?`<span role="status">${statusBadgeHtml('连接待恢复，装备与属性待同步','warning',{variant:'inline'})}</span>${buttonHtml('恢复连接',{action:'recover',size:'compact',variant:'secondary',busy:options.recovering,busyLabel:'正在恢复…'})}`:''}</footer></div>`;
+ const loadoutBar=options.loadoutView?loadoutTabsHtml(options.loadoutView,busy,options.petsEntry):'';
+ return `<div class="character-panel${swapping?' is-swapping':''}">
+  ${loadoutBar}
+  <section class="character-paperdoll${swapping?' chooser-open':''}" aria-label="人物与装备">${CharacterPaperdoll(snapshot,options.chooserOpen?part:'',figureURL)}</section>${options.chooserOpen?swapView(snapshot,part,selected,busy):summary(snapshot,options)}<footer class="character-footer">${options.blocked?`<span role="status">${statusBadgeHtml('连接待恢复，装备与属性待同步','warning',{variant:'inline'})}</span>${buttonHtml('恢复连接',{action:'recover',size:'compact',variant:'secondary',busy:options.recovering,busyLabel:'正在恢复…'})}`:''}</footer></div>`;
 }

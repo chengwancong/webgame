@@ -1,0 +1,30 @@
+/* Z2 部位强化面板样式 */
+
+/* 外容器 */
+.slot-upgrade-panel{display:flex;flex-direction:column;gap:var(--space-4)}
+
+/* 共鸣徽记区域 */
+.slot-resonance{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3);border-radius:var(--radius-well);background:var(--color-panel-inset)}
+.slot-resonance__ring{flex:0 0 auto;width:48px;height:48px}
+.slot-resonance__ring .ui-ring__track{stroke:var(--color-border-strong)}
+.slot-resonance__ring .ui-ring__value{stroke:var(--color-primary)}
+.slot-resonance__info{flex:1 1 auto;min-width:0}
+.slot-resonance__label{font-size:var(--font-size-caption);color:var(--color-text-secondary)}
+.slot-resonance__value{font-size:var(--font-size-h3);font-weight:var(--font-weight-bold)}
+
+/* 6 格部位网格 */
+.slot-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-2)}
+
+/* 单个部位格 */
+.slot-card{display:flex;flex-direction:column;gap:var(--space-2);padding:var(--space-3);border-radius:var(--radius-card);border:var(--border-width) solid var(--color-border-strong);background:var(--color-panel)}
+.slot-card__head{display:flex;align-items:center;gap:var(--space-2);min-width:0}
+.slot-card__name{flex:1 1 auto;font-size:var(--font-size-caption);color:var(--color-text-secondary)}
+.slot-card__level{flex:0 0 auto;font-size:var(--font-size-caption);font-weight:var(--font-weight-bold)}
+.slot-card__bonus{font-size:var(--font-size-caption);color:var(--color-text-secondary);min-height:var(--font-size-caption);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.slot-card__cost{display:flex;align-items:center;gap:var(--space-1);font-size:var(--font-size-caption);color:var(--color-text-secondary)}
+.slot-card__cost .ui-resource-amount{font-size:var(--font-size-caption)}
+.slot-card__upgrade-btn{width:100%}
+
+/* 最大等级状态 */
+.slot-card.is-max .slot-card__bonus{color:var(--color-success)}
+.slot-card.is-max .slot-card__cost{display:none}

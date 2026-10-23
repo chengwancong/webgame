@@ -57,6 +57,7 @@ import {worldLabels} from './hud-avoidance.ts';
 import {KillStreak,KillStreakRenderer,KILL_STREAK_ART_KEY,preloadKillStreakArt} from './kill-streak.ts';
 import {BossPhaseBanner,BossPhaseBannerRenderer,BOSS_BANNER_ART_KEY,BOSS_BANNER_SHIELD_ART_KEY,preloadBossBannerArt} from './boss-phase-banner.ts';
 import {project,unproject} from './iso.ts';
+import {PetFollower} from './hub/pet-follower.ts';
 import {LegacyActorArt,preloadLegacyActorArt} from './legacy-actor-art.ts';
 export type {StarseaSceneView,StarseaSceneObject,StarseaSceneActor} from './starsea-runtime-assets.ts';
 const catalog={actors:actorCatalog};
@@ -65,7 +66,7 @@ export type EffectPresenter={consume(w:World):void;draw(w:World,fraction:number)
 const BOSS_PUSH_RANGE=14;
 /** FP6: 阻止移动的状态类型集合（用于决定是否关闭本机预测）。 */
 const MOVE_BLOCK_KINDS=new Set(['stun','petrify','freeze','time_stop','root','fear']);
-export interface ViewBridge{skillSound?:(cue:SoundDispatch,pan:number,visible:boolean)=>void;worldPhase?:()=>WorldPhaseView|undefined;worldMap?:StarseaMap;planeMap?:PlaneMap;interactKey?:()=>string;starSea?:()=>StarseaSceneView|undefined;starSeaInteract?:(id:string)=>void;storyObjects?:()=>StoryObject[];storyEncounter?:()=>StoryEncounterView|undefined;storyInteract?:(id:string)=>void;authoritativeWorld?:boolean;authoritativeSequence?:number;appearanceForActor?:(id:string)=>ResolvedAppearance|undefined;go?:(point:Vec)=>void;selectEnemy?:(id:string)=>void;allowDeathPlayback?:boolean;playbackRate?:number;stepFrames?:number;effectFactory?:(scene:Phaser.Scene,attachment:(id:string,name:SocketName)=>{x:number;y:number}|undefined,pose:()=>RenderPose&{skill:string}|undefined)=>EffectPresenter;/** 野外击杀此刻是否由服务端发奖（开场沙盒、地城结算时为 false），决定要不要蹦金币和强化石。 */killSpoils?:()=>boolean;/** 回执带回的材料，场景取走后在最近一次击杀处蹦出。 */takeSpoils?:()=>SpoilItem[];world:World;rewards:Reward[];panel:string;loggedIn:boolean;resolvedAppearance?:ResolvedAppearance;step():void;interact():void;cast(index:number):void;castAt?:(point:Vec)=>boolean;pause():void;open(panel:string):void;pick(id:string):void;sound(kind:string):void;motionReduced:boolean;}
+export interface ViewBridge{skillSound?:(cue:SoundDispatch,pan:number,visible:boolean)=>void;worldPhase?:()=>WorldPhaseView|undefined;worldMap?:StarseaMap;planeMap?:PlaneMap;interactKey?:()=>string;starSea?:()=>StarseaSceneView|undefined;starSeaInteract?:(id:string)=>void;storyObjects?:()=>StoryObject[];storyEncounter?:()=>StoryEncounterView|undefined;storyInteract?:(id:string)=>void;authoritativeWorld?:boolean;authoritativeSequence?:number;appearanceForActor?:(id:string)=>ResolvedAppearance|undefined;go?:(point:Vec)=>void;selectEnemy?:(id:string)=>void;allowDeathPlayback?:boolean;playbackRate?:number;stepFrames?:number;effectFactory?:(scene:Phaser.Scene,attachment:(id:string,name:SocketName)=>{x:number;y:number}|undefined,pose:()=>RenderPose&{skill:string}|undefined)=>EffectPresenter;/** 野外击杀此刻是否由服务端发奖（开场沙盒、地城结算时为 false），决定要不要蹦金币和强化石。 */killSpoils?:()=>boolean;/** 回执带回的材料，场景取走后在最近一次击杀处蹦出。 */takeSpoils?:()=>SpoilItem[];/** Z3 宠物：返回上阵宠物的 runtime id（如 ss-pet-wind-free-young），无则 null。 */activePetRuntime?:()=>string|null;world:World;rewards:Reward[];panel:string;loggedIn:boolean;resolvedAppearance?:ResolvedAppearance;step():void;interact():void;cast(index:number):void;castAt?:(point:Vec)=>boolean;pause():void;open(panel:string):void;pick(id:string):void;sound(kind:string):void;motionReduced:boolean;}
 export {project,unproject} from './iso.ts';
 type ActorView={sprite:Phaser.GameObjects.Sprite;shadow:Phaser.GameObjects.Image;hp:Phaser.GameObjects.Graphics;name?:Phaser.GameObjects.Text;status?:Phaser.GameObjects.Text;rim?:Phaser.GameObjects.Sprite[];tags?:Phaser.GameObjects.Text[];tagKey?:string;action:string;facing:number;art:string;deathAt?:number;actionUntil?:number;actionStarted:number;wardrobe?:WardrobeRenderer;native?:StarseaNativeActor;awaitingArt?:boolean};
 export class WorldScene extends Phaser.Scene {
@@ -73,6 +74,7 @@ export class WorldScene extends Phaser.Scene {
  private heroCast?:{skill:string;action:'attack'|'skill';started:number;windup:number;end:number;target?:Vec};
  private warningUI?:WarningUI;private storyRenderer?:StoryRenderer;private landmarkLabels=new Set<Phaser.GameObjects.Text>();
  private fieldEventEffects?:FieldEventEffects;private follow=newFollow();private baseZoom=1;private loadingRegion=false;private regionGeneration=0;private legacyArt!:LegacyActorArt;private legacyLoading=false;private legacyGeneration=0;private fetchedMaps=new Map<string,StarseaMap|undefined>();
+ /** Z3 宠物跟随者 */private petFollower?:PetFollower;private petRuntime:string|null=null;
  private starSeaWorld?:StarseaWorldRenderer;private planeScene?:PlaneSceneRenderer;private starSeaStory?:StarseaStoryRenderer;private starSeaView?:StarseaSceneView;private questGuide?:QuestGuide;private interactBubble?:InteractBubble;private nativeBudget=new StarseaNativeBudget();
  private enemyCasts=new Map<string,{skill:string;started:number;windup:number;end:number}>();
  private pendingInteraction?:{world:World;point:Vec;range:number;valid:()=>boolean;action:()=>void};
@@ -174,7 +176,7 @@ export class WorldScene extends Phaser.Scene {
  this.transient=this.add.graphics();
  // Backing pixels per stage pixel: the camera always shows the same 1280×720 world area.
  const fitZoom=()=>{this.baseZoom=this.scale.width/STAGE.width;this.cameras.main.setZoom(this.baseZoom);};fitZoom();this.scale.on('resize',fitZoom);this.events.once('shutdown',()=>this.scale.off('resize',fitZoom));
- this.events.once('shutdown',()=>{this.spoils?.destroy();this.vignette?.destroy();this.numbers?.destroy();this.questGuide?.destroy();this.interactBubble?.destroy();this.storyRenderer?.destroy();this.starSeaStory?.destroy();this.starSeaWorld?.destroy();this.planeScene?.destroy();this.groundLoot?.destroy();this.skillEffects?.destroy();this.warningUI?.destroy();this.chapterEffects?.destroy();this.killStreakRenderer?.destroy();this.bossPhaseBannerRenderer?.destroy();for(const actor of this.actors.values())this.destroyActor(actor);});
+ this.events.once('shutdown',()=>{this.spoils?.destroy();this.vignette?.destroy();this.numbers?.destroy();this.questGuide?.destroy();this.interactBubble?.destroy();this.storyRenderer?.destroy();this.starSeaStory?.destroy();this.starSeaWorld?.destroy();this.planeScene?.destroy();this.groundLoot?.destroy();this.skillEffects?.destroy();this.warningUI?.destroy();this.chapterEffects?.destroy();this.killStreakRenderer?.destroy();this.bossPhaseBannerRenderer?.destroy();this.petFollower?.destroy();for(const actor of this.actors.values())this.destroyActor(actor);});
  }
  private walkToInteraction(point:Vec,range:number,valid=()=>true,action=()=>this.bridge.interact()){
  const world=this.bridge.world;if(this.bridge.authoritativeWorld)this.bridge.go?.(point);else world.go(point);this.pendingInteraction={world,point,range,valid,action};
@@ -222,6 +224,8 @@ export class WorldScene extends Phaser.Scene {
  this.chunkDecorations.set(`${cx},${cy}`,items.slice(1));this.chunks.set(`${cx},${cy}`,container); // props are retained per region, terrain chunks can unload independently
  }
  private resetRegion(){this.spoils?.clear();this.networkMotion.reset();this.localPrediction.reset();this.networkSequence=-1;this.fieldEventEffects?.destroy();this.fieldEventEffects=undefined;this.feedback.reset();this.numbers?.reset();this.killStreak.reset();this.bossPhaseBanner.reset();this.mimicWaking.clear();this.mimicWakeDone.clear();this.questGuide?.destroy();this.questGuide=undefined;this.interactBubble?.destroy();this.interactBubble=undefined;this.storyRenderer?.destroy();this.storyRenderer=undefined;this.starSeaStory?.destroy();this.starSeaStory=undefined;this.starSeaWorld?.destroy();this.starSeaWorld=undefined;this.planeScene?.destroy();this.planeScene=undefined;for(const a of this.actors.values())this.destroyActor(a);this.actors.clear();for(const c of this.chunks.values())c.destroy(true);this.chunks.clear();this.chunkDecorations.clear();this.groundLoot?.clear();
+ // Z3 宠物跟随：区域切换时销毁精灵
+ this.petFollower?.destroy();this.petFollower=undefined;this.petRuntime=null;
  // Region decoration nodes are tagged separately through their depths.
  this.skillEffects?.destroy();
  for(const child of [...(this.children?.list??[])])child.destroy();
@@ -307,6 +311,8 @@ export class WorldScene extends Phaser.Scene {
  for(const [key,c] of this.chunks){const [x,y]=key.split(',').map(Number);if(Math.abs(x-cx)>1||Math.abs(y-cy)>1){c.destroy(true);for(const decoration of this.chunkDecorations.get(key)??[])decoration.destroy();this.chunkDecorations.delete(key);this.chunks.delete(key);}}
  }
  this.health!.clear().setDepth(9000);this.groundMarks?.clear().setDepth(-8000);this.syncActor('hero',world.hero.position,world.hero.hp<=0?'death':world.hero.action,world.hero.facing,world.hero.hp,world.stats.hp,true,false,false,'hero',world.hero.actionUntil);
+ // Z3 宠物跟随：每帧更新位置与动画
+ {const newRuntime=this.bridge.activePetRuntime?.()??null;if(newRuntime){if(!this.petFollower||this.petRuntime!==newRuntime){this.petFollower?.destroy();this.petRuntime=newRuntime;this.petFollower=new PetFollower({scene:this,runtime:newRuntime});}this.petFollower.update(world.hero.position.x,world.hero.position.y,world.tick,newRuntime);}else if(this.petFollower){this.petFollower.destroy();this.petFollower=undefined;this.petRuntime=null;}}
  const partyIds=new Set<string>();for(const player of world.players.values())if(player.id!==world.playerId&&world.isActive(player.id)){partyIds.add(player.id);this.syncActor(player.id,player.hero.position,player.hero.hp<=0?'death':player.hero.action,player.hero.facing,player.hero.hp,player.stats.hp,true,false,false,'hero',player.hero.actionUntil);}
  for(const [id,actor] of this.actors)if(id!=='hero'&&actor.art==='hero'&&!partyIds.has(id)){this.destroyActor(actor);this.actors.delete(id);this.partyCasts.delete(id);}
  for(const e of world.enemies){
@@ -438,6 +444,8 @@ export class WorldScene extends Phaser.Scene {
   // FP4 引雷桩全碎：同一横幅提示破盾
   if(e.type==='effect_triggered'&&e.skill==='hub-pylon-shield-break'){const boss=world.enemies.find(n=>n.id===e.id);this.bossPhaseBanner.announce(e.id+':pylon-shield',(boss?.name??'精英')+' · 护盾破碎',e.tick);}
   if(e.type==='phase_changed'&&e.phase!=null&&e.phase>=2){const boss=world.enemies.find(n=>n.id===e.id);if(boss)this.bossPhaseBanner.consume(e.id,boss.name??'首领',e.phase,e.tick);}
+  // Z3 宠物攻击动画
+  if(e.type==='effect_triggered'&&e.ruleId?.startsWith('pet-'))this.petFollower?.triggerAttack(e.tick);
  }
  }
  private applyBossCast(a:ActorView,id:string,art:string,height:number){

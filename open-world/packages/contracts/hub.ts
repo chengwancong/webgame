@@ -1,5 +1,7 @@
 import {z} from 'zod';
 import {worldTierChoiceSchema} from './open-world.ts';
+import {damageTypeSchema} from './skill-mechanics.ts';
+import {regionExploreViewSchema} from './zhangjian.ts';
 
 export const chartRegionIdSchema=z.enum(['wind','mist','forge','frost','rift','dragon','deep']);
 export const nodeKindSchema=z.enum(['story','nest','hunt','tide','treasure','gate']);
@@ -11,8 +13,10 @@ export const chartNodeViewSchema=z.object({
  collectible:z.object({kind:z.enum(['lifeCrystal','starCore']),owned:z.boolean()}).optional(),
  shardSlots:z.number().int().min(0).max(3),challenges:z.array(z.enum(['high','nightmare'])),publicDropNote:z.string(),
  best:z.object({seconds:z.number().int()}).optional(),recommended:z.boolean(),links:z.array(z.string()),pos:z.object({col:z.number().int(),row:z.number().int()}),
+ /** M17 Z1/Z4：元素克制与探索物；服务端接入前缺省。 */
+ elements:z.object({threat:damageTypeSchema,weakness:damageTypeSchema}).strict().optional(),cache:z.object({found:z.boolean()}).strict().optional(),door:z.object({id:z.string(),key:z.enum(['wind','mist','forge','frost','rift','dragon','deep']),keyName:z.string(),keyOwned:z.boolean(),opened:z.boolean()}).strict().optional(),
 }).strict();
-export const chartRegionViewSchema=z.object({id:chartRegionIdSchema,name:z.string(),levelRange:z.tuple([z.number().int(),z.number().int()]),status:z.enum(['locked','open','cleared']),lockReason:z.string().optional(),gateQuest:z.array(z.object({text:z.string(),done:z.boolean()})).optional(),nodes:z.array(chartNodeViewSchema)}).strict();
+export const chartRegionViewSchema=z.object({id:chartRegionIdSchema,name:z.string(),levelRange:z.tuple([z.number().int(),z.number().int()]),status:z.enum(['locked','open','cleared']),lockReason:z.string().optional(),gateQuest:z.array(z.object({text:z.string(),done:z.boolean()})).optional(),nodes:z.array(chartNodeViewSchema),explore:regionExploreViewSchema.optional()}).strict();
 export const shardStackSchema=z.object({id:z.string(),name:z.string(),effect:z.string(),count:z.number().int().nonnegative()}).strict();
 export const chartViewSchema=z.object({regions:z.array(chartRegionViewSchema),lastRegion:chartRegionIdSchema,seaTier:z.object({current:z.number().int().positive(),choices:z.array(worldTierChoiceSchema)}).strict(),shards:z.object({slotsUnlocked:z.number().int().min(0).max(3),owned:z.array(shardStackSchema)}).strict(),bagFull:z.boolean()}).strict();
 export const hubReturnItemSchema=z.discriminatedUnion('kind',[

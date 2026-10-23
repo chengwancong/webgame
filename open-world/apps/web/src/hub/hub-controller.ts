@@ -15,6 +15,7 @@ import {commissionPanelHtml,type CommissionPanelState} from './commission-panel.
 import {getHubChart,getHubToday,getHubPort,getHubCommissions,postSeaTier,postDock,postPortClaim,postCommission,postReturnAck,hubErrorMessage} from './hub-api.ts';
 import {returnAckId,returnItemHtml,returnLines,type ReturnLine,type ReturnItemView} from './return-queue.ts';
 import type {ChartView,TodayView,HubPortView as PortView,HubCommissionsView as CommissionsView,ChartNodeView,HubReturnItem} from '../../../../packages/contracts/hub.ts';
+import type {LoadoutView} from '../../../../packages/contracts/zhangjian.ts';
 import type {FieldFreeze} from '../../../../packages/contracts/field-freeze.ts';
 import {esc,panelHeaderHtml,stateBlockHtml} from '../ui-components.ts';
 
@@ -93,6 +94,12 @@ export class HubController {
 
   /** 测试 / 调试用：当前航图面板状态 */
   get chart(): ChartPanelState | undefined { return this.chartState; }
+
+  /** Z1：更新方案视图，航图节点卡实时更新元素提示。 */
+  setLoadoutView(v: LoadoutView | undefined): void {
+    if (!this.chartState) return;
+    this.chartState = {...this.chartState, loadoutView: v};
+  }
 
   /** 标记所有已缓存的视图过期；下次渲染时后台刷新，旧数据继续显示不闪烁。 */
   invalidate(): void {

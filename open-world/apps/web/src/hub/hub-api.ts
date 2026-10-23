@@ -23,7 +23,7 @@ export function hubErrorMessage(e: unknown, fallback: string): string {
   return e instanceof Error && e.message ? e.message : fallback;
 }
 
-async function hubGet<T>(path: string): Promise<T | undefined> {
+export async function hubGet<T>(path: string): Promise<T | undefined> {
   try {
     return await api<T>(path);
   } catch (e) {
@@ -32,7 +32,7 @@ async function hubGet<T>(path: string): Promise<T | undefined> {
   }
 }
 
-async function hubPost(path: string, body: Record<string, unknown>, fallback: string): Promise<HubWriteResult> {
+export async function hubPost(path: string, body: Record<string, unknown>, fallback: string): Promise<HubWriteResult> {
   try {
     await api(path, {...body, command_id: crypto.randomUUID()});
     return {ok: true};

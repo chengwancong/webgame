@@ -4,10 +4,12 @@
  * 卡片放在节点左右两侧、越界时翻到另一侧，绝不压住被选中的节点。
  * 版面按 1280×720 舞台排：图区尺寸是常量，节点坐标和卡片位置都由这些常量算出，面板内不滚动。
  */
-import {esc,buttonHtml,panelHeaderHtml,stateBlockHtml,statusBadgeHtml,tabsHtml} from '../ui-components.ts';
+import {esc,buttonHtml,panelHeaderHtml,stateBlockHtml,statusBadgeHtml,tabsHtml,ringHtml} from '../ui-components.ts';
 import {iconHtml,type IconName} from '../ui/icons.ts';
 import {seaDifficultyHtml} from '../sea-difficulty-view.ts';
 import type {ChartView,ChartRegionView,ChartNodeView,NodeKind} from '../../../../packages/contracts/hub.ts';
+import type {LoadoutView} from '../../../../packages/contracts/zhangjian.ts';
+import {elementHint,elementNames} from '../../../../packages/rules/zhangjian-view.ts';
 
 type ShardStack = ChartView['shards']['owned'][number];
 
@@ -40,6 +42,8 @@ export type ChartPanelState = {
   seaOpen: boolean;
   seaTierPick: number;
   seaBusy: boolean;
+  /** Z1 出战方案：有值时节点卡显示元素克制提示；404 时不显示 */
+  loadoutView?: LoadoutView;
 };
 
 const KIND_NAMES: Record<NodeKind, string> = {story: '剧情', nest: '巢穴', hunt: '狩猎', tide: '怪潮', treasure: '寻宝', gate: '关口'};
@@ -150,6 +154,46 @@ function challengeRowHtml(n: ChartNodeView, pick: ChallengePick): string {
   return `<div class="hub-card__row"><span class="hub-card__key">档位</span><div class="hub-challenges" role="group" aria-label="挑战档位">${buttons.join('')}</div></div>`;
 }
 
+/** Z1 元素行：敌人主要伤害 + 弱点 + 方案切换提示。loadoutView 缺失时静默不显示。 */
+function elementRowHtml(n: ChartNodeView, loadoutView?: LoadoutView): string {
+  if (!n.elements) return '';
+  const {threat, weakness} = n.elements;
+  const threatName = elementNames[threat] ?? threat;
+  const weakName = elementNames[weakness] ?? weakness;
+  const hint = loadoutView ? elementHint(n.elements, loadoutView) : null;
+  const hintHtml = hint
+    ? `<span class="hub-card__element-hint">${esc(hint.text)}${hint.switchTo !== undefined ? buttonHtml('切换', {action: 'hub-loadout-apply', id: String(hint.switchTo), size: 'compact', variant: 'secondary', className: 'hub-card__switch-btn'}) : ''}</span>`
+    : '';
+  return `<div class="hub-card__row hub-card__row--elements">
+    <span class="hub-card__key">敌人</span>
+    <span class="hub-card__element-info">多用 <b>${esc(threatName)}</b> · 弱 <b>${esc(weakName)}</b></span>
+    ${hintHtml}
+  </div>`;
+}
+
+/** Z4 秘藏行（cache 字段由服务端按节点填充）。 */
+function cacheRowHtml(n: ChartNodeView): string {
+  if (!n.cache) return '';
+  const status = n.cache.found ? '已找到' : '未找到';
+  const cls = n.cache.found ? 'is-found' : '';
+  return `<div class="hub-card__row hub-card__row--cache ${cls}">
+    <span class="hub-card__key">秘藏</span>
+    <span>${esc(status)}</span>
+  </div>`;
+}
+
+/** Z4 锁门行（door 字段由服务端按节点填充）。 */
+function doorRowHtml(n: ChartNodeView): string {
+  if (!n.door) return '';
+  const {keyName, keyOwned, opened} = n.door;
+  const statusText = opened ? '已开启' : keyOwned ? `已获得 ${keyName}` : `需要 ${keyName}（未获得）`;
+  const cls = opened ? 'is-opened' : keyOwned ? 'is-ready' : 'is-locked';
+  return `<div class="hub-card__row hub-card__row--door ${cls}">
+    <span class="hub-card__key">锁门</span>
+    <span>${esc(statusText)}</span>
+  </div>`;
+}
+
 export function nodeCardHtml(n: ChartNodeView, state: ChartPanelState): string {
   const place = cardPlacement(n.pos);
   const busy = state.busyNodeId === n.id;
@@ -181,6 +225,9 @@ export function nodeCardHtml(n: ChartNodeView, state: ChartPanelState): string {
       <p class="hub-card__drop">${esc(n.publicDropNote)}</p>
       ${first}
       <div class="hub-card__badges">${bonus}${best}</div>
+      ${elementRowHtml(n, state.loadoutView)}
+      ${cacheRowHtml(n)}
+      ${doorRowHtml(n)}
       ${shardRowHtml(n, state.view, state.selectedShards)}
       ${challengeRowHtml(n, state.selectedChallenge)}
       <div class="hub-card__foot">
@@ -194,14 +241,28 @@ export function nodeCardHtml(n: ChartNodeView, state: ChartPanelState): string {
 // ---- 顶栏 ----
 
 function regionTabsHtml(view: ChartView, region: ChartRegionView | undefined, busy: boolean): string {
-  const items = view.regions.map(r => ({
-    id: r.id,
-    label: r.name,
-    count: r.status === 'locked' ? undefined : `Lv.${r.levelRange[0]}–${r.levelRange[1]}`,
-    markHtml: r.status === 'locked' ? iconHtml('lock', {size: 16, label: '未开放'}) : '',
-    attributes: r.status === 'locked' && r.lockReason ? {title: r.lockReason} : undefined,
-    disabled: busy,
-  }));
+  const items = view.regions.map(r => {
+    // Z4 探索圆环：三段拆色，里程碑 50/100 星点
+    let exploreMarkHtml = '';
+    if (r.explore) {
+      const {percent, milestones} = r.explore;
+      const stars = milestones.map(m =>
+        `<span class="hub-explore-star${m.reached ? ' is-reached' : ''}" title="${esc(m.reward)}" aria-label="${m.percent}% 里程碑${m.reached ? '（已达成）' : ''}">★</span>`
+      ).join('');
+      exploreMarkHtml = `<span class="hub-explore-badge" aria-label="探索 ${percent}%">
+        ${ringHtml(percent / 100, `探索 ${percent}%`)}
+        ${stars}
+      </span>`;
+    }
+    return {
+      id: r.id,
+      label: r.name,
+      count: r.status === 'locked' ? undefined : `Lv.${r.levelRange[0]}–${r.levelRange[1]}`,
+      markHtml: (r.status === 'locked' ? iconHtml('lock', {size: 16, label: '未开放'}) : '') + exploreMarkHtml,
+      attributes: r.status === 'locked' && r.lockReason ? {title: r.lockReason} : undefined,
+      disabled: busy,
+    };
+  });
   return tabsHtml({label: '航区', action: 'hub-region-select', selected: region?.id ?? '', items, className: 'hub-region-tabs'});
 }
 
