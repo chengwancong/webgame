@@ -28,6 +28,8 @@ export function derivePetRatios(heavy:{share:number;dpsGain:number},ratio:number
 /** B4 standard-player/World sampler, fixed five seeds; no parameter sweep. */
 export async function runZhangjianNumbers(args:string[]){
  switchGuard();
+ const freeOnly=args.includes('--free-only');
+ if(freeOnly&&(args.includes('--derive')||args.includes('--apply')))throw Error('--free-only is verification only');
  if(args.includes('--apply')){
   const path=args.find(a=>a.startsWith('--summary='))?.slice(10);if(!path)throw Error('Apply requires frozen derive summary');
   const measured=JSON.parse(await readFile(path,'utf8')),ratios=derivePetRatios(measured.pets.heavy,petContent.tiers.heavy.activeRatio);
@@ -41,18 +43,22 @@ export async function runZhangjianNumbers(args:string[]){
  const calibrationPath=args.find(a=>a.startsWith('--calibration='))?.slice(14);if(!calibrationPath)throw Error('Required fixed calibration raw file');const calibration=JSON.parse(await readFile(calibrationPath,'utf8'));const targetHp=Math.ceil(Math.max(...calibration.filter((r:any)=>r.kind==='pet'||r.kind==='resonance').map((r:any)=>(r.base??r.off).dps))*120);
  const durable=()=>{const t=resolveMonsterSpawn({id:'boss',template:gate.monster!.template,level:30,rank:'boss',x:27,y:24});t.monster!.difficulty.hp*=targetHp/t.hp;t.hp=targetHp;return t;};
  const raw:any[]=[];
+ const petTiers=freeOnly?(['free'] as const):(['free','light','heavy'] as const);
  for(const seed of hubSeeds){
+  if(!freeOnly){
   const lightning=standardState(gate.monster.level,'staff');lightning.skills=['chain'];lightning.skillRanks.chain=1;const neutral=structuredClone(gate);delete neutral.monster!.weakness;
   const off=sample(lightning,neutral,seed),on=sample(lightning,gate,seed);raw.push({kind:'weakness',seed,off,on});
   const state=standardState(30);for(const g of state.gear)g.rank=gearMaxRank(g,5);const plain=sample(state,durable(),seed,true);state.slotRanks=Object.fromEntries(rankSlots.map(slot=>[slot,15]));const resonance=sample(state,durable(),seed,true);raw.push({kind:'resonance',seed,off:plain,on:resonance});
+  }
   const petState=standardState(30);migrateSlotRanks(petState);const target=durable(),base=sample(petState,target,seed,true);
-  for(const tier of ['free','light','heavy'] as const){const s=structuredClone(petState),id='wind-'+tier;grantPet(s,id);s.pets!.owned[id].level=30;raw.push({kind:'pet',tier,seed,base,on:sample(s,target,seed,true)});}
+  for(const tier of petTiers){const s=structuredClone(petState),id='wind-'+tier;grantPet(s,id);s.pets!.owned[id].level=30;raw.push({kind:'pet',tier,seed,base,on:sample(s,target,seed,true)});}
  }
  await writeFile(output+'/'+mode+'-raw.json',JSON.stringify(raw));
  const weakness=raw.filter(r=>r.kind==='weakness').map(r=>({seed:r.seed,off:r.off.clearSeconds,on:r.on.clearSeconds,speedup:r.off.clearSeconds&&r.on.clearSeconds?1-r.on.clearSeconds/r.off.clearSeconds:null,failures:[r.off.failed,r.on.failed]}));
  const resonance=raw.filter(r=>r.kind==='resonance').map(r=>({seed:r.seed,gain:r.on.dps/r.off.dps-1,failures:[r.off.failed,r.on.failed]}));
- const pets=Object.fromEntries((['free','light','heavy'] as const).map(tier=>{const rs=raw.filter(r=>r.kind==='pet'&&r.tier===tier);return [tier,{share:median(rs.map(r=>(r.on.rules['pet-wind-'+tier]?.damage??0)/r.on.totalDamage)),dpsGain:median(rs.map(r=>r.on.dps/r.base.dps-1)),activations:rs.map(r=>r.on.rules['pet-wind-'+tier]?.count??0),failures:rs.map(r=>r.on.failed)}];}));
+ const pets=Object.fromEntries(petTiers.map(tier=>{const rs=raw.filter(r=>r.kind==='pet'&&r.tier===tier);return [tier,{share:median(rs.map(r=>(r.on.rules['pet-wind-'+tier]?.damage??0)/r.on.totalDamage)),totalContribution:median(rs.map(r=>1-r.base.dps/r.on.dps)),dpsGain:median(rs.map(r=>r.on.dps/r.base.dps-1)),activations:rs.map(r=>r.on.rules['pet-wind-'+tier]?.count??0),failures:rs.map(r=>r.on.failed)}];}));
  const summary={source,targetHp,seeds:hubSeeds,weakness,resonance,pets,scope:'B4 sampler and standard player. Weakness uses authored wind-gate and lightning-only staff. Pet/resonance use a 60s durable L30 template boss; HP = maximum preflight DPS x 120, unchanged across derive/verify. Only durability is normalized, no healing/reset. Original authored short-kill samples remain preserved; not live account manipulation.',targetConflict:'M17 free 5.5%, light 9.2%, heavy <=12% with 60:100:130 conflicts with handoff free 8-12%. D-Z10 follows M17 proportions and heavy ceiling; free 8% remains explicit residual.'};
+ if(freeOnly){summary.scope='Z8 free-only verification: unchanged Z5 standardState, resolvePlayer, sampleCombatBuild, seeds and 60s durable L30 boss calibration; no derive/apply or other tier measurement.';summary.targetConflict='Z8 user acceptance: free total contribution 4.5%-7%; out-of-range is recorded only, never retuned.';}
  if(mode==='derive'){
   const h=pets.heavy.share;if(!(h>0&&h<1))throw Error('No measured pet contribution; cannot derive');
   const ratios=derivePetRatios(pets.heavy,petContent.tiers.heavy.activeRatio);

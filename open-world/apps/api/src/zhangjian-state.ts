@@ -2,7 +2,7 @@ import {resumeRegion} from '../../../packages/rules/world-location.ts';
 import type {Pool,PoolClient} from 'pg';
 import type {CharacterState} from '../../../packages/contracts/index.ts';
 import {migrateSlotRanks} from '../../../packages/rules/zhangjian-build.ts';
-import {gatePet,gateKey,grantPet,explorePet,regionExplore} from '../../../packages/rules/zhangjian.ts';
+import {gatePet,gateKey,grantPet,explorePet,huntPet,regionExplore} from '../../../packages/rules/zhangjian.ts';
 import {hubChartContent,hubNodeById} from '../../../packages/content/hub-chart.ts';
 import {hubExplore,petFamilyById} from '../../../packages/content/zhangjian.ts';
 import type {HubState} from '../../../packages/rules/hub-state.ts';
@@ -20,6 +20,7 @@ export function backfillZhangjian(s:CharacterState,h:HubState,rewards:string[]=[
   if(key&&!h.explore.keys.includes(key)){h.explore.keys.push(key);rewards.push('获得关口钥匙：'+hubExplore.keys[key]!.name);changed=true;}
   const id=node?.kind==='gate'?gatePet(node.region):undefined;if(id&&grantPet(s,id)){rewards.push('获得宠物：'+petFamilyById.get(id)!.name);changed=true;}
  }
+ for(const region of hubChartContent.regions){const id=huntPet(region.id,h.chart.cleared);if(id&&grantPet(s,id)){rewards.push('获得宠物：'+petFamilyById.get(id)!.name);changed=true;}}
  return awardExplorePets(s,h,rewards)||changed;
 }
 /** Caller holds the character row lock. Persist only this batch's fields. */

@@ -18,7 +18,7 @@ const ELEMENT_NAMES: Record<string, string> = {
   arcane: '奥术', shadow: '暗影', poison: '毒素', pure: '真实',
 };
 const FORM_NAMES: Record<string, string> = {young: '幼年', adult: '成年', awakened: '觉醒'};
-const TIER_NAMES: Record<string, string> = {free: '零氪', light: '轻氪', heavy: '重氪'};
+const TIER_NAMES: Record<string, string> = {free: '常见', light: '稀有', heavy: '传说'};
 const STATUS_NAMES = {owned: '已拥有', locked: '未解锁', unavailable: '暂未开放'} as const;
 
 /** 宠物图集路径。runtime 格式：`<family>-<form>`，如 ss-pet-wind-free-young。 */

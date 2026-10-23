@@ -26,7 +26,10 @@ const planes={assets:(planeGreybox.assets as PlaneEntry[]).map(g=>{
 export const openWorldRuntimeAssets=([...(wind.assets as unknown as RawArt[]),...(five.assets as unknown as RawArt[]),...(planes.assets as unknown as RawArt[])]).map(asset=>{
  const runtime={...asset.runtime},group=asset.kind==='actor'&&['monster','elite','rare','dungeon-boss','regional-npc'].includes(asset.category)?asset.category==='regional-npc'?'npc':asset.category==='dungeon-boss'?'bosses':'monsters':asset.kind==='effect'?'vfx':asset.kind==='ground'?'scenes':'props';
  if(['sprite','ground','mask','symbol'].includes(asset.kind)){
-  const states=Array.isArray(runtime.states)?runtime.states:['default'];runtime.kind='prop';runtime.states=Object.fromEntries(states.map(name=>[name,{kind:'image',file:runtime.stateFiles?.[name]??runtime.file,anchor:runtime.anchor,displayHeight:runtime.displayHeight,visible:true}]));
+  const states=Array.isArray(runtime.states)?runtime.states:['default'];runtime.kind='prop';
+  // frameAnchors / frameDisplaySizes（逐帧覆盖，用于 beacon-aura 等宽高比与主体不同的帧）
+  const fAnchors=runtime.frameAnchors as Record<string,number[]>|undefined,fSizes=runtime.frameDisplaySizes as Record<string,number[]>|undefined;
+  runtime.states=Object.fromEntries(states.map(name=>{const f0=(runtime.stateFrames as Record<string,string[]>|undefined)?.[name]?.[0];const anchor=(f0&&fAnchors?.[f0])??runtime.anchor,displayHeight=(f0&&fSizes?.[f0]?.[1])??runtime.displayHeight;return[name,{kind:'image',file:runtime.stateFiles?.[name]??runtime.file,anchor,displayHeight,visible:true,...(runtime.atlas&&(runtime.stateFrames as Record<string,string[]>|undefined)?.[name]?.length?{atlasKey:asset.id,frames:(runtime.stateFrames as Record<string,string[]>)[name],fps:(runtime.stateFps as Record<string,number>|undefined)?.[name]??runtime.fps??10}:{})}];}));
  }
  if(asset.kind==='effect')runtime.kind='effect';
  runtime.tint??=runtime.material?.tint;runtime.wash??=runtime.material?.wash;

@@ -92,6 +92,11 @@ export class HubController {
     return {today, port};
   }
 
+  /** 场景摆件用：各建筑已领阶数（forge/shipyard/post → 0–4，数据未加载时全为 0） */
+  buildingLevels(): Record<string, number> {
+    return Object.fromEntries((this.slots.port.view?.buildings ?? []).map(b => [b.id, b.tiers.filter(t => t.claimed).length]));
+  }
+
   /** 测试 / 调试用：当前航图面板状态 */
   get chart(): ChartPanelState | undefined { return this.chartState; }
 

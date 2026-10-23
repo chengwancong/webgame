@@ -4,8 +4,9 @@
  * 卡片放在节点左右两侧、越界时翻到另一侧，绝不压住被选中的节点。
  * 版面按 1280×720 舞台排：图区尺寸是常量，节点坐标和卡片位置都由这些常量算出，面板内不滚动。
  */
-import {esc,buttonHtml,panelHeaderHtml,stateBlockHtml,statusBadgeHtml,tabsHtml,ringHtml} from '../ui-components.ts';
-import {iconHtml,type IconName} from '../ui/icons.ts';
+import {esc,buttonHtml,panelHeaderHtml,stateBlockHtml,statusBadgeHtml,tabsHtml} from '../ui-components.ts';
+import {iconHtml} from '../ui/icons.ts';
+import {art} from '../ui-assets.ts';
 import {seaDifficultyHtml} from '../sea-difficulty-view.ts';
 import type {ChartView,ChartRegionView,ChartNodeView,NodeKind} from '../../../../packages/contracts/hub.ts';
 import type {LoadoutView} from '../../../../packages/contracts/zhangjian.ts';
@@ -47,7 +48,30 @@ export type ChartPanelState = {
 };
 
 const KIND_NAMES: Record<NodeKind, string> = {story: '剧情', nest: '巢穴', hunt: '狩猎', tide: '怪潮', treasure: '寻宝', gate: '关口'};
-const KIND_ICONS: Record<NodeKind, IconName> = {story: 'book', nest: 'compass', hunt: 'swords', tide: 'area', treasure: 'chest', gate: 'skull'};
+/** ART-HC chart-nodes 图集 500×200；帧 96×96（锚[0.5,0.5]） */
+const _CN_SRC='/art/hub-ui/chart-nodes.png',_CN_W=500,_CN_H=200,_CN_FW=96;
+const _CN_FRAMES:Record<NodeKind,[number,number]>={story:[2,2],nest:[102,2],hunt:[202,2],tide:[302,2],treasure:[402,2],gate:[2,102]};
+const _CN_MARK_COLLECT:[number,number]=[102,102];
+const _CN_MARK_HIDDEN:[number,number]=[202,102];
+/** 从 chart-nodes 图集裁一帧 */
+function cnSprite(fx:number,fy:number,d:number,alt?:string):string{
+ const s=d/_CN_FW,bw=Math.round(_CN_W*s),bh=Math.round(_CN_H*s);
+ return `<span ${alt?`aria-label="${esc(alt)}"`:' aria-hidden="true"'} class="tp-icon" style="width:${d}px;height:${d}px;background:url(${_CN_SRC}) ${-Math.round(fx*s)}px ${-Math.round(fy*s)}px/${bw}px ${bh}px no-repeat"></span>`;
+}
+/** ART-HC sea-emblems 图集 924×264；帧 128×128（锚[0.5,0.5]） */
+const _SE_SRC='/art/hub-ui/sea-emblems.png',_SE_W=924,_SE_H=264,_SE_FW=128;
+const _SE_FRAMES:Record<string,[number,number]>={
+ wind:[2,2],mist:[134,2],forge:[266,2],frost:[398,2],rift:[530,2],dragon:[662,2],deep:[794,2],
+ 'wind-locked':[2,134],'mist-locked':[134,134],'forge-locked':[266,134],'frost-locked':[398,134],'rift-locked':[530,134],'dragon-locked':[662,134],'deep-locked':[794,134],
+};
+/** 从 sea-emblems 图集裁一帧；locked=true 时取 -locked 变体 */
+function seaEmblem(regionId:string,locked:boolean,d:number):string{
+ const key=locked?`${regionId}-locked`:regionId;
+ const frame=_SE_FRAMES[key]??_SE_FRAMES[regionId];
+ if(!frame)return '';
+ const s=d/_SE_FW,bw=Math.round(_SE_W*s),bh=Math.round(_SE_H*s);
+ return `<span aria-hidden="true" class="tp-icon" style="width:${d}px;height:${d}px;background:url(${_SE_SRC}) ${-Math.round(frame[0]*s)}px ${-Math.round(frame[1]*s)}px/${bw}px ${bh}px no-repeat"></span>`;
+}
 const STATUS_NAMES = {hidden: '未开放', locked: '未解锁', open: '可挑战', cleared: '已首通'} as const;
 const CHALLENGE_NAMES: Record<string, string> = {'': '普通', high: '高难', nightmare: '噩梦'};
 const CLOSE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
@@ -121,10 +145,10 @@ function nodeHtml(n: ChartNodeView, selectedId: string | null, interactive: bool
   const selected = n.id === selectedId;
   const cls = ['hub-node', `is-${n.status}`, n.recommended && !hidden ? 'is-recommended' : '', selected ? 'is-selected' : ''].filter(Boolean).join(' ');
   const name = hidden ? '？' : n.name;
-  const disc = hidden ? '<span class="hub-node__mark" aria-hidden="true">?</span>' : iconHtml(KIND_ICONS[n.kind], {size: 24});
+  const disc = hidden ? cnSprite(..._CN_MARK_HIDDEN,24) : cnSprite(..._CN_FRAMES[n.kind],24);
   const corner: string[] = [];
   if (!hidden && n.status !== 'locked' && n.firstClearBonusAvailable) corner.push('<span class="hub-node__x2">首通 ×2</span>');
-  if (!hidden && n.collectible && !n.collectible.owned) corner.push(`<span class="hub-node__collect" title="藏有收藏品">${iconHtml('diamond', {size: 16, label: '藏有收藏品'})}</span>`);
+  if (!hidden && n.collectible && !n.collectible.owned) corner.push(`<span class="hub-node__collect" title="藏有收藏品">${cnSprite(..._CN_MARK_COLLECT,16,'藏有收藏品')}</span>`);
   const state = n.status === 'cleared' ? `<span class="hub-node__state">${iconHtml('check', {size: 16})}</span>` : n.status === 'locked' ? `<span class="hub-node__state">${iconHtml('lock', {size: 16})}</span>` : '';
   const label = hidden ? `未开放，${KIND_NAMES[n.kind]}` : `${n.name}，${KIND_NAMES[n.kind]}，${STATUS_NAMES[n.status]}${n.recommended ? '，推荐' : ''}`;
   return `<button type="button" class="${cls}" style="left:${c.x - NODE_HALF_W}px;top:${c.y - NODE_DISC / 2}px" data-action="hub-node-select" data-id="${esc(n.id)}" data-kind="${n.kind}" aria-label="${esc(label)}" aria-pressed="${selected}" aria-haspopup="dialog"${hidden || !interactive ? ' disabled' : ''}>
@@ -142,7 +166,9 @@ function shardRowHtml(n: ChartNodeView, view: ChartView, picks: string[]): strin
   const slots = Array.from({length: n.shardSlots}, (_, i) => {
     const chosen = picks[i] ? owned.find(s => s.id === picks[i]) : undefined;
     const title = chosen ? `${chosen.name}：${chosen.effect}` : owned.length ? '空槽，点击放入残页' : '没有可用的残页';
-    return `<button type="button" class="hub-shard${chosen ? ' is-filled' : ''}" data-action="hub-shard-slot" data-id="${i}" title="${esc(title)}" aria-label="${esc(`残页槽 ${i + 1}：${chosen ? chosen.name : '空'}`)}"${owned.length ? '' : ' disabled'}>${chosen ? esc(chosen.name) : '空槽'}</button>`;
+    const shardArtId=chosen?'item-shard-'+chosen.id.replace('hub-shard-',''):'item-shard-blank';
+    const shardImg=`<img src="${art(shardArtId)}" alt="" draggable="false" loading="lazy" class="hub-shard__icon">`;
+    return `<button type="button" class="hub-shard${chosen ? ' is-filled' : ''}" data-action="hub-shard-slot" data-id="${i}" title="${esc(title)}" aria-label="${esc(`残页槽 ${i + 1}：${chosen ? chosen.name : '空'}`)}"${owned.length ? '' : ' disabled'}>${shardImg}${chosen ? esc(chosen.name) : '空槽'}</button>`;
   });
   return `<div class="hub-card__row"><span class="hub-card__key">残页</span><div class="hub-shards">${slots.join('')}</div></div>`;
 }
@@ -178,6 +204,7 @@ function cacheRowHtml(n: ChartNodeView): string {
   const cls = n.cache.found ? 'is-found' : '';
   return `<div class="hub-card__row hub-card__row--cache ${cls}">
     <span class="hub-card__key">秘藏</span>
+    <img class="hub-card__key-icon${n.cache.found ? '' : ' is-dim'}" src="/art/hub-ui/explore/icon-cache.png" alt="">
     <span>${esc(status)}</span>
   </div>`;
 }
@@ -190,6 +217,7 @@ function doorRowHtml(n: ChartNodeView): string {
   const cls = opened ? 'is-opened' : keyOwned ? 'is-ready' : 'is-locked';
   return `<div class="hub-card__row hub-card__row--door ${cls}">
     <span class="hub-card__key">锁门</span>
+    <img class="hub-card__key-icon" src="/art/hub-ui/keys/key-${esc(n.door.key)}${keyOwned || opened ? '' : '-locked'}.png" alt="">
     <span>${esc(statusText)}</span>
   </div>`;
 }
@@ -198,7 +226,7 @@ export function nodeCardHtml(n: ChartNodeView, state: ChartPanelState): string {
   const place = cardPlacement(n.pos);
   const busy = state.busyNodeId === n.id;
   const header = `<div class="hub-card__head">
-    <span class="hub-card__kind">${iconHtml(KIND_ICONS[n.kind], {size: 16})}${KIND_NAMES[n.kind]}</span>
+    <span class="hub-card__kind">${cnSprite(..._CN_FRAMES[n.kind],16)}${KIND_NAMES[n.kind]}</span>
     <b class="hub-card__name">${esc(n.name)}</b>
     ${buttonHtml('关闭节点卡片', {action: 'hub-node-deselect', size: 'icon', iconHtml: CLOSE_ICON, className: 'close', disabled: Boolean(state.busyNodeId)})}
   </div>`;
@@ -238,6 +266,34 @@ export function nodeCardHtml(n: ChartNodeView, state: ChartPanelState): string {
   return `<section class="hub-card" data-side="${place.side}" data-node-card="${esc(n.id)}" role="dialog" aria-label="${esc(n.name)}" aria-busy="${busy}" style="left:${place.left}px;top:${place.top}px;width:${CARD_W}px;height:${CARD_H}px">${header}<div class="hub-card__body">${body}</div></section>`;
 }
 
+// ---- Z4 探索圆环（ART-HF A32 分层图：底框 + 三段整圈弧用 conic 遮罩裁出） ----
+const EXPLORE_ART = '/art/hub-ui/explore/';
+type ExploreView = NonNullable<ChartRegionView['explore']>;
+/** 三段弧的角度：按分值（锁门分值由总分反推，不在前端写死点数）依次接续。 */
+export function exploreArcs(e: ExploreView): {kind: 'nodes' | 'caches' | 'doors'; from: number; to: number}[] {
+  const [n, nt] = e.parts.nodes, [c, ct] = e.parts.caches, [d, dt] = e.parts.doors;
+  if (!e.total) return [];
+  const nodeW = 1, cacheW = 1, doorW = dt ? Math.max(0, (e.total - nt * nodeW - ct * cacheW) / dt) : 0;
+  const out: {kind: 'nodes' | 'caches' | 'doors'; from: number; to: number}[] = [];
+  let at = 0;
+  for (const [kind, got, w] of [['nodes', n, nodeW], ['caches', c, cacheW], ['doors', d, doorW]] as const) {
+    const span = got * w * 360 / e.total;
+    if (span > 0) out.push({kind, from: at, to: at + span});
+    at += span;
+  }
+  return out;
+}
+const arcMask = (from: number, to: number) => {
+  const g = `conic-gradient(transparent 0deg ${from}deg,#000 ${from}deg ${to}deg,transparent ${to}deg)`;
+  return `-webkit-mask-image:${g};mask-image:${g}`;
+};
+export function exploreDetail(e: ExploreView): string {
+  const lines = [`探索 ${e.percent}%（${e.score}/${e.total}）`, `节点 ${e.parts.nodes[0]}/${e.parts.nodes[1]} · 秘藏 ${e.parts.caches[0]}/${e.parts.caches[1]} · 锁门 ${e.parts.doors[0]}/${e.parts.doors[1]}`];
+  if (e.lockedByKey) lines.push(`还有 ${e.lockedByKey} 处锁门要别的航区钥匙`);
+  if (e.dockBonus) lines.push(`码头收益 +${Math.round(e.dockBonus * 100)}%`);
+  return lines.join('\n');
+}
+
 // ---- 顶栏 ----
 
 function regionTabsHtml(view: ChartView, region: ChartRegionView | undefined, busy: boolean): string {
@@ -247,18 +303,20 @@ function regionTabsHtml(view: ChartView, region: ChartRegionView | undefined, bu
     if (r.explore) {
       const {percent, milestones} = r.explore;
       const stars = milestones.map(m =>
-        `<span class="hub-explore-star${m.reached ? ' is-reached' : ''}" title="${esc(m.reward)}" aria-label="${m.percent}% 里程碑${m.reached ? '（已达成）' : ''}">★</span>`
+        `<img class="hub-explore-star" src="${EXPLORE_ART}ring-star-${m.reached ? 'on' : 'off'}.png" alt="" title="${esc(m.percent + '%：' + m.reward)}">`
       ).join('');
-      exploreMarkHtml = `<span class="hub-explore-badge" aria-label="探索 ${percent}%">
-        ${ringHtml(percent / 100, `探索 ${percent}%`)}
-        ${stars}
+      const arcs = exploreArcs(r.explore).map(a => `<img class="hub-explore-ring__arc" src="${EXPLORE_ART}ring-arc-${a.kind}.png" alt="" style="${arcMask(a.from, a.to)}">`).join('');
+      exploreMarkHtml = `<span class="hub-explore-badge" aria-label="探索 ${percent}%" title="${esc(exploreDetail(r.explore))}">
+        <span class="hub-explore-ring"><img class="hub-explore-ring__base" src="${EXPLORE_ART}ring-base.png" alt="">${arcs}</span>
+        <span class="hub-explore-badge__pct">${percent}%</span>${stars}
       </span>`;
     }
     return {
       id: r.id,
       label: r.name,
+      iconHtml: seaEmblem(r.id, r.status === 'locked', 24), // 航区徽记；-locked 变体自带灰雾态
       count: r.status === 'locked' ? undefined : `Lv.${r.levelRange[0]}–${r.levelRange[1]}`,
-      markHtml: (r.status === 'locked' ? iconHtml('lock', {size: 16, label: '未开放'}) : '') + exploreMarkHtml,
+      markHtml: exploreMarkHtml,
       attributes: r.status === 'locked' && r.lockReason ? {title: r.lockReason} : undefined,
       disabled: busy,
     };
@@ -304,7 +362,10 @@ export function chartPanelHtml(state: ChartPanelState): string {
   } else if (region.status === 'locked') {
     stage = stateBlockHtml({kind: 'empty', title: `${region.name} 尚未开放`, message: region.lockReason ?? '完成前一个航区的关口后开放。'});
   } else {
+    // chart-bg：航区底图；pointer-events:none，排在最底层
+    const bgSrc=`/art/hub-ui/chart-bg-${region.id}.webp`;
     stage = `<div class="hub-graph" style="width:${GRAPH_W}px;height:${GRAPH_H}px">
+      <img class="hub-chart-bg" src="${bgSrc}" alt="" aria-hidden="true">
       ${linksHtml(nodes)}
       ${nodes.map(n => nodeHtml(n, selected?.id ?? null, !busy)).join('')}
       ${selected ? nodeCardHtml(selected, state) : ''}

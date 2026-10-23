@@ -57,3 +57,4 @@
 - 2026-10-22（交给 GPT，美术先行）：道具/界面图标/组件装饰 A20–A26 交接 `handoff/art-he-items-ui.md`（协作任务 ART-HE）：实测 20 种制作材料、10 种消耗品借用通用图，召唤石/残页/声望无图标，港口新入口无菜单插画。
 - 2026-10-23（用户：玩法参考杖剑传说）：对照稿 `zhangjian-reference.md`，建议借 Z1 出战方案 + 元素弱点可见、Z2 部位强化 + 共鸣、Z3 宠物上阵、Z4 航区探索度喂码头派遣；不借组队匹配、抽卡、装备快速换代。
 - 2026-10-23（用户：按 Z1→Z4 做，设计和前端 Claude，服务端和美术交 GPT）：设计 `modules/M17-zhangjian-z1-z4.md`；契约 `packages/contracts/zhangjian.ts`、内容表 `packages/content/{hub-elements,pets,hub-explore}.json`、规则 `packages/rules/zhangjian{,-build}.ts` 已落地并接进 `resolveBuild` 与模拟弱点倍率（单测 `tests/zhangjian-rules.test.ts` 21 条；旧存档构筑逐字节不变）；服务端交接 `handoff/backend-z1-z4.md`（HUB-Z，排在 B4 后，目标 ow-93 / 0.11.52），美术交接 `handoff/art-hf-zhangjian.md`（ART-HF，A27–A33）；前端进行中。
+- 2026-10-23（用户：内容规划交 GPT，可清档）：交接 `handoff/content-planning-gpt.md`（协作任务 CONTENT-G01，C1–C7：赤炉/霜镜/沉星/龙眠 40 节点、支线与衔接任务落位、深潮与周常内容池、HEX-B03 铺量文案、宠物内容、模块待定项细则、制作经济表）。Claude 保管大纲、M14 推导规则和 TTK 口径并审阅，继续做前端；GPT 是本任务所涉内容表的唯一修改人。

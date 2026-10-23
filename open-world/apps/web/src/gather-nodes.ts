@@ -14,7 +14,13 @@ type Node=(typeof worldTables.objects)[number];
 /** Placeholder world art per island until dedicated gather props ship: ore → split rocks, plant → berry bush. */
 const prefix=(region:string)=>{const island=region.replace(/^ss-map-/,'');return islandOrder.indexOf(region)>0?`ow-art-${island}-`:'ow-art-';};
 export function gatherArt(node:Pick<Node,'region'|'material'>){
- const ore=node.material?.endsWith('_ore'),p=prefix(node.region),names=ore?['rocks-split','rocks-stack','rocks']:['bush-berry','flowers-gold','flowers'];
+ const ore=node.material?.endsWith('_ore');
+ // ART-HD 星门专属采集图（gather-nodes 图集）：ow-art-hub-gather-{island}-{ore|plant}
+ const island=node.region.replace(/^ss-map-/,'');
+ const hubId='ow-art-hub-gather-'+island+(ore?'-ore':'-plant');
+ if(starseaAsset(hubId))return hubId;
+ // 占位回退（旧散图）
+ const p=prefix(node.region),names=ore?['rocks-split','rocks-stack','rocks']:['bush-berry','flowers-gold','flowers'];
  for(const name of names)for(const id of [p+name,'ow-art-'+name])if(starseaAsset(id))return id;
  return ore?'ow-art-rocks':'ow-art-flowers';
 }

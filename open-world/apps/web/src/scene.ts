@@ -48,9 +48,11 @@ import {edgeResources} from './island-edge.ts';
 import {PlaneSceneRenderer} from './plane-scene-renderer.ts';
 import type {PlaneMap} from '../../../packages/content/plane-scenes.ts';
 import {StarseaWorldRenderer,loadStarseaMap,type StarseaMap} from './starsea-world-renderer.ts';
+/** 工坊建设 ≥1 阶时三档外观替换地图上的旧工坊（M09 D-C3，三档互斥）。 */
+const workshopReplaced:ReadonlySet<string>=new Set(['forge-visual']),noDecorationHidden:ReadonlySet<string>=new Set();
 import {inWorldViewport,cameraView,screenOrigin} from './world-chunks.ts';
 import {STAGE,setStageBackdrop} from './stage.ts';
-import {StarseaStoryRenderer,starseaPortObjects} from './starsea-story-renderer.ts';
+import {StarseaStoryRenderer,starseaPortObjects,portBuildObjects} from './starsea-story-renderer.ts';
 import {QuestGuide} from './quest-guide.ts';
 import {InteractBubble} from './interact-bubble.ts';
 import {worldLabels} from './hud-avoidance.ts';
@@ -260,7 +262,11 @@ export class WorldScene extends Phaser.Scene {
   for(const spawn of this.bridge.world.region.spawns)if(spawn.art)resources.add(spawn.art);
   for(const enemy of this.bridge.world.enemies){if(enemy.art)resources.add(enemy.art);if(enemy.name==='宝箱怪')resources.add('hub-mimic');}
   for(const chest of this.bridge.world.region.keyChests??[]){resources.add(chest.resource);resources.add(chest.openResource);}
+  // M17 Z4 秘藏 / 锁门可能在首帧之后才下发，总是预载（三张小图）。
+  for(const id of ['ow-art-hub-cache','ow-art-hub-door-mist','ow-art-hub-door-forge'])resources.add(id);
   for(const object of this.bridge.starSea?.()?.objects??[])resources.add(object.artId);
+  // 港口建设摆件随建设进度出现，可能晚于进图：主城一次预载全部 12 张
+  if(region==='ss-map-port')for(const id of [...portBuildObjects({forge:4,shipyard:4,post:4}).map(o=>o.artId),'ss-scene-workshop-tier-1','ss-scene-workshop-tier-2','ss-scene-workshop-tier-3','ow-hub-port-marks'])resources.add(id);
   const missing=starseaRuntimeMissing(this,[...resources]);
   const create=()=>{if(generation!==this.regionGeneration)return;createStarseaAnimations(this);if(plane)this.planeScene=new PlaneSceneRenderer(this,plane);else this.starSeaWorld=new StarseaWorldRenderer(this,region,map);if(!map||!fieldRegionInfo(region)?.qa)this.starSeaStory=new StarseaStoryRenderer(this,this.nativeBudget);this.loadingRegion=false;};
   if(!missing){create();return;}this.loadingRegion=true;
@@ -306,7 +312,7 @@ export class WorldScene extends Phaser.Scene {
  if(this.backdropFrames>0&&--this.backdropFrames===0)this.game.events.once(Phaser.Core.Events.POST_RENDER,()=>setStageBackdrop(this.game.canvas));
  const cx=Math.floor(world.hero.position.x/32),cy=Math.floor(world.hero.position.y/32);
  this.nativeBudget.begin(1+[...world.players.values()].filter(player=>player.id!==world.playerId&&world.isActive(player.id)).length);
- if(this.planeScene)this.planeScene.draw(world.hero.position);else if(this.starSeaWorld)this.starSeaWorld.draw(world.hero.position,this.bridge.worldPhase?.());else{
+ if(this.planeScene)this.planeScene.draw(world.hero.position);else if(this.starSeaWorld){this.starSeaWorld.hiddenDecorations=this.starSeaView?.objects?.some(o=>o.id==='prop:ss-scene-workshop-tier')?workshopReplaced:noDecorationHidden;this.starSeaWorld.draw(world.hero.position,this.bridge.worldPhase?.());}else{
  for(let y=Math.max(0,cy-1);y<=Math.min(Math.ceil(world.region.height/32)-1,cy+1);y++)for(let x=Math.max(0,cx-1);x<=Math.min(Math.ceil(world.region.width/32)-1,cx+1);x++)if(!this.chunks.has(`${x},${y}`))this.drawChunk(world.region,x,y);
  for(const [key,c] of this.chunks){const [x,y]=key.split(',').map(Number);if(Math.abs(x-cx)>1||Math.abs(y-cy)>1){c.destroy(true);for(const decoration of this.chunkDecorations.get(key)??[])decoration.destroy();this.chunkDecorations.delete(key);this.chunks.delete(key);}}
  }

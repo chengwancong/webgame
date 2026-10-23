@@ -81,7 +81,7 @@ export function slotsView(s:CharacterState,legacy:(rank:number)=>{gold:number;ma
 
 // ---------- Z3 宠物 ----------
 const regionName=(id:ChartRegionId)=>hubChartContent.regions.find(r=>r.id===id)?.name??id;
-export function petSource(familyId:string){const f=petFamilyById.get(familyId)!;return f.tier==='free'?regionName(f.region)+'关口首通':f.tier==='light'?regionName(f.region)+'探索度 100%':'暂未开放';}
+export function petSource(familyId:string){const f=petFamilyById.get(familyId)!;return regionName(f.region)+(f.tier==='free'?'关口首通':f.tier==='light'?'探索度 100%':'狩猎与关口都首通');}
 /** 发放宠物（幂等）。第一只自动上阵。返回是否新得。 */
 export function grantPet(s:CharacterState,familyId:string){const f=petFamilyById.get(familyId);if(!f)throw Error('未知宠物 '+familyId);s.pets??={owned:{},lineup:{active:null,support:[]}};if(s.pets.owned[familyId])return false;s.pets.owned[familyId]={level:1,xp:0,flow:'blade'};if(!s.pets.lineup.active)s.pets.lineup.active=familyId;else if(s.pets.lineup.support.length<2)s.pets.lineup.support.push(familyId);s.build++;return true;}
 /** 副本结算：上阵 100%、助阵 supportShare 的角色经验；不超过角色等级与上限。 */
@@ -96,10 +96,12 @@ export function petView(familyId:string,own:{level:number;xp:number;flow:PetFlow
   activeLine:'每 '+petContent.activeEvery/30+' 秒 · '+elementNames[petElement(own.flow)]+'伤害 '+Math.round(ratio*100)+'%',passiveLine:passives.map(p=>(statName[p.stat]??p.stat)+' +'+Math.round(p.value*1000)/10+'%').join('，')};}
 export function petsView(s:CharacterState):PetsView{const owned=s.pets?.owned??{};
  return {owned:Object.entries(owned).map(([id,o])=>petView(id,o)),lineup:s.pets?.lineup??{active:null,support:[]},
-  catalog:petContent.families.map(f=>({family:f.id,name:f.name,island:f.island,tier:f.tier,status:owned[f.id]?'owned' as const:f.tier==='heavy'?'unavailable' as const:'locked' as const,source:petSource(f.id)}))};}
-/** 关口首通发的零氪档宠物。 */
+  catalog:petContent.families.map(f=>({family:f.id,name:f.name,island:f.island,tier:f.tier,status:owned[f.id]?'owned' as const:'locked' as const,source:petSource(f.id)}))};}
+/** 关口首通发的常见档宠物（内部档位名 free）。 */
 export function gatePet(region:ChartRegionId){return petContent.families.find(f=>f.region===region&&f.tier==='free')?.id;}
 export function explorePet(region:ChartRegionId){return petContent.families.find(f=>f.region===region&&f.tier==='light')?.id;}
+/** 传说档：该航区狩猎节点与关口都已首通后发（先后顺序不限，后完成的那次发）。 */
+export function huntPet(region:ChartRegionId,cleared:Record<string,unknown>){return cleared[`${region}-hunt`]&&cleared[`${region}-gate`]?petContent.families.find(f=>f.region===region&&f.tier==='heavy')?.id:undefined;}
 
 // ---------- Z4 探索度 ----------
 export const cacheId=(nodeId:string)=>'cache:'+nodeId;

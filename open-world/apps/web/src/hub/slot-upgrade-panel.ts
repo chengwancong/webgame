@@ -3,7 +3,7 @@
  * 顶部共鸣徽记 + 6 个部位格，取代旧工坊升级页签里的「按件升级」入口。
  * 样式在 slot-upgrade-panel.css（随本文件引入）。
  */
-import {esc, buttonHtml, sectionTitleHtml, resourceAmountHtml, statusBadgeHtml, ringHtml} from '../ui-components.ts';
+import {esc, buttonHtml, sectionTitleHtml, resourceAmountHtml, statusBadgeHtml} from '../ui-components.ts';
 import type {SlotsView, SlotsView as _} from '../../../../packages/contracts/zhangjian.ts';
 import type {Snapshot} from '../../../../packages/contracts/index.ts';
 
@@ -13,17 +13,15 @@ const SLOT_NAMES: Record<string, string> = {
   boots: '鞋子', accessory: '项链', ring: '戒指',
 };
 
-/** 共鸣档位：五档各 +10% 攻击/护甲/生命。 */
+/** 共鸣档位：每档 +2% 攻击/护甲/生命（档位数值以服务端 bonusPercent 为准）。 */
 const RESONANCE_TIER_NAMES = ['未激活', '一档', '二档', '三档', '四档', '五档'];
 
 export function slotUpgradePanelHtml(view: SlotsView, snapshot: Pick<Snapshot, 'gold' | 'material'>, busy: boolean): string {
   const {resonance} = view;
 
-  // 共鸣进度环（满档时圆环填满）
-  const resonanceRatio = resonance.tier > 0 ? resonance.tier / 5 : 0;
-  const resonanceRing = resonance.tier >= 5
-    ? ringHtml(1, `共鸣满档`)
-    : ringHtml(resonanceRatio, `共鸣 ${RESONANCE_TIER_NAMES[resonance.tier]}`);
+  // 共鸣徽记（ART-HF A31：resonance-0..5 六张整图）
+  const tier = Math.max(0, Math.min(5, resonance.tier));
+  const resonanceRing = `<img class="slot-resonance__ring" src="/art/hub-ui/resonance/resonance-${tier}.png" alt="${esc('共鸣 ' + RESONANCE_TIER_NAMES[tier])}">`;
 
   const nextHint = resonance.next
     ? `再把 ${resonance.next.missing} 个部位升到 +${resonance.next.rank}`
@@ -56,7 +54,9 @@ export function slotUpgradePanelHtml(view: SlotsView, snapshot: Pick<Snapshot, '
       busy: busy,
       busyLabel: '强化中…',
     });
-    return `<div class="slot-card">
+    // ART-HF A31 格框：满级（生效到本件封顶）/ 受本件品质限制 / 普通
+    const frame = s.gearId && s.rank > s.gearCap && s.gearCap > 0 ? 'is-limited' : s.gearId && s.gearCap > 0 && s.effective >= s.gearCap ? 'is-maxed' : '';
+    return `<div class="slot-card ${frame}">
       <span class="slot-card__name">${esc(name)}</span>
       <span class="slot-card__rank">${esc(rankLabel)}</span>
       ${s.gearId ? `<span class="slot-card__level">生效 +${s.effective}</span>` : '<span class="slot-card__empty">未穿装备</span>'}

@@ -14,6 +14,8 @@ type Node={id:string;phaseTable?:'landmarks';image:Phaser.GameObjects.Image;fore
 const groundPadding=1,groundWidth=2178,groundHeight=1226,groundLeft=1089,groundTop=37;
 /** Presentation consumes the sealed map; collision stays in the shared Region/navigation model. */
 export class StarseaWorldRenderer{
+ /** 被场景物件替换外观的地图装饰（如工坊三档外观替换 forge-visual），每帧由 scene 设置 */
+ hiddenDecorations:ReadonlySet<string>=new Set();
  private map?:StarseaMap;private chunks=new Map<string,{image:Phaser.GameObjects.Image;key:string;canvas:HTMLCanvasElement}>();private decorations=new Map<string,Node[]>();private decorationSource=new Map<string,StarseaMap['decorations']>();private edgeSource=new Map<string,EdgePiece[]>();private edges=new Map<string,Phaser.GameObjects.Image[]>();private sky?:Phaser.GameObjects.Image;
  private pendingChunks=0;private chunkMs:number[]=[];private job?:{key:string;steps:Generator<void,void>};
  private materials=new Map<string,HTMLCanvasElement>();private destroyed=false;private errors:string[]=[];
@@ -79,7 +81,7 @@ export class StarseaWorldRenderer{
    if(!this.job){const key=pending.shift();if(!key)break;const [x,y]=key.split(',').map(Number);this.job={key,steps:this.chunk(x,y)};}
    if(this.job.steps.next().done){this.job=undefined;this.pendingChunks--;}
   }while(performance.now()<deadline);
-  const foot=project(hero);for(const bucket of this.decorations.values())for(const node of bucket){node.image.setVisible(!node.phaseTable||Boolean(phase?.[node.phaseTable].includes(node.id)));const hidden=node.foreground&&node.image.depth>foot.y&&node.image.getBounds().contains(foot.x,foot.y-35);node.image.setAlpha(hidden?.42:1);}
+  const foot=project(hero);for(const bucket of this.decorations.values())for(const node of bucket){node.image.setVisible(!this.hiddenDecorations.has(node.id)&&(!node.phaseTable||Boolean(phase?.[node.phaseTable].includes(node.id))));const hidden=node.foreground&&node.image.depth>foot.y&&node.image.getBounds().contains(foot.x,foot.y-35);node.image.setAlpha(hidden?.42:1);}
  }
  get mapData(){return this.map;}
  diagnostics(){return{map:this.mapId,ready:Boolean(this.map),chunks:this.chunks.size,pendingChunks:this.pendingChunks,textureBytes:this.chunks.size*groundWidth*groundHeight*4,decorations:[...this.decorations.values()].reduce((n,b)=>n+b.length,0),totalDecorations:this.map?.decorations.length??0,boundaryModules:[...this.edges.values()].reduce((n,b)=>n+b.length,0),materials:this.materials.size,dressingMs:this.chunkMs.map(n=>Math.round(n*10)/10),errors:[...this.errors]};}

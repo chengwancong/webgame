@@ -32,6 +32,8 @@ export type RunView=Omit<DungeonView,'chests'>&Partial<Omit<HubDungeonPublic,'ch
 const hubGatherReach=2;
 /** FP4 引雷桩：交互距离同服务端 2 格；美术占位 A4 用裂隙方尖碑，正式图到位只改这里。 */
 const hubPylonReach=2,HUB_PYLON_ART='ow-art-hub-hunt-pylon';
+/** 占位图没有 glint / locked 等状态，传了会被渲染器判为未声明状态而隐藏。 */
+const exploreStateOk=(art:string,state:string)=>Boolean((starseaAsset(art)?.runtime as {states?:Record<string,unknown>}|undefined)?.states?.[state]);
 /** 秘藏 / 锁门的图：正式图登记后自动用上，否则用占位。 */
 function exploreArt(p:{kind:'cache'|'door';key?:string;state:string}){const open=p.state==='opened',ids=p.kind==='cache'?['ow-art-hub-cache',open?'ow-art-fine-chest-open':'ow-art-fine-chest-closed',open?'ow-art-chest-open':'ow-art-chest-closed']:['ow-art-hub-door-'+(p.key??'mist'),'ow-art-rocks-split','ow-art-rocks'];return ids.find(id=>starseaAsset(id))??ids[ids.length-1];}
 
@@ -140,19 +142,30 @@ export class DungeonController{
  /** 星门寻宝要站在 2 格内读条 2 秒（hub-dungeon-runtime），旧副本宝箱 3 格 */
  private get chestReach(){return this.instance?.keyChests?2:3;}
  private near(p:{x:number;y:number},reach:number){const h=this.deps.world().hero.position;return Math.hypot(p.x-h.x,p.y-h.y)<=reach;}
- chestObjects(){return [...this.chests.map(ch=>({id:'dungeon-chest:'+ch.id,artId:ch.resource,position:ch.position,name:ch.name,label:ch.claimed?'已开启':'开启宝箱',reach:this.chestReach,enabled:!ch.claimed})),...this.gatherObjects(),...this.pylonObjects(),...this.exploreObjects()];}
- /** FP4 狩猎引雷桩（站 2 格内读条 2 秒击碎）。美术占位 A4：裂隙方尖碑；碎了就不再显示。 */
+ chestObjects(){return [...this.chests.map(ch=>({id:'dungeon-chest:'+ch.id,artId:ch.resource,position:ch.position,name:ch.name,label:ch.claimed?'已开启':'开启宝箱',reach:this.chestReach,enabled:!ch.claimed})),...this.gatherObjects(),...this.pylonObjects(),...this.exploreObjects(),...this.beaconObjects()];}
+ /** FP4 狩猎引雷桩（站 2 格内读条 2 秒击碎）。A4 已接线：stateFiles/atlas stateFrames 经 open-world-assets 适配器传入渲染器。 */
  private pylonObjects(){
   return (this.instance?.hunt?.pylons??[]).map(p=>p.broken
-    // 已碎裂：保留为不可交互对象（state:'broken'；prop渲染器当前将所有state映射到同一静态图，暂显示idle图，待adapter支持stateFiles后可补全）
+    // 已碎裂：显示 broken 帧（hunt-pylon-broken.png / atlas pylon-broken 帧）
     ?{id:'dungeon-pylon:'+p.id,artId:HUB_PYLON_ART,position:{x:p.x,y:p.y},name:'碎裂引雷桩',label:'',reach:hubPylonReach,enabled:false,state:'broken'}
-    // 完好：可交互（prop渲染器为静态图；atlas charge动画待starsea-story-renderer支持后可补全）
-    :{id:'dungeon-pylon:'+p.id,artId:HUB_PYLON_ART,position:{x:p.x,y:p.y},name:'引雷桩',label:'击碎引雷桩',reach:hubPylonReach,enabled:true,state:'default'});
+    // 完好：显示 idle 帧，可交互；正在读条击碎时播 charge 电弧
+    :{id:'dungeon-pylon:'+p.id,artId:HUB_PYLON_ART,position:{x:p.x,y:p.y},name:'引雷桩',label:'击碎引雷桩',reach:hubPylonReach,enabled:true,state:this.instance?.opening?.id===p.id?'charge':'default'});
  }
  /** M17 Z4 秘藏与锁门。正式图（ART-HF A27/A28）未到时：秘藏借宝箱图，锁门借石堆；锁门没钥匙也可交互，由服务端回「需要 X」。 */
  private exploreObjects(){
   return (this.instance?.explore?.props??[]).map(p=>{const cache=p.kind==='cache',art=exploreArt(p),usable=cache?p.state==='glint':p.state==='locked';
-   return {id:'dungeon-explore:'+p.id,artId:art,position:{x:p.x,y:p.y},name:cache?'秘藏':'锁门',label:usable?(cache?'打开秘藏':'开门'+(p.keyName?'（需要'+p.keyName+'）':'')):'',reach:hubPylonReach,enabled:usable,state:p.state};});
+   return {id:'dungeon-explore:'+p.id,artId:art,position:{x:p.x,y:p.y},name:cache?'秘藏':'锁门',label:usable?(cache?'打开秘藏':'开门'+(p.keyName?'（需要'+p.keyName+'）':'')):'',reach:hubPylonReach,enabled:usable,...(exploreStateOk(art,p.state)?{state:p.state}:{})};});
+ }
+ /** FP5 潮汐信标（ow-art-hub-tide-beacon）：按 hp 比例切 full/damaged/critical/broken 状态；光环脚下独立一层。 */
+ private beaconObjects(){
+  const b=this.instance?.beacon,def=this.deps.world().defense;
+  if(!b||!def)return[];
+  const pos={x:def.position.x,y:def.position.y},ratio=b.max>0?b.hp/b.max:0;
+  const state=b.hp<=0?'broken':ratio<=0.2?'critical':ratio<=0.5?'damaged':'full';
+  return[
+   {id:'dungeon-beacon-aura',artId:'ow-art-hub-tide-beacon',position:{x:pos.x,y:pos.y-.01},name:'',label:'',reach:0,enabled:false,state:'aura'},
+   {id:'dungeon-beacon',artId:'ow-art-hub-tide-beacon',position:pos,name:'信标',label:'',reach:0,enabled:false,state}
+  ];
  }
  nearestExplore(){return this.instance?.explore?.props.find(p=>(p.kind==='cache'?p.state==='glint':p.state==='locked')&&this.near(p,hubPylonReach));}
  openExplore(id:string){this.input({kind:'interact',target:id});}

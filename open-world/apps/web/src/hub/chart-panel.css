@@ -86,11 +86,11 @@
 
 /* Z4 探索度圆环（航区页签旁） */
 .hub-explore-badge{display:inline-flex;align-items:center;gap:2px;vertical-align:middle;margin-left:var(--space-1)}
-.hub-explore-badge .ui-ring{width:16px;height:16px}
-.hub-explore-badge .ui-ring__track{stroke:var(--color-border-strong)}
-.hub-explore-badge .ui-ring__value{stroke:var(--color-primary)}
-.hub-explore-star{font-size:9px;color:var(--color-text-disabled);line-height:1}
-.hub-explore-star.is-reached{color:var(--color-warning)}
+.hub-explore-ring{position:relative;display:inline-block;width:22px;height:22px;flex:none}
+.hub-explore-ring>img{position:absolute;inset:0;width:100%;height:100%}
+.hub-explore-badge__pct{font-size:var(--font-size-xs,11px);color:var(--color-text-muted)}
+.hub-explore-star{width:10px;height:10px}
+.hub-card__key-icon{width:20px;height:20px;vertical-align:middle}
 
 /* Z1 元素行 */
 .hub-card__row--elements{flex-direction:column;align-items:flex-start;gap:var(--space-1)}
@@ -105,3 +105,10 @@
 .hub-card__row--door.is-locked{color:var(--color-text-disabled)}
 
 [data-motion-reduced=true] .hub-node__disc{transition:none}
+.hub-card__key-icon.is-dim{opacity:.45;filter:grayscale(1)}
+
+/* ART-HC 图集精灵（chart-nodes / sea-emblems / port-build） */
+.tp-icon{display:inline-block;vertical-align:middle;flex-shrink:0;image-rendering:auto}
+
+/* 航区节点图底图（chart-bg-*.webp；pointer-events:none） */
+.hub-chart-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;z-index:0;border-radius:inherit}

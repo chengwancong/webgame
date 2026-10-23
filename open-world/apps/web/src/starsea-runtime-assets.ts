@@ -30,7 +30,10 @@ export function preloadStarseaRuntimeAssets(scene:Phaser.Scene,additional:readon
   const r=asset.runtime;
   if(r.kind==='atlas'&&asset.group==='monsters'&&!scene.textures.exists(asset.id)){scene.load.atlas(asset.id,r.image!,r.atlas!);scene.load.json(asset.id+':sockets',r.sockets!);}
   if(r.kind==='effect'&&(r as any).texture)files.add((r as any).texture);
-  if(r.kind==='prop'){if(r.file)files.add(r.file);for(const variant of r.variants??[])files.add(variant.file);for(const state of Object.values(r.states??{}))if(state.file)files.add(state.file);}
+  if(r.kind==='prop'){if(r.file)files.add(r.file);for(const variant of r.variants??[])files.add(variant.file);for(const state of Object.values(r.states??{}))if(state.file)files.add(state.file);
+   // 图集动画 prop（A4 引雷桩/落石等）：预加载 atlas 纹理
+   // image 字段缺省时用 file（starsea.v1.json legacy props）
+   if((r as any).atlas&&!scene.textures.exists(asset.id))scene.load.atlas(asset.id,(r as any).image??r.file,(r as any).atlas);}
  }
  for(const file of files)if(!scene.textures.exists(starseaTexture(file)))scene.load.image(starseaTexture(file),file);
 }
@@ -39,6 +42,7 @@ export function starseaRuntimeMissing(scene:Phaser.Scene,ids:readonly string[]){
  return ids.some(id=>{const asset=starseaAssets.get(id);if(!asset)throw Error('Unregistered region resource '+id);const r=asset.runtime;
   if(r.kind==='atlas')return !scene.textures.exists(asset.id);
   const files=r.kind==='effect'?[(r as any).texture]:r.kind==='prop'?[r.file,...(r.variants??[]).map(v=>v.file),...Object.values(r.states??{}).map(s=>s.file)]:[];
+  if(r.kind==='prop'&&(r as any).atlas&&!scene.textures.exists(asset.id))return true;
   return files.some(f=>f&&!scene.textures.exists(starseaTexture(f)));});
 }
 export function createStarseaAnimations(scene:Phaser.Scene){registerLoadedActorAnimations(scene,starseaAssets.values());}
@@ -48,7 +52,12 @@ export function starseaAtlasSocket(scene:Phaser.Scene,id:string,frame:string,nam
  if(!asset||!match||!data)return;const point=data.actions[match[1]]?.[Number(match[2])]?.[name];if(!point)return;
  const anchor=asset.runtime.anchor!,size=asset.runtime.frameSize!;return{x:position.x+(point[0]-anchor[0]*size)*scale*(flip?-1:1),y:position.y+(point[1]-anchor[1]*size)*scale};
 }
-export function starseaPropState(asset:RuntimeAsset,state?:string):PropState|undefined{const states=asset.runtime.states;if(!states)return;return state===undefined?Object.values(states)[0]:states[state];}
+export function starseaPropState(asset:RuntimeAsset,state?:string):PropState|undefined{const states=asset.runtime.states;if(!states)return;
+ // starsea.v1.json legacy props: states 是字符串数组而非 PropState 对象；从 runtime 字段直接合成
+ // 有图集时按状态名取帧：glow → 呼吸循环（叠加层），lit → 点亮环，其余 → runtime.frame 底图
+ if(Array.isArray(states)){const r=asset.runtime as any;if(!r.file)return;const base={kind:'image',file:r.file,anchor:r.anchor,displayHeight:r.displayHeight??r.displayWidth,visible:true};if(!r.atlas)return base;
+  const anim=state==='glow'?r.animations?.glow:undefined,frames:string[]=anim?anim.frames:state==='lit'?['stargate-ring-lit']:r.frame?[r.frame]:[];return frames.length?{...base,atlasKey:asset.id,frames,fps:anim?.fps??1}:base;}
+ return state===undefined?Object.values(states)[0]:states[state];}
 
 /** Hero and party slots are reserved before native enemies/NPCs claim a visible slot.
  *  帧已共享缓存，limit 仅为合理性上限，默认 64。 */

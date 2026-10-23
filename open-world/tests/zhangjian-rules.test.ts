@@ -8,7 +8,7 @@ import {monsterCombatSchema} from '../packages/contracts/monsters.ts';
 import {loadoutsStateSchema,petsStateSchema} from '../packages/contracts/zhangjian.ts';
 import {chartNodeViewSchema} from '../packages/contracts/hub.ts';
 import {withSlotRank,resonanceTier,migrateSlotRanks,catchUpAffixNodes,petBuildParts,petForm} from '../packages/rules/zhangjian-build.ts';
-import {nodeElements,applyRegionWeakness,elementHint,loadoutView,saveLoadout,applyLoadout,loadoutDirty,ensureLoadouts,grantPet,grantPetXp,setPetLineup,petsView,regionExplore,nodeExploreFields,gateKey,gatePet,explorePet,slotsView,dockExploreBonus,renameLoadout} from '../packages/rules/zhangjian.ts';
+import {nodeElements,applyRegionWeakness,elementHint,loadoutView,saveLoadout,applyLoadout,loadoutDirty,ensureLoadouts,grantPet,grantPetXp,setPetLineup,petsView,regionExplore,nodeExploreFields,gateKey,gatePet,explorePet,huntPet,slotsView,dockExploreBonus,renameLoadout} from '../packages/rules/zhangjian.ts';
 import {newHubState} from '../packages/rules/hub-state.ts';
 import {gearMaxRank} from '../packages/rules/item-power.ts';
 
@@ -37,11 +37,12 @@ describe('Z2 部位强化',()=>{
 });
 
 describe('Z3 宠物',()=>{
- it('首得自动上阵；上阵给技能和被动，助阵只给一半被动',()=>{const s=state();grantPet(s,'wind-free');grantPet(s,'mist-free');petsStateSchema.parse(s.pets);expect(s.pets!.lineup).toEqual({active:'wind-free',support:['mist-free']});const parts=petBuildParts(s);expect(parts.rules).toHaveLength(1);expect(parts.rules[0].action).toMatchObject({type:'nova',damageType:'physical',ref:'attack'});expect(parts.stats.map(x=>x.value)).toEqual([.04,.02]);});
+ it('首得自动上阵；上阵给技能和被动，助阵只给一半被动',()=>{const s=state();grantPet(s,'wind-free');grantPet(s,'mist-free');petsStateSchema.parse(s.pets);expect(s.pets!.lineup).toEqual({active:'wind-free',support:['mist-free']});const parts=petBuildParts(s);expect(parts.rules).toHaveLength(1);expect(parts.rules[0].action).toMatchObject({type:'nova',damageType:'physical',ref:'attack'});expect(parts.stats.map(x=>[x.stat,x.value])).toEqual([['attackPercent',.03],['hpPercent',.04],['attackPercent',.015],['hpPercent',.02]]);});
  it('流派决定元素，进入构筑规则',()=>{const s=state();grantPet(s,'wind-free');s.pets!.owned['wind-free'].flow='storm';const b=resolveBuild(s);expect(b.stats.rules?.some(r=>r.id==='pet-wind-free'&&r.action.type==='nova'&&r.action.damageType==='lightning')).toBe(true);});
  it('经验：上阵全额、等级不超过角色，10 级成年',()=>{const s=state();s.level=12;grantPet(s,'wind-free');grantPetXp(s,100000);expect(s.pets!.owned['wind-free'].level).toBe(12);expect(petForm(12)).toBe('adult');});
- it('阵容校验与图鉴',()=>{const s=state();grantPet(s,'wind-free');expect(()=>setPetLineup(s,'wind-free',['wind-free'])).toThrow();expect(()=>setPetLineup(s,'mist-free',[])).toThrow();const v=petsView(s);expect(v.catalog.find(c=>c.family==='wind-heavy')!.status).toBe('unavailable');expect(v.owned[0].runtime).toBe('ss-pet-wind-free-young');});
- it('来源：关口给零氪档，探索满给轻氪档',()=>{expect(gatePet('wind')).toBe('wind-free');expect(explorePet('mist')).toBe('mist-light');expect(gatePet('rift')).toBe('star-free');});
+ it('阵容校验与图鉴',()=>{const s=state();grantPet(s,'wind-free');expect(()=>setPetLineup(s,'wind-free',['wind-free'])).toThrow();expect(()=>setPetLineup(s,'mist-free',[])).toThrow();const v=petsView(s);expect(v.catalog.find(c=>c.family==='wind-heavy')).toMatchObject({status:'locked',source:'风栖狩猎与关口都首通'});expect(v.owned[0].runtime).toBe('ss-pet-wind-free-young');});
+ it('来源：关口给常见档，探索满给稀有档',()=>{expect(gatePet('wind')).toBe('wind-free');expect(explorePet('mist')).toBe('mist-light');expect(gatePet('rift')).toBe('star-free');});
+ it('传说档：狩猎与关口都首通才发',()=>{expect(huntPet('wind',{'wind-hunt':1})).toBeUndefined();expect(huntPet('wind',{'wind-hunt':1,'wind-gate':1})).toBe('wind-heavy');});
 });
 
 describe('Z4 探索度',()=>{

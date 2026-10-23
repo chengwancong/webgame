@@ -11,5 +11,8 @@ for(const r of t.filter(x=>x.type==='bounty'&&x.id.startsWith('ow-'))){
  const next=Math.max(r.reward_gold,Math.round(share*per*n/10)*10); // 不低于现值（不靠降收益）
  out.push({id:r.id,zone:r.zone,level:L,count:n,elite:!!r.elite,cur:r.reward_gold,next,killGold:Math.round(gold(L,r.elite)*r.cond_count)});
 }
+// P55-R01（10-21 裁决）：同岛同档 z1→z6 单调上包络——真实等级回落（雾铃 z2 Lv11→z3 Lv10）时取前一区值，不改怪等级/系数。
+const lanes={};for(const o of out){const m=o.id.match(/^ow-(\w+)-bounty-z(\d)-(\d)$/);if(m)(lanes[m[1]+':'+m[3]]??=[]).push([Number(m[2]),o]);}
+for(const lane of Object.values(lanes)){lane.sort((a,b)=>a[0]-b[0]);for(let i=1;i<lane.length;i++)lane[i][1].next=Math.max(lane[i][1].next,lane[i-1][1].next);}
 if(process.argv.includes('--json'))console.log(JSON.stringify(out,null,1));
 else for(const o of out.filter(o=>o.id.endsWith('-1')||o.id.endsWith('-2')||o.id.endsWith('-3')))console.log(o.id.padEnd(24),'Lv'+o.level,'x'+o.count,o.elite?'elite':'norm ','kills≈'+o.killGold,'cur',o.cur,'→',o.next);

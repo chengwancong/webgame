@@ -12,7 +12,7 @@ import {hubChartContent} from '../packages/content/hub-chart.ts';
 import {cacheId,regionExplore} from '../packages/rules/zhangjian.ts';
 import {resolveBuild} from '../packages/rules/index.ts';
 import {rankSlots} from '../packages/contracts/zhangjian.ts';
-import {validateResponse,type CharacterState,type Gear} from '../packages/contracts/index.ts';
+import {versions,validateResponse,type CharacterState,type Gear} from '../packages/contracts/index.ts';
 import {newHubState} from '../packages/rules/hub-state.ts';
 import rows from './fixtures/build-variety-r1/legacy-builds.json';
 const dsn=process.env.AW_DATABASE_URL;if(!dsn)throw Error('Requires isolated PostgreSQL');
@@ -27,6 +27,25 @@ async function actor(){
  return {id,req,lease:control.json().lease_id,state:async()=>(await pool.query('SELECT state FROM ow_characters WHERE id=$1',[id])).rows[0].state as CharacterState};
 }
 async function locked<T>(id:string,fn:(c:import('pg').PoolClient,s:CharacterState)=>Promise<T>){return transaction(pool,async c=>{const s=(await c.query('SELECT state FROM ow_characters WHERE id=$1 FOR UPDATE',[id])).rows[0].state as CharacterState;const result=await fn(c,s);await c.query('UPDATE ow_characters SET state=$1 WHERE id=$2',[s,id]);return result;});}
+async function settlePetNode(id:string,nodeId:string){return locked(id,async(c,s)=>{
+ const instanceId=randomUUID(),entry:FrozenHubEntry={budgetReady:true,nodeId,dungeonId:'hub-'+nodeId,region:'wind',kind:nodeId.endsWith('hunt')?'hunt':'gate',tier:1,rules:versions.rules,shards:[],shardEffects:[],reward:{xp:50,gold:0,material:0,rep:0,shards:0},shardPool:[],combatScale:{hp:1,attack:1},dropCountScale:1};
+ await consumeHubEntry(c,s,entry,instanceId);const input={nodeId,instanceId,seconds:60},receipt=await settleHubNode(c,s,input),after=structuredClone(s);
+ expect(await settleHubNode(c,s,input)).toEqual(receipt);expect(s).toEqual(after);return receipt;
+});}
+it('legendary pet is not awarded by hunting alone',async()=>{
+ const a=await actor();await settlePetNode(a.id,'wind-hunt');expect((await a.state()).pets?.owned['wind-heavy']).toBeUndefined();
+});
+it.each([['wind-hunt','wind-gate'],['wind-gate','wind-hunt']])('legendary pet is awarded once after %s then %s, including replay and later clears',async(first,second)=>{
+ const a=await actor();await settlePetNode(a.id,first);expect((await a.state()).pets?.owned['wind-heavy']).toBeUndefined();
+ const receipt=await settlePetNode(a.id,second);expect((await a.state()).pets!.owned['wind-heavy']).toBeDefined();
+ const view=(await a.req('pets')).json(),pet=view.owned.find((p:any)=>p.family==='wind-heavy');expect(receipt.firstClearRewards.filter(r=>r==='获得宠物：'+pet.name)).toHaveLength(1);
+ const repeat=await settlePetNode(a.id,second);expect(repeat.firstClearRewards).not.toContain('获得宠物：'+pet.name);expect(Object.keys((await a.state()).pets!.owned).filter(id=>id==='wind-heavy')).toHaveLength(1);
+});
+it('existing character session recovery backfills legendary pet once and preserves unrelated state',async()=>{
+ const a=await actor();await locked(a.id,async(c,s)=>{delete s.pets;const h=await readHubState(c,a.id);for(const node of ['wind-hunt','wind-gate'])h.chart.cleared[node]={firstAt:new Date().toISOString(),bestSeconds:60};await saveHubState(c,a.id,h);});
+ const before=await a.state(),response=await a.req('character');expect(response.statusCode,response.body).toBe(200);const after=await a.state();expect(after.pets!.owned['wind-heavy']).toBeDefined();
+ const omit=(s:CharacterState)=>{const {pets,build,...rest}=s;return rest;};expect(omit(after)).toEqual(omit(before));await a.req('character');expect(await a.state()).toEqual(after);
+});
 it('loadout restores skills, replays identically and refuses active instances',async()=>{
  const a=await actor(),original=(await a.state()).skills,body={op:'save',index:1,command_id:randomUUID()};const saved=await a.req('loadout',body);expect(saved.statusCode,saved.body).toBe(200);expect(()=>validateResponse('loadout',saved.json())).not.toThrow();
  await locked(a.id,async(_c,s)=>{s.skills=['cut'];});const apply={op:'apply',index:1,command_id:randomUUID()},r=await a.req('loadout',apply);expect(r.statusCode,r.body).toBe(200);expect((await a.state()).skills).toEqual(original);expect((await a.req('loadout',apply)).json()).toEqual(r.json());

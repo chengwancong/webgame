@@ -8,13 +8,16 @@
 .hub-port-tabs button small{margin-left:auto}
 
 .hub-port-detail{min-width:0;min-height:0;display:flex;flex-direction:column;gap:var(--space-3);padding:var(--space-3) var(--space-4);overflow:hidden;background:var(--color-panel-secondary);border:var(--border-width) solid var(--color-border-subtle);border-radius:var(--radius-well)}
-.hub-port-detail__head{display:flex;align-items:baseline;gap:var(--space-3)}
+.hub-port-detail__head{display:flex;align-items:flex-start;gap:var(--space-3)}
+.hub-port-detail__head-text{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:var(--space-1)}
 .hub-port-detail__head h3{margin:0;font-size:var(--font-size-h2);font-weight:var(--font-weight-bold)}
 .hub-port-detail__npc{color:var(--color-text-secondary);font-size:var(--font-size-caption)}
+.hub-port-detail__card{flex:0 0 auto;border-radius:var(--radius-well);overflow:hidden}
 .hub-port-rep{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:var(--space-3);color:var(--color-text-secondary);font-size:var(--font-size-caption)}
 
 .hub-tiers{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--space-2)}
-.hub-tier{display:grid;grid-template-columns:64px 88px minmax(0,1fr) 96px;align-items:center;gap:var(--space-3);min-height:var(--space-10);padding:var(--space-1) var(--space-3);background:var(--color-panel-raised);border:var(--border-width) solid var(--color-border);border-radius:var(--radius-control)}
+.hub-tier{display:grid;grid-template-columns:80px 88px minmax(0,1fr) 96px;align-items:center;gap:var(--space-3);min-height:var(--space-10);padding:var(--space-1) var(--space-3);background:var(--color-panel-raised);border:var(--border-width) solid var(--color-border);border-radius:var(--radius-control)}
+.hub-tier__index{display:flex;align-items:center;gap:var(--space-1);overflow:hidden}
 .hub-tier.is-claimable{border-color:var(--color-primary-border);background:color-mix(in srgb,var(--color-primary) 12%,var(--color-panel-raised))}
 .hub-tier.is-claimed{color:var(--color-text-secondary)}
 .hub-tier__need{color:var(--color-text-secondary);font-size:var(--font-size-caption)}

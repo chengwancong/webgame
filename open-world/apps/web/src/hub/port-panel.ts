@@ -6,9 +6,34 @@
 import {esc,buttonHtml,panelHeaderHtml,stateBlockHtml,statusBadgeHtml,tabsHtml} from '../ui-components.ts';
 import {iconHtml} from '../ui/icons.ts';
 import {meterHtml} from '../ui/graphics.ts';
+import {art} from '../ui-assets.ts';
 import type {HubPortView as PortView} from '../../../../packages/contracts/hub.ts';
 
 type PortBuilding = PortView['buildings'][number];
+
+/** ART-HC port-build 图集 1520×424 */
+const _PB_SRC='/art/hub-ui/port-build.png',_PB_W=1520,_PB_H=424;
+/** build-card 帧（480×320）；建筑 id → [fx,fy] */
+const _CARD_FRAMES:Record<string,[number,number]>={forge:[2,2],shipyard:[486,2],post:[970,2]};
+/** build-tier 帧（64×64）；1-based index */
+const _TIER_FRAMES:Record<number,[number,number]>={1:[1454,2],2:[2,326],3:[70,326],4:[138,326]};
+/** collect 帧（96×96） */
+const _COLLECT_FRAMES:Record<string,[number,number]>={life:[206,326],star:[306,326]};
+/** 建筑声望图标（ui.v2 单图，item-rep-forge/dock/post） */
+const _REP_ICON:Record<string,string>={forge:'item-rep-forge',shipyard:'item-rep-dock',post:'item-rep-post'};
+function buildRepIcon(id:string):string{const key=_REP_ICON[id];return key?`<img src="${art(key)}" alt="" class="hub-port-rep-icon" draggable="false" loading="lazy">`:'';}
+
+function _pbSprite(fx:number,fy:number,fw:number,fh:number,dw:number,dh:number):string{
+ const s=dw/fw,bw=Math.round(_PB_W*s),bh=Math.round(_PB_H*s);
+ return `<span aria-hidden="true" class="tp-icon" style="width:${dw}px;height:${dh}px;background:url(${_PB_SRC}) ${-Math.round(fx*s)}px ${-Math.round(fy*s)}px/${bw}px ${bh}px no-repeat"></span>`;
+}
+/** 建筑近景图（480×320 → 120×80） */
+function buildCardImg(id:string):string{const f=_CARD_FRAMES[id];return f?_pbSprite(f[0],f[1],480,320,120,80):'';}
+/** 阶级徽章（64×64 → 24×24） */
+function buildTierBadge(tier:number):string{const f=_TIER_FRAMES[tier];return f?_pbSprite(f[0],f[1],64,64,24,24):'';}
+/** 收藏品图标（96×96 → 24×24） */
+function collectItemIcon(kind:'life'|'star'):string{const f=_COLLECT_FRAMES[kind];return f?_pbSprite(f[0],f[1],96,96,24,24):'';}
+
 
 export type PortSection = 'collectibles' | 'systems' | PortBuilding['id'];
 
@@ -44,7 +69,7 @@ function tierRow(b: PortBuilding, t: PortBuilding['tiers'][number], busyKey: str
     action = statusBadgeHtml('声望不足', 'neutral');
   }
   return `<li class="hub-tier ${cls}">
-    <b class="hub-tier__index">第 ${t.tier} 阶</b>
+    <span class="hub-tier__index">${buildTierBadge(t.tier)}<b>第 ${t.tier} 阶</b></span>
     <span class="hub-tier__need">声望 ${t.threshold}</span>
     <span class="hub-tier__rewards">${esc(t.rewards.join('、'))}</span>
     <span class="hub-tier__action">${action}</span>
@@ -53,19 +78,21 @@ function tierRow(b: PortBuilding, t: PortBuilding['tiers'][number], busyKey: str
 
 function buildingDetail(b: PortBuilding, busyKey: string): string {
   const target = repTarget(b);
-  return `<div class="hub-port-detail__head"><h3>${esc(b.name)}</h3><span class="hub-port-detail__npc">${esc(b.npc)}</span></div>
+  const cardImg = buildCardImg(b.id);
+  return `<div class="hub-port-detail__head">${cardImg ? `<div class="hub-port-detail__card">${cardImg}</div>` : ''}<div class="hub-port-detail__head-text"><h3>${buildRepIcon(b.id)}${esc(b.name)}</h3><span class="hub-port-detail__npc">${esc(b.npc)}</span></div></div>
     <div class="hub-port-rep"><span>声望</span>${meterHtml({value: b.rep, max: target, label: `${b.name}声望`, valueText: 'end'})}</div>
     <ol class="hub-tiers">${b.tiers.map(t => tierRow(b, t, busyKey)).join('')}</ol>`;
 }
 
-function collectionRow(label: string, owned: number, total: number): string {
-  const cells = Array.from({length: total}, (_, i) => `<span class="hub-collect__cell${i < owned ? ' is-owned' : ''}">${iconHtml('diamond', {size: 24})}</span>`).join('');
+function collectionRow(label: string, owned: number, total: number, cellIcon?: string): string {
+  const icon = cellIcon ?? iconHtml('diamond', {size: 24});
+  const cells = Array.from({length: total}, (_, i) => `<span class="hub-collect__cell${i < owned ? ' is-owned' : ''}">${icon}</span>`).join('');
   return `<div class="hub-collect"><div class="hub-collect__head"><b>${esc(label)}</b><span class="ui-number">${owned} / ${total}</span></div><div class="hub-collect__cells" role="img" aria-label="${esc(`${label} ${owned} / ${total}`)}">${cells}</div></div>`;
 }
 
 function collectiblesDetail(v: PortView): string {
   const {lifeCrystal: lc, starCore: sc} = v.collectibles;
-  return `<div class="hub-port-detail__head"><h3>收藏</h3></div>${collectionRow('生命星晶', lc.owned, lc.total)}${collectionRow('星核', sc.owned, sc.total)}`;
+  return `<div class="hub-port-detail__head"><div class="hub-port-detail__head-text"><h3>收藏</h3></div></div>${collectionRow('生命星晶', lc.owned, lc.total, collectItemIcon('life'))}${collectionRow('星核', sc.owned, sc.total, collectItemIcon('star'))}`;
 }
 
 function systemsDetail(v: PortView): string {

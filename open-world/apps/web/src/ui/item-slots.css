@@ -45,3 +45,14 @@
 .character-slot:is([aria-pressed=true],[aria-expanded=true]){background:var(--color-panel-raised);border-color:var(--color-highlight);box-shadow:var(--shadow-selected)}
 
 .bag-item-well[class*=quality-],.gear-card[class*=quality-],.battle-result .loot-tile[class*=quality-]{border:var(--border-width) solid var(--quality-color,var(--color-border-strong))}.bag-item.is-selected .bag-item-well,.gear-card[aria-pressed=true]{border-color:var(--color-highlight);box-shadow:none}.character-slot.empty{border-style:dashed}.character-slot.empty .character-slot-art img{opacity:.3}.slot:not(.character-slot):has(.ui-slot-mark){position:relative;overflow:visible}
+
+/* E7 ART-HE ui-ornaments 品质槽框覆层：按百分比裁图集（924×332，帧 128），随格子尺寸缩放；传奇框叠 6 帧闪光（6fps），减少动态时停在首帧。
+   不动 ::before（原有稀有/传奇发光）。 */
+.bag-cell[class*="quality-"]::after,.bag-eq[class*="quality-"]::after{content:'';position:absolute;inset:0;pointer-events:none;background:url(/art/hub-ui/ui-ornaments.png) no-repeat;background-size:721.875% 259.375%}
+.bag-cell.quality-common::after,.bag-eq.quality-common::after{background-position:.251% .98%}
+.bag-cell.quality-magic::after,.bag-eq.quality-magic::after{background-position:16.834% .98%}
+.bag-cell.quality-rare::after,.bag-eq.quality-rare::after{background-position:33.417% .98%}
+.bag-cell.quality-legendary::after,.bag-eq.quality-legendary::after{background-image:url(/art/hub-ui/ui-ornaments.png),url(/art/hub-ui/ui-ornaments.png);background-size:721.875% 259.375%;background-position:66.583% .98%,50% .98%;animation:ui-slot-shine 1s step-end infinite}
+@keyframes ui-slot-shine{0%{background-position:66.583% .98%,50% .98%}16.667%{background-position:83.166% .98%,50% .98%}33.333%{background-position:99.749% .98%,50% .98%}50%{background-position:.251% 65.686%,50% .98%}66.667%{background-position:16.834% 65.686%,50% .98%}83.333%{background-position:33.417% 65.686%,50% .98%}}
+[data-motion-reduced=true] :is(.bag-cell,.bag-eq).quality-legendary::after{animation:none}
+@media (prefers-reduced-motion:reduce){:is(.bag-cell,.bag-eq).quality-legendary::after{animation:none}}
