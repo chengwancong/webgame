@@ -15,10 +15,11 @@ import {beginAwait,beginEnemyTurn,beginResolving,completeResolving,endTacticalCo
 import type {TacticalControlEvent,TacticalControlState} from '../../../../packages/simulation/tactical/control.ts';
 import {TacticalSourceError,cellKey,sameCell} from './contract.ts';
 import type {TacticalAbilityView,TacticalCell,TacticalCellView,TacticalCommand,TacticalControlCommand,TacticalDenial,
- TacticalEncounterHandle,TacticalEncounterIntent,TacticalEncounterView,TacticalEvent,TacticalPreview,TacticalPreviewRequest,
+ TacticalEncounterHandle,TacticalEncounterIntent,TacticalEncounterView,TacticalEvent,TacticalForecast,TacticalIntentView,
+ TacticalPreview,TacticalPreviewRequest,
  TacticalPush,TacticalReceipt,TacticalResultView,TacticalSource,TacticalUnitView} from './contract.ts';
 
-export const fixtureScenarios=['default','timeout','defeat','load-error','conflict','version','empty'] as const;
+export const fixtureScenarios=['default','timeout','defeat','load-error','conflict','version','empty','intents'] as const;
 export type FixtureScenario=typeof fixtureScenarios[number];
 export type FixtureOptions={scenario:FixtureScenario;waitMs:number;warningMs:number;
  /** 服务端时钟相对本机的偏移，用来证明界面只按服务端时间基准显示倒计时。 */
@@ -202,14 +203,18 @@ export class FixtureServer{
  preview(request:TacticalPreviewRequest):TacticalPreview{
   if(request.kind==='move'){
    const r=this.denyMove(request.to);if('code' in r)return {ok:false,denial:r};
-   return {ok:true,kind:'move',destination:{...request.to},path:r.path,steps:r.path.length-1,notes:['这是移动预览，尚未执行。','一次移动不可拆成技能前后两段。']};
+   const forecast=this.buildForecast([],[]);
+   return {ok:true,kind:'move',destination:{...request.to},path:r.path,steps:r.path.length-1,notes:['这是移动预览，尚未执行。','一次移动不可拆成技能前后两段。'],forecast};
   }
   const r=this.denyAbility(request.abilityId,request.target);if(!r.ok)return {ok:false,denial:r.denial};
   const damage=r.def.id==='fx-basic'?this.heroDamage:FIXTURE.cleaveDamage;
+  const kills=r.targets.filter(t=>t.hp-damage<=0).map(t=>t.id);
+  const dmgMap=r.targets.map(t=>({unitId:t.id,amount:Math.min(damage,t.hp+t.shield)}));
+  const forecast=this.buildForecast(kills,dmgMap);
   return {ok:true,kind:'ability',abilityId:r.def.id,target:{...request.target},rangeCells:this.rangeCells(r.def.range),affectedCells:r.affected,
    targets:r.targets.map(t=>t.id),known:[{label:'影响',value:`影响${r.affected.length}格`},{label:'命中单位',value:r.targets.length?r.targets.map(t=>t.name).join('、'):'范围内暂无敌人'},
     {label:'伤害',value:`每个目标 ${damage}（fixture 固定值）`}],
-   uncertain:['部分结果将在行动时确定。','暴击、闪避与抗性尚未接入。'],notes:['普攻也占用本回合的技能额度。']};
+   uncertain:['部分结果将在行动时确定。','暴击、闪避与抗性尚未接入。'],notes:['普攻也占用本回合的技能额度。'],forecast};
  }
 
  // ── 指令 ───────────────────────────────────────────────────
@@ -367,6 +372,57 @@ export class FixtureServer{
   return first;
  }
 
+ // ── fixture 意图构建（不是正式 AI，只为驱动意图界面样例）─────────
+ private buildIntents():TacticalIntentView[]{
+  // ?scenario=intents：静态展示七种意图类型各一
+  if(this.options.scenario==='intents')return this.buildIntentsShowcase();
+  if(this.enemyTurn||this.settle)return [];
+  const hero=this.hero();if(!hero.alive)return [];
+  const intents:TacticalIntentView[]=[];let order=1;
+  for(const enemy of this.units.filter(u=>u.side==='enemy'&&u.alive)){
+   if(enemy.id==='enemy-a'){
+    // 追击型：接近主角
+    const reachCells:import('./contract.ts').TacticalCell[]=[];
+    for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
+     const c={x:enemy.cell.x+dx,y:enemy.cell.y+dy};
+     if((dx||dy)&&c.x>=0&&c.y>=0&&c.x<FIXTURE.board.width&&c.y<FIXTURE.board.height)reachCells.push(c);
+    }
+    intents.push({unitId:enemy.id,order:order++,type:'chase',cells:reachCells,targetId:'hero',line:null,
+     damage:{kind:'amount',value:this.enemyDamage},fizzled:false,hidden:false,label:`追击 · ${this.enemyDamage}`});
+   }else if(enemy.id==='enemy-b'){
+    // 锁定型：从敌人位置到主角的直线
+    const line:import('./contract.ts').TacticalCell[]=[];
+    const dx=Math.sign(hero.cell.x-enemy.cell.x),dy=Math.sign(hero.cell.y-enemy.cell.y);
+    let cx=enemy.cell.x+dx,cy=enemy.cell.y+dy;
+    while(cx>=0&&cy>=0&&cx<FIXTURE.board.width&&cy<FIXTURE.board.height){
+     line.push({x:cx,y:cy});if(cx===hero.cell.x&&cy===hero.cell.y)break;cx+=dx;cy+=dy;
+    }
+    const fizzled=FIXTURE.blockers.some(b=>{const idx=line.findIndex(c=>c.x===b.x&&c.y===b.y);return idx>=0&&idx<line.findIndex(c=>c.x===hero.cell.x&&c.y===hero.cell.y);});
+    intents.push({unitId:enemy.id,order:order++,type:'lock',cells:[],targetId:'hero',line,
+     damage:{kind:'amount',value:this.enemyDamage},fizzled,hidden:false,label:`锁定 · ${this.enemyDamage}${fizzled?' · 落空':''}`});
+   }
+  }
+  return intents;
+ }
+ /** intents 场景：静态展示七种意图类型各一（含 fizzled 与 hidden）。 */
+ private buildIntentsShowcase():TacticalIntentView[]{
+  return [
+   {unitId:'enemy-a',order:1,type:'grid',cells:[{x:3,y:2},{x:4,y:2},{x:3,y:3}],targetId:null,line:null,damage:{kind:'amount',value:12},fizzled:false,hidden:false,label:'格子型 · 12'},
+   {unitId:'enemy-b',order:2,type:'chase',cells:[{x:5,y:3},{x:6,y:3},{x:5,y:4}],targetId:'hero',line:null,damage:{kind:'amount',value:8},fizzled:false,hidden:false,label:'追击型 · 8'},
+   {unitId:'enemy-c',order:3,type:'lock',cells:[],targetId:'hero',line:[{x:7,y:2},{x:6,y:2},{x:5,y:2},{x:4,y:2},{x:3,y:2}],damage:{kind:'tier',tier:'heavy'},fizzled:false,hidden:false,label:'锁定型 · 重'},
+   {unitId:'enemy-d',order:4,type:'buff',cells:[],targetId:null,line:null,damage:null,fizzled:false,hidden:false,label:'增益型'},
+   {unitId:'enemy-e',order:5,type:'summon',cells:[{x:5,y:5}],targetId:null,line:null,damage:null,fizzled:false,hidden:false,label:'召唤型'},
+   {unitId:'enemy-f',order:6,type:'chase',cells:[],targetId:'hero',line:null,damage:{kind:'amount',value:10},fizzled:true,hidden:false,label:'追击型 · 落空'},
+   {unitId:'enemy-g',order:7,type:'move-only',cells:[],targetId:null,line:null,damage:null,fizzled:false,hidden:true,label:'?'},
+  ];
+ }
+ /** fixture 结果预测：粗略样例数值，不是正式规则。 */
+ private buildForecast(kills:string[],dmgMap:{unitId:string;amount:number}[]):import('./contract.ts').TacticalForecast{
+  const hero=this.hero();
+  const intents=this.buildIntents();
+  const totalEnemyDmg=intents.filter(i=>i.targetId==='hero'&&!i.fizzled&&i.damage?.kind==='amount').reduce((s,i)=>s+(i.damage as {kind:'amount';value:number}).value,0);
+  return {kills,damage:dmgMap,heroHpAfterIntents:Math.max(0,hero.hp-totalEnemyDmg),heroMaxHp:FIXTURE.heroHp};
+ }
  // ── 投影 ───────────────────────────────────────────────────
  view():TacticalEncounterView{
   const now=this.now(),cv=tacticalControlView(this.control,now);
@@ -398,7 +454,8 @@ export class FixtureServer{
    control:{mode:cv.mode,phase:cv.phase,pendingManual:cv.pendingManual,deadlineAtMs:cv.deadlineAtMs,warningMs:this.control.policy.warningMs,
     serverNowMs:now,autoReason:cv.mode==='auto'?this.autoReason:null,canRequestAuto:cv.mode==='manual'&&cv.phase!=='ended',
     canRequestManual:cv.mode==='auto'&&!cv.pendingManual&&cv.phase!=='ended'},
-   result:this.result,unsupported:['敌方意图','行动顺序','正式伤害与命中','冷却规则','正式宠物效果','撤退后果','奖励结算','断线补发事件']};
+   result:this.result,intents:this.buildIntents(),
+   unsupported:['行动顺序','正式伤害与命中','冷却规则','正式宠物效果','撤退后果','奖励结算','断线补发事件']};
  }
  eventsSince(seq:number){return this.events.filter(e=>e.seq>seq);}
 }

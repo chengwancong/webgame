@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>深渊行者 · 像素风对照（试验）</title>
+<style>
+ body{margin:0;background:#1f1b24;color:#f3ead7;font:14px/1.5 system-ui,"Microsoft YaHei",sans-serif}
+ header{padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+ header h1{font-size:16px;margin:0}
+ header label{display:flex;gap:6px;align-items:center}
+ .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 12px 12px}
+ figure{margin:0;display:flex;flex-direction:column;gap:6px}
+ figcaption{font-weight:700}
+ .frame{position:relative;width:100%;aspect-ratio:1280/764;border:2px solid #6b5a3a;border-radius:8px;overflow:hidden;background:#000}
+ /* 按原生 1280×764 渲染再等比缩小，避免窄 iframe 里舞台定位跑偏 */
+ iframe{position:absolute;left:0;top:0;width:1280px;height:764px;border:0;transform-origin:0 0;transform:scale(var(--k,.3))}
+ .check{padding:0 16px 16px;color:#cbbfa6}
+ .check li{margin:2px 0}
+ .lic{padding:0 16px 16px;font-size:12px;color:#9a8f7a}
+</style>
+</head>
+<body>
+<header>
+ <h1>像素风对照 · 同一棋盘、同一界面，只换画风</h1>
+ <label>场景
+  <select id="scenario">
+   <option value="intents">七种意图（静态）</option>
+   <option value="default">正常对局（可操作）</option>
+   <option value="defeat">失败</option>
+  </select>
+ </label>
+ <span>两边各自独立，可以分别点着玩</span>
+</header>
+<div class="row">
+ <figure><figcaption>现风格（奶白浅金手绘 + 原生角色 / SP33 怪物）</figcaption><div class="frame"><iframe id="left" title="现风格"></iframe></div></figure>
+ <figure><figcaption>像素风（Kenney Tiny Dungeon，16×16）</figcaption><div class="frame"><iframe id="right" title="像素风"></iframe></div></figure>
+</div>
+<ol class="check">
+ <li>棋盘看不看得清：可走格、阻挡、危险格、路径是否一眼分得出</li>
+ <li>意图标记清不清楚：受击格、执行序号、锁定直线、落空、"?" 是否压得住画面</li>
+ <li>英雄和宠物能不能融进去：单位贴图和界面卡片、头像是否像同一个游戏</li>
+</ol>
+<p class="lic">像素素材：Tiny Dungeon by Kenney（www.kenney.nl），CC0 1.0。仅本地试验，不进 Git、不进游戏包。像素版没有动作帧，出手/受击/倒下用位移和透明度代替；这套素材没有树，障碍物换成石柱、砖墙、木桶。</p>
+<script>
+ const sel=document.getElementById('scenario');
+ function load(){
+  const q=`tactical-board.html?source=fixture&scenario=${sel.value}`;
+  document.getElementById('left').src=q;
+  document.getElementById('right').src=q+'&skin=pixel';
+ }
+ sel.addEventListener('change',load);load();
+ function fit(){for(const f of document.querySelectorAll('.frame'))f.style.setProperty('--k',String(f.clientWidth/1280));}
+ addEventListener('resize',fit);fit();
+ if(location.protocol==='file:')document.body.insertAdjacentHTML('afterbegin','<p style="padding:12px 16px;background:#7a2e2e">这是直接打开的本地文件，跑不了 TypeScript。请先运行 pnpm web，再打开 http://127.0.0.1:8612/pixel-compare.html</p>');
+</script>
+</body>
+</html>

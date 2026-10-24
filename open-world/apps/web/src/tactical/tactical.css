@@ -184,6 +184,33 @@ body.tb-review{margin:0;background:color-mix(in srgb,var(--color-text-primary) 8
 .tb-result-card .tb-actions{justify-content:center}
 .tb-layer .ui-confirm-overlay{position:absolute;inset:0}
 
+/* ── 意图覆盖层 ── */
+/* 格子型：危险格标记（橙红警示底纹 + 序号角标） */
+.tb-cell.is-intent-grid{background:color-mix(in srgb,var(--color-danger) 28%,transparent);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--color-danger) 70%,transparent)}
+.tb-cell.is-intent-grid-fizzled{background:color-mix(in srgb,var(--color-text-secondary) 10%,transparent);box-shadow:inset 0 0 0 1px var(--color-border)}
+.tb-intent-order{position:absolute;left:3px;top:2px;min-width:16px;height:16px;padding:0 3px;border-radius:8px;display:grid;place-items:center;
+ font-size:10px;font-weight:800;background:var(--color-danger);color:#fff;z-index:3;line-height:1}
+.tb-intent-fizzle{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:800;
+ color:var(--color-text-secondary);background:var(--color-panel);padding:2px 5px;border-radius:4px;z-index:4;white-space:nowrap}
+/* 意图直线（锁定型/冲锋型） */
+.tb-intent-line{fill:none;stroke:var(--tb-intent-lock-color,color-mix(in srgb,var(--color-danger) 80%,transparent));
+ stroke-width:3;stroke-dasharray:8 5;stroke-linecap:round;opacity:.85}
+.tb-intent-line.is-fizzled{stroke:var(--tb-intent-fizzle-color,color-mix(in srgb,var(--color-text-secondary) 60%,transparent));stroke-dasharray:4 8}
+/* 追击型/其他意图头顶徽记（通过单位头像板） */
+.tb-intent-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:9px;
+ background:var(--color-danger);color:#fff;font-size:10px;font-weight:800;padding:0 4px;margin-right:4px;flex-shrink:0}
+.tb-unit-chip.is-fizzled{opacity:.55;text-decoration:line-through}
+/* 预计击杀骷髅 / 伤害预览 */
+.tb-cell.is-kill-mark{background:color-mix(in srgb,var(--color-danger) 22%,transparent)}
+.tb-kill-mark{position:absolute;right:4px;bottom:4px;font-size:22px;z-index:3;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
+.tb-dmg-preview{position:absolute;right:4px;bottom:4px;font-size:11px;font-weight:800;
+ color:var(--color-danger-strong);text-shadow:0 0 3px var(--color-panel);z-index:3}
+/* 结果预览：敌方行动后剩余生命 */
+.tb-forecast{margin:8px 0 0;padding:6px 10px;border-radius:var(--radius-control);background:color-mix(in srgb,var(--color-info) 10%,var(--color-panel));
+ border:1px solid color-mix(in srgb,var(--color-info) 40%,transparent);font-size:var(--font-size-caption);font-weight:600}
+.tb-forecast b{font-size:var(--font-size-body)}
+.tb-forecast--danger{background:color-mix(in srgb,var(--color-danger) 12%,var(--color-panel));border-color:color-mix(in srgb,var(--color-danger) 55%,transparent);color:var(--color-danger-strong)}
+
 /* ── 减少动态 ── */
 @media (prefers-reduced-motion:reduce){
  .tb-float,.tb-encounter-card,.tb-notice,.tb-actor.is-assist::after,.tb-actor.is-hit{animation-duration:1ms!important}
@@ -194,3 +221,10 @@ body.tb-review{margin:0;background:color-mix(in srgb,var(--color-text-primary) 8
 [data-motion-reduced=true] .tb-actor.is-assist::after{animation:none;opacity:.8}
 [data-motion-reduced=true] .tb-actor.is-hit{animation:none;outline:2px solid var(--color-danger)}
 [data-motion-reduced=true] .tb-countdown i{transition:none}
+/* 像素风对照皮肤（?skin=pixel，Kenney Tiny Dungeon CC0）：只换贴图，界面层不变 */
+.tb-skin-pixel .tb-board{isolation:isolate;background:#2a2230;image-rendering:pixelated}
+.tb-skin-pixel .tb-cell::before{content:'';position:absolute;inset:0;z-index:-1;background:var(--floor) 0 0/100% 100% no-repeat;image-rendering:pixelated}
+.tb-skin-pixel .tb-dressing{bottom:0;width:var(--cell);image-rendering:pixelated;filter:none}
+.tb-skin-pixel .tb-cell.is-blocked::after{display:none}
+.tb-actor-pixel{position:absolute;left:50%;bottom:14%;width:calc(var(--cell,72px)*.9);margin-left:calc(var(--cell,72px)*-.45);image-rendering:pixelated;pointer-events:none;
+ filter:drop-shadow(0 2px 0 rgba(0,0,0,.35))}

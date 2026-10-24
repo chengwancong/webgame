@@ -11,6 +11,7 @@ import {EventLedger,countdownState,syncClock} from './countdown.ts';
 import type {ClockSync,CountdownState} from './countdown.ts';
 import {canCommand,commandFromPreview,initialSelection,reduceSelection} from './selection.ts';
 import type {SelectionAction,SelectionState} from './selection.ts';
+import {pixelSkin,pixelTile} from './pixel-skin.ts';
 import {GROUND_ART,boardCellsHtml,boardOverlay,boardSvg,fitCell} from './board-view.ts';
 import {TacticalActors} from './actors.ts';
 
@@ -47,7 +48,7 @@ export class TacticalBoardController{
 </aside>
 <main class="tb-main">
  <div class="tb-banner" data-region="banner" role="status" aria-live="polite"></div>
- <div class="tb-board-frame"><div class="tb-board" data-region="board" style="--ground:url('${GROUND_ART}')">
+ <div class="tb-board-frame"><div class="tb-board" data-region="board" style="--ground:url('${pixelSkin?pixelTile(48):GROUND_ART}')">
   <div class="tb-grid" data-region="grid" role="grid" aria-label="战场棋盘"></div>
   <div class="tb-svg" data-region="svg"></div>
   <div class="tb-units" data-region="units"></div>
@@ -159,6 +160,7 @@ export class TacticalBoardController{
      if(e.change!=='ended')this.flash(text,e.change==='timeout-auto'?'warning':e.change==='manual-applied'?'success':'info');
      break;
     }
+    case 'note':this.addLog({id:e.id,text:e.text,tone:e.unitId?side(e.unitId):'system'});break;
     case 'result':this.addLog({id:e.id,text:{victory:'战斗胜利',defeat:'战斗结束',retreat:'已撤退','system-abort':'战斗中止'}[e.outcome],tone:'system'});break;
    }
   }
@@ -288,7 +290,14 @@ export class TacticalBoardController{
    case 'inspect':this.dispatch({type:'inspect',unitId:id??null});break;
    case 'return':void this.returnToExplore();break;
    case 'retry':void this.start(this.intent??undefined);break;
-   case 'restart':this.returnCommand=null;this.ledger=new EventLedger();void this.start();break;
+   case 'restart':
+    if(this.view?.source==='sandbox'){
+     // 沙盒：回到开局面板（由 tactical-board.ts 暴露的钩子处理）
+     (window as any).__sandboxRestart?.();
+    }else{
+     this.returnCommand=null;this.ledger=new EventLedger();void this.start();
+    }
+    break;
   }
  };
  private onKey=(event:KeyboardEvent)=>{
@@ -338,7 +347,8 @@ export class TacticalBoardController{
 <div class="tb-round" aria-label="回合">${v.round!==null?`第${v.round}回合`:''}</div>
 <div class="tb-badges">${statusBadgeHtml(this.phaseText(v),v.phase==='enemy'?'warning':v.phase==='awaiting'?'info':'neutral')}
 ${statusBadgeHtml(v.control.mode==='auto'?'托管':'手动',v.control.mode==='auto'?'warning':'neutral',{iconHtml:iconHtml(v.control.mode==='auto'?'auto':'play',{size:16})})}
-${conn}${v.source==='fixture'?statusBadgeHtml('隔离 fixture · 非正式数据','warning',{title:'本页数据来自浏览器内样例，不接服务端、存档或奖励'}):''}</div>`;
+${conn}${v.source==='fixture'?statusBadgeHtml('隔离 fixture · 非正式数据','warning',{title:'本页数据来自浏览器内样例，不接服务端、存档或奖励'}):
+  v.source==='sandbox'?statusBadgeHtml('战棋沙盒 · 不发奖','info',{title:'沙盒模式：数据来自服务端沙盒接口，不写入角色存档，不发放正式奖励'}):''}</div>`;
  }
  private renderHero(){
   const h=this.hero();if(!h){this.regions.hero.innerHTML='';return;}
@@ -404,7 +414,7 @@ ${this.petFeedback?`<p class="tb-pet-feedback tb-pet-feedback--${this.petFeedbac
   const frame=this.regions.board.parentElement!,w=frame.clientWidth||740,h=frame.clientHeight||520,cell=fitCell(v,w,h);
   this.cell=cell;
   const o=boardOverlay(v,this.sel);
-  this.regions.board.style.cssText=`--ground:url('${GROUND_ART}');--cell:${cell}px;width:${v.board.width*cell}px;height:${v.board.height*cell}px`;
+  this.regions.board.style.cssText=`--ground:url('${pixelSkin?pixelTile(48):GROUND_ART}');--cell:${cell}px;width:${v.board.width*cell}px;height:${v.board.height*cell}px`;
   this.regions.board.dataset.command=this.sel.command;
   this.regions.grid.style.gridTemplateColumns=`repeat(${v.board.width},${cell}px)`;
   this.regions.grid.innerHTML=boardCellsHtml(v,this.sel,o,cell);
@@ -417,7 +427,20 @@ ${meterHtml({value:u.hp.current,max:u.hp.max,label:'生命',tone:'hp',valueText:
 ${u.shield?`<p class="tb-line">护盾 <b>${u.shield}</b></p>`:''}
 <p class="tb-line"><span class="tb-dim">位置</span> 第${u.cell.x+1}列第${u.cell.y+1}行</p>
 ${u.statuses.length?`<p class="tb-statuses">${u.statuses.map(s=>statusBadgeHtml(s.label,'neutral',{variant:'inline'})).join('')}</p>`:''}
-${u.side==='enemy'?`<p class="tb-note">敌方意图：${this.view!.unsupported.includes('敌方意图')?'尚未接入':'—'}</p>`:''}`;
+${u.side==='enemy'?this.intentCardHtml(u.id):''}`;
+ }
+ private intentCardHtml(unitId:string):string{
+  const intents=(this.view?.intents??[]).filter(i=>i.unitId===unitId);
+  if(!intents.length)return this.view?.unsupported.includes('敌方意图')?'<p class="tb-note">敌方意图：尚未接入</p>':'';
+  return intents.map(i=>{
+   if(i.hidden)return `<p class="tb-line tb-intent-row" role="button" tabindex="0" data-action="inspect-intent" data-intent-unitid="${esc(unitId)}" style="cursor:default"><span class="tb-intent-badge">❢${i.order}</span>?（意图未明）</p>`;
+   const dmg=i.damage?(i.damage.kind==='amount'?`${i.damage.value}`:`${{'light':'轻','heavy':'重','lethal':'致命'}[i.damage.tier]}`):null;
+   const fizzle=i.fizzled?'<span class="tb-dim"> · 落空</span>':'';
+   const hidden=i.hidden?'<span class="tb-dim"> · ?</span>':'';
+   const typeLabel={'grid':'格子型','chase':'追击型','lock':'锁定型','buff':'增益','summon':'召唤','charge-windup':'蓄力','move-only':'仅移动'}[i.type]??i.type;
+   return `<p class="tb-line tb-intent-row" role="button" tabindex="0" data-action="inspect-intent" data-intent-unitid="${esc(unitId)}" style="cursor:default">
+<span class="tb-intent-badge">❢${i.order}</span>${esc(typeLabel)}${dmg?` · <b>${dmg}</b>`:''}${fizzle}${hidden}</p>`;
+  }).join('');
  }
  private renderRight(){
   const v=this.view!,s=this.sel,parts:string[]=[];
@@ -426,11 +449,24 @@ ${u.side==='enemy'?`<p class="tb-note">敌方意图：${this.view!.unsupported.i
    let body='';
    if(s.previewPending||!p)body=`<p class="tb-line">${iconHtml('hourglass',{size:16})}正在预览…</p>`;
    else if(!p.ok)body=`<p class="tb-denial" role="alert">${iconHtml('lock',{size:16})}${esc(p.denial.message)}</p>`;
-   else if(p.kind==='move')body=`<dl class="tb-facts"><dt>目的地</dt><dd>第${p.destination.x+1}列第${p.destination.y+1}行</dd><dt>移动步数</dt><dd>${p.steps}</dd></dl>${p.notes.map(n=>`<p class="tb-note">${esc(n)}</p>`).join('')}`;
-   else{
+   else if(p.kind==='move'){
+    const fc=p.forecast;
+    body=`<dl class="tb-facts"><dt>目的地</dt><dd>第${p.destination.x+1}列第${p.destination.y+1}行</dd><dt>移动步数</dt><dd>${p.steps}</dd></dl>${p.notes.map(n=>`<p class="tb-note">${esc(n)}</p>`).join('')}`;
+    if(fc?.heroHpAfterIntents!==null&&fc?.heroHpAfterIntents!==undefined){
+     const pct=Math.round(fc.heroHpAfterIntents/Math.max(1,fc.heroMaxHp)*100);
+     const warn=pct<30?' tb-forecast--danger':'';
+     body+=`<p class="tb-forecast${warn}" role="status">敌方行动后剩余生命 <b>${fc.heroHpAfterIntents}</b> / ${fc.heroMaxHp}</p>`;
+    }
+   }else{
     const a=v.abilities.find(x=>x.id===p.abilityId);
+    const fc=p.forecast;
     body=`<p class="tb-line"><b>${esc(a?.label??p.abilityId)}</b></p><dl class="tb-facts">${p.known.map(k=>`<dt>${esc(k.label)}</dt><dd>${esc(k.value)}</dd>`).join('')}</dl>
 ${p.uncertain.map(n=>`<p class="tb-note tb-uncertain">${iconHtml('info',{size:16})}${esc(n)}</p>`).join('')}${p.notes.map(n=>`<p class="tb-note">${esc(n)}</p>`).join('')}`;
+    if(fc?.heroHpAfterIntents!==null&&fc?.heroHpAfterIntents!==undefined){
+     const pct=Math.round(fc.heroHpAfterIntents/Math.max(1,fc.heroMaxHp)*100);
+     const warn=pct<30?' tb-forecast--danger':'';
+     body+=`<p class="tb-forecast${warn}" role="status">敌方行动后剩余生命 <b>${fc.heroHpAfterIntents}</b> / ${fc.heroMaxHp}</p>`;
+    }
    }
    parts.push(`<section class="tb-card tb-preview"><h3 class="tb-card-title">行动预览</h3>${body}
 <div class="tb-actions">${buttonHtml('确认行动',{action:'confirm',variant:'primary',disabled:!p?.ok||busy,busy,busyLabel:'正在提交…',attributes:{'data-focus':'confirm'}})}${buttonHtml('取消选择',{action:'cancel',variant:'secondary',disabled:busy,attributes:{'data-focus':'cancel'}})}</div></section>`);
@@ -443,6 +479,20 @@ ${p.uncertain.map(n=>`<p class="tb-note tb-uncertain">${iconHtml('info',{size:16
 ${s.message?`<p class="tb-denial" role="alert">${esc(s.message)}</p>`:''}<p class="tb-note">点击单位可查看详情；选择「移动」或技能后再点目标格预览。</p></section>`);
   }
   if(s.message&&s.target)parts.push(`<p class="tb-denial" role="alert">${esc(s.message)}</p>`);
+  // 敌方意图侧栏（按 order 排序）
+  const intents=v.intents??[];
+  if(intents.length){
+   const rows=intents.slice().sort((a,b)=>a.order-b.order).map(i=>{
+    const unit=v.units.find(u=>u.id===i.unitId);
+    const name=unit?.name??i.unitId;
+    const typeLabel={'grid':'格子型','chase':'追击型','lock':'锁定型','buff':'增益','summon':'召唤','charge-windup':'蓄力','move-only':'仅移动'}[i.type]??i.type;
+    const dmg=i.hidden?'?':i.damage?(i.damage.kind==='amount'?String(i.damage.value):{'light':'轻','heavy':'重','lethal':'致命'}[i.damage.tier]??''):null;
+    const fizzle=i.fizzled?'<span class="tb-dim"> · 落空</span>':'';
+    return `<li><button type="button" class="tb-unit-chip${i.fizzled?' is-fizzled':''}" data-action="inspect" data-id="${esc(i.unitId)}" data-focus="chip-intent-${i.order}" title="${esc(name)}${i.fizzled?' · 落空':''}">
+<span style="font-weight:700;color:var(--color-highlight)">❢${i.order}</span> ${esc(name.slice(0,4))} · ${esc(i.hidden?'?':typeLabel)}${dmg!==null?` · ${esc(dmg)}`:''}${fizzle}</button></li>`;
+   }).join('');
+   parts.push(`<section class="tb-card tb-intents"><p class="tb-eyebrow">敌方意图</p><ol class="tb-order-list">${rows}</ol></section>`);
+  }
   parts.push(`<section class="tb-card tb-order"><p class="tb-eyebrow">行动顺序</p><ol class="tb-order-list">${v.units.filter(u=>u.alive).map(u=>`<li><button type="button" class="tb-unit-chip${u.id===v.actorId?' is-actor':''}" data-action="inspect" data-id="${esc(u.id)}" data-focus="chip-${esc(u.id)}">${esc(u.name)}</button></li>`).join('')}</ol>
 <p class="tb-note">${v.unsupported.includes('行动顺序')?'后续顺序尚未确定（列表只是在场单位）':''}</p></section>`);
   parts.push(`<section class="tb-card tb-log"><p class="tb-eyebrow">战斗记录</p><ol class="tb-log-list" aria-live="polite">${this.log.slice(-9).map(r=>`<li class="tb-log-${r.tone}">${esc(r.text)}</li>`).join('')}</ol></section>`);
@@ -478,7 +528,7 @@ ${a.iconSrc?`<img src="${a.iconSrc}" alt="" draggable="false">`:iconHtml('star',
    parts.push(`<div class="tb-cover">${stateBlockHtml({kind:'error',title:e?.code==='version-mismatch'?'战场版本不一致':'暂时没能载入战场',message:e?.message??'',
     action:e?.retryable===false?undefined:{label:'重试',action:'retry'}})}${e?.retryable===false?'<p class="tb-note">fixture 不提供返回港口路由；正式版此处返回拾星港。</p>':''}</div>`);
   }else if(this.screen==='empty')parts.push(`<div class="tb-cover">${stateBlockHtml({kind:'empty',title:'没有可进入的遭遇',message:this.error?.message??''})}</div>`);
-  else if(this.screen==='returned')parts.push(`<div class="tb-cover">${stateBlockHtml({kind:'success',title:'已返回探索',message:this.returnMessage,action:this.view?.source==='fixture'?{label:'再来一场（fixture）',action:'restart'}:undefined})}</div>`);
+  else if(this.screen==='returned')parts.push(`<div class="tb-cover">${stateBlockHtml({kind:'success',title:'已返回探索',message:this.returnMessage,action:this.view?.source==='fixture'?{label:'再来一场（fixture）',action:'restart'}:this.view?.source==='sandbox'?{label:'再来一局',action:'restart'}:undefined})}</div>`);
   if(v&&(this.screen==='board'||this.screen==='returning')){
    if(this.countdown.visible){
     const c=this.countdown,pct=Math.max(0,Math.min(100,c.remainingMs/Math.max(1,v.control.warningMs)*100));

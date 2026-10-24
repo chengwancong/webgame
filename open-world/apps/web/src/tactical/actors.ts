@@ -12,6 +12,7 @@ import type {ResolvedAppearance} from '../../../../packages/contracts/appearance
 import type {WardrobeAction} from '../wardrobe-renderer.ts';
 import {esc} from '../ui-components.ts';
 import type {TacticalCell,TacticalPetView,TacticalUnitView} from './contract.ts';
+import {PIXEL_PET_TILE,pixelSkin,pixelTile,pixelUnitTile} from './pixel-skin.ts';
 
 type Painter={render(action:string,clock:number,facing:number):void;duration(action:string):number|undefined;destroy():void};
 type Actor={id:string;el:HTMLElement;plate:HTMLElement;painter:Painter|null;status:'loading'|'ready'|'placeholder';
@@ -72,7 +73,22 @@ export class TacticalActors{
  private size(side:Actor['side']){const c=this.cell;return side==='pet'?{w:Math.round(c*.9),h:Math.round(c*.9)}:{w:Math.round(c*1.5),h:Math.round(c*1.6)};}
  private mount(actor:Actor,canvas:HTMLCanvasElement){canvas.className='tb-actor-canvas';actor.el.prepend(canvas);actor.el.classList.add('is-ready');}
  private fail(actor:Actor){actor.status='placeholder';actor.el.classList.add('is-placeholder');actor.el.title='美术加载失败：显示占位标记';this.onStatus?.(this.statuses());}
+ /** 像素皮肤：单张 16×16 贴图，用位移/透明度表现出手、受击、倒下（素材没有动作帧）。 */
+ private mountPixel(actor:Actor,tile:number){
+  const img=document.createElement('img');img.className='tb-actor-pixel';img.src=pixelTile(tile);img.alt='';img.draggable=false;
+  img.onerror=()=>this.fail(actor);
+  actor.el.prepend(img);actor.el.classList.add('is-ready');
+  const dur:Record<string,number>={attack:.35,hurt:.3};
+  actor.painter={render:(a,c,f)=>{
+   const k=dur[a]?Math.sin(Math.min(1,c/dur[a])*Math.PI):0;
+   const dx=a==='attack'?k*12*f:a==='hurt'?-k*6*f:0;
+   img.style.transform=`translateX(${dx.toFixed(1)}px) scaleX(${f<0?-1:1})${a==='death'?' rotate(90deg)':''}`;
+   img.style.filter=a==='hurt'&&k>.3?'brightness(2.2)':'';img.style.opacity=a==='death'?'.4':'';
+  },duration:a=>dur[a],destroy:()=>img.remove()};
+  actor.status='ready';this.onStatus?.(this.statuses());
+ }
  private async load(actor:Actor,unit:TacticalUnitView){
+  if(pixelSkin){this.mountPixel(actor,pixelUnitTile(unit));return;}
   const {w,h}=this.size(actor.side);
   try{
    if(unit.art.kind==='hero-native'){
@@ -94,6 +110,7 @@ export class TacticalActors{
   }catch{this.fail(actor);}
  }
  private async loadPet(actor:Actor,runtimeId:string){
+  if(pixelSkin){this.mountPixel(actor,PIXEL_PET_TILE);return;}
   const {w,h}=this.size('pet');
   try{
    const asset=await findPet(runtimeId);if(!asset)throw Error('missing pet');

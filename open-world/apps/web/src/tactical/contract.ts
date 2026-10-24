@@ -6,7 +6,7 @@
  * 界面只显示这些已解析结果：路径、可达格、射程、视线、费用、伤害、冷却、超时与奖励都不在前端计算。
  * 唯一的实现是 `TacticalSource`；当前只有隔离 fixture（`source:'fixture'`），没有生产实现。
  */
-export type TacticalSourceKind='fixture'|'server';
+export type TacticalSourceKind='fixture'|'server'|'sandbox';
 export type TacticalCell={x:number;y:number};
 export const cellKey=(c:TacticalCell)=>c.x+','+c.y;
 export const sameCell=(a:TacticalCell|null|undefined,b:TacticalCell|null|undefined)=>!!a&&!!b&&a.x===b.x&&a.y===b.y;
@@ -48,15 +48,52 @@ export type TacticalEncounterView={
  /** 当前行动者的合法移动集合（含完整路径）。移动额度已用或非手动等待时为空。 */
  legalMoves:TacticalLegalMove[];
  pet:TacticalPetView|null;control:TacticalControlView;result:TacticalResultView|null;
- /** 尚未接通、在界面上必须明确写出的能力（例如敌方意图、行动顺序）。 */
+ /** 本轮已公布的敌方意图（按 order 排序）；有意图时 unsupported 不再列"敌方意图"。 */
+ intents:TacticalIntentView[];
+ /** 尚未接通、在界面上必须明确写出的能力（例如行动顺序）。 */
  unsupported:string[]};
 
+/** 意图视图（服务端已公布、前端只读）。 */
+export type TacticalIntentView={
+ unitId:string;order:number;
+ type:'grid'|'chase'|'lock'|'buff'|'summon'|'charge-windup'|'move-only';
+ /** 格子型：受击格列表；追击型：预计可达格；锁定型：直线格；其他：空。 */
+ cells:TacticalCell[];
+ /** 追击型/锁定型的目标单位 id；无目标时为 null。 */
+ targetId:string|null;
+ /** 锁定型/冲锋型的路径直线；不适用时为 null。 */
+ line:TacticalCell[]|null;
+ /** 预计伤害数值或档位；不公开时为 null。 */
+ damage:{kind:'amount';value:number}|{kind:'tier';tier:'light'|'heavy'|'lethal'}|null;
+ /** 意图在执行时已落空（被控制、断视线等）。 */
+ /** 服务端单独给出的威胁档位（重 / 致命）；普通档不标。 */
+ tier?:'heavy'|'lethal';
+ fizzled:boolean;
+ /** 刺客首回合隐身：隐藏类型与伤害，前端只显示"?"。 */
+ hidden:boolean;
+ label:string;
+};
+/** 托管编排参数（开局时提交，之后不变）。 */
+export type TacticalOrchestration={
+ priority:string[];
+ target:'nearest'|'lowest-hp'|'support-first'|null;
+ position:'stay-close'|'keep-distance'|'behind-cover'|null;
+ guard:boolean;
+};
+/** 行动结果预测（来自服务端预览；前端不自行计算）。 */
+export type TacticalForecast={
+ kills:string[];
+ damage:{unitId:string;amount:number}[];
+ /** 执行完本轮全部敌方意图后主角预计剩余生命；缺失时为 null。 */
+ heroHpAfterIntents:number|null;
+ heroMaxHp:number;
+};
 export type TacticalPreviewRequest={kind:'move';to:TacticalCell}|{kind:'ability';abilityId:string;target:TacticalCell};
 export type TacticalDenial={code:'unreachable'|'blocked'|'occupied'|'corner'|'out-of-budget'|'out-of-range'|'sight'|'invalid-target'|'used'|'unsupported'|'not-your-turn';message:string};
 export type TacticalPreview=
- |{ok:true;kind:'move';destination:TacticalCell;path:TacticalCell[];steps:number;notes:string[]}
+ |{ok:true;kind:'move';destination:TacticalCell;path:TacticalCell[];steps:number;notes:string[];forecast?:TacticalForecast}
  |{ok:true;kind:'ability';abilityId:string;target:TacticalCell;rangeCells:TacticalCell[];affectedCells:TacticalCell[];
-   targets:string[];known:{label:string;value:string}[];uncertain:string[];notes:string[]}
+   targets:string[];known:{label:string;value:string}[];uncertain:string[];notes:string[];forecast?:TacticalForecast}
  |{ok:false;denial:TacticalDenial};
 export type TacticalCommand={commandId:string;encounterId:string;expectedRevision:number;actionToken:string}&(
  |{kind:'move';to:TacticalCell}|{kind:'ability';abilityId:string;target:TacticalCell}|{kind:'end-activation'}
@@ -75,7 +112,9 @@ export type TacticalEvent={id:string;seq:number;actionId:string|null;atMs:number
  |{kind:'turn';phase:'hero'|'enemy';round:number}
  |{kind:'end-activation';unitId:string}
  |{kind:'control';change:'timeout-auto'|'auto-applied'|'manual-requested'|'manual-applied'|'manual-cancelled'|'ended'}
- |{kind:'result';outcome:TacticalResultView['outcome']});
+ |{kind:'result';outcome:TacticalResultView['outcome']}
+ /** 没有专门表现的服务端事实（治疗、拉拽、蓄力、阶段切换、意图落空等），只进战报。 */
+ |{kind:'note';unitId:string|null;text:string});
 export type TacticalReceipt={commandId:string;accepted:boolean;revision:number;events:TacticalEvent[];
  denial?:TacticalDenial};
 export type TacticalPush={events:TacticalEvent[];view:TacticalEncounterView};
