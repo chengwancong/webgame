@@ -77,3 +77,11 @@ T9 发布前最终回归：**15 文件、188 项全部通过**；全仓 `tsc --n
 本批交付的是可执行规则和沙盒，完成“能打、可重放、能测试”的工程验证；**不能据此宣称战斗已平衡或好玩已经成立**。按用户约束完成一次推导和一次验证，到此停止调数。下一步由 Grok 的真实手动对照检验取舍与意图可读性，再决定下批机制和棋盘修改。
 
 两轮命令：`node tools/tactical-baseline-cloud.mjs --round initial` / `--round validation`。原始日志和明细仅留云端 `/home/ubuntu/abyss/tactical-b1-20261024/{initial,validation}/`；本机 `.qa/tactical-b1/baseline/` 只有汇总。执行期间未并行跑重任务，容器无网络、无数据库挂载。
+
+## 云发布验收
+
+2026-10-24 15:04:25 +08:00 发布成功，来源 `455fc82d18031943514c16efa573f621c23da561`；版本 0.11.55 / protocol56 / ow-96，assets与db19不变。首次尝试在切换前遇到 tar 目录项冲突，修复文件列表归档并过5项部署工具测试后，唯一重试成功。
+
+health/content/build-info 的五项版本及build-info.source一致。[沙盒目录](https://43-165-179-11.sslip.io/api/tactical/sandbox/catalog)可用；五棋盘真实创建、预览、手动移动/护盾、命令重发及后台终局均通过。部署功能检查包含手动前置，不算第三轮数值测量。数据库容器ID/启动时间保持不变，未访问角色存档。
+
+页面入口HTTP200，但当前发布的客户端仍使用此前已提交的fixture；Claude并行前端适配未包含在本批发布，不能宣称UI已接或正式副本已换成战棋。真实玩法试玩请先按 `docs/hub-portal-rework-20261021/handoff/tactical-b1-claude-contract-sync.txt` 完成前端契约适配；API功能/命令复现可直接按 `tactical-b1-grok-prompt.txt` 执行。
