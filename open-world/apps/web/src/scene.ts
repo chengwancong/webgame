@@ -60,6 +60,7 @@ import {KillStreak,KillStreakRenderer,KILL_STREAK_ART_KEY,preloadKillStreakArt} 
 import {BossPhaseBanner,BossPhaseBannerRenderer,BOSS_BANNER_ART_KEY,BOSS_BANNER_SHIELD_ART_KEY,preloadBossBannerArt} from './boss-phase-banner.ts';
 import {project,unproject} from './iso.ts';
 import {PetFollower} from './hub/pet-follower.ts';
+import {classifyPetEvent, makePetEventState, type PetEventState} from './hub/pet-event-feedback.ts';
 import {LegacyActorArt,preloadLegacyActorArt} from './legacy-actor-art.ts';
 export type {StarseaSceneView,StarseaSceneObject,StarseaSceneActor} from './starsea-runtime-assets.ts';
 const catalog={actors:actorCatalog};
@@ -76,7 +77,7 @@ export class WorldScene extends Phaser.Scene {
  private heroCast?:{skill:string;action:'attack'|'skill';started:number;windup:number;end:number;target?:Vec};
  private warningUI?:WarningUI;private storyRenderer?:StoryRenderer;private landmarkLabels=new Set<Phaser.GameObjects.Text>();
  private fieldEventEffects?:FieldEventEffects;private follow=newFollow();private baseZoom=1;private loadingRegion=false;private regionGeneration=0;private legacyArt!:LegacyActorArt;private legacyLoading=false;private legacyGeneration=0;private fetchedMaps=new Map<string,StarseaMap|undefined>();
- /** Z3 宠物跟随者 */private petFollower?:PetFollower;private petRuntime:string|null=null;
+ /** Z3 宠物跟随者 */private petFollower?:PetFollower;private petRuntime:string|null=null;private _petEventState:PetEventState=makePetEventState();
  private starSeaWorld?:StarseaWorldRenderer;private planeScene?:PlaneSceneRenderer;private starSeaStory?:StarseaStoryRenderer;private starSeaView?:StarseaSceneView;private questGuide?:QuestGuide;private interactBubble?:InteractBubble;private nativeBudget=new StarseaNativeBudget();
  private enemyCasts=new Map<string,{skill:string;started:number;windup:number;end:number}>();
  private pendingInteraction?:{world:World;point:Vec;range:number;valid:()=>boolean;action:()=>void};
@@ -450,8 +451,8 @@ export class WorldScene extends Phaser.Scene {
   // FP4 引雷桩全碎：同一横幅提示破盾
   if(e.type==='effect_triggered'&&e.skill==='hub-pylon-shield-break'){const boss=world.enemies.find(n=>n.id===e.id);this.bossPhaseBanner.announce(e.id+':pylon-shield',(boss?.name??'精英')+' · 护盾破碎',e.tick);}
   if(e.type==='phase_changed'&&e.phase!=null&&e.phase>=2){const boss=world.enemies.find(n=>n.id===e.id);if(boss)this.bossPhaseBanner.consume(e.id,boss.name??'首领',e.phase,e.tick);}
-  // Z3 宠物攻击动画
-  if(e.type==='effect_triggered'&&e.ruleId?.startsWith('pet-'))this.petFollower?.triggerAttack(e.tick);
+  // Z3 宠物战斗事件：按 classifyPetEvent 分支处理动画与反馈
+  {const petKind=classifyPetEvent(e,this._petEventState);if(petKind==='attack'||petKind==='chain'||petKind==='shield-cast'){this.petFollower?.triggerAttack(e.tick);if(petKind==='chain')this.petFollower?.triggerChain(e.tick);}else if(petKind==='shield-applied'){this.petFollower?.triggerShieldFlash(e.tick);}}
  }
  }
  private applyBossCast(a:ActorView,id:string,art:string,height:number){

@@ -45,8 +45,8 @@ export function storyChunks(all:HubStoryStep[],island:Region):HubStoryStep[][]{
 
 export function buildHubDungeonDefinitions(base:DungeonDefinition[]):DungeonDefinition[]{
  const out=[...base];
- for(const region of ['wind','mist'] as const){
-  const island='ss-map-'+region,level=region==='wind'?4:10;
+ for(const region of ['wind','mist','forge','frost','rift','dragon'] as const){
+  const island='ss-map-'+region,level=hubChartContent.regions.find(r=>r.id===region)!.levelRange[0];
   for(const kind of ['story','nest','hunt','tide','treasure','gate'] as const)for(let number=1;number<=(kind==='story'||kind==='nest'?3:1);number++){
    const node=region+'-'+kind+(kind==='story'||kind==='nest'?'-'+number:'');
    const seed=base.find(d=>d.id==='field-'+region+'-'+(kind==='nest'?number:1));if(!seed)throw Error('Missing hub dungeon seed '+node);
@@ -57,10 +57,10 @@ export function buildHubDungeonDefinitions(base:DungeonDefinition[]):DungeonDefi
    d.policy.augments={enabled:true,choices:3,rerolls:1,roundCount:kind==='nest'||kind==='tide'?3:kind==='story'?2:1};
    d.reward={gold:0,xp:0,material:0};d.level=kind==='story'?region==='wind'?1:8:seed.level;
    if(kind!=='nest'){delete d.numericStage;delete d.hardmode;delete d.policy.stageEnemyScale;d.policy.normalGoals={killCount:1,eliteCount:0};}
-   if(kind==='gate'){d.stages=['ss-map-boss-'+(region==='wind'?1:2)];const boss=regionById(d.stages[0]).spawns.find(s=>s.boss);if(!boss?.monster)throw Error('Missing authored gate boss '+node);d.policy.monsterLevel=boss.monster.level;d.level=hubChartContent.nodes.find(n=>n.id===node)!.recommendedLevel;}
-   else if(kind==='hunt')d.stages=[region==='wind'?'plane-wind-nest-cave-2':'ss-dg-mist-1-3'];
-   else if(kind==='tide')d.stages=Array(4).fill(region==='wind'?'plane-wind-nest-crypt-1':'ss-dg-mist-2-1');
-   else if(kind==='treasure')d.stages=[region==='wind'?'plane-wind-nest-maze-1':'ss-dg-mist-3-2'];
+   if(kind==='gate'){d.stages=[hubChartContent.nodes.find(n=>n.id===node)!.map];const boss=regionById(d.stages[0]).spawns.find(s=>s.boss);if(!boss?.monster)throw Error('Missing authored gate boss '+node);d.policy.monsterLevel=boss.monster.level;d.level=hubChartContent.nodes.find(n=>n.id===node)!.recommendedLevel;}
+   else if(kind==='hunt')d.stages=[region==='wind'?'plane-wind-nest-cave-2':hubChartContent.nodes.find(n=>n.id===node)!.map];
+   else if(kind==='tide')d.stages=Array(4).fill(region==='wind'?'plane-wind-nest-crypt-1':hubChartContent.nodes.find(n=>n.id===node)!.map);
+   else if(kind==='treasure')d.stages=[region==='wind'?'plane-wind-nest-maze-1':hubChartContent.nodes.find(n=>n.id===node)!.map];
    else if(kind==='story'){
     // Story encounters keep their authored quest/zone levels and overrides.
     // Only B4's separate combatScale may rebalance them, never a nest's level.

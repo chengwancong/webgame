@@ -71,10 +71,34 @@ Z5：共鸣输出+6.465%–6.469%；宠物重氪总贡献11.545%，零氪2.485%�
 - [x] Z8 传说获取：已有首通结算调用 `backfillZhangjian`，现通过 `huntPet(region, h.chart.cleared)` 和幂等 `grantPet` 发放，登录/会话恢复共用回填。图鉴状态为 locked/owned，来源为「所在航区狩猎与关口都首通」。
 - [x] Z8 新增 PG 覆盖：仅狩猎不发；狩猎→关口与关口→狩猎均发一次；同回执重放及再次通关不重发；老角色会话恢复补发一次且非本批字段保持。隔离快照中 zhangjian PG 9/9、相关单测 39/39 通过。
 - [x] Z8 唯一占比测量：总贡献中位数 **6.32901356%**，五种子范围 **6.23263140%–6.33395928%**，均在 4.5%–7% 内。技能自身伤害份额中位数 2.48489826%，相对无宠物 DPS 增幅 6.75664237%；总贡献采用 `(有宠物DPS−无宠物DPS)/有宠物DPS`，包含被动。
-- [ ] Z9 提交、构建、云部署及 health/content/build-info 核验，完成后在下方追加提交号和部署时刻。
+- [x] Z9 云部署完成：用户授权恢复后，于2026-10-23 22:29:18（北京时间）发布固定提交 f70e565c；health/content/build-info 完整版本与 source 核验通过。此前两次失败保留为历史证据，最新结果见文末。
 
 复现基线为 `c684cea2` 加本轮补丁；独立快照 `G:/webgame/aw-deploy/z7-z9-20261023/open-world/`。测量入口为 `node --import tsx tools/spine/cli.ts hub-rewards --zhangjian --verify --free-only --out=.runtime/z8-free-once --calibration=<Z5原始校准文件>`。新增 `--free-only` 仅裁剪其他测项，保留 Z5 的 standardState/resolvePlayer/sampleCombatBuild、30级标准人、60秒持续窗口、14,186,361 HP 与种子 11/23/47/71/101；五种子各触发14次，对照与宠物样本均无失败。未再次测弱点、共鸣或其他宠物档位；全局 spine:check 的 ow-76 历史问题按默认裁决保留，未重置证据。
 
 Z5校准来自云端 `~/abyss-z/36cd1d0d/open-world/.runtime/hub-z-numbers-fixed-model/derive-raw.json`，SHA256 `2856810872cd331e4bf12a5a2e817454176e7bf851890457104c837072931aa3`。原始测量仅在上述快照 `.runtime/z8-free-once/`；Z7 PG 日志在主工作区 `.runtime/z-redeploy/`，Z8 PG 日志在快照同目录。未提交素材、原始测量或测试日志。
 
 部署范围为本批提交及其已有祖先，包含 ART-FP d9899c1e、HB b7fab676、HC e5f1a0cf、HD 3900a20c、HE 1d0aef05。工作区其他任务正在修改的前端、航图与相关配置不纳入本次提交；验证快照使用提交基线，素材仍由既有部署脚本同步。
+
+### Z9 首轮提交与两次部署失败证据（历史记录，已于22:29恢复发布）
+
+- 发布提交：`f70e565caa61`（完整提交号可由 Git 解析）；源码版本 **0.11.53 / protocol54 / ow-94 / db19**，`hub-hf.v1.json` 状态 **wired**。主 TypeScript、spine 工具 TypeScript、完整 `tools/validate-content.ts` 均通过；完整校验含素材读取、99区域/83技能/155角色以及118/118怪物招式说明。
+- 两次运行相同的 `node tools/deploy-staging.mjs`。第一次北京时间 **2026-10-23 19:23:01** 启动，证据目录 `G:/webgame/aw-deploy/release-f70e565caa61-1792754581875/`；第二次 **19:24:56** 启动，目录 `G:/webgame/aw-deploy/release-f70e565caa61-1792754696170/`。已提交快照的 Vite 生产构建分别在14.48秒、13.65秒完成。
+- 两次都在构建后的 `local-service.mjs start` 失败：`Service did not become ready`。本机 API 日志根因为 `apps/api/src/hub-numbers.ts:18` 的「HUB节点预算与港口收益应用状态不一致；请完成同一B4计划的配置导出。」并发任务的未提交航图扩展使常驻源码无法启动；独立发布快照不含该扩展。没有回退/覆盖并发修改、跳过预算检查或伪造服务就绪。
+- 失败发生在素材上传、服务端上传及云端激活之前，未进入云端停机/切换，也未执行部署尾部的 cloud mirror。**没有成功部署时刻；发布提交目前仅在本地 Git。** 日志留在主工作区 `.runtime/z-redeploy/deploy-attempt-1.log`、`deploy-attempt-2.log`。
+- 北京时间 **19:25:59** 读取云端：`/api/health` HTTP200 且 ok=true，`/api/content`、`/build-info.json` 均为 **0.11.52 / protocol54 / ow-93 / assets world-art-20261007-v24-world-runtime / db19**；build-info source 仍为 `8fe86a69fdced15ffa1e5a67993e1fe39f89e532`。三处一致，但并非本次目标版本，不能声称0.11.53已上线。小型响应证据在 `.runtime/z-redeploy/cloud-current.json`。
+- 云数据库容器前后均为 `86cadc993bb4…`，启动时间仍 `2026-10-18T13:05:22.22657588Z`，healthy；本机存档目录保留，未清库、未读取测试服口令、未用控制台改角色或奖励。本机预览的 API 目前受上述未完成配置阻塞，常驻自启标记仍保留。
+- 现有测试服 Chrome 页由另一 Codex 会话占用，浏览器工具拒绝接管；未启动无头浏览器，未做本轮真实登录/人工看图验收。
+
+恢复前提：并发航图任务完成其预算与配置导出，使常驻服务可健康启动；然后以本批已验证提交重新发布，核对实际 health/content/build-info 的完整版本及 source。此次已用完约定的一次部署重试，未继续第三次尝试。
+
+给 Grok 的上线后复测清单：港口建筑及头顶标记、航图节点、探索圆环和钥匙/秘藏图标、共鸣0–5与部位/阵容/流派状态、副本采集点/潮汐信标/潮印卡框、背包品质框；传说宠物在同岛狩猎和关口都首通后发一次，检查两种完成顺序与旧角色回填。不改存档、不注入资源；先核对0.11.53/ow-94再测。
+
+### Z9 恢复发布成功（2026-10-23 22:29，北京时间）
+
+- 用户确认可部署后，从独立 detached 发布工作区 `G:/webgame/aw-deploy/z9-release-f70e565c/` 固定发布 `f70e565caa618f647212b07b5f5b6e4757a0879b`。主工作区后续 CONTENT-G01 提交及未提交的0.11.54内容均未纳入云端源码。
+- 使用原部署脚本及其现有 `AW_LOCAL_SERVICE_ROOT` 配置，复用主工作区的常驻服务管理；未绕过版本、预算或健康校验。本次前端生产构建23.89秒通过，本机服务正常恢复，云端候选镜像版本校验通过，原子切换后于 **22:29:18** 报告 HEALTHY。此次恢复执行一次即成功。
+- **22:29:44** 独立读取 `/api/health`、`/api/content`、`/build-info.json`，全部HTTP200且版本一致：**client0.11.53 / protocol54 / rules ow-94 / assets world-art-20261007-v24-world-runtime / db19**；health ok=true，build-info source准确匹配发布提交。Z7–Z9发布流程全部完成。
+- 云镜像源码快照 `1532a675c` 已通过原脚本推送至 cloud/main；二进制素材仍由部署脚本同步，未加入Git。
+- 云数据库容器仍为 `86cadc993bb4…`、启动时间仍为 `2026-10-18T13:05:22.22657588Z`、healthy。未清库、未控制台修改角色或奖励、未读取或披露测试服口令。本机恢复后health为正在开发的 **0.11.54 / protocol55 / ow-95 / db19**；这是独立开发环境，不是此次云发布版本。
+- 发布证据目录：`G:/webgame/aw-deploy/release-f70e565caa61-1792765604885/`，包含 `health.json`、`compatibility.json`、build-info及上传清单；完整日志 `G:/webgame/aw-deploy/z9-resume-20261023.log`。原始证据不提交Git。
+- Z8 的6.329%测量结论沿用本批已验证源码，未追加测量或调数。PG覆盖已完成；真实登录与美术/玩法体感仍交上述Grok清单人工复测，本次未接管另一会话的浏览器。

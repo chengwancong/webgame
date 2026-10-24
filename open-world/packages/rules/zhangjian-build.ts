@@ -28,12 +28,32 @@ export function catchUpAffixNodes(s:Pick<CharacterState,'slotRanks'>,g:Gear,node
 export function petForm(level:number){return level>=petContent.forms.awakened?'awakened' as const:level>=petContent.forms.adult?'adult' as const:'young' as const;}
 export function petXpNext(level:number){return Math.round(120*1.18**(level-1));}
 export function petElement(flow:PetFlow){return petContent.flows[flow];}
+export function petDealsDamage(f:PetFamily){return f.activeProfile?.kind!=='shield';}
 export function petActiveRatio(f:PetFamily,level:number){return petContent.tiers[f.tier].activeRatio*(1+petContent.levelRatioBonus*(level-1));}
 export function petPassives(f:PetFamily,level:number,share=1){const t=petContent.tiers[f.tier],bonus=petContent.passivePerTenLevels*Math.floor(level/10);return [t.passive,...(t.extra?[t.extra]:[])].map((p,i)=>({stat:p.stat,value:(p.value+(i===0?bonus:0))*share}));}
 /** 上阵宠物的技能：每 activeEvery 帧打离角色最近、且在 activeRange 内的敌人，范围 activeRadius，元素随流派。 */
 export function petActiveRule(f:PetFamily,level:number,flow:PetFlow):EffectRule{
  const ratio=Math.round(petActiveRatio(f,level)*1000)/1000,damageType=petElement(flow);
- return effectRuleSchema.parse({id:'pet-'+f.id,name:f.name,description:f.name+'：每 '+petContent.activeEvery/30+' 秒造成攻击力 '+Math.round(ratio*100)+'% 的范围伤害',source:'pet:'+f.id,tier:1,trigger:'interval',every:petContent.activeEvery,chance:1,icd:0,when:[{kind:'distance',op:'lte',value:petContent.activeRange}],filter:{},action:{type:'nova',ratio,radius:petContent.activeRadius,damageType,ref:'attack',at:'target'},scale:[],vfxKey:'pet/'+damageType});
+ const p=f.activeProfile,every=p?.every??petContent.activeEvery;
+ const rule:EffectRule=effectRuleSchema.parse({id:'pet-'+f.id,name:f.skillName??f.name,description:f.name+'：每 '+every/30+' 秒造成攻击力 '+Math.round(ratio*100)+'% 的范围伤害',source:'pet:'+f.id,tier:1,trigger:'interval',every,chance:1,icd:0,when:[{kind:'distance',op:'lte',value:petContent.activeRange}],filter:{},action:{type:'nova',ratio,radius:petContent.activeRadius,damageType,ref:'attack',at:'target'},scale:[],vfxKey:'pet/'+damageType});
+ if(p?.kind==='single'){rule.action={type:'nova',ratio:ratio*p.ratioScale,radius:0,maxTargets:1,damageType,ref:'attack',at:'target'};rule.description=f.name+'：每 '+every/30+' 秒攻击一个目标';}
+ if(p?.kind==='shield'){rule.action={type:'shield',ratio:p.hpRatio*(1+petContent.levelRatioBonus*(level-1)),ref:'maxHp',duration:p.duration};rule.description=f.name+'：每 '+every/30+' 秒给主人护盾，不造成伤害';}
+ if(p?.kind==='chain'){
+  const weights=Array.from({length:p.targets},(_,i)=>p.decay**i),first=ratio/weights.reduce((a,b)=>a+b,0);
+  rule.action={type:'nova',ratio:first,radius:0,maxTargets:1,damageType,ref:'attack',at:'target'};
+  // The existing arc action excludes its starting enemy. Pay the first hit once, then the remaining jumps.
+  rule.after=[{type:'arc',ratio:first*p.decay,count:p.targets-1,range:p.range,damageType,decay:p.decay}];
+  rule.description=f.name+'：每 '+every/30+' 秒连锁攻击最多 '+p.targets+' 个不同目标';
+ }
+ return effectRuleSchema.parse(rule);
+}
+/** Numeric view derived from the executable rule, not a second set of combat formulas. */
+export function petActiveEffect(f:PetFamily,level:number,flow:PetFlow){
+ const rule=petActiveRule(f,level,flow),action=rule.action;
+ if(action.type==='shield')return {kind:'shield' as const,intervalSeconds:rule.every!/30,dealsDamage:false,damageElement:null,damageRatios:[],targetLimit:1,shieldPercent:action.ratio*100,durationSeconds:action.duration/30};
+ if(action.type!=='nova')throw Error('Pet active profile needs a matching public view');
+ const arc=rule.after?.find(a=>a.type==='arc'),ratios=[action.ratio,...(arc?.type==='arc'?Array.from({length:arc.count},(_,i)=>arc.ratio*arc.decay**i):[])];
+ return {kind:arc?'chain' as const:action.maxTargets===1?'single' as const:'area' as const,intervalSeconds:rule.every!/30,dealsDamage:true,damageElement:petElement(flow),damageRatios:ratios,targetLimit:arc?ratios.length:action.maxTargets??null};
 }
 export function petBuildParts(s:Pick<CharacterState,'pets'>){
  const p=s.pets;if(!p)return {stats:[],rules:[]};

@@ -2,6 +2,7 @@ import type {CharacterState} from '../contracts/index.ts';
 import type {ChartRegionId,HubCommissionsView} from '../contracts/hub.ts';
 import type {TaskRow} from '../contracts/task-tables.ts';
 import {tasks} from '../content/task-tables.ts';
+import {hubRegionOpen} from './hub-chart.ts';
 import {applyXp} from './index.ts';
 import {hubDay,requireHub,type HubState} from './hub-state.ts';
 import {addHubReputation,hubCommissionsOpen,hubCommissionSlots} from './hub-port.ts';
@@ -13,8 +14,8 @@ function commissionReward(xp:number,gold:number,economy:HubCommissionEconomy){
  requireHub(Number.isFinite(goldScale)&&goldScale>=0&&goldScale<=1&&Number.isFinite(xpShare)&&xpShare>=0&&xpShare<=.5,'HUB_COMMISSION_REWARD','委托奖励配置不合法。');
  return {xp:Math.round(xp*xpShare),gold:Math.round(gold*goldScale)};
 }
-export function hubCommissionPool(){return (tasks as CommissionRow[]).filter(t=>/^ow-(wind|mist)-bounty-/.test(t.id)||t.hub_commission&&Boolean(t.hub_node));}
-const regionOf=(t:CommissionRow):ChartRegionId=>t.id.match(/^ow-(wind|mist)-/)?.[1] as ChartRegionId;
+export function hubCommissionPool(){return (tasks as CommissionRow[]).filter(t=>/^ow-(wind|mist|forge|frost|rift|dragon)-bounty-/.test(t.id)||t.hub_commission&&Boolean(t.hub_node));}
+const regionOf=(t:CommissionRow):ChartRegionId=>t.id.match(/^ow-(wind|mist|forge|frost|rift|dragon)-/)?.[1] as ChartRegionId;
 const goal=(t:CommissionRow)=>t.hub_node?1:t.cond_count??1;
 const rowFor=(id:string)=>hubCommissionPool().find(t=>t.id===id);
 export function refreshHubCommissions(h:HubState,now=Date.now()){
@@ -24,7 +25,7 @@ export function refreshHubCommissions(h:HubState,now=Date.now()){
 /** No manual accept and no legacy bounty cooldown; current offers survive a daily reset. */
 export function fillHubCommissions(s:CharacterState,h:HubState,now=Date.now()){
  refreshHubCommissions(h,now);if(!hubCommissionsOpen(h))return;
- const pool=hubCommissionPool().filter(t=>regionOf(t)==='wind'||regionOf(t)==='mist'&&Boolean(h.chart.cleared['wind-gate']));
+ const pool=hubCommissionPool().filter(t=>hubRegionOpen(h,regionOf(t)));
  requireHub(pool.length>0,'HUB_COMMISSION_POOL','委托池尚未配置。');
  while(h.commissions.slots.length<hubCommissionSlots(s)){
   const used=new Set(h.commissions.slots.map(b=>b.task)),fresh=pool.filter(t=>!used.has(t.id)),from=fresh.length?fresh:pool,index=h.commissions.sequence++,row=from[index%from.length];

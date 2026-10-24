@@ -1,0 +1,323 @@
+{
+  "version": 1,
+  "status": "design-with-isolated-prototypes",
+  "direction": "战前搭配、自动战斗、探索回访、养成保值；沿用拾星港与星门",
+  "pets": [
+    {
+      "id": "wind-free",
+      "role": "追击",
+      "skill": "绒风连扑",
+      "behavior": "每2秒攻击最近的一名敌人，单次伤害为现有4秒技能的一半。",
+      "passive": "攻击3%、生命4%保持；助阵取现有比例。",
+      "best": "单首领、频繁换目标的短战",
+      "cost": "只打一名敌人，失去原范围覆盖。",
+      "capability": "nova.maxTargets",
+      "prototype": "rapid-single"
+    },
+    {
+      "id": "wind-light",
+      "role": "保护",
+      "skill": "芽角护身",
+      "behavior": "每4秒给主人一层持续3秒的护盾，替代原伤害技能；首轮试做护盾为最大生命4%。",
+      "passive": "设计改为把稀有档攻击被动换成生命被动；替换而非叠加，数值需按现有预算验证。",
+      "best": "贴身绞杀、需要站稳的守点",
+      "cost": "宠物不直接打伤害；盾空转时无额外收益。",
+      "capability": "shield",
+      "prototype": "owner-shield"
+    },
+    {
+      "id": "wind-heavy",
+      "role": "连锁清群",
+      "skill": "岚羽传鸣",
+      "behavior": "每4秒弹射至最多3个不同敌人，逐跳保留70%；三跳总伤害沿用当前单次技能基数。",
+      "passive": "攻击与暴击被动沿现有传说档；不额外赠送第四次弹射。",
+      "best": "成群小怪、怪潮",
+      "cost": "单目标只能吃第一跳，不能靠来回弹射补齐三跳。",
+      "capability": "arc",
+      "prototype": "three-chain"
+    },
+    {
+      "id": "mist-free",
+      "role": "挂异常",
+      "skill": "苔芽毒露",
+      "behavior": "命中最近目标后留下4秒中毒；本次伤害拆为直接与持续两部分，重复施加刷新而不叠伤害预算。",
+      "passive": "攻击3%、生命4%保持。",
+      "best": "先铺后炸",
+      "cost": "伤害需要时间；目标早死会损失未跳完部分。",
+      "capability": "status.poison"
+    },
+    {
+      "id": "mist-light",
+      "role": "解控",
+      "skill": "铃声清露",
+      "behavior": "主人被减速或定身时清除这两类状态；每12秒最多一次，不解除冻结或首领机制。",
+      "passive": "设计采用护甲被动替换稀有攻击被动，服务长时间交战。",
+      "best": "涨潮、需要持续移动的场地",
+      "cost": "没有对应控制时主动不工作；不提供无敌。",
+      "capability": "status_remove; self-control detection needs wiring"
+    },
+    {
+      "id": "mist-heavy",
+      "role": "聚怪",
+      "skill": "竹团回旋",
+      "behavior": "每8秒在目标处维持3秒牵引区；伤害按跳数分摊，首领只受伤害、不位移。",
+      "passive": "保留传说攻击底值，暴击部分设计改换为状态持续，须预算验证。",
+      "best": "贴身范围技能、群体引爆",
+      "cost": "敌人散得太远仍无法聚齐；单首领收益较低。",
+      "capability": "field.pull"
+    },
+    {
+      "id": "forge-free",
+      "role": "破甲",
+      "skill": "炉鬃撞甲",
+      "behavior": "每6秒撞击目标并施加短暂蚀甲；同源蚀甲只刷新，不叠层。",
+      "passive": "攻击3%、生命4%保持。",
+      "best": "物理方案对单",
+      "cost": "让出部分直接伤害换破甲；元素方案收益较低。",
+      "capability": "nova.status.armor_down"
+    },
+    {
+      "id": "forge-light",
+      "role": "反击",
+      "skill": "铜砾回震",
+      "behavior": "主人护盾破裂后，对近身敌人释放一次震击；每8秒最多一次。",
+      "passive": "稀有档攻击被动保留，作为反击伤害底值。",
+      "best": "带护盾技能或风芽鹿助阵之外的自身护盾来源",
+      "cost": "助阵不会产生护盾主动；没有真实护盾来源就不推荐。",
+      "capability": "shield_break + nova"
+    },
+    {
+      "id": "forge-heavy",
+      "role": "定点爆发",
+      "skill": "炉芯蓄爆",
+      "behavior": "每8秒在目标位置蓄能1.5秒后爆发；范围固定在标记时的位置，目标移动可以躲开。",
+      "passive": "传说攻击与暴击保留；蓄能不重置角色技能冷却。",
+      "best": "守点、移动少的首领",
+      "cost": "频繁位移的目标会让伤害落空。",
+      "capability": "field + zone_end, isolated mark ownership required"
+    },
+    {
+      "id": "frost-free",
+      "role": "减速",
+      "skill": "霜团踏雪",
+      "behavior": "每4秒小范围冰霜脉冲并短暂减速；首领按既有控制抗性处理。",
+      "passive": "攻击3%、生命4%保持。",
+      "best": "穿行续战、保护信标",
+      "cost": "直接伤害预算低于追击宠，不形成永久控制。",
+      "capability": "nova.status.slow"
+    },
+    {
+      "id": "frost-light",
+      "role": "回复",
+      "skill": "霜壳温息",
+      "behavior": "主人生命低于60%时回复一口生命；8秒冷却，溢出不转盾。",
+      "passive": "设计采用生命被动替换稀有攻击被动。",
+      "best": "连续小伤害、长巢穴",
+      "cost": "无法抵挡致命一击；满血时不产生伤害补偿。",
+      "capability": "heal + self_hp"
+    },
+    {
+      "id": "frost-heavy",
+      "role": "控后爆发",
+      "skill": "镜鳍碎寒",
+      "behavior": "优先攻击已减速或冻结目标，打出一次集中的冰霜伤害；没有状态时按低效普通攻击处理。",
+      "passive": "传说攻击保留，暴击预算设计改转为对受控目标的收益。",
+      "best": "自带控制的法术方案",
+      "cost": "依赖控制来源；不会凭宠物攻击无限自触发。",
+      "capability": "target_status, priority selection needs wiring"
+    },
+    {
+      "id": "star-free",
+      "role": "精英猎手",
+      "skill": "星漪定光",
+      "behavior": "攻击精英和首领时集中为单目标；普通敌人沿轻量攻击处理，不额外生成标记实体。",
+      "passive": "攻击3%、生命4%保持。",
+      "best": "狩猎、关口重战",
+      "cost": "清大量普通怪不占优势。",
+      "capability": "target_rank + nova.maxTargets"
+    },
+    {
+      "id": "star-light",
+      "role": "轮转",
+      "skill": "星尾拨时",
+      "behavior": "每12秒减少一个正在冷却技能的剩余时间；选剩余最长者，没有冷却则不储存次数。",
+      "passive": "设计采用冷却缩减替换稀有攻击被动，并受现有全局上限约束。",
+      "best": "节奏接力、长冷却技能",
+      "cost": "不能清空全部冷却，也不触发额外施法。",
+      "capability": "refund.mode.longest"
+    },
+    {
+      "id": "star-heavy",
+      "role": "印记收束",
+      "skill": "灯绫归印",
+      "behavior": "定期给当前目标挂宠物专属印；主人下一次直接技能命中消耗印并追加一次伤害，最多一个印。",
+      "passive": "传说攻击与暴击保留。",
+      "best": "先铺后炸、单体技能",
+      "cost": "没有主人直接命中就不会爆发；印不能被衍生伤害消费。",
+      "capability": "mark + buff.consume, separate pet mark namespace"
+    },
+    {
+      "id": "dragon-free",
+      "role": "危急保护",
+      "skill": "眠角守约",
+      "behavior": "主人生命跌到40%以下时给短盾，12秒冷却；没有致死保护，也不把生命锁在1点。",
+      "passive": "攻击3%、生命4%保持。",
+      "best": "开荒、容易被一轮连击压低生命的战斗",
+      "cost": "盾可能来不及挡住一次致命伤害；不同时补满血。",
+      "capability": "hurt + self_hp + shield"
+    },
+    {
+      "id": "dragon-light",
+      "role": "清场续航",
+      "skill": "晓翼回援",
+      "behavior": "主人直接击杀后小幅回复生命，3秒内最多一次；首领召唤物遵守既有击杀归属。",
+      "passive": "设计采用护甲被动替换稀有攻击被动。",
+      "best": "怪潮、多段巢穴",
+      "cost": "纯单首领战基本不触发。",
+      "capability": "kill + heal"
+    },
+    {
+      "id": "dragon-heavy",
+      "role": "技能接力",
+      "skill": "岚鳞应答",
+      "behavior": "主人每3次直接施法后宠物追加一次攻击；宠物、回响与词缀触发都不计入施法次数。",
+      "passive": "传说攻击与暴击保留，不额外加入通用冷却清零。",
+      "best": "节奏接力、低消耗技能轮转",
+      "cost": "施法被打断或灵力枯竭时积累变慢。",
+      "capability": "nth.count.cast + nova"
+    }
+  ],
+  "flows": [
+    {
+      "id": "blade",
+      "design": "物理基准流派，保留家族原攻击形态。",
+      "scope": "damage"
+    },
+    {
+      "id": "ember",
+      "design": "火焰元素，优先用于火弱点；不因换流派额外赠送灼烧。",
+      "scope": "damage"
+    },
+    {
+      "id": "glacier",
+      "design": "冰霜元素，保留范围；只有家族明确带减速时才减速。",
+      "scope": "damage"
+    },
+    {
+      "id": "storm",
+      "design": "雷电元素；只有连锁家族才有弹射。",
+      "scope": "damage"
+    },
+    {
+      "id": "arcanum",
+      "design": "奥术元素，用于沉星弱点。",
+      "scope": "damage"
+    },
+    {
+      "id": "shade",
+      "design": "暗影元素，用于深潮弱点。",
+      "scope": "damage"
+    },
+    {
+      "id": "venom",
+      "design": "毒素元素；持续中毒只由苔芽等明确的家族技能产生。",
+      "scope": "damage"
+    },
+    {
+      "id": "ricochet",
+      "design": "物理分击变体：可多目标的技能将既有总伤害分向两个目标；不增加总伤害，已有连锁时不再加跳。",
+      "scope": "needs-variant-executor"
+    },
+    {
+      "id": "frostneedle",
+      "design": "冰霜集中变体：范围技能集中到一个目标；保持该次总预算，失去范围覆盖；原单体技能不重复增幅。",
+      "scope": "needs-variant-executor"
+    }
+  ],
+  "builds": [
+    {
+      "id": "close",
+      "name": "贴身绞杀",
+      "hex": [
+        "hex-void-rift",
+        "hex-aftershock"
+      ],
+      "starterPet": "wind-free",
+      "developPet": "wind-light",
+      "flow": "blade",
+      "farmNodes": [
+        "mist-nest-1"
+      ],
+      "testNodes": [
+        "mist-tide",
+        "mist-hunt"
+      ],
+      "instruction": "把主要伤害留在同一个敌群里，带一项自身护盾或减伤。",
+      "switchWhen": "敌人频繁远离裂隙，或自身承伤过高。",
+      "automatic": "适合自动贴近目标，但不能假设自动躲开所有预警。"
+    },
+    {
+      "id": "detonate",
+      "name": "先铺后炸",
+      "hex": [
+        "hex-detonation-sigil",
+        "hex-mark-relay"
+      ],
+      "starterPet": "mist-free",
+      "developPet": "star-heavy",
+      "flow": "ember",
+      "farmNodes": [
+        "mist-nest-2"
+      ],
+      "testNodes": [
+        "mist-gate",
+        "forge-hunt"
+      ],
+      "instruction": "技能栏保留真实持续伤害来源；先施加异常，再用直接攻击引爆。",
+      "switchWhen": "小怪在异常生效前就死，或技能栏没有持续伤害来源。",
+      "automatic": "技能顺序要让铺异常在引爆之前；宠物元素不能充当并不存在的异常来源。"
+    },
+    {
+      "id": "mobile",
+      "name": "穿行续战",
+      "hex": [
+        "hex-footfall-heal",
+        "hex-control-to-shield"
+      ],
+      "starterPet": "wind-free",
+      "developPet": "frost-light",
+      "flow": "glacier",
+      "farmNodes": [
+        "mist-nest-3"
+      ],
+      "testNodes": [
+        "mist-hunt",
+        "frost-tide"
+      ],
+      "instruction": "保留自己的控制技能；移动用于避险，宠物负责减压或补血。",
+      "switchWhen": "战斗要求长期站桩，或首领的控制抗性使护盾触发稀少。",
+      "automatic": "全自动路径不一定满足移动收益；方案提示明确这一点，不要求玩家手动绕圈才能通关。"
+    },
+    {
+      "id": "relay",
+      "name": "节奏接力",
+      "hex": [
+        "hex-cast-hit-relay",
+        "hex-bee-volley"
+      ],
+      "starterPet": "wind-free",
+      "developPet": "dragon-heavy",
+      "flow": "storm",
+      "farmNodes": [
+        "mist-nest-3"
+      ],
+      "testNodes": [
+        "wind-gate",
+        "dragon-gate"
+      ],
+      "instruction": "保留普攻穿插，让技能与普攻交替；避免一次把所有灵力打空。",
+      "switchWhen": "技能成本过高导致长时间空转，或纯普攻无法完成接力。",
+      "automatic": "自动施法需保留普攻窗口；本轮不改客户端战斗操作。"
+    }
+  ]
+}

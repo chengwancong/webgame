@@ -11,8 +11,26 @@ import {seaDifficultyHtml} from '../sea-difficulty-view.ts';
 import type {ChartView,ChartRegionView,ChartNodeView,NodeKind} from '../../../../packages/contracts/hub.ts';
 import type {LoadoutView} from '../../../../packages/contracts/zhangjian.ts';
 import {elementHint,elementNames} from '../../../../packages/rules/zhangjian-view.ts';
+import {hubNodeById} from '../../../../packages/content/hub-chart.ts';
+import hubExploreRaw from '../../../../packages/content/hub-explore.json';
 
 type ShardStack = ChartView['shards']['owned'][number];
+
+// ---- 钥匙来源查表（hub-explore.json keys[keyId].from → hub-chart 节点名） ----
+
+/** hub-explore.json 里的 keys 字典（keyId → {name, from}）。 */
+const EXPLORE_KEYS = (hubExploreRaw as {keys?: Record<string, {name?: string; from?: string}>}).keys ?? {};
+
+/**
+ * 根据钥匙 id 查找来源节点名。
+ * 若查不到则返回 null，调用方不显示来源行。
+ */
+function keySourceNodeName(keyId: string): string | null {
+  const keyEntry = EXPLORE_KEYS[keyId];
+  if (!keyEntry?.from) return null;
+  const node = hubNodeById.get(keyEntry.from);
+  return node?.name ?? null;
+}
 
 // ---- 图区几何（模板 5 列 × 3 行，见 backend-B0-B4 §3.1） ----
 export const GRAPH_W = 1200;
@@ -209,16 +227,22 @@ function cacheRowHtml(n: ChartNodeView): string {
   </div>`;
 }
 
-/** Z4 锁门行（door 字段由服务端按节点填充）。 */
-function doorRowHtml(n: ChartNodeView): string {
+/** Z4 锁门行（door 字段由服务端按节点填充）。显示钥匙来源节点（若可查到）。 */
+export function doorRowHtml(n: ChartNodeView): string {
   if (!n.door) return '';
   const {keyName, keyOwned, opened} = n.door;
   const statusText = opened ? '已开启' : keyOwned ? `已获得 ${keyName}` : `需要 ${keyName}（未获得）`;
   const cls = opened ? 'is-opened' : keyOwned ? 'is-ready' : 'is-locked';
+  // 钥匙来源：hub-explore keys[key].from → hub-chart 节点名
+  const sourceNodeName = keySourceNodeName(n.door.key);
+  const sourceHtml = sourceNodeName
+    ? `<span class="hub-card__door-source">来源：${esc(sourceNodeName)}首通</span>`
+    : '';
   return `<div class="hub-card__row hub-card__row--door ${cls}">
     <span class="hub-card__key">锁门</span>
     <img class="hub-card__key-icon" src="/art/hub-ui/keys/key-${esc(n.door.key)}${keyOwned || opened ? '' : '-locked'}.png" alt="">
     <span>${esc(statusText)}</span>
+    ${sourceHtml}
   </div>`;
 }
 

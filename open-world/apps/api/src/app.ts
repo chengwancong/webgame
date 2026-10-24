@@ -1,3 +1,4 @@
+import {registerTacticalSandbox} from './tactical-sandbox.ts';
 import {migrateZhangjianState,zhangjianSwitchBlock} from './zhangjian-state.ts';
 import {loadoutRequestSchema,petsRequestSchema,slotUpgradeRequestSchema,type RankSlot} from '../../../packages/contracts/zhangjian.ts';
 import {ensureLoadouts,saveLoadout,renameLoadout,applyLoadout,loadoutView,slotsView,slotUpgradeQuote,petsView,setPetLineup,setPetFlow} from '../../../packages/rules/zhangjian.ts';
@@ -491,6 +492,7 @@ export function createApp(pool:Pool,options:{hubNumbers?:HubOutsideNumbers;testD
   const username=String((await pool.query('SELECT username FROM ow_accounts WHERE id=$1',[who.account])).rows[0]?.username??'');if(!username.startsWith('qa_'))fail('DEV_CHECKPOINT','只有 qa_ 开头的测试号能跳检查点。',403);
   return write(who,v,{...v,operation:'dev.checkpoint'},async(_c,s)=>{const g=applyDevCheckpoint(s,v.checkpoint,v.weapon,Date.now());const delta:Receipt['delta']={gold:g.gold,xp:g.xp,material:0};s.gold+=delta.gold;applyXp(s,delta.xp);return {delta,questCompletions:g.completed};});});
  app.post('/api/safe',async req=>{const who=await identity(req),v=command.extend({region:z.string(),point:z.string()}).strict().parse(req.body);return write(who,v,v,async(c,s)=>{if(fieldFreeze.fieldEntry&&v.region!==starseaHub)fail(HUB_FIELD_FROZEN.code,HUB_FIELD_FROZEN.message,409);const sea=isStarseaRegion(v.region);if(sea?!s.starsea||!starseaRegionOpen(s.starsea,v.region):!s.progress.regions.includes(v.region))fail('LOCKED','据点尚未开放。');const r=regionById(v.region);if(!((r.id==='town'||sea)&&v.point==='')&&!r.landmarks.some(l=>l.kind==='safe'&&l.name===v.point))fail('SAFE','据点不存在。');s.progress.safe=v.region;if((r.id==='town'||sea)&&v.point==='')delete s.progress.safePoint;else s.progress.safePoint=v.point;return {};});});
+ if(!options.production)registerTacticalSandbox(app);
  registerHubChart(app,{pool,identity,state,fail},hubNumbers);
  registerHubOutside(app,{pool,identity,state,fail},hubNumbers);
  registerProgressionChallenges(app,{pool,identity,state,snapshot,write,fail,fieldFreeze,dungeonsEnabled:options.dungeons!==false});

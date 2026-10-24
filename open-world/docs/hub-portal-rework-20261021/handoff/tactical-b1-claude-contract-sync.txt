@@ -1,0 +1,23 @@
+请完成《深渊行者》TAC-B1前端的真实沙盒契约适配。只修改apps/web和前端测试，不改服务端/规则/数值，不复制寻路、伤害、冷却或敌人AI。
+
+工作目录：G:\webgame\abyss-walker-migration\abyss-walker-rewrite\open-world
+先读 packages/contracts/tactical.ts、apps/api/src/tactical-sandbox.ts、docs/hub-portal-rework-20261021/handoff/tactical-b1-progress.md。
+服务端已实现，之前sandbox-wire.ts的假设不能继续充当真实契约。完整规则在packages/simulation/tactical，前端只消费投影和事件。
+
+重点逐项核对：
+1. 创建body是{boardId,heroId,seed?,orchestration?}，投影battleId/revision为后续写命令依据。
+2. move={type:'move',to:{x,y}}；技能={type:'skill',skillId,target?}，不是ability_id；普攻是独立{type:'basic',target}；end与set-control-mode按共享schema。cut/throwing_knife必须用basic动作。
+3. units的位置在cell；reachable是{cell,cost,path}数组；skills是{id,available,cooldown,reason?}。catalog.heroes使用skillIds/basicSkillId，不能误等同skills字段。
+4. intents的damage是数字，tier是单独字段；sequence从0开始，界面显示时+1；hidden只显示问号，不还原落点。公布格子/射线来自cells/line，不在前端算攻击形状。
+5. events使用type/cause/sourceId/targetId/amount/cell/cells/ownerTurnId/actionId/rootActionId/resolutionId，不是kind/change。轮询按resolutionId去重。
+6. outcome是win/loss，映射到前端胜/负；phase是hero/ended，等待/托管状态读control。两项额度用完服务端会自动结算敌方，不要再补发end导致跳下一轮。
+7. preview返回kills、damage、expectedDamageTaken、remainingHp、events、projection，不是旧forecast结构。GET query用move=x,y、skill=id、target=x,y。预计使用暴击期望值，不能显示为保证实际伤害，也不能假造目标格/预计伤害缺字段。
+8. orchestration={priority:主动技能ID数组,target:'nearest'|'lowest-hp'|'support-first',position:'stay-close'|'keep-distance'|'behind-cover',guard:'on'|'off'}，guard不是boolean。目录会返回默认值。
+9. 错误body为{error,message}，非法动作400；旧revision/超时/命令冲突409；关闭/过期404。409读取最新投影；同command_id完全相同请求可安全重发，改内容必须新ID。
+10. 手动60秒后后台托管，GET/preview不刷新期限；重连保持auto直到显式接管。自动时每轮后台执行，前端只展示真实结果。本场1小时固定过期，不涉及任何角色存档或奖励。
+
+入口：https://43-165-179-11.sslip.io/tactical-board.html?source=sandbox
+目录：https://43-165-179-11.sslip.io/api/tactical/sandbox/catalog
+固定seed37，五棋盘×剑/暗器各走真实创建、移动、技能、预览、结束、托管/接管、终局。明确显示“战棋沙盒·不发奖”，不要把fixture成功说成真实服务端接通。遇到API不存在先核对部署进度，不绕过契约造数据。
+
+运行tsc和前端单测，不跑本机浏览器自动化。提交仅前端代码和小结，不提交图片/原始测量/构建产物。最后更新claude-frontend-progress.md：真实接口适配哪些已验证、哪些待Grok实机；把实际提交号写清楚，供下一次云发布。

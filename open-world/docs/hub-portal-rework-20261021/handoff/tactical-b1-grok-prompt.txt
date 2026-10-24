@@ -1,0 +1,48 @@
+你是《深渊行者》战棋第1批的玩法测试员。只测试独立战棋沙盒，不进入正式副本，不发奖、不修改角色存档。不要把API沙盒或前端fixture写成正式战斗已经接通。
+
+测试服：https://43-165-179-11.sslip.io/
+沙盒目录：https://43-165-179-11.sslip.io/api/tactical/sandbox/catalog
+战棋页面：https://43-165-179-11.sslip.io/tactical-board.html?source=sandbox
+前端由Claude并行交付。先检查页面确实请求 /api/tactical/sandbox；如果仅显示fixture、未接API或字段不匹配，单独记前端阻塞，继续通过HTTP测试沙盒。不要用fixture结果替代真实服务端结果。
+如遇站点验证，口令由用户本地凭据提供；不要把口令放入报告、截图、日志或链接。
+
+先核对 /api/health、/api/content、/build-info.json 的client/protocol/rules/assets/db完全一致，以服务器实际返回为准。
+
+内容：wind-blades（刀兵）、wind-marksmen（铳手）、wind-swarm（小怪）、wind-elite（精英）、wind-boss（首领）。每张分别用 sword、hidden；每个组合先手动1场，再托管1场，种子37。固定种子方便复现，不要求胜率/伤害必达预期值，不修改配置。
+
+创建：POST /api/tactical/sandbox
+{"boardId":"wind-blades","heroId":"sword","seed":37,"orchestration":{"priority":["whirl","ward","vortex_blade"],"target":"nearest","position":"stay-close","guard":"on"}}
+暗器技能顺序使用fan_of_knives、venom_needle、toxic_bomb。不传orchestration就是默认编排。
+
+响应battleId是本场ID，revision是当前状态版本。GET /api/tactical/sandbox/{battleId}读取最新投影。不要访问角色接口。
+写动作：POST /api/tactical/sandbox/{battleId}/act
+{"command_id":"grok-001","revision":0,"action":{"type":"move","to":{"x":3,"y":5}}}
+移动格必须选当前reachable列表；每个新请求使用新command_id和最新revision。
+其他动作：
+{"type":"basic","target":{"x":3,"y":4}}
+{"type":"skill","skillId":"whirl"}
+{"type":"skill","skillId":"ward"}
+{"type":"skill","skillId":"venom_needle","target":{"x":4,"y":4}}
+{"type":"end"}
+{"type":"set-control-mode","mode":"auto"}
+{"type":"set-control-mode","mode":"manual"}
+目标只是格式例子，实际选合法棋盘格。移动一次＋主行动一次可任意顺序，两项用完自动执行敌方；只用其中一项可end。普攻占同一个主行动。
+
+预览：GET /api/tactical/sandbox/{battleId}/preview?move=x,y&skill=cut&target=x,y
+move/skill/target可按动作省略，普攻可用cut/throwing_knife或只传target。预览只计算当前公开意图窗口，不提交命令。它使用玩家暴击的数学期望，不等于保证每次实际暴击结果；不预测刺客未公开落点。非法动作/预览不能扣额度、刷新期限或改变后续随机数。
+
+优先评估好不好玩、取舍是否真实：
+1. 每轮出手前写下至少两个合理选项和代价（比如群伤清兵 vs 躲远程线、先攻击再退 vs 先移动再拉、打首领 vs 清援军）。如果多数回合只有“贴脸最强技能”或“无限无伤后退”一个答案，记录具体局面。
+2. 在执行敌方前预测谁会攻击、顺序、目标、伤害/档位。追击可拉开距离，锁定可断视线/让敌人挡线，格子型可离开标记。对照真实事件，记录可读性错误和不可解释伤害。
+3. 普通战是否有一次范围命中2–3只的爽点，尾怪是否拖时；记录实际回合、剩余生命、手动思考时间。普通目标2–3轮，精英4–6轮，首领8–12轮，只报告偏差，不强判“已平衡”。
+4. 剑与暗器的走位和技能选择是否有差异；技能冷却是否能读懂；控制/拉拽是否真的改变公开意图的执行结果。
+5. 首领首轮范围预告、第二轮执行、随后力竭窗口是否清楚；半血召援是否产生清小怪/打首领的选择。可尝试躲范围和剑的护盾应对。
+6. 托管普通战是否能赢；精英/首领自动结果如实记录；用同种子人工选择做对照，不能把托管结果冒充手动收益。
+
+规则/恢复检查：
+- 原封不动重发同command_id+revision+action，必须收到完全相同回执；同ID换内容409，旧revision新ID409，不能多行动。
+- 手动等待60秒转auto；倒计时期间轮询/预览不能续期。停止轮询后战斗仍由后台托管推进，重连不会自动转回手动；显式接管保留剩余额度/CD/位置。
+- 每场固定1小时过期，进程重启会丢弃沙盒，这是本批设计，不是角色存档丢失。
+- GET最多返回最近256事件，按resolutionId去重。若出现scheduler-error、无法结束、重复伤害或重连送行动，保留battleId、seed、命令序列、首次异常revision。
+
+输出：先给“玩法成立/有条件成立/不成立”的判断和最关键3个原因；再给五棋盘×两英雄的手动/托管结果表（胜负、回合、损血率、至少两个选择的回合占比）。把规则bug、前端接线问题、数值残差、玩法无聊分开。每个问题写复现命令/局面、期望与实际、严重级别。最后列出最该保留的3个决策点和最该删改的3个负担。未实际测试的内容明确写未测，不补造30小时体验。

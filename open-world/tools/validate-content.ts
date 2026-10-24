@@ -153,3 +153,5 @@ for(const skill of hinted)if(skill.hint&&skill.hint.length>maxSkillHintChars)thr
 const missing=hinted.filter(s=>!s.hint);
 if(missing.length)console.warn('招式缺少行为说明 '+missing.length+' 条\n'+missing.map(s=>s.id+' · '+s.name).join('\n'));
 console.log('Enemy move hints:',hinted.length-missing.length,'/',hinted.length,'缺',missing.length);
+
+import '../packages/content/tactical-content.ts';

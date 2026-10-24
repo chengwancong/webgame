@@ -10,8 +10,8 @@ const dsn=process.env.AW_DATABASE_URL;if(!dsn)throw Error('P55 requires isolated
 const pool=new Pool({connectionString:dsn}),app=createApp(pool,{testLogin:true,dungeons:false});
 beforeAll(async()=>{await migrate(pool);await app.ready();});afterAll(async()=>{await app.close();await pool.end();});
 it('P55 all 108 rows match the authorized formula and each island/count lane does not fall with zone',()=>{
- const rows=bountyRows.filter(r=>r.id.startsWith('ow-'));expect(rows).toHaveLength(108);expect(rows.reduce((n,r)=>n+r.reward_gold!,0)).toBe(27760);
- for(const r of rows){const z=worldTables.zones.find(z=>z.id===r.zone)!,level=Math.round((z.levelBand[0]+z.levelBand[1])/2),count=r.elite?10:r.cond_count!,old=r.elite?40:count===8?20:60;expect(r.reward_gold).toBe(Math.max(old,Math.round(.5*6*1.09**(level-1)*count/10)*10));expect(r.repeat_cooldown_seconds).toBe(600);}
+ const rows=bountyRows.filter(r=>r.id.startsWith('ow-'));expect(rows).toHaveLength(108);expect(rows.reduce((n,r)=>n+r.reward_gold!,0)).toBe(27780);
+ for(const r of rows){const region=r.id.split('-')[1],lane=r.id.at(-1),zone=Number(r.zone!.match(/z(\d+)$/)![1]);const preceding=rows.filter(x=>x.id.startsWith('ow-'+region+'-')&&x.id.endsWith('-'+lane)&&Number(x.zone!.match(/z(\d+)$/)![1])<=zone);const expected=Math.max(...preceding.map(x=>{const z=worldTables.zones.find(z=>z.id===x.zone)!,level=Math.round((z.levelBand[0]+z.levelBand[1])/2),count=x.elite?10:x.cond_count!,old=x.elite?40:count===8?20:60;return Math.max(old,Math.round(.5*6*1.09**(level-1)*count/10)*10);}));expect(r.reward_gold).toBe(expected);expect(r.repeat_cooldown_seconds).toBe(600);}
  for(const island of ['wind','mist','forge','frost','rift','dragon']){const group=rows.filter(r=>r.id.startsWith('ow-'+island+'-'));expect(group).toHaveLength(18);for(const suffix of ['1','2','3']){const lane=group.filter(r=>r.id.endsWith('-'+suffix)).sort((a,b)=>a.zone!.localeCompare(b.zone!));for(let i=1;i<lane.length;i++)expect(lane[i].reward_gold).toBeGreaterThanOrEqual(lane[i-1].reward_gold!);}}
 });
 it('P55 a pre-update accepted Lv32 eight-kill instance claims 350 gold through real PG exactly once',async()=>{

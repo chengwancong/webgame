@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "boards": [
+    {
+      "id": "wind-blades",
+      "name": "风栖·近岸刀兵",
+      "region": "wind",
+      "difficulty": "normal",
+      "width": 8,
+      "height": 8,
+      "blocked": [{"x":1,"y":2},{"x":2,"y":2},{"x":6,"y":4},{"x":6,"y":5}],
+      "heroSpawn": {"x":2,"y":5},
+      "enemies": [
+        {"id":"blade-a","kind":"melee","cell":{"x":3,"y":4},"eliteAffixes":[]},
+        {"id":"blade-b","kind":"melee","cell":{"x":4,"y":4},"eliteAffixes":[]},
+        {"id":"blade-c","kind":"melee","cell":{"x":4,"y":5},"eliteAffixes":[]}
+      ],
+      "burstGroup": ["blade-a","blade-b","blade-c"],
+      "burstOrigin": {"x":3,"y":5},
+      "burstSkill": "whirl"
+    },
+    {
+      "id": "wind-marksmen",
+      "name": "风栖·断墙铳手",
+      "region": "wind",
+      "difficulty": "normal",
+      "width": 8,
+      "height": 8,
+      "blocked": [{"x":1,"y":2},{"x":2,"y":2},{"x":5,"y":5},{"x":5,"y":6}],
+      "heroSpawn": {"x":1,"y":5},
+      "enemies": [
+        {"id":"gunner-a","kind":"ranged","cell":{"x":4,"y":2},"eliteAffixes":[]},
+        {"id":"gunner-b","kind":"ranged","cell":{"x":4,"y":3},"eliteAffixes":[]},
+        {"id":"gunner-c","kind":"ranged","cell":{"x":4,"y":4},"eliteAffixes":[]}
+      ],
+      "burstGroup": ["gunner-a","gunner-b","gunner-c"],
+      "burstOrigin": {"x":3,"y":3},
+      "burstSkill": "whirl"
+    },
+    {
+      "id": "wind-swarm",
+      "name": "风栖·群怪潮滩",
+      "region": "wind",
+      "difficulty": "normal",
+      "width": 9,
+      "height": 9,
+      "blocked": [{"x":1,"y":3},{"x":2,"y":3},{"x":7,"y":5},{"x":7,"y":6}],
+      "heroSpawn": {"x":2,"y":6},
+      "enemies": [
+        {"id":"swarm-a","kind":"swarm","cell":{"x":4,"y":4},"eliteAffixes":[]},
+        {"id":"swarm-b","kind":"swarm","cell":{"x":4,"y":5},"eliteAffixes":[]},
+        {"id":"swarm-c","kind":"swarm","cell":{"x":4,"y":6},"eliteAffixes":[]},
+        {"id":"swarm-d","kind":"swarm","cell":{"x":5,"y":5},"eliteAffixes":[]},
+        {"id":"escort-a","kind":"melee","cell":{"x":5,"y":3},"eliteAffixes":[]},
+        {"id":"escort-b","kind":"melee","cell":{"x":6,"y":3},"eliteAffixes":[]}
+      ],
+      "burstGroup": ["swarm-a","swarm-b","swarm-c"],
+      "burstOrigin": {"x":3,"y":5},
+      "burstSkill": "whirl",
+      "countException": "swarm-majority-budget"
+    },
+    {
+      "id": "wind-elite",
+      "name": "风栖·逆风卫队",
+      "region": "wind",
+      "difficulty": "elite",
+      "width": 9,
+      "height": 9,
+      "blocked": [{"x":2,"y":3},{"x":2,"y":4},{"x":7,"y":4},{"x":7,"y":5}],
+      "heroSpawn": {"x":2,"y":6},
+      "enemies": [
+        {"id":"elite-blade","kind":"melee","cell":{"x":5,"y":3},"eliteAffixes":["swift"]},
+        {"id":"escort-a","kind":"melee","cell":{"x":4,"y":3},"eliteAffixes":[]},
+        {"id":"escort-b","kind":"melee","cell":{"x":6,"y":4},"eliteAffixes":[]},
+        {"id":"escort-c","kind":"melee","cell":{"x":5,"y":5},"eliteAffixes":[]}
+      ]
+    },
+    {
+      "id": "wind-boss",
+      "name": "风栖·守望者庭院",
+      "region": "wind",
+      "difficulty": "boss",
+      "width": 10,
+      "height": 10,
+      "blocked": [{"x":2,"y":3},{"x":2,"y":4},{"x":7,"y":3},{"x":7,"y":4},{"x":4,"y":8},{"x":5,"y":8}],
+      "heroSpawn": {"x":2,"y":7},
+      "enemies": [{"id":"wind-warden","kind":"melee","cell":{"x":5,"y":3},"eliteAffixes":[],"boss":true}]
+    }
+  ]
+}

@@ -24,8 +24,8 @@ export function conditionMet(s:Pick<CharacterState,'level'|'starsea'>&Partial<Pi
  return [...groups.values()].some(group=>group.every(fact));
 }
 export function questEligible(s:Pick<CharacterState,'level'|'starsea'>,id:string,visiting=new Set<string>()):boolean{const t=tasks.find(t=>t.id===id);if(!t||t.frozen||t.hub_return||t.campaign!=='starsea')return false;
- if(s.starsea?.seen.some(f=>f.startsWith('hub-node:'))&&/^ss-c0[3-6]$/.test(t.chapter??''))return false;
- if(t.hub_node)return s.starsea?.prologue?.done!==false&&(t.hub_node.startsWith('wind-')||Boolean(s.starsea?.bosses.includes('ss-map-boss-1')));
+ if(!t.hub_node&&s.starsea?.seen.some(f=>f.startsWith('hub-node:'))&&/^ss-c0[3-6]$/.test(t.chapter??''))return false;
+ if(t.hub_node){const i=['wind','mist','forge','frost','rift','dragon'].indexOf(t.hub_node.split('-')[0]);return s.starsea?.prologue?.done!==false&&(i===0||i>0&&Boolean(s.starsea?.bosses.includes('ss-map-boss-'+i)));}
  if(id==='ss-c01-n01')return s.starsea?.prologue?.done!==false;
  if(id==='hub-first-return')return Boolean(s.starsea?.seen.includes('hub-node:wind-story-1'));
  if(id.startsWith('hub-gate-wind-'))return Boolean(s.starsea?.seen.includes('hub-node:wind-story-1'));

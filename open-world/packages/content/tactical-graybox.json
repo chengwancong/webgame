@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "hero": { "hp": 100, "move": 4, "critChance": 0.1, "critMultiplier": 1.5 },
+  "heroes": [
+    { "id": "sword", "name": "剑", "basicSkillId": "cut", "skillIds": ["cut", "whirl", "ward", "vortex_blade"] },
+    { "id": "hidden", "name": "暗器", "basicSkillId": "throwing_knife", "skillIds": ["throwing_knife", "fan_of_knives", "venom_needle", "toxic_bomb"] }
+  ],
+  "hpTiers": { "swarm": 5, "light": 10, "medium": 12, "heavy": 30 },
+  "eliteHpMultiplier": 2,
+  "skills": {
+    "cut": { "damage": 10, "cooldown": 0, "range": 1 },
+    "whirl": { "damage": 6, "cooldown": 2, "range": 1 },
+    "ward": { "damage": 0, "cooldown": 3, "range": 0, "shield": 25 },
+    "vortex_blade": { "damage": 5, "cooldown": 3, "range": 2 },
+    "throwing_knife": { "damage": 10, "cooldown": 0, "range": 4 },
+    "fan_of_knives": { "damage": 6, "cooldown": 2, "range": 3 },
+    "venom_needle": { "damage": 7, "cooldown": 2, "range": 4, "dotDamage": 3, "dotTicks": 2 },
+    "toxic_bomb": { "damage": 0, "cooldown": 3, "range": 4, "zoneDamage": 4, "duration": 2 }
+  },
+  "enemies": {
+    "melee": { "damage": 5 },
+    "ranged": { "damage": 7 },
+    "charger": { "damage": 18 },
+    "shaman": { "damage": 0, "heal": 10, "shield": 8 },
+    "guard": { "damage": 6, "frontalReduction": 0.5 },
+    "artillery": { "damage": 12 },
+    "assassin": { "damage": 10, "rearMultiplier": 1.5 },
+    "summoner": { "damage": 0, "curseMultiplier": 1.25, "summonLimit": 2, "summonCount": 1, "summonCooldown": 2 },
+    "swarm": { "damage": 4 }
+  },
+  "affixes": {
+    "swift": { "moveBonus": 2 },
+    "shielded": { "shield": 20 },
+    "frost_nova": { "damage": 4, "duration": 1 },
+    "fire_trail": { "damage": 4, "duration": 2 },
+    "summon_minions": { "threshold": 0.5, "count": 2 },
+    "teleport": { "minDistance": 4 }
+  },
+  "boss": { "name": "风栖守望者", "hp": 110, "damage": 10, "bigDamage": 45, "phaseThreshold": 0.5, "exhaustedMultiplier": 1.5, "summonLimit": 2 },
+  "autopilot": {
+    "killWeight": 1000,
+    "damageTakenWeight": 20,
+    "damageDealtWeight": 10,
+    "priorityBonus": 1,
+    "positionWeight": 1,
+    "targetWeight": 5,
+    "guardBonus": 40,
+    "guardThreshold": 0.5,
+    "defaults": { "priority": [], "target": "nearest", "position": "stay-close", "guard": "on" }
+  }
+}

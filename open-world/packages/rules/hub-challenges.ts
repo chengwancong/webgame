@@ -5,7 +5,7 @@ import {challengeAvailability,consumeChallenge,ensureChallengeProgress} from './
 /** Reuse the existing challenge's gates, limits and multipliers with its new region coordinate. */
 export function hubChallengeDefinition(node:HubNodeDefinition,kind:'high'|'nightmare'){
  if(kind==='nightmare'&&node.kind!=='gate'||kind==='high'&&!['nest','hunt','gate'].includes(node.kind))return;
- const legacy=node.region==='wind'?'meadow':node.region==='mist'?'forest':undefined;if(!legacy)return;
+ const legacy=({wind:'meadow',mist:'forest',forge:'rift',frost:'tundra',rift:'abyss',dragon:'dragonbone'} as Record<string,string>)[node.region];if(!legacy)return;
  const found=challengeContent.entries.find(d=>d.kind===kind&&d.region===legacy+'-boss');return found?{...found,region:`ss-map-${node.region}`} : undefined;
 }
 const regionalState=(s:CharacterState):CharacterState=>({...s,progress:{...s.progress,regions:[...new Set([...s.progress.regions,...s.starsea?.islands??[]])]}});

@@ -1,0 +1,8 @@
+import {hubEndgame} from '../content/hub-endgame.ts';
+import {hubNodeById} from '../content/hub-chart.ts';
+import {hubDay} from './hub-state.ts';
+// Server provides the private seed; callers persist returned choices in entry snapshots.
+function random(seed:number){let x=seed>>>0;return ()=>{x=(Math.imul(x,1664525)+1013904223)>>>0;return x/4294967296;};}
+export function selectDailyDeepNodes(seed:number,now:number){const day=hubDay(now),rng=random(seed^Math.floor(Date.parse(day)/86400000)),available=[...hubEndgame.daily.pool],chosen:string[]=[];const take=(pool:string[])=>{const id=pool[Math.floor(rng()*pool.length)];chosen.push(id);available.splice(available.indexOf(id),1);};for(const kind of hubEndgame.daily.requiredKinds)take(available.filter(id=>hubNodeById.get(id)!.kind===kind));while(chosen.length<hubEndgame.daily.count)take(available);return chosen.map((node,i)=>({id:`deep:${day}:${i+1}`,node}));}
+export function weeklyDeepBoss(now:number,deep:boolean,seed:number){const day=hubDay(now),days=Math.floor(Date.parse(day)/86400000),week=Math.floor((days-4)/7);const rotation=hubEndgame.weekly.rotation[((week%6)+6)%6],rng=random(seed^week),pool=[...hubEndgame.weekly.affixes],affixes:string[]=[];if(deep)while(affixes.length<2)affixes.push(pool.splice(Math.floor(rng()*pool.length),1)[0]);return {...rotation,affixes,rewardLimit:hubEndgame.weekly.rewardLimit};}
+export function abyssBoss(floor:number,seed:number){if(!Number.isInteger(floor)||floor<1||floor>100)throw Error('Invalid abyss floor');const rng=random(seed),pool=[...hubEndgame.abyss.bossPool];for(let i=pool.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}return pool[(floor-1)%pool.length];}

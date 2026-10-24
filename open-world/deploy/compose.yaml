@@ -32,6 +32,8 @@ services:
       # prod = 正式模式，密码账号。
       NODE_ENV: ${AW_MODE_NODE_ENV:-development}
       AW_TEST_LOGIN: ${AW_TEST_LOGIN:-1}
+      # Independent one-hour battle sandbox; closed unless explicitly enabled.
+      TACTICAL_SANDBOX: ${TACTICAL_SANDBOX:-0}
     volumes:
       - ${AW_WEB_DIST:-./web-dist}:/srv/web-dist:ro
 

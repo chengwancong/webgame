@@ -14,12 +14,17 @@ export const hubElementsSchema=z.object({weaknessBonus:z.number().positive().max
 export const hubElements=hubElementsSchema.parse(elementsRaw);
 
 const statBonus=z.object({stat:z.string().refine(id=>statRegistry.some(d=>d.id===id),'未登记的属性'),value:z.number().positive()}).strict();
+export const petActiveProfileSchema=z.discriminatedUnion('kind',[
+ z.object({kind:z.literal('single'),every:z.number().int().positive(),ratioScale:z.number().positive()}).strict(),
+ z.object({kind:z.literal('shield'),every:z.number().int().positive(),hpRatio:z.number().positive().max(1),duration:z.number().int().positive()}).strict(),
+ z.object({kind:z.literal('chain'),every:z.number().int().positive(),targets:z.number().int().min(2).max(12),decay:z.number().positive().max(1),range:z.number().positive()}).strict(),
+]);
 export const petContentSchema=z.object({
- flows:z.record(petFlowSchema,damageTypeSchema),flowNames:z.record(petFlowSchema,z.string().min(1)),
+ flowDescriptions:z.record(petFlowSchema,z.string().min(1)).optional(),flows:z.record(petFlowSchema,damageTypeSchema),flowNames:z.record(petFlowSchema,z.string().min(1)),
  tiers:z.record(petTierSchema,z.object({activeRatio:z.number().positive(),passive:statBonus,extra:statBonus.optional(),source:z.string().min(1)}).strict()),
  levelCap:z.number().int().positive(),activeEvery:z.number().int().positive(),activeRadius:z.number().positive(),activeRange:z.number().positive(),levelRatioBonus:z.number().nonnegative(),passivePerTenLevels:z.number().nonnegative(),supportShare:z.number().min(0).max(1),
  forms:z.object({adult:z.number().int().positive(),awakened:z.number().int().positive()}).strict(),
- families:z.array(z.object({id:petFamilyIdSchema,name:z.string().min(1),island:petIslandSchema,region:chartRegionIdSchema,tier:petTierSchema,runtime:z.string().regex(/^ss-pet-/)}).strict()).length(18),
+ families:z.array(z.object({id:petFamilyIdSchema,activeProfile:petActiveProfileSchema.optional(),suitableFor:z.string().min(1).optional(),tradeoff:z.string().min(1).optional(),skillName:z.string().min(1).optional(),flavor:z.string().min(1).optional(),combatRole:z.string().min(1).optional(),name:z.string().min(1),island:petIslandSchema,region:chartRegionIdSchema,tier:petTierSchema,runtime:z.string().regex(/^ss-pet-/)}).strict()).length(18),
 }).strict().superRefine((v,ctx)=>{for(const f of petFlows)if(!v.flows[f])ctx.addIssue({code:'custom',message:'流派缺元素 '+f});if(new Set(v.families.map(f=>f.id)).size!==18)ctx.addIssue({code:'custom',message:'宠物家族重复'});});
 export const petContent=petContentSchema.parse(petsRaw);
 export type PetFamily=typeof petContent.families[number];

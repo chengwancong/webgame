@@ -5,13 +5,15 @@ import {createHash} from 'node:crypto';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {committedVersions,assertReleaseVersions} from './deploy-versions.ts';
+import {remoteWebBuildScript} from './deploy-remote-web.ts';
 const root=path.resolve(fileURLToPath(new URL('../..',import.meta.url))),project=path.join(root,'open-world'),out='G:/webgame/aw-deploy';
 // A source-only release worktree may share an already installed local preview.
 // Its existing service script still enforces checkout ownership; no guard is bypassed.
 const localServiceRoot=path.resolve(process.env.AW_LOCAL_SERVICE_ROOT??project);
-if(!existsSync(path.join(localServiceRoot,'tools/local-service.mjs')))throw Error('Local preview service root is invalid');
-const flags=new Set(process.argv.slice(2)),allowed=['--skip-web','--skip-api','--full-web','--no-mirror','--dry-run','--pull-backup'];
+const flags=new Set(process.argv.slice(2)),allowed=['--skip-web','--skip-api','--full-web','--remote-web','--no-mirror','--dry-run','--pull-backup'];
 for(const flag of flags)if(!allowed.includes(flag))throw Error(`Unknown option: ${flag}`);
+if(flags.has('--remote-web')&&(flags.has('--skip-web')||flags.has('--full-web')))throw Error('--remote-web cannot be combined with --skip-web or --full-web');
+if(!flags.has('--skip-web')&&!flags.has('--remote-web')&&!existsSync(path.join(localServiceRoot,'tools/local-service.mjs')))throw Error('Local preview service root is invalid');
 const ssh=process.platform==='win32'?'C:/Program Files/Git/usr/bin/ssh.exe':'ssh',scp=process.platform==='win32'?'C:/Program Files/Git/usr/bin/scp.exe':'scp';
 const run=(cmd,args,options={})=>execFileSync(cmd,args,{cwd:root,stdio:'inherit',windowsHide:true,...options});
 const capture=(cmd,args,options={})=>run(cmd,args,{stdio:'pipe',encoding:'utf8',maxBuffer:64*1024*1024,...options}).trim();
@@ -20,7 +22,7 @@ const quote=s=>"'"+String(s).replaceAll("'","'\\''")+"'";
 const head=capture('git',['rev-parse','HEAD']),expectedVersions=committedVersions(capture('git',['show',`${head}:open-world/packages/contracts/index.ts`]));
 const release='release-'+head.slice(0,12)+'-'+Date.now(),artifact=path.join(out,release);
 const api=!flags.has('--skip-api'),web=!flags.has('--skip-web');
-console.log(JSON.stringify({source:head,versions:expectedVersions,api,web,steps:['isolated client build with local stop/build/restore','hash delta upload and server archive','verify candidate protocol/rules/assets before activation','stop API, build, atomic source/client activation, restore with rollback','verify health and mirror committed source']}));
+console.log(JSON.stringify({source:head,versions:expectedVersions,api,web,remoteWeb:flags.has('--remote-web'),steps:[flags.has('--remote-web')?'isolated cloud client build; retain live static resources':'isolated client build with local stop/build/restore','verified web and server archives','build and verify candidate while current API stays running','brief API stop, atomic source/client activation, restore with rollback','verify health and mirror committed source']}));
 if(flags.has('--dry-run'))process.exit(0);
 mkdirSync(out,{recursive:true});const lock=path.join(out,'deploy-staging.lock');
 try{mkdirSync(lock);}catch{throw Error('Deployment already running: '+lock);}
@@ -29,10 +31,24 @@ let snapshot;
 async function hash(file){const h=createHash('sha256');for await(const c of createReadStream(file))h.update(c);return h.digest('hex');}
 async function healthy(){const r=await fetch('https://43-165-179-11.sslip.io/api/health',{signal:AbortSignal.timeout(5000)});if(!r.ok)throw Error('Health HTTP '+r.status);const h=await r.json();if(!h.ok)throw Error('Health not ready');assertReleaseVersions(h.versions,expectedVersions);return h;}
 try{
- if(capture('git',['status','--porcelain','--untracked-files=no']))console.warn('Dirty workspace: only committed source is deployed; local public assets are copied.');
+ if(capture('git',['status','--porcelain','--untracked-files=no']))console.warn(flags.has('--remote-web')?'Dirty workspace: only committed source is deployed; existing cloud static resources are retained.':'Dirty workspace: only committed source is deployed; local public assets are copied.');
  const before=readRemote('cat ~/abyss/SOURCE_COMMIT 2>/dev/null || true');
  let manifest;
- if(web){
+ if(web&&flags.has('--remote-web')){
+  const webEntries=capture('git',['ls-tree','--name-only',head,'open-world/apps/web/']).split('\n').filter(p=>p!=='open-world/apps/web/public');
+  const source=path.join(artifact,'web-source.tgz');
+  run('git',['archive','--format=tar.gz','--output='+source,head,...webEntries,'open-world/packages','open-world/config','open-world/package.json','open-world/pnpm-lock.yaml','open-world/pnpm-workspace.yaml','open-world/tsconfig.json','open-world/apps/api/package.json','open-world/apps/desktop/package.json']);
+  run(scp,[source,`abyss-staging:/tmp/${release}.web-source.tgz`]);
+  if(readRemote(`sha256sum /tmp/${release}.web-source.tgz`).split(/\s/)[0]!==await hash(source))throw Error('Remote web source archive checksum mismatch');
+  const scriptFile=path.join(artifact,'remote-web-build.sh');writeFileSync(scriptFile,remoteWebBuildScript({release,head,versions:expectedVersions}));
+  run(scp,[scriptFile,`abyss-staging:/tmp/${release}.remote-web-build.sh`]);
+  const built=JSON.parse(readRemote(`bash /tmp/${release}.remote-web-build.sh`));
+  assertReleaseVersions(built.versions,expectedVersions);
+  if(built.source!==head||built.release!==release||!Number.isSafeInteger(built.files)||built.files<3||!Number.isSafeInteger(built.archiveBytes)||built.archiveBytes<=0||!/^[0-9a-f]{64}$/.test(built.archiveSha256))throw Error('Invalid remote web build metadata');
+  if(readRemote(`sha256sum /tmp/${release}.web.tgz`).split(/\s/)[0]!==built.archiveSha256)throw Error('Remote web archive checksum mismatch');
+  writeFileSync(path.join(artifact,'remote-web-build.json'),JSON.stringify(built,null,2)+'\n');
+  console.log(JSON.stringify({remoteWebBuild:{source:built.source,files:built.files,archiveBytes:built.archiveBytes,archiveSha256:built.archiveSha256}}));
+ }else if(web){
   snapshot=mkdtempSync(path.join(out,'web-head-'));
   const webEntries=capture('git',['ls-tree','--name-only',head,'open-world/apps/web/']).split('\n').filter(p=>p!=='open-world/apps/web/public');
   const source=path.join(artifact,'web-source.tgz');run('git',['archive','--format=tar.gz','--output='+source,head,...webEntries,'open-world/packages','open-world/config','open-world/package.json','open-world/tsconfig.json']);run('tar',['-xzf',source,'-C',snapshot]);
@@ -73,6 +89,7 @@ cd open-world/deploy
 oldImage=$(docker inspect "$(docker compose ps -q api)" --format '{{.Image}}')
 docker tag "$oldImage" abyss-staging-api:before-${release}
 switched=0
+apiStopped=0
 rollback() {
  code=$?
  trap - EXIT
@@ -80,20 +97,24 @@ rollback() {
   echo "ROLLBACK $(date -Is)"
   ${api?`if [ "$switched" = 1 ]; then mv /home/ubuntu/abyss/open-world "$stage/failed-open-world"; mv "$previous" /home/ubuntu/abyss/open-world; fi`:`if [ "$switched" = 1 ]; then mv /home/ubuntu/abyss/open-world/deploy/web-dist "$stage/failed-web"; mv "$previous" /home/ubuntu/abyss/open-world/deploy/web-dist; fi`}
   docker tag abyss-staging-api:before-${release} abyss-staging-api:latest
-  cd /home/ubuntu/abyss/open-world/deploy
-  docker compose up -d --no-deps --no-build --force-recreate api
-  docker compose up -d --no-deps --no-build --force-recreate caddy
+  if [ "$apiStopped" = 1 ] || [ "$switched" = 1 ]; then
+   cd /home/ubuntu/abyss/open-world/deploy
+   docker compose up -d --no-deps --no-build --force-recreate api
+   docker compose up -d --no-deps --no-build --force-recreate caddy
+  fi
  fi
  exit "$code"
 }
 trap rollback EXIT
-echo "STOP $(date -Is)"
-docker compose stop api
 ${api?`cd "$stage/open-world/deploy"
 echo "BUILD $(date -Is)"
 docker compose build api`:''}
 # Inspect the actual candidate runtime, not a client-version string or port-open check.
 docker run --rm --entrypoint node abyss-staging-api:latest --import /tsx/node_modules/tsx/dist/loader.mjs --input-type=module -e ${quote(versionCheck)}
+cd /home/ubuntu/abyss/open-world/deploy
+echo "STOP $(date -Is)"
+apiStopped=1
+docker compose stop api
 ${api?`mv /home/ubuntu/abyss/open-world "$previous"
 mv "$stage/open-world" /home/ubuntu/abyss/open-world`:`mv /home/ubuntu/abyss/open-world/deploy/web-dist "$previous"
 mv "$stage/open-world/deploy/web-dist" /home/ubuntu/abyss/open-world/deploy/web-dist`}

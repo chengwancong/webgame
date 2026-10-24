@@ -6,8 +6,8 @@ export const hubNodeDefinitionSchema=z.object({_row:z.number().optional(),id,reg
 export const hubChartContentSchema=z.object({source:z.literal('config/excel/航图.xlsx'),regions:z.array(z.object({_row:z.number().optional(),id:chartRegionIdSchema,name:id,levelRange:z.tuple([z.number().int(),z.number().int()]),status:z.enum(['open','locked'])}).strict()),nodes:z.array(hubNodeDefinitionSchema),shards:z.array(z.object({_row:z.number().optional(),id,name:id,effect:id,kind:z.enum(['slot','hex-style','elite']),value:id}).strict())}).strict().superRefine((v,ctx)=>{
  const ids=new Set(v.nodes.map(n=>n.id));if(ids.size!==v.nodes.length)ctx.addIssue({code:'custom',message:'航图节点ID重复'});
  if(v.regions.length!==7||new Set(v.regions.map(r=>r.id)).size!==7)ctx.addIssue({code:'custom',message:'航图必须包含7个航区'});
- for(const region of ['wind','mist'])if(v.nodes.filter(n=>n.region===region).length!==10)ctx.addIssue({code:'custom',message:region+'必须包含10个节点'});
- for(const n of v.nodes){if(!['wind','mist'].includes(n.region))ctx.addIssue({code:'custom',message:'样板外航区不能建节点'});for(const linked of n.links){const other=v.nodes.find(x=>x.id===linked);if(!other||other.region!==n.region||!other.links.includes(n.id))ctx.addIssue({code:'custom',message:n.id+'无效或非双向连线 '+linked});}if(n.estimatedMinutes[0]>n.estimatedMinutes[1])ctx.addIssue({code:'custom',message:n.id+'时长区间倒置'});}
+ for(const region of ['wind','mist','forge','frost','rift','dragon'])if(v.nodes.filter(n=>n.region===region).length!==10)ctx.addIssue({code:'custom',message:region+'必须包含10个节点'});
+ for(const n of v.nodes){if(n.region==='deep')ctx.addIssue({code:'custom',message:'深潮使用菜单，不建固定节点图'});for(const linked of n.links){const other=v.nodes.find(x=>x.id===linked);if(!other||other.region!==n.region||!other.links.includes(n.id))ctx.addIssue({code:'custom',message:n.id+'无效或非双向连线 '+linked});}if(n.estimatedMinutes[0]>n.estimatedMinutes[1])ctx.addIssue({code:'custom',message:n.id+'时长区间倒置'});}
 });
 export const hubChartContent=hubChartContentSchema.parse(raw);
 export type HubNodeDefinition=z.infer<typeof hubNodeDefinitionSchema>;

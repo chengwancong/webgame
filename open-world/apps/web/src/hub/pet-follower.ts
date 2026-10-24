@@ -31,6 +31,10 @@ export class PetFollower {
   private loaded = false;
   private errored = false;
   private attackUntilTick = 0;
+  /** arc 连锁反馈：在这个 tick 之前保持连锁色调（蓝金）。 */
+  private chainFlashUntilTick = 0;
+  /** 护盾生效反馈：在这个 tick 之前保持护盾色调（浅蓝）。 */
+  private shieldFlashUntilTick = 0;
   private art?: PetRuntimeArt;
 
   constructor(private deps: PetFollowerDeps) {
@@ -67,12 +71,38 @@ export class PetFollower {
     if (this.scene.anims.exists(anim)) {
       this.sprite.play(anim, true);
     }
+
+    // 轻量色调反馈（复用 Phaser 内置 tint，不新增美术资源）
+    if (tick < this.shieldFlashUntilTick) {
+      // 护盾：浅蓝色调
+      this.sprite.setTint(0x88ccff);
+    } else if (tick < this.chainFlashUntilTick) {
+      // 连锁：金色调
+      this.sprite.setTint(0xffdd88);
+    } else {
+      this.sprite.clearTint();
+    }
   }
 
-  /** 收到 effect_triggered 且 ruleId 以 'pet-' 开头时调用。 */
+  /** 收到宠物伤害类 / shield-cast 事件时调用，播放攻击动画（约 1 秒 = 30 帧）。 */
   triggerAttack(tick: number): void {
-    // 攻击动画约 1 秒（30 帧）
     this.attackUntilTick = tick + 30;
+  }
+
+  /**
+   * 收到 arc 连锁事件时调用（同时也会调用 triggerAttack）。
+   * 在攻击动画结束后维持约 20 帧的金色调，用于轻量的连锁视觉反馈。
+   */
+  triggerChain(tick: number): void {
+    this.chainFlashUntilTick = tick + 50;  // 攻击 30 帧 + 连锁余韵 20 帧
+  }
+
+  /**
+   * 收到宠物护盾生效事件（shielded shieldPhase==='applied'）时调用。
+   * 短暂浅蓝色调，复用 Phaser tint，不新增美术资源。
+   */
+  triggerShieldFlash(tick: number): void {
+    this.shieldFlashUntilTick = tick + 25;
   }
 
   destroy(): void {

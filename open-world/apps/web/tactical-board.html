@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>深渊行者 · 棋盘回合制预览（隔离 fixture）</title>
+<link rel="stylesheet" href="/src/ui-entry.css">
+<link rel="stylesheet" href="/src/tactical/tactical.css">
+</head>
+<body class="tb-review">
+<div id="stage-wrap"><div id="stage"></div></div>
+<div id="toolbar" aria-label="预览工具条（不属于游戏界面）">
+  <strong>棋盘预览 · 隔离 fixture</strong>
+  <label>场景
+    <select id="scenario">
+      <option value="default">正常</option>
+      <option value="timeout">短等待（15 秒）</option>
+      <option value="defeat">失败</option>
+      <option value="load-error">首次载入失败</option>
+      <option value="conflict">首个指令冲突</option>
+      <option value="version">版本不一致</option>
+      <option value="empty">没有遭遇</option>
+    </select>
+  </label>
+  <button id="btn-offline" type="button" aria-pressed="false">断开连接</button>
+  <button id="btn-drop" type="button">丢失下一条回执</button>
+  <button id="btn-conflict" type="button">下一次指令冲突</button>
+  <button id="btn-refresh" type="button">模拟刷新页面</button>
+  <button id="btn-motion" type="button" aria-pressed="false">减少动态</button>
+  <span id="diag" aria-live="off"></span>
+</div>
+<script type="module" src="/src/tactical/tactical-board.ts"></script>
+</body>
+</html>

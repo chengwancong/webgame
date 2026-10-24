@@ -13,7 +13,7 @@ import {ensureProgression,talentPoints} from './deep-progression.ts';
 import {changeMainHand,rememberWeaponSkills,skillWeaponAllowed} from './skill-weapon-access.ts';
 import {skillSlotCount} from './skill-recovery.ts';
 import {gearMaxRank,gearUpgradeCost} from './item-power.ts';
-import {petElement,petForm,petXpNext,petActiveRatio,petPassives,slotRank,wornInSlot,resonanceTier,RESONANCE_STEPS,RESONANCE_PER_TIER} from './zhangjian-build.ts';
+import {petElement,petForm,petXpNext,petActiveEffect,petDealsDamage,petPassives,slotRank,wornInSlot,resonanceTier,RESONANCE_STEPS,RESONANCE_PER_TIER} from './zhangjian-build.ts';
 import type {HubState} from './hub-state.ts';
 import {slotNames,elementNames} from './zhangjian-view.ts';
 export {slotNames,elementNames,elementHint} from './zhangjian-view.ts';
@@ -27,7 +27,7 @@ export function applyRegionWeakness<T extends Pick<Spawn,'monster'>>(spawns:T[],
 export function skillDamageType(id:string){return skillCatalog.find(s=>s.id===id)?.mechanics?.damageType as DamageType|undefined;}
 /** 一组技能 + 上阵宠物流派能打出的元素（去重，物理在内）。 */
 export function elementsOf(skills:string[],petFlow?:PetFlow){const out=new Set<DamageType>();for(const id of skills){const t=skillDamageType(id);if(t&&t!=='pure')out.add(t);}if(petFlow)out.add(petElement(petFlow));return [...out];}
-function activePetFlow(s:Pick<CharacterState,'pets'>,lineup=s.pets?.lineup,flows?:Record<string,PetFlow>){const id=lineup?.active;if(!id)return undefined;return flows?.[id]??s.pets?.owned[id]?.flow;}
+function activePetFlow(s:Pick<CharacterState,'pets'>,lineup=s.pets?.lineup,flows?:Record<string,PetFlow>){const id=lineup?.active,f=id?petFamilyById.get(id):undefined;if(!id||!f||!s.pets?.owned[id]||!petDealsDamage(f))return undefined;return flows?.[id]??s.pets.owned[id].flow;}
 export function currentElements(s:CharacterState){return elementsOf(s.skills,activePetFlow(s));}
 export function resistOf(stats:Stats,type:DamageType){return type==='physical'||type==='pure'?0:numericStat(stats,'allResist')+numericStat(stats,type+'Resist');}
 // ---------- Z1 出战方案 ----------
@@ -90,10 +90,11 @@ export function grantPetXp(s:CharacterState,runXp:number){const p=s.pets;if(!p||
  if(p.lineup.active)give(p.lineup.active,1);for(const id of p.lineup.support)if(id!==p.lineup.active)give(id,petContent.supportShare);return ups;}
 export function setPetLineup(s:CharacterState,active:string|null,support:string[]){const p=s.pets;if(!p)throw Error('还没有宠物');const ids=[active,...support].filter(Boolean) as string[];if(new Set(ids).size!==ids.length)throw Error('同一只宠物不能占两个位置');if(ids.some(id=>!p.owned[id]))throw Error('阵容里有没拥有的宠物');p.lineup={active,support:[...support]};s.build++;}
 export function setPetFlow(s:CharacterState,family:string,flow:PetFlow){const own=s.pets?.owned[family];if(!own)throw Error('没有这只宠物');own.flow=flow;s.build++;}
-export function petView(familyId:string,own:{level:number;xp:number;flow:PetFlow}):PetView{const f=petFamilyById.get(familyId)!,form=petForm(own.level),ratio=petActiveRatio(f,own.level),passives=petPassives(f,own.level);
+export function petView(familyId:string,own:{level:number;xp:number;flow:PetFlow}):PetView{const f=petFamilyById.get(familyId)!,form=petForm(own.level),effect=petActiveEffect(f,own.level,own.flow),passives=petPassives(f,own.level),pct=(n:number)=>Math.round(n*1000)/10;
  const statName:Record<string,string>={hpPercent:'最大生命',attackPercent:'攻击',armorPercent:'护甲',critChance:'暴击率'};
- return {family:f.id,name:f.name,island:f.island,tier:f.tier,level:own.level,xp:own.xp,xpNext:petXpNext(own.level),form,flow:own.flow,element:petElement(own.flow),runtime:f.runtime+'-'+form,
-  activeLine:'每 '+petContent.activeEvery/30+' 秒 · '+elementNames[petElement(own.flow)]+'伤害 '+Math.round(ratio*100)+'%',passiveLine:passives.map(p=>(statName[p.stat]??p.stat)+' +'+Math.round(p.value*1000)/10+'%').join('，')};}
+ const activeLine=effect.kind==='shield'?'每 '+effect.intervalSeconds+' 秒 · 最大生命 '+Math.round(effect.shieldPercent!*10)/10+'% 护盾 · 持续 '+effect.durationSeconds+' 秒':effect.kind==='chain'?'每 '+effect.intervalSeconds+' 秒 · '+elementNames[petElement(own.flow)]+'连锁 · 最多 '+effect.targetLimit+' 个目标':'每 '+effect.intervalSeconds+' 秒 · '+elementNames[petElement(own.flow)]+(effect.kind==='single'?'单体':'范围')+'伤害 '+pct(effect.damageRatios[0])+'%';
+ return {family:f.id,name:f.name,island:f.island,tier:f.tier,level:own.level,xp:own.xp,xpNext:petXpNext(own.level),form,flow:own.flow,element:petElement(own.flow),runtime:f.runtime+'-'+form,skillName:f.skillName,flavor:f.flavor,combatRole:f.combatRole,suitableFor:f.suitableFor,tradeoff:f.tradeoff,activeEffect:effect,flowDescription:effect.dealsDamage?petContent.flowDescriptions?.[own.flow]:'本技能不造成元素伤害；流派不改变护盾效果。',
+  activeLine,passiveLine:passives.map(p=>(statName[p.stat]??p.stat)+' +'+Math.round(p.value*1000)/10+'%').join('，')};}
 export function petsView(s:CharacterState):PetsView{const owned=s.pets?.owned??{};
  return {owned:Object.entries(owned).map(([id,o])=>petView(id,o)),lineup:s.pets?.lineup??{active:null,support:[]},
   catalog:petContent.families.map(f=>({family:f.id,name:f.name,island:f.island,tier:f.tier,status:owned[f.id]?'owned' as const:'locked' as const,source:petSource(f.id)}))};}

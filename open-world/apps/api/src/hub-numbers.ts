@@ -16,5 +16,7 @@ export function loadHubOutsideNumbers():HubOutsideNumbers{
   return structuredClone(pendingHubOutsideNumbers);
  }
  if(ready!==hubChartContent.nodes.length)throw Error('HUB节点预算与港口收益应用状态不一致；请完成同一B4计划的配置导出。');
- return parseHubOutsideNumbers(JSON.parse(raw));
+ const numbers=parseHubOutsideNumbers(JSON.parse(raw));
+ for(const region of new Set(hubChartContent.nodes.map(n=>n.region)))if(!numbers.dockRates[region])throw Error('HUB航区缺少同批派遣收益：'+region);
+ return numbers;
 }

@@ -37,7 +37,7 @@ export async function executeHubOutside(c:PoolClient,s:CharacterState,h:HubState
  |{kind:'commissions';op:'claim'|'abandon';id:string}
  |{kind:'recipe';recipe:string}
  |{kind:'mode';mode:'manual'|'semi'|'auto'},numbers:HubOutsideNumbers=pendingHubOutsideNumbers,now=Date.now(),commandId?:string){
- const dockRates=Object.fromEntries(Object.entries(numbers.dockRates).map(([region,rate])=>{const factor=1+(['wind','mist'].includes(region)?dockExploreBonus(regionExplore(h,region as ChartRegionId).percent):0);return [region,{goldPerHour:rate!.goldPerHour*factor,materialsPerHour:Object.fromEntries(Object.entries(rate!.materialsPerHour).map(([id,n])=>[id,n*factor]))}];}));
+ const dockRates=Object.fromEntries(Object.entries(numbers.dockRates).map(([region,rate])=>{const factor=1+(['wind','mist','forge','frost','rift','dragon'].includes(region)?dockExploreBonus(regionExplore(h,region as ChartRegionId).percent):0);return [region,{goldPerHour:rate!.goldPerHour*factor,materialsPerHour:Object.fromEntries(Object.entries(rate!.materialsPerHour).map(([id,n])=>[id,n*factor]))}];}));
  const result=action.kind==='port'?claimHubPortTier(s,h,action.building,action.tier):action.kind==='dock'?commandHubDock(s,h,action,dockRates,now):action.kind==='commissions'?commandHubCommission(s,h,action,numbers.commissionRep,now,numbers):action.kind==='recipe'?buyHubRecipe(s,h,action.recipe,numbers):setHubModePreference(h,action.mode);
  const questRewards=action.kind==='dock'&&action.op==='send'?recordHubFact(s,'hub-gate:dispatch',now):undefined;
  if(questRewards){s.gold+=questRewards.gold;applyXp(s,questRewards.xp);if(questRewards.completed.length)archiveQuestCompletions(s,questRewards.completed,commandId??`hub-dispatch:${s.id}`,new Date(now).toISOString());}

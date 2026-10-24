@@ -1,215 +1,304 @@
 {
- "flows": {
-  "blade": "physical",
-  "ember": "fire",
-  "glacier": "cold",
-  "storm": "lightning",
-  "arcanum": "arcane",
-  "shade": "shadow",
-  "venom": "poison",
-  "ricochet": "physical",
-  "frostneedle": "cold"
- },
- "flowNames": {
-  "blade": "锋刃",
-  "ember": "余烬",
-  "glacier": "霜卫",
-  "storm": "雷鸣",
-  "arcanum": "奥星",
-  "shade": "暮月",
-  "venom": "青毒",
-  "ricochet": "回锋",
-  "frostneedle": "冰针"
- },
- "tiers": {
-  "free": {
-   "activeRatio": 2.156342,
-   "passive": {
-    "stat": "attackPercent",
-    "value": 0.03
-   },
-   "extra": {
-    "stat": "hpPercent",
-    "value": 0.04
-   },
-   "source": "关口首通"
+  "flows": {
+    "blade": "physical",
+    "ember": "fire",
+    "glacier": "cold",
+    "storm": "lightning",
+    "arcanum": "arcane",
+    "shade": "shadow",
+    "venom": "poison",
+    "ricochet": "physical",
+    "frostneedle": "cold"
   },
-  "light": {
-   "activeRatio": 3.593904,
-   "passive": {
-    "stat": "attackPercent",
-    "value": 0.04
-   },
-   "source": "航区探索度 100%"
+  "flowNames": {
+    "blade": "锋刃",
+    "ember": "余烬",
+    "glacier": "霜卫",
+    "storm": "雷鸣",
+    "arcanum": "奥星",
+    "shade": "暮月",
+    "venom": "青毒",
+    "ricochet": "回锋",
+    "frostneedle": "冰针"
   },
-  "heavy": {
-   "activeRatio": 4.672075,
-   "passive": {
-    "stat": "attackPercent",
-    "value": 0.04
-   },
-   "extra": {
-    "stat": "critChance",
-    "value": 0.03
-   },
-   "source": "狩猎与关口都首通"
+  "tiers": {
+    "free": {
+      "activeRatio": 2.156342,
+      "passive": {
+        "stat": "attackPercent",
+        "value": 0.03
+      },
+      "extra": {
+        "stat": "hpPercent",
+        "value": 0.04
+      },
+      "source": "关口首通"
+    },
+    "light": {
+      "activeRatio": 3.593904,
+      "passive": {
+        "stat": "attackPercent",
+        "value": 0.04
+      },
+      "source": "航区探索度 100%"
+    },
+    "heavy": {
+      "activeRatio": 4.672075,
+      "passive": {
+        "stat": "attackPercent",
+        "value": 0.04
+      },
+      "extra": {
+        "stat": "critChance",
+        "value": 0.03
+      },
+      "source": "狩猎与关口都首通"
+    }
+  },
+  "levelCap": 30,
+  "activeEvery": 120,
+  "activeRadius": 3,
+  "activeRange": 6,
+  "levelRatioBonus": 0.02,
+  "passivePerTenLevels": 0.01,
+  "supportShare": 0.5,
+  "forms": {
+    "adult": 10,
+    "awakened": 20
+  },
+  "families": [
+    {
+      "id": "wind-free",
+      "name": "风绒",
+      "island": "wind",
+      "region": "wind",
+      "tier": "free",
+      "runtime": "ss-pet-wind-free",
+      "skillName": "绒风连扑",
+      "flavor": "总在出发前绕着你的鞋边跑一圈。",
+      "combatRole": "单体追击",
+      "activeProfile": {
+        "kind": "single",
+        "every": 60,
+        "ratioScale": 0.5
+      },
+      "suitableFor": "单首领与短战",
+      "tradeoff": "只攻击一个目标，不覆盖敌群。"
+    },
+    {
+      "id": "wind-light",
+      "name": "风芽鹿",
+      "island": "wind",
+      "region": "wind",
+      "tier": "light",
+      "runtime": "ss-pet-wind-light",
+      "skillName": "芽角护身",
+      "flavor": "喜欢停在新芽旁，等你走近才继续前进。",
+      "combatRole": "护盾保护",
+      "activeProfile": {
+        "kind": "shield",
+        "every": 120,
+        "hpRatio": 0.04,
+        "duration": 90
+      },
+      "suitableFor": "近身交战与守点",
+      "tradeoff": "主动不造成伤害，护盾可能空转。"
+    },
+    {
+      "id": "wind-heavy",
+      "name": "岚羽",
+      "island": "wind",
+      "region": "wind",
+      "tier": "heavy",
+      "runtime": "ss-pet-wind-heavy",
+      "skillName": "岚羽传鸣",
+      "flavor": "起风时会展开羽翼，替身边的人辨认方向。",
+      "combatRole": "连锁清群",
+      "activeProfile": {
+        "kind": "chain",
+        "every": 120,
+        "targets": 3,
+        "decay": 0.7,
+        "range": 4
+      },
+      "suitableFor": "成群敌人与怪潮",
+      "tradeoff": "单目标只能承受首击，空余弹射不会回弹。"
+    },
+    {
+      "id": "mist-free",
+      "name": "苔芽",
+      "island": "mist",
+      "region": "mist",
+      "tier": "free",
+      "runtime": "ss-pet-mist-free",
+      "skillName": "苔芽轻跃",
+      "flavor": "把落在邮路上的小叶子收进毛里。",
+      "combatRole": "攻击与生命兼顾"
+    },
+    {
+      "id": "mist-light",
+      "name": "铃沼",
+      "island": "mist",
+      "region": "mist",
+      "tier": "light",
+      "runtime": "ss-pet-mist-light",
+      "skillName": "铃沼踏浪",
+      "flavor": "听见远处铃声时，会侧过头等上一会儿。",
+      "combatRole": "稳定攻击加成"
+    },
+    {
+      "id": "mist-heavy",
+      "name": "竹团",
+      "island": "mist",
+      "region": "mist",
+      "tier": "heavy",
+      "runtime": "ss-pet-mist-heavy",
+      "skillName": "竹团拍地",
+      "flavor": "抱着捡来的竹节，睡着也不肯松开。",
+      "combatRole": "攻击与暴击配合"
+    },
+    {
+      "id": "forge-free",
+      "name": "炉鬃",
+      "island": "forge",
+      "region": "forge",
+      "tier": "free",
+      "runtime": "ss-pet-forge-free",
+      "skillName": "炉鬃奔袭",
+      "flavor": "炉火熄灭后仍会趴在余温旁等你。",
+      "combatRole": "攻击与生命兼顾"
+    },
+    {
+      "id": "forge-light",
+      "name": "铜砾",
+      "island": "forge",
+      "region": "forge",
+      "tier": "light",
+      "runtime": "ss-pet-forge-light",
+      "skillName": "铜砾震响",
+      "flavor": "走过石路会发出轻轻的碰撞声。",
+      "combatRole": "稳定攻击加成"
+    },
+    {
+      "id": "forge-heavy",
+      "name": "炉芯",
+      "island": "forge",
+      "region": "forge",
+      "tier": "heavy",
+      "runtime": "ss-pet-forge-heavy",
+      "skillName": "炉芯迸光",
+      "flavor": "每次回到工坊，胸口的微光都会亮起来。",
+      "combatRole": "攻击与暴击配合"
+    },
+    {
+      "id": "frost-free",
+      "name": "霜团",
+      "island": "frost",
+      "region": "frost",
+      "tier": "free",
+      "runtime": "ss-pet-frost-free",
+      "skillName": "霜团跃击",
+      "flavor": "喜欢把脚印留在尚未有人走过的雪上。",
+      "combatRole": "攻击与生命兼顾"
+    },
+    {
+      "id": "frost-light",
+      "name": "霜壳",
+      "island": "frost",
+      "region": "frost",
+      "tier": "light",
+      "runtime": "ss-pet-frost-light",
+      "skillName": "霜壳震荡",
+      "flavor": "会耐心等你整理完装备，再缓缓跟上。",
+      "combatRole": "稳定攻击加成"
+    },
+    {
+      "id": "frost-heavy",
+      "name": "镜鳍",
+      "island": "frost",
+      "region": "frost",
+      "tier": "heavy",
+      "runtime": "ss-pet-frost-heavy",
+      "skillName": "镜鳍回旋",
+      "flavor": "在冰面倒影里找自己的尾巴。",
+      "combatRole": "攻击与暴击配合"
+    },
+    {
+      "id": "dragon-free",
+      "name": "眠角",
+      "island": "dragon",
+      "region": "dragon",
+      "tier": "free",
+      "runtime": "ss-pet-dragon-free",
+      "skillName": "眠角轻撞",
+      "flavor": "安静时把头靠在旧约石碑旁。",
+      "combatRole": "攻击与生命兼顾"
+    },
+    {
+      "id": "dragon-light",
+      "name": "晓翼",
+      "island": "dragon",
+      "region": "dragon",
+      "tier": "light",
+      "runtime": "ss-pet-dragon-light",
+      "skillName": "晓翼振羽",
+      "flavor": "迎着晨光伸展翅膀，落地时总是很轻。",
+      "combatRole": "稳定攻击加成"
+    },
+    {
+      "id": "dragon-heavy",
+      "name": "岚鳞",
+      "island": "dragon",
+      "region": "dragon",
+      "tier": "heavy",
+      "runtime": "ss-pet-dragon-heavy",
+      "skillName": "岚鳞长鸣",
+      "flavor": "认得旧航网的声音，会在远处回应它。",
+      "combatRole": "攻击与暴击配合"
+    },
+    {
+      "id": "star-free",
+      "name": "星漪",
+      "island": "star",
+      "region": "rift",
+      "tier": "free",
+      "runtime": "ss-pet-star-free",
+      "skillName": "星漪涟光",
+      "flavor": "对水面上的星光格外好奇。",
+      "combatRole": "攻击与生命兼顾"
+    },
+    {
+      "id": "star-light",
+      "name": "星尾",
+      "island": "star",
+      "region": "rift",
+      "tier": "light",
+      "runtime": "ss-pet-star-light",
+      "skillName": "星尾扫光",
+      "flavor": "行走时尾端留下很快消散的光点。",
+      "combatRole": "稳定攻击加成"
+    },
+    {
+      "id": "star-heavy",
+      "name": "灯绫",
+      "island": "star",
+      "region": "rift",
+      "tier": "heavy",
+      "runtime": "ss-pet-star-heavy",
+      "skillName": "灯绫引辉",
+      "flavor": "天黑以后会靠近你，让衣角映出暖光。",
+      "combatRole": "攻击与暴击配合"
+    }
+  ],
+  "flowDescriptions": {
+    "blade": "物理范围伤害，适合沿用物理出战方案。",
+    "ember": "火焰范围伤害，可针对雾铃与霜镜的火焰弱点。",
+    "glacier": "冰霜范围伤害，可针对赤炉与龙眠的冰霜弱点。",
+    "storm": "雷电范围伤害，可针对风栖的雷电弱点。",
+    "arcanum": "奥术范围伤害，可针对沉星的奥术弱点。",
+    "shade": "暗影范围伤害，可针对深潮的暗影弱点。",
+    "venom": "毒素范围伤害；不额外附加持续中毒。",
+    "ricochet": "物理范围伤害；与锋刃同伤害机制，不额外弹射。",
+    "frostneedle": "冰霜范围伤害；与霜卫同伤害机制，不额外穿透。"
   }
- },
- "levelCap": 30,
- "activeEvery": 120,
- "activeRadius": 3,
- "activeRange": 6,
- "levelRatioBonus": 0.02,
- "passivePerTenLevels": 0.01,
- "supportShare": 0.5,
- "forms": {
-  "adult": 10,
-  "awakened": 20
- },
- "families": [
-  {
-   "id": "wind-free",
-   "name": "风绒",
-   "island": "wind",
-   "region": "wind",
-   "tier": "free",
-   "runtime": "ss-pet-wind-free"
-  },
-  {
-   "id": "wind-light",
-   "name": "风芽鹿",
-   "island": "wind",
-   "region": "wind",
-   "tier": "light",
-   "runtime": "ss-pet-wind-light"
-  },
-  {
-   "id": "wind-heavy",
-   "name": "岚羽",
-   "island": "wind",
-   "region": "wind",
-   "tier": "heavy",
-   "runtime": "ss-pet-wind-heavy"
-  },
-  {
-   "id": "mist-free",
-   "name": "苔芽",
-   "island": "mist",
-   "region": "mist",
-   "tier": "free",
-   "runtime": "ss-pet-mist-free"
-  },
-  {
-   "id": "mist-light",
-   "name": "铃沼",
-   "island": "mist",
-   "region": "mist",
-   "tier": "light",
-   "runtime": "ss-pet-mist-light"
-  },
-  {
-   "id": "mist-heavy",
-   "name": "竹团",
-   "island": "mist",
-   "region": "mist",
-   "tier": "heavy",
-   "runtime": "ss-pet-mist-heavy"
-  },
-  {
-   "id": "forge-free",
-   "name": "炉鬃",
-   "island": "forge",
-   "region": "forge",
-   "tier": "free",
-   "runtime": "ss-pet-forge-free"
-  },
-  {
-   "id": "forge-light",
-   "name": "铜砾",
-   "island": "forge",
-   "region": "forge",
-   "tier": "light",
-   "runtime": "ss-pet-forge-light"
-  },
-  {
-   "id": "forge-heavy",
-   "name": "炉芯",
-   "island": "forge",
-   "region": "forge",
-   "tier": "heavy",
-   "runtime": "ss-pet-forge-heavy"
-  },
-  {
-   "id": "frost-free",
-   "name": "霜团",
-   "island": "frost",
-   "region": "frost",
-   "tier": "free",
-   "runtime": "ss-pet-frost-free"
-  },
-  {
-   "id": "frost-light",
-   "name": "霜壳",
-   "island": "frost",
-   "region": "frost",
-   "tier": "light",
-   "runtime": "ss-pet-frost-light"
-  },
-  {
-   "id": "frost-heavy",
-   "name": "镜鳍",
-   "island": "frost",
-   "region": "frost",
-   "tier": "heavy",
-   "runtime": "ss-pet-frost-heavy"
-  },
-  {
-   "id": "dragon-free",
-   "name": "眠角",
-   "island": "dragon",
-   "region": "dragon",
-   "tier": "free",
-   "runtime": "ss-pet-dragon-free"
-  },
-  {
-   "id": "dragon-light",
-   "name": "晓翼",
-   "island": "dragon",
-   "region": "dragon",
-   "tier": "light",
-   "runtime": "ss-pet-dragon-light"
-  },
-  {
-   "id": "dragon-heavy",
-   "name": "岚鳞",
-   "island": "dragon",
-   "region": "dragon",
-   "tier": "heavy",
-   "runtime": "ss-pet-dragon-heavy"
-  },
-  {
-   "id": "star-free",
-   "name": "星漪",
-   "island": "star",
-   "region": "rift",
-   "tier": "free",
-   "runtime": "ss-pet-star-free"
-  },
-  {
-   "id": "star-light",
-   "name": "星尾",
-   "island": "star",
-   "region": "rift",
-   "tier": "light",
-   "runtime": "ss-pet-star-light"
-  },
-  {
-   "id": "star-heavy",
-   "name": "灯绫",
-   "island": "star",
-   "region": "rift",
-   "tier": "heavy",
-   "runtime": "ss-pet-star-heavy"
-  }
- ]
 }
