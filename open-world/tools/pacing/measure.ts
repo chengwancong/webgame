@@ -2,8 +2,6 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import {pacingProfiles,pacingBuild,profileSubstitutions} from './profiles.ts';
 import {sampleCombatBuild,type BuildBenchmarkInput} from '../build-variety-benchmark.ts';
-import {freezeAugmentBasis,rebuildFrozenAugmentBuild} from '../../packages/rules/frozen-augment-build.ts';
-import {augments} from '../../packages/content/augments.ts';
 import {resolveMonsterSpawn} from '../../packages/rules/monster-stats.ts';
 import {versions} from '../../packages/contracts/index.ts';
 import type {Region} from '../../packages/content/index.ts';
@@ -23,30 +21,28 @@ export const median=(xs:number[])=>{const v=[...xs].sort((a,b)=>a-b),m=Math.floo
 export async function measurePacingBuilds(options:{output:string;ablation?:boolean;weights?:Record<string,number>;seeds?:number[];buildIds?:string[]}){
  const rows:any[]=[],started=performance.now(),seeds=options.seeds??[41,42,43];
  for(const profile of pacingProfiles.filter(p=>!options.buildIds||options.buildIds.includes(p.id))){
-  const assembled=pacingBuild(profile),core=augments.find(a=>a.id===profile.preferredAugment);assert(core,'Unknown core augmentation');
-  const basis=freezeAugmentBasis(assembled.state,assembled.build),active=rebuildFrozenAugmentBuild(basis,[core.id],augments);
+  const assembled=pacingBuild(profile),active=assembled.build;
   for(const variant of options.ablation?['full','ablated']:['full']){
-   // Ablation removes core aspect, only 4-piece effects, and the chosen augment;
+   // Ablation removes the core aspect and only 4-piece effects;
    // identical item instances and 2-piece numerical benefits remain in place.
    const source=structuredClone(assembled.state);
    let build:BuildBenchmarkInput['build']=active;
    if(variant==='ablated'){
     const resolved=resolveBuild(source,{withoutAspects:[profile.aspect],withoutFourSets:[profile.four]});
-    // Keep the augmentation's declared slot limit in both paired arms. Removing
-    // a solo augmentation must not quietly grant three additional skills.
-    build={stats:resolved.stats,skills:resolved.resolvedSkills.slice(0,active.skills.length)};
+    build={stats:resolved.stats,skills:resolved.resolvedSkills};
+    assert.deepEqual(build.skills.map(skill=>skill.id),active.skills.map(skill=>skill.id),'Ablation changed the equipped skill list');
    }
    for(const seed of seeds)for(const [scene,encounter] of Object.entries(pacingEncounters)){
     const sample=sampleCombatBuild({requestedSkills:build.skills.map(s=>s.id),skillRanks:source.skillRanks,build,region:arena,seed,mode:'auto',...encounter});
     assert.deepEqual(sample.executed,sample.requested,'Executed build changed');
     const score=['single','clear','elite'].includes(scene)?sample.clearSeconds===null?null:1/sample.clearSeconds:scene==='survival'?sample.deathSeconds??sample.elapsed:sample.deathSeconds===null?1/(sample.incomingHits+1):null;
-    rows.push({bd:profile.id,name:profile.name,scene,variant,acquisition:assembled.acquisition,profile,gear:assembled.state.gear,sets:assembled.sets,augments:variant==='full'?[core.id]:[],score,...sample});
+    rows.push({bd:profile.id,name:profile.name,scene,variant,acquisition:assembled.acquisition,profile,gear:assembled.state.gear,sets:assembled.sets,score,...sample});
    }
   }
   console.log('Measured '+profile.name);
  }
  const {medians,matrix}=summarizePacingRows(rows,options.weights??pacingWeights);
- const report={versions,seeds,samples:rows.length,actualRuntimeSeconds:(performance.now()-started)/1000,weights:options.weights??pacingWeights,scenarios:pacingEncounters,profileSubstitutions,medians,matrix,rows,limits:['受控合法装备、技能和潮印，与自然获取日程分别报告。','同等级50、装备50、技能5级，种子41/42/43逐个串行。三种子中位数/min/max不代表真人分布或置信区间。','安全按实际受击次数1/(次数+1)，生存采用共同逐秒翻倍压力；不代表真人操作。','清场失败按null保留，禁止用伤害外推或删除失败样本。']};
+ const report={versions,seeds,samples:rows.length,actualRuntimeSeconds:(performance.now()-started)/1000,weights:options.weights??pacingWeights,scenarios:pacingEncounters,profileSubstitutions,medians,matrix,rows,limits:['受控合法局外装备、技能，与自然获取日程分别报告；潮印已撤销。','同等级50、装备50、技能5级，种子41/42/43逐个串行。三种子中位数/min/max不代表真人分布或置信区间。','安全按实际受击次数1/(次数+1)，生存采用共同逐秒翻倍压力；不代表真人操作。','清场失败按null保留，禁止用伤害外推或删除失败样本。']};
  await mkdir(options.output,{recursive:true});await writeFile(options.output+'/bd-measurements.json',JSON.stringify(report,null,2)+'\n');
  return report;
 }

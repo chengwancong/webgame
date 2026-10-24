@@ -49,7 +49,7 @@ import {progressionStateSchema,progressionViewSchema,progressionPreviewSchema,ty
 import {challengeProgressSchema,challengeViewSchema,raidLobbySchema,type ChallengeProgress} from './progression-challenges.ts';
 export * from './deep-progression.ts';
 export * from './progression-challenges.ts';
-export const versions={client:'0.11.56',protocol:56,rules:'ow-96',assets:'world-art-20261007-v24-world-runtime',db:19} as const;
+export const versions={client:'0.11.57',protocol:57,rules:'ow-97',assets:'world-art-20261007-v24-world-runtime',db:19} as const;
 export const id=z.string().min(1).max(100);
 export const credentials=z.object({username:z.string().regex(/^[a-zA-Z0-9_]{3,32}$/),password:z.string().min(12).max(128)}).strict();
 export const testCredentials=credentials.pick({username:true});

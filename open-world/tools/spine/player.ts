@@ -9,16 +9,14 @@ import {aspectDefinitions} from '../../packages/content/deep-progression.ts';
 import {skillCatalog} from '../../packages/content/index.ts';
 import {skillTags} from '../../packages/content/skill-tags.ts';
 import {effectAtomById} from '../../packages/content/effect-atoms.ts';
-import {freezeAugmentBasis,rebuildFrozenAugmentBuild} from '../../packages/rules/frozen-augment-build.ts';
-import {augments} from '../../packages/content/augments.ts';
 import type {CharacterState,Stats} from '../../packages/contracts/index.ts';
 import type {ResolvedPlayer} from './bench.ts';
 import {pacingBuild,pacingProfiles} from '../pacing/profiles.ts';
 export const standardLevels=[1,5,10,15,20,25,30,35,40,45,50,55,60];
-export function resolvePlayer(id:string,state:CharacterState,augmentIds:string[]=[],selection:Parameters<typeof resolveBuild>[1]={}):ResolvedPlayer{
+export function resolvePlayer(id:string,state:CharacterState,selection:Parameters<typeof resolveBuild>[1]={}):ResolvedPlayer{
  const b=resolveBuild(state,selection),base={stats:b.stats,skills:b.resolvedSkills};
  assert.deepEqual(base.skills.map(s=>s.id),state.skills,'请求技能与实际技能必须相同');
- const build=augmentIds.length?rebuildFrozenAugmentBuild(freezeAugmentBasis(state,base),augmentIds,augments):base;
+ const build=base;
  return {id,level:state.level,skillRanks:structuredClone(state.skillRanks),build};
 }
 export function standardState(level:number,family:'sword'|'staff'|'hidden'='sword'){
@@ -35,4 +33,4 @@ export function standardState(level:number,family:'sword'|'staff'|'hidden'='swor
  }
  return state;
 }
-export function referencePlayer(id:string){const p=pacingProfiles.find(p=>p.id===id);assert(p,'未知参考构筑');const assembled=pacingBuild(p);return {state:assembled.state,profile:p,player:resolvePlayer(id,assembled.state,[p.preferredAugment])};}
+export function referencePlayer(id:string){const p=pacingProfiles.find(p=>p.id===id);assert(p,'未知参考构筑');const assembled=pacingBuild(p);return {state:assembled.state,profile:p,player:resolvePlayer(id,assembled.state)};}

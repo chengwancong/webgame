@@ -104,7 +104,7 @@ const RESULT_DATA = {
 function showResult(withHub: boolean) {
   current = withHub ? 'result' : 'result-plain';
   modal.classList.add('open');
-  modal.innerHTML = battleResultHtml({region: regions[0].id, outcome: 'success'}, RESULT_DATA, 'ready', '拾星港', '', false, 0, undefined, null, true, null, withHub ? FIXTURE_RESULT : undefined, withHub ? ['铁壁', '疾击'] : []);
+  modal.innerHTML = battleResultHtml({region: regions[0].id, outcome: 'success'}, RESULT_DATA, 'ready', '拾星港', '', false, 0, undefined, null, true, null, withHub ? FIXTURE_RESULT : undefined);
 }
 
 document.addEventListener('click', e => {

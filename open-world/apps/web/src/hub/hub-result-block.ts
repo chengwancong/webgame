@@ -14,10 +14,8 @@ const record = (label: string, value: string, cls = '') =>
   `<li class="hub-record${cls ? ' ' + cls : ''}"><span class="hub-record__key">${esc(label)}</span><span class="hub-record__value">${value}</span></li>`;
 
 /** 右栏「本场记录」。extraHtml 放战斗回顾 / 词缀战绩，占剩余高度、内部滚动。 */
-export function hubResultRightHtml(hub: HubResultBlock, chosenNames: string[], extraHtml = ''): string {
+export function hubResultRightHtml(hub: HubResultBlock, extraHtml = ''): string {
   const rows: string[] = [];
-
-  if (chosenNames.length) rows.push(record('本场构筑', esc(chosenNames.join(' · '))));
 
   if (hub.dailyBonus?.applied) {
     rows.push(record('首通加成', `本场 ×2 · 今日 <b class="ui-number">${hub.dailyBonus.used}</b> / ${hub.dailyBonus.limit}`));

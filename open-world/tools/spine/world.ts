@@ -18,22 +18,22 @@ export function pressure(region:ReturnType<typeof regionById>,spawns:ReturnType<
 }
 export async function spineFlow(output=review+'/S5'){
  const player=await readJson(data+'/spine-player.json'),targets=(await readJson('config/json/spine-targets.json')).targets,efficiency=await readJson(review+'/S5/efficiency-summary.json'),eta=median(efficiency.boss.map((r:any)=>r.eta)),stages=[];
- for(let index=1;index<=24;index++){const push=targets.find((t:any)=>t.key==='stage.'+index+'.push'),farm=targets.find((t:any)=>t.key==='stage.'+index+'.farm');if(!push||!farm)throw Error('缺少阶段主干目标 '+index);const level=Number(push.levels),dps=interpolate(player.points,level,'D1'),ehp=interpolate(player.points,level,'EHP');stages.push({index,level,push:push.value,farm:farm.value,lam:Math.log(2)/push.value,bossHp:Math.round(dps*1.25*eta*70),bossDps:Math.round(ehp*1.1/30),dps1:dps,ehp,eta});}
- const result={...stamp(),source:data+'/spine-player.json',playerSha256:sha(JSON.stringify(player)),stages,basis:'主干13点按等级对数插值；锁定/文档阶段时间直接读取M1。地城70秒、潮印DPS1.25/EHP1.1、TTD30秒来自open-world-numeric-flow.md；η用六故事首领实测中位数；λ=ln2/开荒目标，无扫参。'};await save(data+'/spine-flow.json',result);await save(output+'/flow-summary.json',result);return result;
+ for(let index=1;index<=24;index++){const push=targets.find((t:any)=>t.key==='stage.'+index+'.push'),farm=targets.find((t:any)=>t.key==='stage.'+index+'.farm');if(!push||!farm)throw Error('缺少阶段主干目标 '+index);const level=Number(push.levels),dps=interpolate(player.points,level,'D1'),ehp=interpolate(player.points,level,'EHP');stages.push({index,level,push:push.value,farm:farm.value,lam:Math.log(2)/push.value,bossHp:Math.round(dps*eta*70),bossDps:Math.round(ehp/30),dps1:dps,ehp,eta});}
+ const result={...stamp(),source:data+'/spine-player.json',playerSha256:sha(JSON.stringify(player)),stages,basis:'主干13点按等级对数插值；锁定/文档阶段时间直接读取M1。地城70秒、固定局外构筑DPS/EHP、TTD30秒来自open-world-numeric-flow.md；η用六故事首领实测中位数；λ=ln2/开荒目标，无扫参。'};await save(data+'/spine-flow.json',result);await save(output+'/flow-summary.json',result);return result;
 }
 export async function deriveWorld(kind='all',apply=false,output=review+'/S5/world'){
  const flow=await spineFlow(output),player=await readJson(data+'/spine-player.json'),raw=await readJson('packages/content/dungeons.json'),next=structuredClone(raw),tiers=await readJson('packages/content/world-tiers.json'),proposedTiers=structuredClone(tiers),changes:SpineChange[]=[],measurements:any[]=[],residuals:any[]=[],calibration=await readJson('packages/content/legacy-dungeon-calibration.json');
  const snap=(v:number)=>Number((Math.max(.05,Math.round(v/.05)*.05)).toFixed(2));
  // 层级因子先从未叠加地城难度的真实终局首领反推；地城随后按实际进入档位校准，避免把两层倍率重复相乘。
  const terminal=dungeonContent.definitions.find(d=>d.hardmode?.numericStage===24);let tierBasis:any=null;
- if(terminal&&kind!=='legacy'){
+ if(terminal&&kind!=='legacy'&&kind!=='dungeons'){
   const def=characterDungeonDefinition(terminal,true,4),region=regionById(def.stages.at(-1)!),policy=structuredClone(def.policy);policy.enemyScale={hp:1,attack:1,hpPerStage:0,attackPerStage:0};delete policy.stageEnemyScale;
   const terminalSpawns=dungeonSpawns(region.spawns,policy,policy.minTier,def.stages.length-1,[],monsterContent,'starsea',{hp:1,attack:1}),boss=terminalSpawns.find(s=>s.boss)!;
   try{const basis=pressure(region,terminalSpawns),target=flow.stages[23],third=tiers.tiers[2].monster,desired={hp:target.bossHp/boss.hp,attack:target.bossDps/basis.rawDps};proposedTiers.tiers[3].monster={hp:Math.max(snap(desired.hp),Number((Math.ceil((third.hp-1e-9)/.05)*.05).toFixed(2))),attack:Math.max(snap(desired.attack),Number((Math.ceil((third.attack-1e-9)/.05)*.05).toFixed(2)))};worldTiersSchema.parse(proposedTiers);tierBasis={dungeon:terminal.id,level:boss.monster?.level,bossHp:boss.hp,basis,desired,constrained:proposedTiers.tiers[3].monster,policy:'全局档位单调约束；多出的全局倍率由该地城enemyScale闭式补偿，不放宽阶段目标'};}
   catch(e){residuals.push({scope:'world-tier-4',reason:String(e)});}
  }
  for(const d of dungeonContent.definitions){
-  const index=raw.definitions.findIndex((r:any)=>r.id===d.id),entry=next.definitions[index];
+  const index=raw.definitions.findIndex((r:any)=>r.id===d.id);if(index<0){residuals.push({dungeon:d.id,reason:'派生HUB模板只验证继承结果，不对运行时模板二次写入倍率'});continue;}const entry=next.definitions[index];
   for(const hard of [false,true]){
    if(hard&&!d.hardmode||kind==='hardmode'&&!hard||kind==='legacy'&&(hard||d.feature==='field-dungeon')||kind==='tiers'&&!(hard&&d.hardmode?.worldTierScalingFrom))continue;
    const enteringTier=hard&&d.hardmode?.worldTierScalingFrom?d.hardmode.worldTierScalingFrom:1,def=characterDungeonDefinition(d,hard,enteringTier),region=regionById(def.stages.at(-1)!),world=def.worldTierScaling?proposedTiers.tiers.find((t:any)=>t.tier===enteringTier)!.monster:{hp:1,attack:1},spawns=dungeonSpawns(region.spawns,def.policy,def.policy.minTier,def.stages.length-1,[],monsterContent,'starsea',world),boss=spawns.find(s=>s.boss);

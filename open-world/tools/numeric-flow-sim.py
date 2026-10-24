@@ -56,7 +56,6 @@ P_EARLY = 0.0                               # 2026-10-06 用户裁定：取消�
 P_BONUS, BONUS = .25, .18                   # 额外 BD 件：出现概率、力量（ln，+20%）
 KEY_SHARE_MAX = .6                          # 钥匙最多占两堵墙之间成长的 60%
 SKILL_SD = .07                              # 操作水平：过墙所需力量比的对数标准差
-AUGMENT_DPS, AUGMENT_EHP = 1.25, 1.10  # 流派主文§7.5：模块L9，不是等级9；地城墙使用
 BOSS_TTK, BOSS_EFF, NORMAL_EFF = 70, .75, .75
 N = 20000
 
@@ -125,8 +124,8 @@ def main():
     for s in stages:
         lam = solve_lambda(s); mc = simulate(s, lam)
         L = s['level']; d1 = math.exp(smooth_log(s['clear'], 'dps1')); ehp = math.exp(smooth_log(s['clear'], 'ehp'))
-        boss_hp = d1 * AUGMENT_DPS * BOSS_EFF * BOSS_TTK; boss_dps = ehp * AUGMENT_EHP / 30; normal_hp = d1 * NORMAL_EFF * ttk_normal(L)
-        s.update(lam=lam, mc=mc, dps1=d1 * AUGMENT_DPS, ehp=ehp * AUGMENT_EHP, bossHp=boss_hp, bossDps=boss_dps, bossHpFactor=boss_hp / (current_monster(L, 'hp') * 10),
+        boss_hp = d1 * BOSS_EFF * BOSS_TTK; boss_dps = ehp / 30; normal_hp = d1 * NORMAL_EFF * ttk_normal(L)
+        s.update(lam=lam, mc=mc, dps1=d1, ehp=ehp, bossHp=boss_hp, bossDps=boss_dps, bossHpFactor=boss_hp / (current_monster(L, 'hp') * 10),
                  normalHp=normal_hp, normalHpFactor=normal_hp / current_monster(L, 'hp'),
                  farmDpsGain=math.exp(s['F'] / 2) if s['F'] is not None else None,
                  shareMedian=s['farm'] / (s['farm'] + mc['median']), shareLucky=s['farm'] / (s['farm'] + mc['p10']), shareUnlucky=s['farm'] / (s['farm'] + mc['p90']),

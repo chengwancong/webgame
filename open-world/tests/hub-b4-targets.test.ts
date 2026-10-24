@@ -16,7 +16,7 @@ describe('B4 M14 acceptance thresholds',()=>{
   expect(checks.find(x=>x.id==='N7')!.status).toBe('failed');
  });
  it('requires actual TTK and TTD within twenty percent, retaining a single outlier as failure',()=>{
-  const combat=hubChartContent.nodes.flatMap(n=>['normal','elite','boss'].flatMap(rank=>hubSeeds.flatMap(seed=>[0,1].map(shipyardRerolls=>({nodeId:n.id,rank,seed,family:'sword',level:n.recommendedLevel,ttkSeconds:rank==='normal'?2.5:rank==='elite'?10:n.region==='wind'?60:75,ttdSeconds:rank==='normal'?40:rank==='elite'?20:30,requestedSkills:['fixture'],executedSkills:['fixture'],skillRanks:{fixture:1},augments:[],shipyardRerolls})))));
+  const combat=hubChartContent.nodes.flatMap(n=>['normal','elite','boss'].flatMap(rank=>hubSeeds.map(seed=>({nodeId:n.id,rank,seed,family:'sword',level:n.recommendedLevel,ttkSeconds:rank==='normal'?2.5:rank==='elite'?10:n.region==='wind'?60:75,ttdSeconds:rank==='normal'?40:rank==='elite'?20:30,requestedSkills:['fixture'],executedSkills:['fixture'],skillRanks:{fixture:1}}))));
   const e=hubRewardEvidenceSchema.parse({schema:'hub-reward-evidence-v1',command:'unit boundary fixture',versions,sourceHashes:{},combat});
   expect(assessHubRewards(buildHubRewardPlan({}),e).find(x=>x.id==='N1')!.status).toBe('passed');
   e.combat[0].ttdSeconds=31.99;

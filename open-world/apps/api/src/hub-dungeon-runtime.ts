@@ -3,7 +3,6 @@ import {applyRegionWeakness} from '../../../packages/rules/zhangjian.ts';
 import type {DungeonDefinition} from '../../../packages/contracts/dungeons.ts';
 import type {HubDungeonPublic} from '../../../packages/contracts/hub-dungeons.ts';
 import type {StoryEncounterView} from '../../../packages/contracts/story.ts';
-import type {AugmentOption,AugmentContext} from '../../../packages/contracts/run-augments.ts';
 import type {Spawn} from '../../../packages/contracts/index.ts';
 import {World,distance,walkable,findPath} from '../../../packages/simulation/index.ts';
 import {hubStorySegments,hubStoryRoutes,hubStorySpawns,type HubStoryStep,type HubStorySegment} from '../../../packages/content/hub-dungeon-templates.ts';
@@ -45,8 +44,6 @@ export function newHubRun(d:DungeonDefinition,shards:string[]=[],challenge?:'hig
  for(const part of storySegments)for(const step of part.steps){const task=tasks.find(t=>t.id===step.task);step.dialogue=step.dialogueGroup?structuredClone(dialogueLines(step.dialogueGroup,context)).slice(0,1):[];if(['battle','route_battle','clear_camp','defend'].includes(step.op))for(const route of step.op==='route_battle'?storyRoutes.filter(r=>r.task===step.task).map(r=>r.id):[null])storySpawns[encounterKey(step,route)]=hubStorySpawns(step,regionById(part.region),route,'hub-frozen',d.policy.monsterLevel??d.level);}
  return {nodeId:d.hub!.node,shards:[...shards],challenge,storySegments,storyRoutes,storySpawns,defenseRules:structuredClone(defenses),step:0,facts:[],choice:null,spawned:[],chests:[],gathered:[],hazardAt:0,completed:false,mode:{}};
 }
-export function matchingAugments(offered:string[],catalog:AugmentOption[],context:AugmentContext){const matching=offered.filter(id=>catalog.find(a=>a.id===id)?.tags.some(t=>t!=='all'&&context.tags.includes(t)));return matching.length?matching:offered.filter(id=>catalog.find(a=>a.id===id)?.tags.includes('all'));}
-export function pickAutomaticAugment(offered:string[],catalog:AugmentOption[],context:AugmentContext){const fits=new Set(matchingAugments(offered,catalog,context)),rank={silver:0,gold:1,prismatic:2};return [...offered].sort((a,b)=>Number(fits.has(b))-Number(fits.has(a))||rank[catalog.find(x=>x.id===b)!.tier]-rank[catalog.find(x=>x.id===a)!.tier]||(a<b?-1:a>b?1:0))[0];}
 function point(w:World,id?:string){return w.region.landmarks.find(l=>l.kind===id||l.name===id)??w.region.safe;}
 const pointCache=new WeakMap<Region,Map<string,{x:number;y:number}>>();
 export function accessibleHubPoint(r:Region,p:{x:number;y:number}){let cache=pointCache.get(r);if(!cache){cache=new Map();pointCache.set(r,cache);}const key=p.x+','+p.y,old=cache.get(key);if(old)return {...old};for(let ring=0;ring<20;ring++)for(let y=-ring;y<=ring;y++)for(let x=-ring;x<=ring;x++){if(ring&&Math.abs(x)!==ring&&Math.abs(y)!==ring)continue;const q={x:Math.max(2,Math.min(r.width-3,p.x+x)),y:Math.max(2,Math.min(r.height-3,p.y+y))};if(walkable(r,q)&&(distance(r.safe,q)<.1||findPath(r,r.safe,q).length)){cache.set(key,q);return {...q};}}throw Error('节点没有可到达的交互位置。');}

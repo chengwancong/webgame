@@ -34,7 +34,7 @@ def put(r,body,basis):
  p=source/r;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(body);overrides.append({'file':r,'basis':basis,'sha256':hashlib.sha256(body).hexdigest()})
 def read(p):return p.read_text(encoding='utf-8-sig').replace('\r\n','\n')
 def git_file(r):return subprocess.check_output(['git','show','HEAD:open-world/'+r],cwd=repo)
-owned={'packages/content/aspects.json','packages/content/augments.json','packages/content/set-effects.json','packages/content/gear-affixes.json','packages/content/monsters.json','packages/content/dungeons.json','packages/content/world-tiers.json','packages/content/progression-curve.json','packages/content/aspect-description.ts','packages/content/deep-progression.ts','packages/content/set-effects.ts','packages/content/inscriptions.ts','packages/rules/index.ts','packages/rules/affix-generator.ts','packages/rules/aspect-sources.ts','packages/contracts/index.ts'}
+owned={'packages/content/aspects.json','packages/content/set-effects.json','packages/content/gear-affixes.json','packages/content/monsters.json','packages/content/dungeons.json','packages/content/world-tiers.json','packages/content/progression-curve.json','packages/content/aspect-description.ts','packages/content/deep-progression.ts','packages/content/set-effects.ts','packages/content/inscriptions.ts','packages/rules/index.ts','packages/rules/affix-generator.ts','packages/rules/aspect-sources.ts','packages/contracts/index.ts'}
 for entry in baseline['files']:
  r=entry['file']
  if r.startswith('packages/') and r not in owned and 'appearance' not in Path(r).name:put(r,(review/'S0/source-before'/r).read_bytes(),'S0稳定源码；本期没有修改此文件')

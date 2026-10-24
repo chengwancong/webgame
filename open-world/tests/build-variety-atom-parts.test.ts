@@ -2,7 +2,7 @@ import {it,expect} from 'vitest';
 import {effectAtoms} from '../packages/content/effect-atoms.ts';
 import {resolveAtomParts,overrideEffectRules,ruleOverrideSchema} from '../packages/rules/atom-parts.ts';
 it('deduplicates atom identities by maximum tier and scales declared numbers exactly once',()=>{
- const raw=effectAtoms.find(r=>r.id==='atom-quake')!,before=structuredClone(raw),out=resolveAtomParts([{id:raw.id,tier:.5,source:'inscription'},{id:raw.id,tier:1.25,source:'set'},{id:raw.id,tier:1,source:'augment'}]);
+ const raw=effectAtoms.find(r=>r.id==='atom-quake')!,before=structuredClone(raw),out=resolveAtomParts([{id:raw.id,tier:.5,source:'inscription'},{id:raw.id,tier:1.25,source:'set'},{id:raw.id,tier:1,source:'aspect'}]);
  expect(out).toHaveLength(1);expect(out[0].tier).toBe(1.25);expect(out[0].source).toBe('set');expect((out[0].action as any).ratio).toBeCloseTo((raw.action as any).ratio*1.25);expect(out[0].icd).toBe(raw.icd);expect(raw).toEqual(before);
 });
 it('resolves all 50 atom references with no silent missing definition',()=>{

@@ -7,9 +7,8 @@ import {KILL_STREAK_ART_KEY,killStreakTierFrame} from '../apps/web/src/kill-stre
 import {BOSS_BANNER_ART_KEY,BOSS_BANNER_SHIELD_ART_KEY} from '../apps/web/src/boss-phase-banner.ts';
 import {gradeStampHtml} from '../apps/web/src/hub/run-grade.ts';
 import {actorCatalog} from '../packages/asset-manifest/actors.ts';
-import {existsSync} from 'node:fs';
+import {existsSync,readFileSync} from 'node:fs';
 import {gatherArt} from '../apps/web/src/gather-nodes.ts';
-import {AugmentPanel,type AugmentPanelState} from '../apps/web/src/augments-panel.ts';
 import {runtimeResources} from '../packages/asset-manifest/runtime-resources.ts';
 import {hudMenuIcon} from '../apps/web/src/hud-icons.ts';
 import {iconHtml} from '../apps/web/src/ui/icons.ts';
@@ -174,30 +173,13 @@ describe('A7 tide beacon art', () => {
  });
 });
 
-// ─── A8 潮印卡框接线 ─────────────────────────────────────────────────────────
-describe('A8 augment frame art', () => {
- it('图集文件存在', () => {
-  expect(existsSync('apps/web/public/art/hub-fun/augment-frames.png')).toBe(true);
-  expect(existsSync('apps/web/public/art/hub-fun/augment-frames.json')).toBe(true);
- });
- // valid 要求三张同阶（new Set(tiers).size===1）
- const threeGold=():AugmentPanelState=>({offered:[{id:'a',name:'A',description:'d',tier:'gold'},{id:'b',name:'B',description:'d',tier:'gold'},{id:'c',name:'C',description:'d',tier:'gold'}],chosen:[],rerollsLeft:1,offerVersion:1,busy:false});
- it('AugmentPanel HTML 包含 augment-frames.png 引用', () => {
-  const html=AugmentPanel(threeGold());
-  expect(html).toContain('augment-frames.png');
- });
- it('gold 卡框按百分比裁图集并铺满卡片（fx=446,fy=2）', () => {
-  const html=AugmentPanel(threeGold());
-  // 446/(1778-440)=33.333%；2/(1812-600)=0.165%；尺寸 1778/440、1812/600
-  expect(html).toContain('33.333% 0.165%/404.091% 302%');expect(html).toContain('position:absolute;inset:0');
- });
- it('silver 卡框 CSS 偏移正确（fx=2,fy=2）', () => {
-  const silver:AugmentPanelState={...threeGold(),offered:threeGold().offered.map(o=>({...o,tier:'silver' as const}))};
-  expect(AugmentPanel(silver)).toContain('0.149% 0.165%');
- });
- it('fitsBuild 时注入贴合徽章 span', () => {
-  const html=AugmentPanel({...threeGold(),fitsBuild:['b']});
-  expect(html).toContain('augment-fit-badge');
+// ─── 已撤销潮印卡框运行入口；静态美术归档不参与界面 ────────────────────────────
+describe('removed in-run card presentation', () => {
+ it('没有潮印面板模块或副本卡框引用', () => {
+  expect(existsSync('apps/web/src/augments-panel.ts')).toBe(false);
+  const controller=readFileSync('apps/web/src/dungeon-controller.ts','utf8');
+  expect(controller).not.toContain('augment-frames');
+  expect(controller).not.toContain('AugmentPanel');
  });
 });
 

@@ -9,7 +9,6 @@ import {skillWeapons} from '../../packages/content/skill-weapons.ts';
 import {skillTags} from '../../packages/content/skill-tags.ts';
 import {newAspects} from '../../packages/content/aspects.ts';
 import {effectAtomById} from '../../packages/content/effect-atoms.ts';
-import {augments} from '../../packages/content/augments.ts';
 import {setEffects} from '../../packages/content/set-effects.ts';
 import {talentDefinitions,paragonDefinitions} from '../../packages/content/deep-progression.ts';
 import {gearAffixConfig} from '../../packages/rules/affix-generator.ts';
@@ -74,10 +73,9 @@ export async function writeCensus(){
  const skills=skillCatalog.map(s=>{const functional=s.damage<=0||['heal','shield'].includes(s.kind);return {id:s.id,name:s.name,category:['spell','support'].includes(s.category)?'法术':'武技',role:functional?'功能':s.cooldown<=30?'填充':s.cooldown<=180?'核心':s.cooldown<=600?'冷却':'大招',shape:functional?'功能':s.kind==='zone'&&s.duration>0?'持续':['single','projectile'].includes(s.kind)&&s.radius<=.5?'单体':'范围',cooldownSeconds:s.cooldown/30,cost:s.cost,...choose(skillWeapons[s.id]??[],[s.id])};});
  const hosts=[...skills.map(s=>({type:'技能',id:s.id,host:s.host,basis:s.basis})),
   ...newAspects.map(a=>({type:'词条',id:a.id,...partsHost(a.weapons,a.parts)})),
-  ...setEffects.map(s=>({type:'套装',id:s.id,...choose([s.family])})),
-  ...augments.map(a=>({type:'潮印',id:a.id,...partsHost([],a.parts,a.tags)}))];
+  ...setEffects.map(s=>({type:'套装',id:s.id,...choose([s.family])}))];
  const inscriptions=await json('packages/content/inscriptions.json');
- const counts={skills:skills.length,aspects:newAspects.length,nonReferenceAspects:newAspects.filter(a=>!pacingProfiles.some(p=>p.aspect===a.id)).length,sets:setEffects.length,augments:augments.length,affixRows:gearAffixConfig.pool.length,mainStats:gearAffixConfig.mainStats.length,talents:talentDefinitions.length,paragon:paragonDefinitions.length,inscriptionAtoms:new Set(Object.values(inscriptions.slots).flat() as string[]).size,inscriptionSlotEntries:(Object.values(inscriptions.slots).flat() as string[]).length,monsterTemplates:monsterContent.templates.length,dungeons:dungeonContent.definitions.length};
+ const counts={skills:skills.length,aspects:newAspects.length,nonReferenceAspects:newAspects.filter(a=>!pacingProfiles.some(p=>p.aspect===a.id)).length,sets:setEffects.length,affixRows:gearAffixConfig.pool.length,mainStats:gearAffixConfig.mainStats.length,talents:talentDefinitions.length,paragon:paragonDefinitions.length,inscriptionAtoms:new Set(Object.values(inscriptions.slots).flat() as string[]).size,inscriptionSlotEntries:(Object.values(inscriptions.slots).flat() as string[]).length,monsterTemplates:monsterContent.templates.length,dungeons:dungeonContent.definitions.length};
  await save('S0/census.json',{versions,counts,skills,hosts});
  await text('census.md','# 当前工作树内容盘点\n\n'+Object.entries(counts).map(([k,v])=>`- ${k}：${v}`).join('\n')+'\n\n技能冷却按30帧/秒推断；无伤害归功能。技能形态为初始分组，召唤语义与小组并组待S2审计确认，不把无实测条目标为预算达标。\n\n| 技能 | 名称 | 系别 | 角色 | 形态 | 冷却秒 | 宿主 |\n|---|---|---|---|---|---:|---|\n'+skills.map(s=>`| ${s.id} | ${s.name} | ${s.category} | ${s.role} | ${s.shape} | ${s.cooldownSeconds.toFixed(2)} | ${s.host} |`).join('\n'));
  await text('S0/hosts.md','# 内容宿主对照\n\n| 类别 | 内容 | 宿主 | 依据 |\n|---|---|---|---|\n'+hosts.map(h=>`| ${h.type} | ${h.id} | ${h.host} | ${h.basis} |`).join('\n'));
@@ -95,7 +93,7 @@ export async function writeTargetDraft(){
  const flow=await json('.design/numeric-flow-20261006/flow.json');
  for(const stage of flow.stages)for(const key of ['push','farm'])add('stage.'+stage.index+'.'+key,String(stage.level),stage[key],'分钟','文档','docs/open-world-numeric-flow.md §3；flow.json stages['+(stage.index-1)+'].'+key,false,'2026-10-06');
  add('weaponParity','10/20/30/40/50',.15,'差距上限','文档','numeric-spine-rebalance-handoff-20261013.md M4');
- for(const [key,value]of Object.entries({skill:.1,aspect:.15,set:.15,augment:.15,affix:.1,talent:.15,paragon:.15,inscription:.15}))add('band.'+key,'1–60',value,'比例','文档','numeric-spine-rebalance-handoff-20261013.md M1预算带');
+ for(const [key,value]of Object.entries({skill:.1,aspect:.15,set:.15,affix:.1,talent:.15,paragon:.15,inscription:.15}))add('band.'+key,'1–60',value,'比例','文档','numeric-spine-rebalance-handoff-20261013.md M1预算带');
  const resolved=resolveTargets(rows);
  await save('S0/spine-targets-draft.json',{source:'config/excel/节奏目标.xlsx（尚未写入主干目标页）',status:'前置硬阻塞下的目标草稿，不可用于应用',targets:resolved.selected,pending:['野外六段一刀线/TTK/TTD：待S2当前标准人实测及设计步长取整'],conflicts:resolved.conflicts});
  await text('targets-conflicts.md','# 目标冲突清单\n\n本轮导入 '+rows.length+' 条已有目标，机械重复量冲突 '+resolved.conflicts.length+' 条；尚未完成跨量约束可满足性验证。锁定用户目标逐字保留，未进行设计步长取整。\n\n主干目标页尚未写入。野外和危险度目标按第6节裁决等待当前标准人实测，不以旧模型填入。');

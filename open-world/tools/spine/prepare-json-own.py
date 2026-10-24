@@ -3,7 +3,7 @@ from pathlib import Path
 import subprocess,json,copy,sys
 world=Path(__file__).resolve().parents[2];repo=world.parent;review=world/'docs/reviews/numeric-spine-20261013';out=review/'S9/own-preview'
 verified=Path(next((a[9:] for a in sys.argv if a.startswith('--source=')),str(world))).resolve()
-files=['packages/content/aspects.json','packages/content/augments.json','packages/content/set-effects.json','packages/content/gear-affixes.json','packages/content/monsters.json','packages/content/dungeons.json','packages/content/world-tiers.json','packages/content/progression-curve.json','apps/api/src/stage-key-pools.json','config/json/pacing-mechanism-knobs.json']
+files=['packages/content/aspects.json','packages/content/set-effects.json','packages/content/gear-affixes.json','packages/content/monsters.json','packages/content/dungeons.json','packages/content/world-tiers.json','packages/content/progression-curve.json','apps/api/src/stage-key-pools.json','config/json/pacing-mechanism-knobs.json']
 missing=object();conflicts=[];edits=[]
 def identity(v):
  if not isinstance(v,dict):return None

@@ -54,7 +54,6 @@ export function buildHubDungeonDefinitions(base:DungeonDefinition[]):DungeonDefi
    d.requires=[];delete d.feature;delete d.story;delete d.bossAccess;
    d.policy.returnRegion='ss-map-port';d.policy.party={min:1,max:1,roles:{},defaultRole:'adventurer'};d.policy.plane={passageRadius:1.2,exitRadius:1.2};
    d.policy.timeLimitSeconds=kind==='treasure'?180:kind==='hunt'||kind==='tide'?600:900;
-   d.policy.augments={enabled:true,choices:3,rerolls:1,roundCount:kind==='nest'||kind==='tide'?3:kind==='story'?2:1};
    d.reward={gold:0,xp:0,material:0};d.level=kind==='story'?region==='wind'?1:8:seed.level;
    if(kind!=='nest'){delete d.numericStage;delete d.hardmode;delete d.policy.stageEnemyScale;d.policy.normalGoals={killCount:1,eliteCount:0};}
    if(kind==='gate'){d.stages=[hubChartContent.nodes.find(n=>n.id===node)!.map];const boss=regionById(d.stages[0]).spawns.find(s=>s.boss);if(!boss?.monster)throw Error('Missing authored gate boss '+node);d.policy.monsterLevel=boss.monster.level;d.level=hubChartContent.nodes.find(n=>n.id===node)!.recommendedLevel;}
@@ -76,9 +75,9 @@ export function buildHubDungeonDefinitions(base:DungeonDefinition[]):DungeonDefi
     }
     const parts:HubStorySegment[]=[];
     for(const part of storyChunks(all,regionById(island))){const id='hub-map-'+node+'-'+(parts.length+1);if(!regions.some(r=>r.id===id))registerDungeonRegion(cropHubStoryRegion(regionById(island),id,part,level),island);parts.push({steps:structuredClone(part),region:id});}
-    hubStorySegments.set(node,parts);d.stages=parts.map(p=>p.region);d.policy.augments.roundCount=parts.length;
+    hubStorySegments.set(node,parts);d.stages=parts.map(p=>p.region);
    }
-   d.hub=hubDungeonTemplateSchema.parse({node,kind,objective:objectives[kind],augmentRounds:d.policy.augments.roundCount});
+   d.hub=hubDungeonTemplateSchema.parse({node,kind,objective:objectives[kind]});
    d.name=hubChartContent.nodes.find(n=>n.id===node)?.name??d.name;
    const existing=out.findIndex(x=>x.id===d.id);if(existing>=0)out[existing]=d;else out.push(d);
   }

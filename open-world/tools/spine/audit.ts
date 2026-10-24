@@ -2,7 +2,7 @@ import {readFile,writeFile} from 'node:fs/promises';
 import {benchPlayer,type ResolvedPlayer} from './bench.ts';
 import {standardState,resolvePlayer} from './player.ts';
 import {measured} from './measure.ts';
-import {contentItems,inject,scaledPrimary,type ContentItem} from './content.ts';
+import {contentItems,scaledPrimary,type ContentItem} from './content.ts';
 import {buildVarietyProfiles,assembleBuildVariety} from '../build-variety-builds.ts';
 import {statRegistry} from '../../packages/contracts/stats.ts';
 import {gearAffixConfig,maxAffixTierForItemLevel} from '../../packages/rules/affix-generator.ts';
@@ -43,22 +43,21 @@ export async function measureWeights(output=review+'/S2'){
 }
 export async function measureSources(output=review+'/S2'){
  const core=await readJson(review+'/S2/core-summary.json'),anchor=(await readJson(data+'/spine-anchor.json')).anchor,rows=[];
- const hosts=[...[20,35,50].map(level=>({id:'standard-'+level,state:standardState(level),augments:[] as string[]})),...buildVarietyProfiles.map(p=>({id:p.id,state:assembleBuildVariety(p).state,augments:[p.preferredAugment]}))];
+ const hosts=[...[20,35,50].map(level=>({id:'standard-'+level,state:standardState(level)})),...buildVarietyProfiles.map(p=>({id:p.id,state:assembleBuildVariety(p).state}))];
  for(const host of hosts){
   const state=host.state,hp=core.standards.find((r:any)=>r.level===state.level)?.hp??core.standards.find((r:any)=>r.level===50).hp;
-  const full=resolvePlayer(host.id,state,host.augments),a=await measured(output,'source-'+host.id+'-full',full,hp,[41,42,43]);
-  const arms:{id:string;state:CharacterState;augments:string[]}[]=[];
-  const add=(id:string,change:(s:CharacterState)=>void,augs=host.augments)=>{const s=structuredClone(state);change(s);arms.push({id,state:s,augments:augs});};
+  const full=resolvePlayer(host.id,state),a=await measured(output,'source-'+host.id+'-full',full,hp,[41,42,43]);
+  const arms:{id:string;state:CharacterState}[]=[];
+  const add=(id:string,change:(s:CharacterState)=>void)=>{const s=structuredClone(state);change(s);arms.push({id,state:s});};
   add('aspects',s=>{for(const g of s.gear)delete g.aspectId;});
   // setEffects是解析器实际读取的目录；在每个配对的resolve期间精确消融，之后立即恢复。
-  add('augments',()=>{},[]);
   for(const tree of ['damage','defense','support','special'])add('talent-'+tree,s=>{if(s.progression)for(const t of talentDefinitions.filter(t=>t.branch===tree))delete s.progression.talents[t.id];});
   add('paragon',s=>{if(s.progression){s.progression.paragon=[];s.progression.glyphSlots={};}});
   add('inscriptions',s=>{for(const g of s.gear)delete g.inscription;});
   for(const skill of state.skills)add('rank-'+skill,s=>{s.skillRanks[skill]=1;});
-  for(const arm of arms){const preserve=arm.id==='aspects'&&!arm.state.skills.every(s=>skillWeaponAllowed(arm.state,s)),selection=preserve?{withoutAspects:state.gear.flatMap(g=>g.aspectId?[g.aspectId]:[])}:{},p=resolvePlayer(host.id+'-'+arm.id,preserve?structuredClone(state):arm.state,arm.augments,selection),b=await measured(output,'source-'+p.id,p,hp,[41,42,43]);rows.push({host:host.id,level:state.level,source:arm.id,preservedWeaponAccess:preserve,...contribution(a.metrics,b.metrics,anchor),before:a.metrics,without:b.metrics,raw:await evidence(output+'/arms/source-'+p.id+'.json')});}
-  for(const part of ['two','four'] as const){const saved=setEffects.map(s=>s[part]);setEffects.forEach(s=>{s[part]={stats:[],atoms:[],rules:[],zones:[],conditional:[]};});let p;try{p=resolvePlayer(host.id+'-set-'+part,structuredClone(state),host.augments);}finally{setEffects.forEach((s,i)=>{s[part]=saved[i];});}const b=await measured(output,'source-'+p.id,p,hp,[41,42,43]);rows.push({host:host.id,level:state.level,source:'set-'+part,...contribution(a.metrics,b.metrics,anchor),before:a.metrics,without:b.metrics,raw:await evidence(output+'/arms/source-'+p.id+'.json')});}
-  const p=resolvePlayer(host.id+'-affinity',structuredClone(state),host.augments),bld=structuredClone(p.build),oldZones=bld.stats.zones??[],zones=oldZones.filter(z=>z.id!=='weapon-affinity');
+  for(const arm of arms){const preserve=arm.id==='aspects'&&!arm.state.skills.every(s=>skillWeaponAllowed(arm.state,s)),selection=preserve?{withoutAspects:state.gear.flatMap(g=>g.aspectId?[g.aspectId]:[])}:{},p=resolvePlayer(host.id+'-'+arm.id,preserve?structuredClone(state):arm.state,selection),b=await measured(output,'source-'+p.id,p,hp,[41,42,43]);rows.push({host:host.id,level:state.level,source:arm.id,preservedWeaponAccess:preserve,...contribution(a.metrics,b.metrics,anchor),before:a.metrics,without:b.metrics,raw:await evidence(output+'/arms/source-'+p.id+'.json')});}
+  for(const part of ['two','four'] as const){const saved=setEffects.map(s=>s[part]);setEffects.forEach(s=>{s[part]={stats:[],atoms:[],rules:[],zones:[],conditional:[]};});let p;try{p=resolvePlayer(host.id+'-set-'+part,structuredClone(state));}finally{setEffects.forEach((s,i)=>{s[part]=saved[i];});}const b=await measured(output,'source-'+p.id,p,hp,[41,42,43]);rows.push({host:host.id,level:state.level,source:'set-'+part,...contribution(a.metrics,b.metrics,anchor),before:a.metrics,without:b.metrics,raw:await evidence(output+'/arms/source-'+p.id+'.json')});}
+  const p=resolvePlayer(host.id+'-affinity',structuredClone(state)),bld=structuredClone(p.build),oldZones=bld.stats.zones??[],zones=oldZones.filter(z=>z.id!=='weapon-affinity');
   for(const s of bld.skills){const tags=skillTags({...s,category:skillCatalog.find(x=>x.id===s.id)!.category}),ratio=foldZones(zones,tags).damageMult/foldZones(oldZones,tags).damageMult;s.damage=Math.round(s.damage*ratio);for(const status of s.mechanics?.statuses??[])if(status.total!==undefined)status.total=Math.round(status.total*ratio);}
   bld.stats.zones=zones;Object.assign(bld.stats,foldZones(zones));
   const b=await measured(output,'source-'+host.id+'-affinity',{...p,build:bld},hp,[41,42,43]);rows.push({host:host.id,level:state.level,source:'affinity',...contribution(a.metrics,b.metrics,anchor),before:a.metrics,without:b.metrics,raw:await evidence(output+'/arms/source-'+host.id+'-affinity.json')});

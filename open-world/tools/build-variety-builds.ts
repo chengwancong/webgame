@@ -16,7 +16,7 @@ import {assignMainStat} from '../packages/rules/main-stats.ts';
 import {mainHandWeapon,skillWeaponAllowed} from '../packages/rules/skill-weapon-access.ts';
 import {getEquippedSets} from '../packages/simulation/set-calculator.ts';
 
-const profileSchema=z.object({id:z.string().min(1),name:z.string().min(1),weapon:weaponTypeSchema,four:z.string(),two:z.string(),skills:z.array(z.string()).min(1).max(4),aspect:z.string(),keyStats:z.array(statIdSchema).min(2).max(3),preferredAugment:z.string(),focus:z.enum(['clear','single','survival'])}).strict();
+const profileSchema=z.object({id:z.string().min(1),name:z.string().min(1),weapon:weaponTypeSchema,four:z.string(),two:z.string(),skills:z.array(z.string()).min(1).max(4),aspect:z.string(),keyStats:z.array(statIdSchema).min(2).max(3),focus:z.enum(['clear','single','survival'])}).strict();
 export const buildVarietyProfiles=z.array(profileSchema).length(17).parse(raw);
 assert.equal(new Set(buildVarietyProfiles.map(p=>p.id)).size,17,'Duplicate build profile');
 export type BuildVarietyProfile=z.infer<typeof profileSchema>;

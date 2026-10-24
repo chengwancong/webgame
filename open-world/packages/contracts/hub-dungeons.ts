@@ -5,7 +5,6 @@ export const hubDungeonTemplateSchema=z.object({
   kind:z.enum(['story','nest','hunt','tide','treasure','gate','abyss','weekly','raid']),
   node:z.string().min(1),
   objective:z.enum(['defeat-boss','reach-portal','defend-beacon','open-chests','story-fact']),
-  augmentRounds:z.number().int().min(1).max(3),
 }).strict();
 export type HubDungeonTemplate=z.infer<typeof hubDungeonTemplateSchema>;
 export const hubObjectiveSchema=z.object({kind:hubDungeonTemplateSchema.shape.objective,text:z.string(),progress:z.object({done:z.number().int().nonnegative(),total:z.number().int().nonnegative()}).strict().optional(),timeLeft:z.number().nonnegative().optional()}).strict();

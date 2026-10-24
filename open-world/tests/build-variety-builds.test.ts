@@ -11,6 +11,7 @@ import {randomUUID} from 'node:crypto';
 
 for(const profile of buildVarietyProfiles)it(profile.id+' actually assembles its catalogue four-plus-two and executes the resolved primary skill',()=>{
  const before=freezeItemRules(),built=assembleBuildVariety(profile);
+ expect(profile).not.toHaveProperty('preferredAugment');expect(built).not.toHaveProperty('augments');
  expect(built.acquisition.publicRulesUnmodified).toBe(true);expect(freezeItemRules()).toEqual(before);
  expect(built.state.gear).toHaveLength(6);expect(built.sets.find(s=>s.setId===profile.four)).toMatchObject({count:4,activeBonuses:[2,4]});expect(built.sets.find(s=>s.setId===profile.two)).toMatchObject({count:2,activeBonuses:[2]});
  for(const g of built.state.gear){expect(()=>gearSchema.parse(g)).not.toThrow();expect(g.base==='bow'||equipmentItems.some(i=>i.runtimeBase===g.base&&i.obtainable)).toBe(true);expect(new Set(g.affixes.map(a=>a.stat)).size).toBe(g.affixes.length);expect(g.affixes.some(a=>a.stat===g.mainStat?.stat)).toBe(false);}

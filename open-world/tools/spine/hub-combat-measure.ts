@@ -1,18 +1,13 @@
 import type {World} from '../../packages/simulation/index.ts';
 import {appendFile,writeFile,readFile} from 'node:fs/promises';
-import {randomUUID} from 'node:crypto';
 import {hubChartContent} from '../../packages/content/hub-chart.ts';
 import {dungeonContent} from '../../packages/content/dungeons.ts';
 import {regionById,type Region} from '../../packages/content/index.ts';
 import {generatePlaneStage,isPlaneStage} from '../../packages/content/plane-layouts.ts';
-import {prepareHubRegion,newHubRun,pickAutomaticAugment,scaleHubStorySpawns} from '../../apps/api/src/hub-dungeon-runtime.ts';
+import {prepareHubRegion,newHubRun,scaleHubStorySpawns} from '../../apps/api/src/hub-dungeon-runtime.ts';
 import {dungeonSpawns} from '../../packages/rules/dungeon-build.ts';
 import {standardState,resolvePlayer} from './player.ts';
 import {sampleCombatBuild} from '../build-variety-benchmark.ts';
-import {resolveRunAugmentPolicy} from '../../packages/content/dungeon-augments.ts';
-import {newAugmentRun,offerAugments,chooseAugment} from '../../packages/rules/run-augments.ts';
-import {freezeAugmentBasis,frozenAugmentContext} from '../../packages/rules/frozen-augment-build.ts';
-import {augments} from '../../packages/content/augments.ts';
 import type {Spawn} from '../../packages/contracts/index.ts';
 import type {HubRewardEvidence} from './hub-reward-schema.ts';
 
@@ -22,7 +17,7 @@ import type {HubRewardEvidence} from './hub-reward-schema.ts';
  * damage, replenishment, health scaling, safety-zone combat or target resets. */
 export async function measureHubCombat(output:string,seeds:number[],resume?:string){
  const rows:HubRewardEvidence['combat']=[];const raw:unknown[]=[];await writeFile(output+'/combat-raw.jsonl','',{flag:'wx'});
- const resumed=new Set<string>();if(resume){const seedFixed=await readFile(resume+'/resumed-from.json','utf8').then(()=>true).catch(()=>false);const prior=(await readFile(resume+'/combat-raw.jsonl','utf8')).trim().split('\n').filter(Boolean).map(line=>JSON.parse(line)).filter(r=>seedFixed||!r.node.endsWith('-hunt'));for(const r of prior){resumed.add(r.node);if(!r.outgoing)continue;const o=r.outgoing,i=r.incoming,failure=o.failed??(i.deathSeconds===null?'incoming_censored':undefined);rows.push({nodeId:r.node,rank:r.rank,seed:r.seed,family:'sword',level:o.targetParams[0].monster?.level??hubChartContent.nodes.find(n=>n.id===r.node)!.recommendedLevel,ttkSeconds:o.clearSeconds,ttdSeconds:i.deathSeconds,requestedSkills:o.requested,executedSkills:o.executed,skillRanks:o.skillRanks,augments:r.augments,shipyardRerolls:r.shipyardRerolls,...(failure?{failure}:{})});resumed.add(r.node);}await appendFile(output+'/combat-raw.jsonl',prior.map(r=>JSON.stringify(r)).join('\n')+'\n');}
+ const resumed=new Set<string>();if(resume){const seedFixed=await readFile(resume+'/resumed-from.json','utf8').then(()=>true).catch(()=>false);const prior=(await readFile(resume+'/combat-raw.jsonl','utf8')).trim().split('\n').filter(Boolean).map(line=>JSON.parse(line)).filter(r=>seedFixed||!r.node.endsWith('-hunt'));if(prior.some(r=>r.augments!==undefined||r.shipyardRerolls!==undefined))throw Error('Legacy in-run bonus evidence cannot be resumed after removal');for(const r of prior){resumed.add(r.node);if(!r.outgoing)continue;const o=r.outgoing,i=r.incoming,failure=o.failed??(i.deathSeconds===null?'incoming_censored':undefined);rows.push({nodeId:r.node,rank:r.rank,seed:r.seed,family:'sword',level:o.targetParams[0].monster?.level??hubChartContent.nodes.find(n=>n.id===r.node)!.recommendedLevel,ttkSeconds:o.clearSeconds,ttdSeconds:i.deathSeconds,requestedSkills:o.requested,executedSkills:o.executed,skillRanks:o.skillRanks,...(failure?{failure}:{})});resumed.add(r.node);}await appendFile(output+'/combat-raw.jsonl',prior.map(r=>JSON.stringify(r)).join('\n')+'\n');}
  const arena:Region={id:'hub-number-measure',name:'HUB档位测量',subtitle:'',theme:'meadow',width:64,height:64,safe:{x:2,y:2},portal:{x:60,y:60},obstacles:[],spawns:[],landmarks:[],boss:false,auto:true,rest:false};
  for(const node of hubChartContent.nodes){if(resumed.has(node.id)){console.log('HUB combat reused completed raw samples '+node.id);continue;}const d=dungeonContent.definitions.find(d=>d.id===node.dungeonId);if(!d?.hub)throw Error('Missing real HUB dungeon '+node.id);
   for(const seed of seeds){const run=newHubRun(d);run.seed=seed;const representatives=new Map<'normal'|'elite'|'boss',Spawn>();
@@ -32,16 +27,12 @@ export async function measureHubCombat(output:string,seeds:number[],resume?:stri
    }
    }catch(error){const failure={node:node.id,seed,failure:String(error),status:'unmeasured'};raw.push(failure);console.log(JSON.stringify(failure));continue;}
    if(!representatives.size){raw.push({node:node.id,seed,failure:'No authored combat target',status:'unmeasured'});continue;}
-   for(const [rank,source]of representatives){const level=source.monster?.level??node.recommendedLevel,state=standardState(level),base=resolvePlayer('hub-'+node.id,state),basis=freezeAugmentBasis(state,base.build);
-    for(const shipyardRerolls of [0,1] as const){const policy=resolveRunAugmentPolicy(d,1).policy;policy.rerolls+=shipyardRerolls;let selected=newAugmentRun(seed,policy);
-     if(policy.enabled)for(let round=0;round<policy.rounds.length;round++){const context=frozenAugmentContext(basis,selected.chosen,augments);selected=offerAugments(selected,policy,augments,context);selected=chooseAugment(selected,randomUUID(),pickAutomaticAugment(selected.offered,augments,context),selected.offerVersion);}
-     // Full-auto explicitly does not reroll. The +1 availability scenario is
-     // nevertheless recorded; no invented 1.5% power bonus is inserted.
-     const player=resolvePlayer(`hub-${node.id}-${rank}-${seed}-${shipyardRerolls}`,state,selected.chosen),spawn={...structuredClone(source),id:'target',x:27,y:24},common={requestedSkills:player.build.skills.map(s=>s.id),skillRanks:player.skillRanks,build:player.build,region:arena,spawns:[spawn],seed,maxTicks:180*30,instrument:{created(w:World){w.hero.position={x:24,y:24};w.radius=64;}}};
-     const outgoing=sampleCombatBuild({...common,mode:'auto',stopWhen:'clear',approachTargets:true}),incoming=sampleCombatBuild({...common,mode:'manual',stopWhen:'death'});
-     const failure=outgoing.failed??(incoming.deathSeconds===null?'incoming_censored':undefined);
-     rows.push({nodeId:node.id,rank,seed,family:'sword',level,ttkSeconds:outgoing.clearSeconds,ttdSeconds:incoming.deathSeconds,requestedSkills:outgoing.requested,executedSkills:outgoing.executed,skillRanks:player.skillRanks,augments:selected.chosen,shipyardRerolls,...(failure?{failure}:{})});raw.push({node:node.id,rank,seed,shipyardRerolls,rerollsSpent:0,augments:selected.chosen,outgoing,incoming});
-    }
+   for(const [rank,source]of representatives){
+    const level=source.monster?.level??node.recommendedLevel,state=standardState(level);
+    const player=resolvePlayer(`hub-${node.id}-${rank}-${seed}`,state),spawn={...structuredClone(source),id:'target',x:27,y:24},common={requestedSkills:player.build.skills.map(s=>s.id),skillRanks:player.skillRanks,build:player.build,region:arena,spawns:[spawn],seed,maxTicks:180*30,instrument:{created(w:World){w.hero.position={x:24,y:24};w.radius=64;}}};
+    const outgoing=sampleCombatBuild({...common,mode:'auto',stopWhen:'clear',approachTargets:true}),incoming=sampleCombatBuild({...common,mode:'manual',stopWhen:'death'});
+    const failure=outgoing.failed??(incoming.deathSeconds===null?'incoming_censored':undefined);
+    rows.push({nodeId:node.id,rank,seed,family:'sword',level,ttkSeconds:outgoing.clearSeconds,ttdSeconds:incoming.deathSeconds,requestedSkills:outgoing.requested,executedSkills:outgoing.executed,skillRanks:player.skillRanks,...(failure?{failure}:{})});raw.push({node:node.id,rank,seed,buildBasis:'fixed-out-of-run',outgoing,incoming});
    }
   }
   // Persist progressively; an interrupted probe retains failed and successful

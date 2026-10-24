@@ -5,7 +5,7 @@ import {todayViewSchema,hubPortViewSchema,hubCommissionsViewSchema} from '../pac
 import {ensureProgression,talentPoints} from '../packages/rules/deep-progression.ts';
 import {newStarseaState} from '../packages/rules/starsea.ts';
 import {newHubState,hubDay,hubNextReset} from '../packages/rules/hub-state.ts';
-import {claimHubPortTier,hubFleetLimit,hubAugmentRerolls,hubPortView,hubCommissionSlots} from '../packages/rules/hub-port.ts';
+import {claimHubPortTier,hubFleetLimit,hubPortView,hubCommissionSlots} from '../packages/rules/hub-port.ts';
 import {commandHubDock,hubDockView,hubDockTargetAllowed} from '../packages/rules/hub-dock.ts';
 import {fillHubCommissions,countHubCommissionKill,commandHubCommission,refreshHubCommissions,hubCommissionPool,hubCommissionsView} from '../packages/rules/hub-commissions.ts';
 import {enterHubPort,hubTodayView,hubReturnQueue,observeHubPortSession} from '../packages/rules/hub-today.ts';
@@ -62,7 +62,7 @@ describe('HUB B3 outside port',()=>{
  it('uses existing reputationClaims, rejects duplicate awards and caps all talent sources at 60',()=>{
   const s=player(),h=unlocked();expect(()=>claimHubPortTier(s,h,'shipyard',1)).toThrow('声望尚未达标');h.port.rep={forge:2500,shipyard:2500,post:2500};
   claimHubPortTier(s,h,'shipyard',1);expect(hubFleetLimit(s)).toBe(2);const before=structuredClone(s);expect(()=>claimHubPortTier(s,h,'shipyard',1)).toThrow('已经领取');expect(s).toEqual(before);
-  claimHubPortTier(s,h,'shipyard',2);expect(hubAugmentRerolls(s)).toBe(1);claimHubPortTier(s,h,'shipyard',3);expect(hubFleetLimit(s)).toBe(3);
+  const second=claimHubPortTier(s,h,'shipyard',2);expect(second.rewards).toContain('天赋点 +1');expect(second.rewards.join('')).not.toMatch(/重抽|潮印/);claimHubPortTier(s,h,'shipyard',3);expect(hubFleetLimit(s)).toBe(3);
   for(const building of ['forge','shipyard','post'] as const)for(let tier=1;tier<=4;tier++)if(!s.progression!.reputationClaims.includes(`hub:${building}:${tier}`))claimHubPortTier(s,h,building,tier);
   expect(s.progression!.reputationClaims).toHaveLength(12);expect(talentPoints(s)).toBe(60);expect(hubCommissionSlots(s)).toBe(5);expect(s.gear.some(g=>g.quality==='rare')).toBe(true);expect(s.progression!.materials.summon_shard).toBe(20);
  });

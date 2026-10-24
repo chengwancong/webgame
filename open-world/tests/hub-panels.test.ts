@@ -1,9 +1,10 @@
 /**
- * HUB-F01a / F02 前端：航图 / 今日 / 委托板 / 港口建设 / 结算 hub 块 / 副本目标行 / 自动选卡倒计时 / 回港队列 / A1 红点。
+ * HUB-F01a / F02 前端：航图 / 今日 / 委托板 / 港口建设 / 结算 hub 块 / 副本目标行 / 回港队列 / A1 红点。
  * 直接测真实模块；唯一的替身是 network.ts 的 api（vitest 跑在 node，没有 DOM，面板用 HTML 字符串断言）。
  * 样例数据同时过 packages/contracts/hub.ts 的 zod 模式，防止前端样例与后端契约漂移。
  */
 import {beforeEach, describe, expect, it, vi} from 'vitest';
+import {existsSync,readFileSync} from 'node:fs';
 
 const net = vi.hoisted(() => {
   class ApiFailure extends Error {
@@ -27,7 +28,6 @@ import {getHubChart, getHubToday, postCommission, postSeaTier, postDock, isHubNo
 import {HubController, hubEnabled, type HubDeps} from '../apps/web/src/hub/hub-controller.ts';
 import {hubHudHtml, HUB_HUD_DANGER_SECONDS} from '../apps/web/src/hub/hub-hud.ts';
 import {returnAckId, returnItemHtml, returnLines} from '../apps/web/src/hub/return-queue.ts';
-import {AugmentPanel, augmentCountdownText} from '../apps/web/src/augments-panel.ts';
 import type {ChartView, HubReturnItem} from '../packages/contracts/hub.ts';
 
 const failure = (status: number, message = '出错了', code = 'SERVER') => new net.ApiFailure(code, message, status);
@@ -313,14 +313,15 @@ describe('结算 hub 块', () => {
   });
 
   it('右栏按服务端字段逐项显示，缺失的数组按空处理', () => {
-    const html = hubResultRightHtml(FIXTURE_RESULT, ['铁壁', '疾击']);
-    expect(html).toContain('铁壁 · 疾击');
+    const html = hubResultRightHtml(FIXTURE_RESULT);
+    expect(html).not.toContain('本场构筑');
+    expect(html).not.toContain('潮印');
     expect(html).toContain('首通奖励');
     expect(html).toContain('生命星晶');
     expect(html).toContain('船台');
     expect(html).toContain('船坞遗址');
     const sparse = {...FIXTURE_RESULT, collectibles: undefined, rep: undefined, firstClearRewards: undefined, unlock: undefined, dailyBonus: {applied: false, used: 0, limit: 8}} as never;
-    expect(() => hubResultRightHtml(sparse, [])).not.toThrow();
+    expect(() => hubResultRightHtml(sparse)).not.toThrow();
   });
 
   it('再来一次不可用时保留按钮、禁用并写明原因；下一节点只在服务端给出时才有', () => {
@@ -638,26 +639,28 @@ describe('buildRegion 夹具工具', () => {
 
 describe('battleResultHtml 的 hub 分支', () => {
   const data = {success: true, first_clear: false, delivery: 'inventory', history_complete: true, pending_gear: false, totals: {gold: 10, xp: 20, material: 3}, materials: {}, books: {}, gear: [], unlocked_regions: []} as never;
-  const render = async (hub?: typeof FIXTURE_RESULT, names: string[] = []) => {
+  const render = async (hub?: typeof FIXTURE_RESULT) => {
     const {battleResultHtml} = await import('../apps/web/src/battle-result-panel.ts');
     const {regions} = await import('../packages/content/index.ts');
-    return battleResultHtml({region: regions[0].id, outcome: 'success'}, data, 'ready', '拾星港', '', false, 0, undefined, null, true, null, hub, names);
+    return battleResultHtml({region: regions[0].id, outcome: 'success'}, data, 'ready', '拾星港', '', false, 0, undefined, null, true, null, hub);
   };
 
-  it('没有 hub 块：走原结算页，不含任何 hub 标记，也不受 hubChosenNames 影响', async () => {
+  it('没有 hub 块：走原结算页，不含任何 hub 标记或已撤销潮印记录', async () => {
     const plain = await render();
     expect(plain).not.toContain('hub-result');
     expect(plain).not.toContain('hub-records');
-    expect(await render(undefined, ['铁壁'])).toBe(plain);
+    expect(plain).not.toContain('本场构筑');
+    expect(plain).not.toContain('潮印');
   });
 
   it('有 hub 块：左战利品 + 右本场记录 + hub 按钮行，回港按钮仍是 result-return', async () => {
-    const html = await render(FIXTURE_RESULT, ['铁壁']);
+    const html = await render(FIXTURE_RESULT);
     expect(html).toContain('hub-result');
     expect(html).toContain('hub-records');
     expect(html).toContain('data-action="hub-result-retry"');
     expect(html).toContain('data-action="result-return"');
-    expect(html).toContain('铁壁');
+    expect(html).not.toContain('本场构筑');
+    expect(html).not.toContain('潮印');
   });
 });
 
@@ -704,26 +707,22 @@ describe('副本目标行 hubHudHtml', () => {
   });
 });
 
-// ---------- F02：自动选卡倒计时（U5） ----------
+// ---------- 撤销潮印后的前端入口 ----------
 
-describe('自动选卡倒计时', () => {
-  const now = Date.parse('2026-10-21T10:00:00.000Z');
-  it('整数秒向上取整；到点或缺省为空', () => {
-    expect(augmentCountdownText('2026-10-21T10:00:04.200Z', now)).toBe('5 秒后自动选择');
-    expect(augmentCountdownText('2026-10-21T10:00:00.000Z', now)).toBe('');
-    expect(augmentCountdownText(undefined, now)).toBe('');
-    expect(augmentCountdownText('不是时间', now)).toBe('');
+describe('副本不再显示潮印选择与倒计时', () => {
+  it('潮印面板模块删除，主入口不再分发其动作或快捷键', () => {
+    expect(existsSync(new URL('../apps/web/src/augments-panel.ts',import.meta.url))).toBe(false);
+    const main=readFileSync(new URL('../apps/web/src/main.ts',import.meta.url),'utf8');
+    expect(main).not.toContain("this.panel==='augments'");
+    expect(main).not.toContain("action.startsWith('augment-')");
   });
 
-  it('面板保留倒计时行（供每秒改字），贴合构筑用 fitsBuild 标记', () => {
-    const offered = (['a', 'b', 'c'] as const).map(id => ({id, name: id.toUpperCase(), description: '说明', tier: 'gold' as const}));
-    const at = new Date(Date.now() + 9000).toISOString();
-    const html = AugmentPanel({offered, chosen: [], rerollsLeft: 1, offerVersion: 1, busy: false, autoPickAt: at, fitsBuild: ['b']});
-    expect(html).toContain('data-augment-countdown');
-    expect(html).toContain('秒后自动选择');
-    expect(html.match(/贴合构筑/g)).toHaveLength(1);
-    const manual = AugmentPanel({offered, chosen: [], rerollsLeft: 1, offerVersion: 1, busy: false});
-    expect(manual).not.toContain('data-augment-countdown');
+  it('副本控制器不再弹出、选择、重选或刷新倒计时', () => {
+    const controller=readFileSync(new URL('../apps/web/src/dungeon-controller.ts',import.meta.url),'utf8');
+    expect(controller).not.toContain('augments');
+    expect(controller).not.toContain('augment-');
+    expect(controller).not.toContain('data-augment-countdown');
+    expect(controller).toContain('这一段已清完，走进通道继续');
   });
 });
 

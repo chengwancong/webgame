@@ -1,8 +1,6 @@
 import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import {pacingProfiles,pacingBuild} from './profiles.ts';
 import {pacingEncounters} from './measure.ts';
-import {freezeAugmentBasis,rebuildFrozenAugmentBuild} from '../../packages/rules/frozen-augment-build.ts';
-import {augments} from '../../packages/content/augments.ts';
 import {newAspects} from '../../packages/content/aspects.ts';
 import {World} from '../../packages/simulation/index.ts';
 import {regionById} from '../../packages/content/index.ts';
@@ -10,7 +8,7 @@ const out='docs/reviews/pacing-identity-20261013/C0';await mkdir(out,{recursive:
 const original=JSON.parse(await readFile(out+'/aspects-before.json','utf8'));for(const a of newAspects){const before=original.find((b:any)=>b.id===a.id);if(before){for(const key of Object.keys(a.parts))delete (a.parts as any)[key];Object.assign(a.parts,structuredClone(before.parts));a.description=before.description;}}
 const records:any[]=[];
 for(const bd of ['bulwark','echo','opening']){
- const profile=pacingProfiles.find(p=>p.id===bd)!,a=pacingBuild(profile),b=rebuildFrozenAugmentBuild(freezeAugmentBasis(a.state,a.build),[profile.preferredAugment!],augments);
+ const profile=pacingProfiles.find(p=>p.id===bd)!,a=pacingBuild(profile),b=a.build;
  for(const [scene,enc] of Object.entries(pacingEncounters)){
   if(bd!=='bulwark'&&scene!=='elite'&&scene!=='survival')continue;
   const region={...regionById('meadow'),width:48,height:48,safe:{x:20,y:20},obstacles:[],spawns:[]};

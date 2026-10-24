@@ -3,14 +3,13 @@ import type {CharacterState} from '../../packages/contracts/index.ts';
 import type {PacingTargetTables} from '../../packages/contracts/pacing.ts';
 import {paragonDefinitions,aspectDefinitions,progressionConfig} from '../../packages/content/deep-progression.ts';
 import {setEffects} from '../../packages/content/set-effects.ts';
-import {augments} from '../../packages/content/augments.ts';
 import {skillUpgradeCost} from '../../packages/rules/index.ts';
 import {talentPoints} from '../../packages/rules/deep-progression.ts';
 /** Completion is a read-only observation, not an elapsed-time acceptance gate. */
 export function pacingCompletion(state:CharacterState,observations?:any){
  const p=state.progression!,known=Object.keys(state.skillRanks).filter(id=>state.skillRanks[id]>0),worn=state.gear.filter(g=>Object.values(state.equipment).includes(g.id)),points=talentPoints(structuredClone(state));
- const metrics={quality:{count:worn.filter(g=>g.quality==='rare'||g.quality==='legendary').length,total:6},skills:{count:known.filter(id=>state.skillRanks[id]===5).length,total:known.length},talents:{count:Object.values(p.talents).reduce((n,v)=>n+v,0),total:points},awakening:{count:p.awakening,total:10},'skill-awakening':{count:Object.keys(p.skillAwakenings).length,total:known.length},sets:{count:observations?.acquiredSetIds?.length??null,total:setEffects.length},aspects:{count:Object.keys(p.codex).length,total:aspectDefinitions.filter(a=>a.dropEnabled).length},augments:{count:null,total:augments.length},crafting:{count:p.recipes.length,total:craftRecipes.length},reputation:{count:p.reputationClaims.length,total:progressionConfig.factions.length*4},paragon:{count:p.paragon.length,total:paragonDefinitions.length}};
- return Object.entries(metrics).map(([id,v])=>({id,...v,fraction:v.count===null||!v.total?null:v.count/v.total,scope:id==='sets'?'only distinct set identities from this real reward history':id==='augments'?'per-run choices are not persistent ownership; no lifetime log available':'current earned character state; unlocked skill/available point denominator'}));
+ const metrics={quality:{count:worn.filter(g=>g.quality==='rare'||g.quality==='legendary').length,total:6},skills:{count:known.filter(id=>state.skillRanks[id]===5).length,total:known.length},talents:{count:Object.values(p.talents).reduce((n,v)=>n+v,0),total:points},awakening:{count:p.awakening,total:10},'skill-awakening':{count:Object.keys(p.skillAwakenings).length,total:known.length},sets:{count:observations?.acquiredSetIds?.length??null,total:setEffects.length},aspects:{count:Object.keys(p.codex).length,total:aspectDefinitions.filter(a=>a.dropEnabled).length},crafting:{count:p.recipes.length,total:craftRecipes.length},reputation:{count:p.reputationClaims.length,total:progressionConfig.factions.length*4},paragon:{count:p.paragon.length,total:paragonDefinitions.length}};
+ return Object.entries(metrics).map(([id,v])=>({id,...v,fraction:v.count===null||!v.total?null:v.count/v.total,scope:id==='sets'?'only distinct set identities from this real reward history':'current earned character state; unlocked skill/available point denominator'}));
 }
 /** Hold costs fixed and derive the resource-output requirement. Unknown source
  * rates stay unknown: do not secretly reduce drops or inflate early-game costs. */

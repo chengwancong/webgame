@@ -3,7 +3,7 @@ import {weaponTypeSchema} from './weapons.ts';
 export const pacingScenes=['single','clear','survival','elite','safety'] as const;
 export type PacingScene=typeof pacingScenes[number];
 const finite=z.number().finite(),positive=finite.positive(),row=z.number().int().positive();
-export const pacingProfileSchema=z.object({id:z.string(),name:z.string(),weapon:weaponTypeSchema,four:z.string(),two:z.string(),skills:z.array(z.string()).min(1).max(4),aspect:z.string(),keyStats:z.array(z.string()).min(2).max(3),preferredAugment:z.string(),focus:z.enum(['single','clear','survival'])}).strict();
+export const pacingProfileSchema=z.object({id:z.string(),name:z.string(),weapon:weaponTypeSchema,four:z.string(),two:z.string(),skills:z.array(z.string()).min(1).max(4),aspect:z.string(),keyStats:z.array(z.string()).min(2).max(3),focus:z.enum(['single','clear','survival'])}).strict();
 const ratios=Object.fromEntries(pacingScenes.map(id=>[id,finite.min(0).max(1.5)])) as Record<PacingScene,typeof finite>;
 const buildRow=z.object({id:z.string(),name:z.string(),...ratios,budget:positive.optional(),tolerance:finite.min(0).max(.05),profile:pacingProfileSchema.optional(),_row:row}).strict();
 export const pacingTargetTablesSchema=z.object({source:z.literal('config/excel/节奏目标.xlsx'),

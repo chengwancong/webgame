@@ -2,7 +2,6 @@ import {z} from 'zod';
 export {hubRewardPlanSchema,hubRewardEvidenceSchema} from './hub-reward-schema.ts';
 import {challengeContentSchema} from '../../packages/content/progression-challenges.ts';
 import {newAspectSchema} from '../../packages/content/aspects.ts';
-import {augmentDefinitionSchema} from '../../packages/content/augments.ts';
 import {setEffectsSchema} from '../../packages/content/set-effects.ts';
 import {gearAffixConfigSchema} from '../../packages/rules/affix-generator.ts';
 import {deepProgressionConfigSchema} from '../../packages/content/deep-progression.ts';
@@ -27,7 +26,6 @@ export const spineSchemas:SpineSchemas={
  'packages/content/hex-runes.json':hexRuneCatalogSchema,
  'packages/content/hex-policy.json':hexPolicyContentSchema,
  'packages/content/aspects.json':z.array(newAspectSchema).length(60),
- 'packages/content/augments.json':z.array(augmentDefinitionSchema).length(90),
  'packages/content/set-effects.json':setEffectsSchema,
  'packages/content/gear-affixes.json':gearAffixConfigSchema,
  'packages/content/deep-progression.json':deepProgressionConfigSchema,

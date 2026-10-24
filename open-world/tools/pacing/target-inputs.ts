@@ -16,7 +16,6 @@ const endgame=[
  ['skill-awakening','技能觉醒',counts.skills,.5,counts.skills/600,600,'技能','skill-awakening','skillAwakening','每技能选一分支；不同时选三支'],
  ['sets','套装覆盖',counts.setIdentities,.5,counts.setIdentities/600,600,'身份','set-collection',null,'按18身份统计；掉落结构保持，收集时长仍需自然样本'],
  ['aspects','威能覆盖',counts.obtainableAspects,.5,counts.obtainableAspects/600,600,'身份','codex','extract','可掉落身份为分母；旧版不可掉落项不纳入'],
- ['augments','潮印体验',counts.augments,.25,counts.augments/600,600,'选项','run-augments',null,'按报告中见过/选过的选项，不写角色永久拥有'],
  ['crafting','制造配方',counts.recipes,.25,counts.recipes/600,600,'配方','recipes','recipeLearn','维持配方总量与来源'],
  ['reputation','声望阶段',24,.5,24/600,600,'阶段','reputation','donation','六势力各四阶段，产出率先作为设计输入'],
  ['paragon','巅峰节点',48,1,xpRate,5,'节点','paragon','paragon','48节点、47级可点齐；每级目标5+0.1×巅峰级虚拟分钟，不作为巅峰整体时间KPI'],

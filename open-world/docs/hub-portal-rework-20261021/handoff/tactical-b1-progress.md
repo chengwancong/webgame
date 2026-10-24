@@ -75,3 +75,5 @@ T9 第一次部署（来源 `4bc6ee82`）：云构建成功（40 文件），激
 15:04:59 云 API 功能核验通过：五棋盘分别创建 → 只读预览 → 手动移动 → 同命令重发 → ward → auto → win；预览未改单位、revision 或 deadline；无 scheduler-error，全部终局。它是部署功能检查，含特定手动前置动作，不计为第三轮数值基线。云数据库容器仍是 `86cadc993bb4`，启动时间仍为 `2026-10-18T13:05:22.22657588Z`，健康状态healthy。
 
 给 Grok：复制 `tactical-b1-grok-prompt.txt` 全文；先验证真实接口，再做五棋盘×双英雄的手动/托管对照，记录每轮两个合理选择、预告判断准确率、实际回合和损血。区分规则bug、UI接线问题、数值残差和玩法单调；没有实际测过的内容不得补造。Claude 适配可复制 `tactical-b1-claude-contract-sync.txt`。协作中心通过规定脚本更新，完成项按中心规则移入 `协作历史/20261024-归档.md`。
+
+前端接线发布｜2026-10-24 15:51:37 +08:00｜发布提交 1438659d5f8b92d0e2a6fc93cec9e4fcf4ad2c96（包含前端0f9121b5，来源9137a18f＋仅client版本元数据）｜client=0.11.56 / protocol=56 / rules=ow-96 / assets=world-art-20261007-v24-world-runtime / db=19｜tsc通过，15文件167项测试全过（前端沙盒16项、UI18项）；health/content/build-info五项一致且source匹配；页面HTTP200，引用JS包含“战棋沙盒 · 不发奖”及“/api/tactical/sandbox”；curl catalog→创建wind-blades/sword/seed37→preview move→act move→act end均200（终态round2/revision2）；TACTICAL_SANDBOX=1，数据库容器86cadc993bb4及启动时间保持不变；本地像素素材未进入发布包/Git；留档仅G:/webgame/aw-deploy/；Grok入口：https://43-165-179-11.sslip.io/tactical-board.html?source=sandbox。

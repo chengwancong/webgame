@@ -26,7 +26,7 @@ export function hexCombatStatsHtml(stats?:HexCombatStats|null){
 }
 const stageMaterials=new Map(stageKeyLabels.map(row=>[row.id,row]));
 const weights:Record<GearQuality,number>={legendary:0,rare:1,magic:2,common:3};
-export function battleResultHtml(context:{region:string;outcome:'success'|'failure';keyStage?:number},data:BattleResult|undefined,phase:ResultPhase,safe:string,error:string,enter:boolean,revision=0,review?:CombatReview,keyProgress?:StageKeyProgress|null,simpleDefeat=true,hexStats?:HexCombatStats|null,hubBlock?:HubResultBlock,hubChosenNames:string[]=[]){
+export function battleResultHtml(context:{region:string;outcome:'success'|'failure';keyStage?:number},data:BattleResult|undefined,phase:ResultPhase,safe:string,error:string,enter:boolean,revision=0,review?:CombatReview,keyProgress?:StageKeyProgress|null,simpleDefeat=true,hexStats?:HexCombatStats|null,hubBlock?:HubResultBlock){
  const won=Boolean(data?.success),visual=won?'success':context.outcome==='failure'?'failure':'pending',title=won?'挑战成功':visual==='failure'?'挑战失败':'战斗结束';
  if(visual==='failure'&&simpleDefeat)return battleDefeatHtml(regionById(context.region).name,phase,error);
  const gear=[...(data?.gear??[])].sort((a,b)=>weights[a.quality]-weights[b.quality]);
@@ -47,7 +47,7 @@ export function battleResultHtml(context:{region:string;outcome:'success'|'failu
  // hub 块：左战利品 · 右本场记录；没有 hub 块时走下面原有输出，逐字节不变
  if(hubBlock){
   const returning=phase==='saving'||phase==='returning';
-  return `<section class="battle-result result hub-result" data-outcome="${visual}" role="dialog" aria-modal="true" aria-label="${title}" data-panel="battle-result">${headerHtml}${resourceRowHtml}${lootBodyHtml}${msgHtml}${hubResultRightHtml(hubBlock,hubChosenNames,recap+hexHtml)}${hubResultFooterHtml(hubBlock,returning)}</section>`;
+  return `<section class="battle-result result hub-result" data-outcome="${visual}" role="dialog" aria-modal="true" aria-label="${title}" data-panel="battle-result">${headerHtml}${resourceRowHtml}${lootBodyHtml}${msgHtml}${hubResultRightHtml(hubBlock,recap+hexHtml)}${hubResultFooterHtml(hubBlock,returning)}</section>`;
  }
  return `<section class="battle-result result${empty?' is-empty':''}" data-outcome="${visual}" role="dialog" aria-modal="true" aria-label="${title}" data-panel="battle-result">${headerHtml}${resourceRowHtml}${lootBodyHtml}${msgHtml}${recap}${hexHtml}<footer class="result-footer"><div class="return-context"><span class="unlock-notice">${won&&data?.unlocked_regions.length?'新地区已开放：'+data.unlocked_regions.map(id=>esc(regionById(id).name)).join('、'):''}</span></div>${phase!=='offline'?buttonHtml('再来一次',{action:'result-retry',busy:phase==='saving'||phase==='returning',busyLabel:'正在出发…'}):''}${buttonHtml(phase==='offline'?'恢复连接':'回港整备',{action:'result-return',variant:'primary',busy:phase==='saving'||phase==='returning',busyLabel:phase==='saving'?'正在保存…':'正在返回…'})}</footer></section>`;
 }

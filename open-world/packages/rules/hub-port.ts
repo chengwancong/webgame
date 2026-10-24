@@ -11,7 +11,6 @@ export const hubClaimKey=(building:HubBuildingId,tier:number)=>`hub:${building}:
 export const hubTierClaimed=(s:CharacterState,building:HubBuildingId,tier:number)=>Boolean(s.progression?.reputationClaims.includes(hubClaimKey(building,tier)));
 export const hubFleetLimit=(s:CharacterState)=>1+Number(hubTierClaimed(s,'shipyard',1))+Number(hubTierClaimed(s,'shipyard',3));
 export const hubCommissionSlots=(s:CharacterState)=>hubTierClaimed(s,'post',2)?5:4;
-export const hubAugmentRerolls=(s:CharacterState)=>Number(hubTierClaimed(s,'shipyard',2));
 // 功能开放只看玩到哪，不挂剧情任务（2026-10-22 任务引导降级）：工坊首次回港即开，码头击败风栖关口后开。
 export const hubForgeOpen=(h:HubState)=>Object.keys(h.chart.cleared).length>0;
 export const hubDockOpen=(h:HubState)=>Boolean(h.chart.cleared['wind-gate']);
@@ -20,7 +19,7 @@ export function addHubReputation(h:HubState,building:HubBuildingId,amount:number
 function rewards(building:HubBuildingId,tier:number){
  const lines=['天赋点 +1'];
  if(building==='forge'){lines.push('工坊配方购买阶级 '+tier);if(tier===2)lines.push('稀有护甲 ×1');}
- if(building==='shipyard'){if(tier===1||tier===3)lines.push('采集船队 +1');if(tier===2)lines.push('局内重抽 +1');}
+ if(building==='shipyard'){if(tier===1||tier===3)lines.push('采集船队 +1');}
  if(building==='post'){lines.push(`召唤碎片 ×${tier*progressionConfig.professionsRewards.reputationSummonShards}`);if(tier===2)lines.push('委托展示格 +1');}
  return lines;
 }

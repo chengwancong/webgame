@@ -16,7 +16,7 @@ import type {DungeonView} from '../packages/contracts/dungeons.ts';
 const dsn=process.env.AW_DATABASE_URL;if(!dsn)throw Error('Real isolated PostgreSQL required');
 const schema='qa_hub_faction_'+randomUUID().replaceAll('-',''),owner=new Pool({connectionString:dsn}),pool=new Pool({connectionString:dsn,options:'-c search_path='+schema,max:4});
 const config=structuredClone(source) as any;
-for(const worldDrops of [true,false])config.definitions.push({id:'qa-faction-'+(worldDrops?'kill':'completion'),kind:'raid',profiles:['simulation'],area:'meadow',stages:['meadow-boss'],worldDrops,policy:{party:{min:1,max:1,roles:{},defaultRole:'damage'},augments:{enabled:false},enemyScale:{hp:.001,attack:.001},timeLimitSeconds:30},reward:worldDrops?{gold:0,xp:0,material:0}:{gold:19,xp:23,material:3}});
+for(const worldDrops of [true,false])config.definitions.push({id:'qa-faction-'+(worldDrops?'kill':'completion'),kind:'raid',profiles:['simulation'],area:'meadow',stages:['meadow-boss'],worldDrops,policy:{party:{min:1,max:1,roles:{},defaultRole:'damage'},enemyScale:{hp:.001,attack:.001},timeLimitSeconds:30},reward:worldDrops?{gold:0,xp:0,material:0}:{gold:19,xp:23,material:3}});
 const content=resolveDungeonContent(config);
 beforeAll(async()=>{await owner.query('CREATE SCHEMA '+schema);await migrate(pool);});
 afterAll(async()=>{await pool.end();await owner.query('DROP SCHEMA '+schema+' CASCADE');await owner.end();});

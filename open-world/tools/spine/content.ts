@@ -3,17 +3,13 @@ import assert from 'node:assert/strict';
 import {skillCatalog} from '../../packages/content/index.ts';
 import {skillWeapons} from '../../packages/content/skill-weapons.ts';
 import {newAspects} from '../../packages/content/aspects.ts';
-import {augments} from '../../packages/content/augments.ts';
 import {setEffects} from '../../packages/content/set-effects.ts';
 import {talentDefinitions,paragonDefinitions} from '../../packages/content/deep-progression.ts';
 import {inscriptionConfig} from '../../packages/content/inscriptions.ts';
-import {buildSourcePartsSchema} from '../../packages/contracts/build-sources.ts';
 import {buildVarietyProfiles,assembleBuildVariety,type BuildVarietyProfile} from '../build-variety-builds.ts';
 import {pacingProfiles} from '../pacing/profiles.ts';
 import {skillWeaponAllowed} from '../../packages/rules/skill-weapon-access.ts';
 import {standardState,resolvePlayer} from './player.ts';
-import {resolveBuild} from '../../packages/rules/index.ts';
-import {freezeAugmentBasis,rebuildFrozenAugmentBuild} from '../../packages/rules/frozen-augment-build.ts';
 import {readJson} from './io.ts';
 import type {CharacterState} from '../../packages/contracts/index.ts';
 import type {ResolvedPlayer} from './bench.ts';
@@ -33,14 +29,18 @@ export function principal(parts:any):(string|number)[]|null{
  for(const key of ['statMultipliers','statusMultipliers'])for(const [stat,value]of Object.entries(parts[key]??{}))if(typeof value==='number'&&value>0)return [key,stat];
  return null;
 }
-export function inject(state:CharacterState,player:ResolvedPlayer,parts:any):ResolvedPlayer{
- const catalog=[{id:'spine-host-addition',name:'宿主配对来源',description:'测量输入',tier:'gold' as const,tags:['all'],parts:buildSourcePartsSchema.parse(parts)}];
- return {...player,build:rebuildFrozenAugmentBuild(freezeAugmentBasis(state,player.build),[catalog[0].id],catalog)};
-}
 const clean=(s:CharacterState)=>{for(const g of s.gear){delete g.aspectId;delete g.inscription;delete g.setId;}return s;};
 function hostProfile(id:string,weapons:readonly string[]=[]){const explicit=buildVarietyProfiles.find(p=>p.id===id);return explicit&&(!weapons.length||weapons.includes(explicit.weapon))?explicit:buildVarietyProfiles.find(p=>!weapons.length||weapons.includes(p.weapon));}
 export function hostState(id:string,weapons:readonly string[]=[]){if(id.startsWith('标准人:')){const family=id.slice('标准人:'.length);assert(['sword','staff','hidden'].includes(family),'缺少该武器标准人装配 '+family);return clean(standardState(50,family as 'sword'|'staff'|'hidden'));}const profile=hostProfile(id,weapons);if(profile){const state=clean(assembleBuildVariety(profile).state);if(state.skills.every(s=>skillWeaponAllowed(state,s)))return state;const native=skillCatalog.find(s=>s.damage>0&&skillWeaponAllowed(state,s.id));assert(native,'宿主武器没有原生技能');state.skills=[native.id,'ward'];state.skillRanks=Object.fromEntries(state.skills.map(s=>[s,5]));return state;}return clean(standardState(50,weapons.includes('hidden')?'hidden':weapons.includes('staff')?'staff':'sword'));}
-function partsPair(id:string,host:string,parts:any,factor:number,path:ContentItem['path'],weapons:readonly string[]=[]){const state=hostState(host,weapons),base=resolvePlayer(id+'-without',state),copy=structuredClone(parts);if(path)put(copy,path,scaledPrimary(get(copy,path),path,factor));return {base,full:inject(state,{...base,id},copy)};}
+/** Deterministic equipment-source ablation only: use the real set resolver, no run bonus or persisted mutation. */
+function partsPair(id:string,host:string,parts:any,factor:number,path:ContentItem['path'],weapons:readonly string[]=[]){
+ const state=hostState(host,weapons),[setId,partName]=id.split(':'),set=setEffects.find(s=>s.id===setId);
+ assert(set&&(partName==='two'||partName==='four'),'Missing actual set host '+id);const part=partName as 'two'|'four';
+ const worn=state.gear.filter(g=>Object.values(state.equipment).includes(g.id));assert(worn.length>=4,'Set host needs four equipment slots');
+ for(const gear of worn.slice(0,part==='two'?2:4))gear.setId=setId;
+ const original=set[part],copy=structuredClone(parts);if(path)put(copy,path,scaledPrimary(get(copy,path),path,factor));
+ try{set[part]={stats:[],atoms:[],rules:[],zones:[],conditional:[]};const base=resolvePlayer(id+'-without',structuredClone(state));set[part]=copy;return {base,full:resolvePlayer(id,structuredClone(state))};}finally{set[part]=original;}
+}
 export async function contentItems():Promise<ContentItem[]>{
  const census=await readJson('docs/reviews/numeric-spine-20261013/S0/census.json'),items:ContentItem[]=[];
  const host=(id:string)=>census.hosts.find((h:any)=>h.id===id)?.host??'标准人:sword';
@@ -62,7 +62,6 @@ export async function contentItems():Promise<ContentItem[]>{
   }});
  }
  for(const [i,s]of setEffects.entries())for(const part of ['two','four'] as const)addParts(s.id+':'+part,'套装',part,s[part],'packages/content/set-effects.json',[i,part],[s.family]);
- for(const [i,a]of augments.entries())addParts(a.id,'潮印',a.tier+'/'+(a.tags.includes('all')?'通用':a.tags.join('/')),a.parts,'packages/content/augments.json',[i,'parts']);
  for(const [category,nodes]of [['天赋',talentDefinitions],['巅峰',paragonDefinitions]] as const)for(const node of nodes){
   const path=node.modifiers.length?['modifiers',0,'value']:null,value=path?get(node,path):0;
   items.push({id:node.id,category,group:category==='天赋'?(node as any).branch+'/'+(node as any).tier:String((node as any).board),band:.15,primary:'P',object:node,path,file:'packages/content/progression-node-values.json',sourcePath:[node.id,0],step:value>=1?1:.05,offset:0,host:'标准人50',make:(factor=1)=>{

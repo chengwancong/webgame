@@ -21,7 +21,7 @@
 | A15 | 涨潮淹没（水贴片、预警、退水、脚下水花） | 图集，贴片 128×64 | 同上 | 无（只有服务端 `flood`） | `ow-art-hub-hunt-flood`、`fx-hub-flood-splash` | 已交 GPT（D2） |
 | A16 | 落石（预警圈、落石、砸地、碎石残留） | 图集 | 同上 | 无（只有服务端 `rockfall`） | `fx-hub-rockfall`、`ow-art-hub-rock-rubble` | 已交 GPT（D3） |
 | A17 | 副本采集点 6 航区 × 矿/植物（含已采态） | 图集，单帧 128×128 | 同上 | `gatherArt()` 借 rocks/bush/flowers | `ow-art-hub-gather-*` | 已交 GPT（D4） |
-| A18 | 三选一卡框 银/金/棱彩 + 流光 + 贴合构筑小标 | 九宫格 440×600 | 奶白浅金 | 公共卡片控件 | `augments-panel.ts` | 已交 GPT（D5） |
+| A18 | 三选一卡框 银/金/棱彩 + 流光 + 贴合构筑小标 | 九宫格 440×600 | 奶白浅金 | 公共卡片控件 | `augments-panel.ts` | **作废**（10-24 潮印撤销，见 planning-bd-v1/20） |
 | A19 | 找回刻片图标（亮/暗）+ 找回演出 | 图集 | 奶白浅金 | 无 | 节点卡片、`growth-cards.ts` | 已交 GPT（D6） |
 | A20 | 制作材料图标 ×20（6 航区草/部件/首领核心 + 强化石、星尘） | 256×256 PNG，`item-material-<id>` | `items-chibi/` | `materialIcon()` 借通用图并着色 | `ui.v2.json`（登记即自动生效） | 已交 GPT（handoff/art-he-items-ui.md E1） |
 | A21 | 消耗品图标 ×10（7 抗性药剂 + 3 料理） | 同上，`item-<id>` | 同上 | 借生命药水/草药图 | `ui.v2.json`（自动生效） | 已交 GPT（E2） |
@@ -29,7 +29,7 @@
 | A23 | 右下菜单入口插画 ×8（今日/委托/港口建设/航图/仓库/档案/宠物/星门） | SVG，照 `hudMenuIcon` | 现有 7 个菜单插画 | 无 | `ui-illustrations.v1.json` → `hud-icons.ts` | 已交 GPT（E4） |
 | A24 | 港口建筑头顶标识 ×8 + 角标 3 | 128×128 图集 | 奶白浅金 | 无（M15 U1 红点） | `hub-ui.v1.json` | 已交 GPT（E5） |
 | A25 | 界面插画图标补齐 ×30（系统/元素/属性） | SVG，照 `illustrations` | 现有 18 个插画图标 | 线条图标 | `ui-illustrations.v1.json` → `ui/icons.ts` | 已交 GPT（E6） |
-| A26 | 组件装饰件：品质格框 4 + 流光、标题花饰、分隔线、角花、提示尖角、提示条底 | 九宫格 PNG 图集 | Token 观感 | CSS | Claude 决定是否接 | 已交 GPT（E7） |
+| A26 | 组件装饰件：品质格框 4 + 流光、标题花饰、分隔线、角花、提示尖角、提示条底 | 九宫格 PNG 图集 | Token 观感 | CSS | 方向 A 决定接入（planning-bd-v1/22 U0） | 已交付 `hub-ui/ui-ornaments.*` |
 | A27 | 秘藏宝箱（M17 Z4）：hidden / glint 6 帧 / opened | 图集，单帧 160×160，锚点底部中心 | 现有宝箱、引雷桩 | 借现有宝箱图 | `ow-art-hub-cache` | 已交 GPT（ART-HF） |
 | A28 | 锁门 ×2（雾锁门、炉锁门）：locked / open / opening 6 帧 | 图集，单帧 256×256 | 同上 | 剪影占位 | `ow-art-hub-door-mist`、`ow-art-hub-door-forge` | 已交 GPT（ART-HF） |
 | A29 | 关口钥匙图标 ×6（含未获得灰版） | 128×128 PNG | 航区徽记 | 文字 | 航图节点卡、钥匙栏 | 已交 GPT（ART-HF） |
@@ -37,3 +37,8 @@
 | A31 | 宠物阵容框（上阵/助阵 + 空槽）+ 流派选中底 | 320×360 / 200×220 / 96×96 | 奶白浅金 | CSS 框 | 宠物面板 | 已交 GPT（ART-HF） |
 | A32 | 探索度圆环分层（底框、三段弧、里程碑星） | 128×128 分层 PNG | 奶白浅金 | CSS conic 圆环 | 航图航区标题 | 已交 GPT（ART-HF） |
 | A33 | 火焰/暗影元素图标（A25 缺则补） | 同 A25 | A25 | 文字 | 节点卡元素行 | 已交 GPT（ART-HF） |
+| A34 | 缎带标题底 ×3（胜利金/撤退灰蓝/解锁浅金） | 九宫格 720×120 | 方向 A 对照页 + E7 | CSS 渐变缎带 | `ribbonTitleHtml`（U1） | 已交 GPT（handoff/art-hg-game-feel.md G1） |
+| A35 | 星级星 亮/暗 + 点亮闪光 6 帧 | 96×96 / 128×128 | 同上 | 文字 ★ | U1 结算 | 已交 GPT（G2） |
+| A36 | NEW / HEX 角标 + 经验图标 | 96×48 / 128×128 | 金币图标 | CSS 角标、绿圆 | `resourcePillHtml`、`rewardRevealHtml` | 已交 GPT（G3） |
+| A37 | 结算放射光底 + 星屑粒子 ×8 | 800×800 / 32–48px | 浅金 | 无 | `ceremony.css`（U1） | 已交 GPT（G4） |
+| A38 | 空状态插画 ×6 | 320×240 | 港口建筑原稿、items-chibi | 线条图标 | `stateBlockHtml` | 已交 GPT（G5） |

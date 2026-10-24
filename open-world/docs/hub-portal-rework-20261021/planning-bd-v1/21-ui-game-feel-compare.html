@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>界面游戏感对照 · 副本通关结算</title>
+<style>
+  body{margin:0;padding:20px 20px 64px;background:#2a2d31;color:#e8e4da;font-family:"Microsoft YaHei","PingFang SC",sans-serif}
+  h1{font-size:20px;font-weight:600;margin:0 0 4px}
+  .lead{color:#b8b2a4;font-size:13px;margin:0 0 24px}
+  .row{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-start;margin-bottom:36px}
+  .label{width:250px;flex:1 1 250px;max-width:800px;font-size:13px;line-height:1.7;color:#cfc8b8}
+  .label b{display:block;font-size:17px;color:#fff;margin-bottom:6px}
+  .label .tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:9px;background:#4a4f56;margin-bottom:8px}
+  .stage{zoom:var(--z,1);width:800px;height:450px;flex:none;position:relative;overflow:hidden;border-radius:6px;outline:1px solid #000}
+  .scene{position:absolute;inset:0;background:linear-gradient(160deg,#4f7a5a,#2f4f45 55%,#26393a);}
+  .scene::after{content:"";position:absolute;inset:0;background:rgba(10,18,20,.45)}
+  svg.i{width:100%;height:100%}
+
+  /* ---------- 基线：现状 ---------- */
+  .base .panel{position:absolute;left:200px;top:55px;width:400px;background:#fcfaf5;border:1px solid #e2dac8;border-radius:8px;padding:18px 20px;color:#293940;font-size:13px;box-shadow:0 4px 16px #182e3b33}
+  .base h2{font-size:16px;margin:0 0 4px}
+  .base .muted{color:#56656d;font-size:12px}
+  .base .line{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #e9e3d6}
+  .base .chip{font-size:11px;background:#ebe5d8;color:#53626a;border-radius:3px;padding:0 5px;margin-right:6px}
+  .base .btns{display:flex;gap:8px;margin-top:14px}
+  .base button{font:inherit;font-size:13px;border-radius:5px;padding:6px 14px;border:1px solid #d8ceb9;background:#ebe5d8;color:#293940}
+  .base button.p{background:#f0bf4f;border-color:#c48f2a;color:#3b2a0e}
+
+  /* ---------- A：明亮卡牌（保留奶油金） ---------- */
+  .a .banner{position:absolute;left:0;right:0;top:26px;text-align:center}
+  .a .ribbon{display:inline-block;position:relative;padding:8px 70px 10px;background:linear-gradient(#f9d97f,#e9ae3c);color:#5a3a06;font-size:34px;font-weight:900;letter-spacing:10px;border-radius:6px;border:3px solid #fff3cf;box-shadow:0 5px 0 #b98222,0 10px 24px rgba(0,0,0,.35);text-shadow:0 2px 0 #fff2c4}
+  .a .stars{margin-top:6px;font-size:30px;letter-spacing:6px;color:#ffd256;text-shadow:0 2px 0 #b07c1b,0 0 12px rgba(255,214,90,.7)}
+  .a .stars .off{color:#6c6455;text-shadow:none}
+  .a .sub{color:#fff4df;font-size:13px;margin-top:2px;text-shadow:0 1px 2px #000}
+  .a .res{position:absolute;top:170px;left:0;right:0;display:flex;justify-content:center;gap:16px}
+  .a .pill{display:flex;align-items:center;gap:8px;background:#fcfaf5;border:2px solid #edc573;border-radius:20px;padding:4px 16px 4px 6px;color:#3b2a0e;font-weight:800;font-size:18px;box-shadow:0 3px 0 #cb8d28}
+  .a .coin{width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffe191,#f6c45c 55%,#cb8d28);border:1px solid #9a6a18}
+  .a .xp{width:24px;height:24px;border-radius:50%;background:#327356;color:#fff;font-size:11px;display:grid;place-items:center}
+  .a .cards{position:absolute;top:226px;left:0;right:0;display:flex;justify-content:center;gap:14px}
+  .a .card{width:104px;height:132px;border-radius:12px;background:#fcfaf5;border:3px solid var(--r);box-shadow:0 4px 0 var(--rd),0 8px 16px rgba(0,0,0,.3);position:relative;text-align:center;color:#293940}
+  .a .card .art{height:76px;margin:8px 10px 4px;border-radius:8px;background:radial-gradient(circle,var(--rg),transparent 70%),#f0e9da;padding:8px;box-sizing:border-box}
+  .a .card .nm{font-size:13px;font-weight:800;color:var(--rd)}
+  .a .card .q{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:800;color:#fff;background:var(--r);padding:1px 9px;border-radius:9px;border:2px solid #fff}
+  .a .card .hex{position:absolute;right:-8px;top:18px;background:#6751a1;color:#fff;font-size:10px;font-weight:800;padding:2px 5px;border-radius:4px;transform:rotate(8deg);border:1.5px solid #fff}
+  .a .card.new::before{content:"NEW";position:absolute;left:-8px;top:18px;background:#b6473a;color:#fff;font-size:10px;font-weight:900;padding:1px 5px;border-radius:4px;transform:rotate(-10deg);border:1.5px solid #fff;z-index:2}
+  .a .btns{position:absolute;bottom:22px;left:0;right:0;display:flex;justify-content:center;gap:18px}
+  .a .btn{font-size:18px;font-weight:900;padding:10px 34px;border-radius:12px;letter-spacing:2px}
+  .a .btn.p{background:linear-gradient(#f6d27a,#f0bf4f);color:#3b2a0e;border:2px solid #fff3cf;box-shadow:0 5px 0 #c48f2a}
+  .a .btn.s{background:linear-gradient(#ffffff,#ebe5d8);color:#293940;border:2px solid #fff;box-shadow:0 5px 0 #b9a783}
+
+  /* ---------- B：暗金 ARPG ---------- */
+  .b .scene::after{background:rgba(5,6,8,.72)}
+  .b .frame{position:absolute;left:150px;top:14px;width:500px;height:422px;background:linear-gradient(#1b1915,#100f0d);border:2px solid #7d6234;box-shadow:inset 0 0 0 1px #2c241a,inset 0 0 0 4px #14120f,inset 0 0 0 5px #5a4524,0 0 40px #000}
+  .b .frame::before,.b .frame::after{content:"";position:absolute;width:26px;height:26px;border:2px solid #c8a160;top:-6px}
+  .b .frame::before{left:-6px;border-right:0;border-bottom:0}
+  .b .frame::after{right:-6px;border-left:0;border-bottom:0}
+  .b .title{text-align:center;margin-top:12px;font-family:"STKaiti","KaiTi",serif;font-size:32px;letter-spacing:12px;color:#e7c88a;text-shadow:0 0 10px rgba(231,180,90,.45)}
+  .b .rule{height:1px;margin:6px 60px 0;background:linear-gradient(90deg,transparent,#a3803f,transparent)}
+  .b .meta{text-align:center;color:#9a8f7c;font-size:12px;margin-top:6px;letter-spacing:1px}
+  .b .meta em{color:#e7c88a;font-style:normal}
+  .b .grid{display:flex;gap:10px;justify-content:center;margin-top:14px}
+  .b .slot{width:66px;height:66px;background:#0b0a09;border:1px solid var(--r);box-shadow:inset 0 0 18px var(--rg);padding:9px;box-sizing:border-box;position:relative}
+  .b .slot .n{position:absolute;right:3px;bottom:1px;font-size:11px;color:#ddd}
+  .b .tip{margin:12px auto 0;width:300px;background:#0d0c0b;border:1px solid #6a5634;padding:10px 14px;font-size:12px;line-height:1.6;color:#a69c8a}
+  .b .tip .nm{font-size:15px;color:#e8b04a;font-weight:700}
+  .b .tip .ty{color:#7b7262}
+  .b .tip .af{color:#8f86d9}
+  .b .tip .st{color:#d8d0c0}
+  .b .tip .up{color:#6fc06a}
+  .b .bar{width:300px;margin:10px auto 0;display:flex;justify-content:space-between;font-size:13px;color:#a69c8a}
+  .b .bar span b{color:#e7c88a;font-weight:700}
+  .b .btns{position:absolute;left:0;right:0;bottom:18px;display:flex;justify-content:center;gap:14px}
+  .b .btn{font-size:14px;letter-spacing:4px;padding:8px 28px;color:#e7c88a;background:linear-gradient(#3a2f1d,#1d1810);border:1px solid #a3803f;box-shadow:inset 0 1px 0 #6b5532}
+  .b .btn.s{color:#a69c8a;border-color:#4d4232;background:#16130f}
+
+  /* ---------- C：航海手账 ---------- */
+  .c .paper{position:absolute;left:110px;top:24px;width:580px;height:400px;background:#efe2c3;background-image:radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.5),transparent 60%),radial-gradient(ellipse at 80% 90%,rgba(140,95,40,.25),transparent 55%);border-radius:3px;transform:rotate(-1.2deg);box-shadow:0 12px 30px rgba(0,0,0,.5),inset 0 0 40px rgba(120,80,30,.35);color:#3d2b16;font-family:"STKaiti","KaiTi",serif}
+  .c .head{padding:22px 34px 0;display:flex;align-items:baseline;gap:14px}
+  .c .head h2{margin:0;font-size:30px;letter-spacing:6px}
+  .c .head .d{font-size:14px;color:#7a5a32}
+  .c .ink{height:2px;margin:6px 34px 0;background:#5a3e1e;opacity:.6;border-radius:2px}
+  .c .stamp{position:absolute;right:38px;top:16px;width:92px;height:92px;border-radius:50%;border:4px double #b13a2a;color:#b13a2a;display:grid;place-items:center;font-size:30px;font-weight:900;transform:rotate(14deg);opacity:.85;letter-spacing:2px}
+  .c .stamp small{display:block;font-size:11px;letter-spacing:1px;text-align:center;margin-top:-6px}
+  .c .log{margin:12px 34px 0;font-size:15px;line-height:1.75;color:#4b361c}
+  .c .log b{color:#8a3b1c}
+  .c .loot{display:flex;gap:16px;margin:14px 34px 0}
+  .c .it{width:112px;text-align:center}
+  .c .it .pic{height:82px;background:#e6d5ae;border:1.5px solid #8b6a3e;border-radius:4px;padding:10px;box-sizing:border-box;position:relative}
+  .c .it .pic::after{content:"";position:absolute;inset:3px;border:1px dashed rgba(90,62,30,.4)}
+  .c .it .nm{font-size:14px;margin-top:4px;color:var(--rd)}
+  .c .it .q{font-size:11px;color:#7a5a32}
+  .c .tick{position:absolute;left:34px;bottom:70px;font-size:14px;color:#5a3e1e}
+  .c .tick span{margin-right:22px}
+  .c .btns{position:absolute;right:30px;bottom:20px;display:flex;gap:14px;align-items:center}
+  .c .seal{width:120px;height:44px;border-radius:22px;background:radial-gradient(circle at 40% 35%,#d0503c,#9c2a1c);color:#fbe6c6;display:grid;place-items:center;font-size:17px;letter-spacing:3px;box-shadow:0 3px 0 #6d1a10,0 6px 10px rgba(0,0,0,.3)}
+  .c .ghost{font-size:15px;color:#5a3e1e;border-bottom:1.5px solid #5a3e1e;padding-bottom:1px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="sword" viewBox="0 0 64 64"><path d="M46 8l10 0 0 10-24 24-6-6z" fill="#cfe3ea" stroke="#3c5560" stroke-width="2"/><path d="M18 36l10 10-4 4-3-3-7 7-4-4 7-7-3-3z" fill="#b7863a" stroke="#4d3412" stroke-width="2"/><path d="M50 12l-20 20" stroke="#fff" stroke-width="2" opacity=".7"/></symbol>
+    <symbol id="boot" viewBox="0 0 64 64"><path d="M20 8h18v26l14 8c4 2 4 10-2 12H14l2-14z" fill="#8a6a44" stroke="#3d2a14" stroke-width="2"/><path d="M14 46h40" stroke="#3d2a14" stroke-width="2"/><path d="M22 18h14M22 24h14" stroke="#d7b678" stroke-width="2"/></symbol>
+    <symbol id="amulet" viewBox="0 0 64 64"><path d="M14 8c4 14 10 20 18 22c8-2 14-8 18-22" fill="none" stroke="#b08d4a" stroke-width="2.5"/><circle cx="32" cy="40" r="13" fill="#59b7a8" stroke="#24564e" stroke-width="2.5"/><circle cx="28" cy="36" r="4" fill="#d9fff6"/></symbol>
+    <symbol id="ore" viewBox="0 0 64 64"><path d="M10 46l10-22 14-6 14 8 6 18-12 8H20z" fill="#7c86a8" stroke="#2c3350" stroke-width="2"/><path d="M34 18l-4 18 18-10M30 36l-10 18M30 36l24 8" stroke="#2c3350" stroke-width="1.5" fill="none"/><path d="M22 28l6-2" stroke="#e6ecff" stroke-width="2"/></symbol>
+  </defs>
+</svg>
+
+<h1>界面游戏感对照 · 代表界面：副本通关结算</h1>
+<p class="lead">同一份内容（通关、用时、经验、金币、4 件掉落、回港 / 再来一次），四种做法并排。物品图是占位剪影，定方向后由 GPT 批量出正式图标。只是示意，不进游戏代码。</p>
+
+<!-- 基线 -->
+<div class="row">
+  <div class="label"><span class="tag">基线</span><b>现状：网页卡片</b>奶油白面板＋文字行。信息都在，但读起来像后台表单：没有"打赢了"的高潮，掉落只是一行字和灰标签，按钮和网页一样。</div>
+  <div class="stage base"><div class="scene"></div>
+    <div class="panel">
+      <h2>副本完成</h2>
+      <div class="muted">风蚀回廊 · 第 3 层 · 用时 2:41</div>
+      <div class="line"><span>经验</span><span>+1,240</span></div>
+      <div class="line"><span>金币</span><span>+380</span></div>
+      <div class="line"><span><span class="chip">稀有</span>逐风之刃</span><span>HEX：连斩</span></div>
+      <div class="line"><span><span class="chip">魔法</span>追风战靴</span><span></span></div>
+      <div class="line"><span><span class="chip">普通</span>风纹吊坠</span><span></span></div>
+      <div class="line"><span><span class="chip">材料</span>风蚀矿石 ×3</span><span></span></div>
+      <div class="btns"><button class="p">回港整备</button><button>再来一次</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- A -->
+<div class="row">
+  <div class="label"><span class="tag">方向 A</span><b>明亮卡牌（保留奶油金）</b>沿用 10-03 定的奶油＋浅金色系，但加"手游式"表达：缎带标题、星级评价、资源胶囊、按品质描边的大图卡、厚实带底边的按钮。<br><br>改动最小、和现有界面连得上；风险是偏休闲手游味。</div>
+  <div class="stage a"><div class="scene"></div>
+    <div class="banner">
+      <div class="ribbon">通关</div>
+      <div class="stars">★★<span class="off">★</span></div>
+      <div class="sub">风蚀回廊 · 第 3 层 · 用时 2:41</div>
+    </div>
+    <div class="res">
+      <div class="pill"><span class="xp">EXP</span>+1,240</div>
+      <div class="pill"><span class="coin"></span>+380</div>
+    </div>
+    <div class="cards">
+      <div class="card new" style="--r:#c9922c;--rd:#89631b;--rg:rgba(255,200,80,.7)"><span class="q">稀有</span><span class="hex">HEX</span><div class="art"><svg class="i"><use href="#sword"/></svg></div><div class="nm">逐风之刃</div></div>
+      <div class="card" style="--r:#3d8fc4;--rd:#286b96;--rg:rgba(90,170,240,.55)"><span class="q">魔法</span><div class="art"><svg class="i"><use href="#boot"/></svg></div><div class="nm">追风战靴</div></div>
+      <div class="card" style="--r:#9aa4a9;--rd:#53626a;--rg:rgba(200,200,200,.4)"><span class="q">普通</span><div class="art"><svg class="i"><use href="#amulet"/></svg></div><div class="nm">风纹吊坠</div></div>
+      <div class="card" style="--r:#9aa4a9;--rd:#53626a;--rg:rgba(200,200,200,.4)"><span class="q">材料</span><div class="art"><svg class="i"><use href="#ore"/></svg></div><div class="nm">风蚀矿石 ×3</div></div>
+    </div>
+    <div class="btns"><span class="btn p">回港整备</span><span class="btn s">再来一次</span></div>
+  </div>
+</div>
+
+<!-- B -->
+<div class="row">
+  <div class="label"><span class="tag">方向 B</span><b>暗金 ARPG</b>暗底、金色描边雕花框、物品名按品质上色、方格背包槽、悬停浮出详情（词缀紫色、对比当前装备绿色）。类似暗黑 / 流放之路。<br><br>"刷装备"感最强、信息密度高；代价是要推翻奶油金，整套界面都得跟着换。</div>
+  <div class="stage b"><div class="scene"></div>
+    <div class="frame">
+      <div class="title">通关</div>
+      <div class="rule"></div>
+      <div class="meta">风蚀回廊 · 第 3 层 · 用时 <em>2:41</em> · 评价 <em>A</em></div>
+      <div class="grid">
+        <div class="slot" style="--r:#e8b04a;--rg:rgba(232,176,74,.45)"><svg class="i"><use href="#sword"/></svg></div>
+        <div class="slot" style="--r:#5b8fe0;--rg:rgba(91,143,224,.4)"><svg class="i"><use href="#boot"/></svg></div>
+        <div class="slot" style="--r:#6e6a62;--rg:rgba(120,120,120,.25)"><svg class="i"><use href="#amulet"/></svg></div>
+        <div class="slot" style="--r:#6e6a62;--rg:rgba(120,120,120,.25)"><svg class="i"><use href="#ore"/></svg><span class="n">3</span></div>
+      </div>
+      <div class="tip">
+        <div class="nm">逐风之刃</div>
+        <div class="ty">稀有 · 单手剑 · 装等 34</div>
+        <div class="st">攻击 128–162　攻速 1.4</div>
+        <div class="af">◆ HEX 连斩：连续命中同一目标时，第 3 击额外造成一次斩击</div>
+        <div class="up">▲ 比当前武器 每秒伤害 +18%</div>
+      </div>
+      <div class="bar"><span>经验 <b>+1,240</b></span><span>金币 <b>+380</b></span></div>
+      <div class="btns"><span class="btn">回港整备</span><span class="btn s">再来一次</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- C -->
+<div class="row">
+  <div class="label"><span class="tag">方向 C</span><b>航海手账</b>呼应"远航为主循环"：结算是一页航海日志——羊皮纸、手写体、红色"凯旋"印章、蜡封按钮，掉落画在日志里像贴上去的标本。<br><br>主题最独特、最有记忆点；代价是要统一手绘边框和字体，正文数字可读性要另外把关。</div>
+  <div class="stage c"><div class="scene"></div>
+    <div class="paper">
+      <div class="stamp"><div>凯旋<small>第 3 层</small></div></div>
+      <div class="head"><h2>航海日志</h2><span class="d">风蚀回廊 · 用时 二分四十一秒</span></div>
+      <div class="ink"></div>
+      <div class="log">穿过崩塌的回廊，击退守门的<b>风蚀石像</b>。清点收获如下：</div>
+      <div class="loot">
+        <div class="it" style="--rd:#9a5a12"><div class="pic"><svg class="i"><use href="#sword"/></svg></div><div class="nm">逐风之刃</div><div class="q">稀有 · 附 HEX 连斩</div></div>
+        <div class="it" style="--rd:#245f8a"><div class="pic"><svg class="i"><use href="#boot"/></svg></div><div class="nm">追风战靴</div><div class="q">魔法</div></div>
+        <div class="it" style="--rd:#4b361c"><div class="pic"><svg class="i"><use href="#amulet"/></svg></div><div class="nm">风纹吊坠</div><div class="q">普通</div></div>
+        <div class="it" style="--rd:#4b361c"><div class="pic"><svg class="i"><use href="#ore"/></svg></div><div class="nm">风蚀矿石 ×3</div><div class="q">材料</div></div>
+      </div>
+      <div class="tick"><span>经验 +1,240</span><span>金币 +380</span></div>
+      <div class="btns"><span class="ghost">再来一次</span><span class="seal">回港整备</span></div>
+    </div>
+  </div>
+</div>
+<script>function fit(){document.documentElement.style.setProperty("--z",Math.min(1,(innerWidth-40)/800))}addEventListener("resize",fit);fit()</script>
+</body>
+</html>

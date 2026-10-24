@@ -1,0 +1,46 @@
+你是《深渊行者》服务端/内容/数值执行者。请完成"撤销潮印（去肉鸽）"，一次连续做完，批次之间不停、不回来问。
+
+工作目录：G:\webgame\abyss-walker-migration\abyss-walker-rewrite\open-world
+设计依据（先读完）：docs/hub-portal-rework-20261021/planning-bd-v1/20-claude-remove-roguelike.md
+进度文件：新建 docs/hub-portal-rework-20261021/handoff/roguelike-removal-progress.md，每完成一项勾选，写提交号和一句验证结论；中断后从第一个未勾项继续。
+
+背景：用户明确"不需要肉鸽元素"。局内随机三选一的潮印整体撤销，不保留开关、不改名、不换成别的局内随机强化。装备 HEX 词缀不动，战棋 TAC-B1 不动。
+
+R0 盘点：列出 apps/api、packages、tools、tests、apps/web 中所有引用潮印/augment 的代码与内容（docs/reviews 下的历史留档不改），写进进度文件，标明每处"删除 / 改写 / 保留（附原因）"。
+
+R1 服务端与规则：
+- 删除潮印的生成、刷新、选择、托管自动选（dungeon-service.ts、hub-dungeon-runtime.ts、packages/rules/run-augments.ts、frozen-augment-build.ts、augment-descriptions.ts 等）。
+- 副本推进只看清场与走到通道/出口，不再判断"是否有未选潮印"。
+- 实例存档、公开投影、结算里不再出现 augments 字段；结算不列本局潮印。
+- 删除 augment.choose / augment.reroll 指令；旧客户端发来时按未知指令拒绝，不崩溃。
+- 世界阶层的"额外一轮潮印"（dungeonAugmentExtra）一并删除，作为空缺写入残差，不自行补别的奖励。
+
+R2 契约与内容：删除 packages/contracts/run-augments.ts 及 dungeons/hub-dungeons 契约中的潮印字段；删除 packages/content/augments.*、dungeon-augments.*，以及副本模板里的潮印策略。内容校验（pnpm config:check 与内容测试）通过。
+
+R3 前端（只允许机械删除）：删除 apps/web/src/augments-panel.ts，以及 dungeon-controller.ts、main.ts、ui/primitives.ts 中的潮印面板、弹出、倒计时和结算行。不做任何视觉或布局改动；如果删除后界面出现空洞，只记录现象交给 Claude。
+
+R4 数值（按主干工具，只推导一次、验证一次）：
+- 标准玩家地城模型去掉潮印加成（tools/spine/world.ts 中的 DPS×1.25 / EHP×1.1 及相关测量）。
+- tools/pacing 与 measure-build-variety* 的潮印臂一并去掉；config/json/pacing-targets.json 删除"潮印体验"一行。
+- 用 pnpm spine:check 走一次推导：地城怪物生命/攻击按去掉潮印后的玩家输出重算，统一 apply，再验证一次。
+- 如实报告残差（地城 TTK、受击、首领时长与目标的差距），不追加第三轮，不扫参。野外、战棋数值不动。
+
+R5 测试与版本：
+- 删除只测潮印的测试（build-variety-augment-offers / augment-panel 等）；涉及潮印的其他测试改为断言"没有潮印"，不为通过测试删断言。
+- 本机只跑 tsc、单测、PG（数据库测试用 node tools/vitest-tempdb.mjs），重任务一次只跑一个。
+- 规则版本按惯例递增；protocol 因契约字段删除递增；在进度文件里写明新版本号。
+
+R6 发布：全部通过后，用上次的云发布工具发布到云测试服；核对 health/content/build-info 五项版本一致，并用 curl 冒烟"创建副本 → 清完第 1 段 → 进入第 2 段"一条链路（不依赖潮印）。在协作中心任务行用 更新游戏协作.ps1 更新一次（超过 40,000 字符先归档）。
+
+默认裁决（直接采用，不问）：
+- 开发期无真实玩家：进行中的旧副本实例若含潮印数据，允许直接作废或清理；先备份，且只动自有临时库或确认无人使用的常驻库，不动正式角色成长、装备、奖励回执。
+- 历史报告、留档不改写；新报告标注"潮印已撤销（ow-xx 起）"。
+- 规则没覆盖的边角，选更简单、对玩家更直观的处理，写进进度文件（问题｜处理｜依据）。
+
+约束：
+- 云测试服口令只在 G:\webgame\aw-deploy\staging-credentials.txt，不得写进报告、日志、提交或链接。
+- 不跑无头浏览器或任何浏览器自动化。
+- 不提交图片、原始测量明细或构建产物，留档只提交汇总结论。
+- 结束状态只有两种：全部完成并发布，或只剩明确的硬阻塞（写清卡在哪一步、需要谁做什么）。
+
+完成后在进度文件末尾写：删除清单摘要、新版本号、R4 推导与验证的关键数字和残差、空缺清单（至少包括世界阶层奖励空缺），以及给 Grok 的一段复测说明（重点：副本各段能正常推进，界面不再出现潮印）。

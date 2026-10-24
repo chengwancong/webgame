@@ -131,15 +131,6 @@ import {inscriptionRubbings} from '../packages/content/inscription-rubbings.ts';
 for(const aspect of newAspects){for(const rule of aspect.parts.rules){effectRuleSchema.parse(rule);if(!vfxProfiles[rule.vfxKey])throw Error('Unregistered aspect VFX '+rule.id);}for(const patch of aspect.parts.patches)for(const id of patch.skills??[])if(!skillIds.has(id))throw Error('Unknown patched skill '+id);}
 console.log('New aspects:',newAspects.length,'Legacy aspects:',aspectDefinitions.filter(a=>a.legacy).length,'Inscription rubbings:',inscriptionRubbings.length);
 
-import {augments} from '../packages/content/augments.ts';
-import {rebuildFrozenAugmentBuild,freezeAugmentBasis} from '../packages/rules/frozen-augment-build.ts';
-import {resolveBuild} from '../packages/rules/index.ts';
-const augmentFixture={id:'00000000-0000-4000-8000-000000000001',name:'content-check',revision:1,build:1,level:50,xp:0,gold:0,material:0,gear:[],equipment:{},skills:['cut'],skillRanks:{cut:1},progress:{safe:'town',regions:['town'],bosses:[],tasks:[],kills:0}};
-const augmentResolved=resolveBuild(augmentFixture),augmentBasis=freezeAugmentBasis(augmentFixture,{stats:augmentResolved.stats,skills:augmentResolved.resolvedSkills});
-for(const augment of augments){rebuildFrozenAugmentBuild(augmentBasis,[augment.id],augments);for(const rule of augment.parts.rules){effectRuleSchema.parse(rule);if(!vfxProfiles[rule.vfxKey])throw Error('Unregistered augment VFX '+rule.id);}}
-for(const [tier,count]of [['silver',40],['gold',35],['prismatic',15]] as const)if(augments.filter(a=>a.tier===tier).length!==count)throw Error('Augment tier count '+tier);
-console.log('Run augments:',augments.length,'silver 40 / gold 35 / prismatic 15');
-
 for(const row of worldTables.events){if(row.kind==='horde')for(const wave of row.waves)for(const pack of wave)if(pack.rank==='normal'&&worldMonsterContent.templates.find(t=>t.id===pack.template)?.role!=='swarm')throw Error('怪潮普通档须采用杂兵角色模板 '+row.id);}
 
 for(const talent of talentDefinitions)for(const rule of talent.parts?.rules??[]){effectRuleSchema.parse(rule);if(!vfxProfiles[rule.vfxKey])throw Error('Unknown field talent VFX '+rule.id);}

@@ -5,7 +5,7 @@ import {resolve,relative,dirname,isAbsolute} from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 export const spineJsonWritableFiles=new Set([
- 'packages/content/aspects.json','packages/content/augments.json','packages/content/set-effects.json',
+ 'packages/content/aspects.json','packages/content/set-effects.json',
  'packages/content/gear-affixes.json','packages/content/deep-progression.json','packages/content/inscriptions.json',
  'packages/content/monsters.json','packages/content/elite-affixes.json','packages/content/dungeons.json',
  'packages/content/world-tiers.json','packages/content/progression-curve.json',
@@ -71,7 +71,7 @@ export async function applySpinePlan(root:string,changes:readonly SpineChange[],
  }
  const next=prepareSpinePlan(sources,changes,schemas),output=resolve(base,options.output);
  const evidence=relative(base,output).split(/[\\/]/);
- if(evidence[0]!=='docs'||evidence[1]!=='reviews'||evidence[2]!=='numeric-spine-20261013'||evidence.includes('..'))throw Error('变更证据必须留在本期评审目录');
+ if(evidence[0]!=='docs'||evidence[1]!=='reviews'||!['numeric-spine-20261013','roguelike-removal-20261024'].includes(evidence[2])||evidence.includes('..'))throw Error('变更证据必须留在本期评审目录');
  await mkdir(output,{recursive:true});
  await writeFile(resolve(output,'changes.md'),'# 主干配置变更\n\n'+(options.apply?'申请应用，结果见apply-result.json。':'只推导，未应用。')+'\n\n| 文件 | 路径 | 前 | 后 | 依据 |\n|---|---|---|---|---|\n'+changes.map(c=>`| ${c.file} | ${c.path.join('.')} | ${validJson(c.before)} | ${validJson(c.after)} | ${c.basis.replaceAll('|','/').replaceAll('\n',' ')} |`).join('\n')+'\n');
  if(!options.apply)return {applied:false,files};

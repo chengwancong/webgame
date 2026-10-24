@@ -169,8 +169,6 @@ private soundGate=new SoundGate();private overlays=new OverlayStack();private ov
  
  if(event.code==='Escape'&&this.panel==='progression'&&(this.progression.ui.summaryOpen||this.progression.ui.resetConfirm)){event.preventDefault();void this.action(this.progression.ui.summaryOpen?'progression-summary-close':'progression-reset-cancel','');return;}
  if(event.code==='Escape'&&this.hub_ctrl.escapeStep(this.panel)){event.preventDefault();return;}
- if(event.code==='Escape'&&this.panel==='augments'){event.preventDefault();void this.dungeons.handle('augment-hide','');return;}
- if(this.panel==='augments'&&!event.repeat){const ki=['Digit1','Digit2','Digit3'].indexOf(event.code);if(ki>=0){const offered=this.dungeons.instance?.self?.augments?.offered;if(offered&&offered[ki]){event.preventDefault();void this.dungeons.handle('augment-choose',offered[ki].id);}return;}}
  if(event.code==='Escape'&&this.panel==='battle-result'){event.preventDefault();return;}
  if(event.code==='Escape'&&this.panel!=='login'){if(this.confirm){this.confirm='';this.confirmId='';this.renderPanel();this.restoreInventoryFocus();return;}if(this.panel==='character'&&this.characterChooserOpen){this.closeCharacterChooser();return;}if(this.panel)this.open('');return;}
  if(this.panel==='skills'&&['ArrowLeft','ArrowRight','Home','End'].includes(event.key)&&(event.target as HTMLElement).closest('.skill-categories')){event.preventDefault();const categories=Object.keys(skillBookTabs) as (SkillSchool|'all')[],i=categories.indexOf(this.skillCategory);const next=event.key==='Home'?0:event.key==='End'?categories.length-1:(i+(event.key==='ArrowRight'?1:-1)+categories.length)%categories.length;void this.action('skill-category',categories[next]);return;}
@@ -427,7 +425,7 @@ private soundGate=new SoundGate();private overlays=new OverlayStack();private ov
  if(['challenge-run','challenge-create','challenge-start','challenge-join','challenge-ready'].includes(action)){this.dungeons.category=action==='challenge-run'?(id.startsWith('nightmare')?'nightmare':'high'):'raid';this.dungeons.selected=action==='challenge-run'?id:id+'-live';const picked=challengeTierPick(this.challenges.ui.tiers,id);if(picked!==undefined)this.dungeons.setTier(picked);this.open('dungeons');await this.dungeons.load();return;}
  if(action==='goal-craft'){this.openCraftGoal(id);return;}
  if(action.startsWith('craft-')){await this.crafting.handle(action,id);return;}if(this.panel==='forge'&&(action==='stage-key-preview'||action==='stage-key-craft')){await this.crafting.handle(action==='stage-key-preview'?'craft-key-preview':'craft-key-make',id);return;}
- if(action==='stage-key-preview'||action==='stage-key-craft'||action.startsWith('dungeon-')||action.startsWith('augment-')){await this.dungeons.handle(action,id);return;}
+ if(action==='stage-key-preview'||action==='stage-key-craft'||action.startsWith('dungeon-')){await this.dungeons.handle(action,id);return;}
  if(action==='hub-result-retry'){await this.dungeons.handle('dungeon-return','');if(!this.dungeons.instance)await this.hub_ctrl.relaunch(id);return;}
  if(action==='hub-result-next'){await this.dungeons.handle('dungeon-return','');if(!this.dungeons.instance){this.hub_ctrl.invalidate();await this.hub_ctrl.load();void this.refreshPets();this.hub_ctrl.selectNode(id);if(!await this.hub_ctrl.showReturnQueue('hub-chart'))this.open('hub-chart');}return;}
  if(action.startsWith('hub-')){if(await this.hub_ctrl.handle(action,id,this.panel))return;}
@@ -627,7 +625,6 @@ private soundGate=new SoundGate();private overlays=new OverlayStack();private ov
   if(this.panel==='starsea-talk'){hideTip();this.starsea.renderTalk($('#modal'));return;}
   if(this.panel==='starsea-chart'){hideTip();this.starsea.renderChart($('#modal'));return;}
   if(this.panel==='battle-result'&&this.result.context){hideTip();this.result.render($('#modal'),regionById(this.hub).name);refreshTips();return;}
-  if(this.panel==='augments'){this.dungeons.renderAugments($('#modal'));refreshTips();return;}
   if(this.panel==='hub-chart'){hideTip();this.hub_ctrl.renderChart($('#modal'));refreshTips();return;}
   if(this.panel==='hub-today'){hideTip();this.hub_ctrl.renderToday($('#modal'));refreshTips();return;}
   if(this.panel==='hub-port'){hideTip();this.hub_ctrl.renderPort($('#modal'));refreshTips();return;}

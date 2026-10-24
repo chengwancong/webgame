@@ -16,10 +16,12 @@ import {referencePlayer} from './player.ts';
 import {readJson,review,data} from './io.ts';
 const [command,...args]=process.argv.slice(2),get=(key:string,fallback:string)=>args.find(a=>a.startsWith('--'+key+'='))?.slice(key.length+3)??fallback,apply=args.includes('--apply'),plan=get('plan',''),out=get('out',review+'/'+({bench:'S2',audit:'S2',normalize:'S3','solve-builds':'S4',monsters:'S5',progression:'S6',validate:'S7/V1',check:'S9'} as Record<string,string>)[command]);
 if(args.includes('--help')||!command){console.log('数值主干命令：targets、bench、audit、normalize、solve-builds、monsters、progression、validate、check、hub-rewards、content-g01、pet-r1-verify。通用 --out=目录；写入必须 --apply --plan=计划路径；运行前确认没有其他重任务。bench支持 --builds / --player / --content；monsters支持 --player / --efficiencies；progression支持 --timeline-only；validate支持 --suite=all|builds|calendar|walls|field|budget。');}
+else if(command==='check'&&args.some(a=>a.startsWith('--roguelike-removal-repair='))){const {runRoguelikeRemovalRepair}=await import('./roguelike-removal.ts');await runRoguelikeRemovalRepair(args);}
+else if(command==='check'&&args.some(a=>a.startsWith('--roguelike-removal='))){const {runRoguelikeRemoval}=await import('./roguelike-removal.ts');await runRoguelikeRemoval(args);}
 else if(command==='pet-r1-verify'){const {verifyPetR1}=await import('./pet-r1-verify.ts');await verifyPetR1();}
 else if(command==='content-g01'){const {runContentEconomy}=await import('./content-g01-economy.ts');await runContentEconomy(args);}
 else if(command==='hub-rewards'){const {runHubRewards}=await import('./hub-rewards.ts');await runHubRewards(args);}
-else if(apply&&plan){const value=await readJson(plan);await applySpinePlan('.',value.changes,spineSchemas,{apply:true,output:out});}
+else if(apply&&plan){const value=await readJson(plan);if(value.kind==='roguelike-removal-v1'){const {assertDungeonOnlyChanges}=await import('./roguelike-removal.ts');assertDungeonOnlyChanges(value.changes);}await applySpinePlan('.',value.changes,spineSchemas,{apply:true,output:out});}
 else switch(command){
  case 'targets':await import('./targets-cli.ts');break;
  case 'bench':{
