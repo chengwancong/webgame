@@ -14,6 +14,7 @@ import {todayPanelHtml,type TodayPanelState} from './today-panel.ts';
 import {commissionPanelHtml,type CommissionPanelState} from './commission-panel.ts';
 import {getHubChart,getHubToday,getHubPort,getHubCommissions,postSeaTier,postDock,postPortClaim,postCommission,postReturnAck,hubErrorMessage} from './hub-api.ts';
 import {returnAckId,returnItemHtml,returnLines,type ReturnLine,type ReturnItemView} from './return-queue.ts';
+import {dialogueToastText} from '../automatic-quest-dialogue.ts';
 import type {ChartView,TodayView,HubPortView as PortView,HubCommissionsView as CommissionsView,ChartNodeView,HubReturnItem} from '../../../../packages/contracts/hub.ts';
 import type {LoadoutView} from '../../../../packages/contracts/zhangjian.ts';
 import type {FieldFreeze} from '../../../../packages/contracts/field-freeze.ts';
@@ -282,11 +283,8 @@ export class HubController {
     for (const item of queue) {
       if (item.kind === 'dialogue') {
         // HUB 降级：对白不开窗口，直接 ack；有台词时显示一行 toast。
-        const lines = returnLines(item.dialogueId, this.deps.playerName?.());
-        if (lines.length) {
-          const first = lines[0];
-          this.deps.notice((first.speaker ? first.speaker + '：' : '') + first.text);
-        }
+        const text = dialogueToastText(returnLines(item.dialogueId, this.deps.playerName?.()));
+        if (text) this.deps.notice(text);
         void postReturnAck(item.kind, returnAckId(item));
         continue;
       }

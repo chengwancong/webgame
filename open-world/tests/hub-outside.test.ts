@@ -114,6 +114,6 @@ describe('HUB B3 outside port',()=>{
   expect(todayViewSchema.safeParse(hubTodayView(s,h,epoch)).success).toBe(true);expect(hubPortViewSchema.safeParse(hubPortView(s,h)).success).toBe(true);expect(hubCommissionsViewSchema.safeParse(hubCommissionsView(s,h)).success).toBe(true);
  });
  it('persists mode by character and leaves rewards zero until the derived B4 configuration is supplied',()=>{
-  const h=unlocked(),other=newHubState(epoch);expect(hubModePreference(h)).toBe('semi');setHubModePreference(h,'auto');expect(hubModePreference(JSON.parse(JSON.stringify(h)))).toBe('auto');expect(hubModePreference(other)).toBe('semi');recordHubOutsideActivity(h,'craft');expect(h.port.rep.forge).toBe(0);
+  const h=unlocked(),other=newHubState(epoch);expect(hubModePreference(h)).toBe('auto');setHubModePreference(h,'semi');expect(hubModePreference(JSON.parse(JSON.stringify(h)))).toBe('auto');setHubModePreference(h,'manual');expect(hubModePreference(JSON.parse(JSON.stringify(h)))).toBe('manual');expect(hubModePreference(other)).toBe('auto');recordHubOutsideActivity(h,'craft');expect(h.port.rep.forge).toBe(0);
  });
 });

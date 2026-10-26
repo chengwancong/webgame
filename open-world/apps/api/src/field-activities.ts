@@ -1,3 +1,4 @@
+import {resolveTactics} from '../../../packages/rules/tactics.ts';
 import {serverHexCombatStats} from '../../../packages/simulation/hex-combat-stats.ts';
 import {recordHexZoneKills} from '../../../packages/rules/starsea.ts';
 import {interactionReach} from '../../../packages/rules/world-interactions.ts';
@@ -11,7 +12,7 @@ import {fieldActivityCommandSchema,fieldActivityInputSchema,type FieldActivityVi
 import type {CharacterState,Receipt,Reward,Spawn} from '../../../packages/contracts/index.ts';
 import {worldTables} from '../../../packages/content/world-tables.ts';
 import {characterWorldTables} from '../../../packages/rules/world-levels.ts';
-import {regionById} from '../../../packages/content/index.ts';
+import {regionById,settings} from '../../../packages/content/index.ts';
 import {resolveBuild,applyXp} from '../../../packages/rules/index.ts';
 import {resolveMonsterSpawn} from '../../../packages/rules/monster-stats.ts';
 import {applyEliteAffixes,rollEliteAffixes} from '../../../packages/rules/elite-affixes.ts';
@@ -49,7 +50,7 @@ function spawnWave(data:FieldActivity,index:number,world:World){
 /** Trusted server clock and real World only. No completion, HP, kills, reward,
  * checkpoint or elapsed-time values can be supplied through the HTTP commands. */
 export function advanceFieldActivity(data:FieldActivity,now:number,maxTicks=300){
- if(data.status!=='running'||!data.battle)return;const world=World.restore(data.battle);if(world.mode!=='semi')world.setMode('semi');if(now-(data.lastInputAt??data.startedAt)>1500)world.control(0,0);const definition=data.definition as Event,due=Math.max(0,Math.floor((now-data.startedAt)*30/1000)-data.tick),limit=data.kind==='event'?Math.ceil(definition.durationSeconds*30):Infinity;
+ if(data.status!=='running'||!data.battle)return;const world=World.restore(data.battle);if(now-(data.lastInputAt??data.startedAt)>1500)world.control(0,0);const definition=data.definition as Event,due=Math.max(0,Math.floor((now-data.startedAt)*30/1000)-data.tick),limit=data.kind==='event'?Math.ceil(definition.durationSeconds*30):Infinity;
  for(let n=0;n<Math.min(due,maxTicks)&&data.status==='running';n++){
   while(data.kind==='event'&&data.waves<data.waveCount&&world.tick>=data.waves*definition.waveIntervalSeconds*30)spawnWave(data,data.waves,world);
   world.step();data.tick=world.tick;data.renderEvents??=[];data.renderEvents.push(...world.events);if(data.renderEvents.length>256)data.renderEvents.splice(0,data.renderEvents.length-256);
@@ -84,7 +85,7 @@ export function registerFieldActivities(app:FastifyInstance,ctx:Context){
    if(distance(v.position,position)>interactionReach.activity||!walkable(regionById(v.region),v.position))fail('ACTIVITY_DISTANCE','请走到世界目标旁。');
    const zone=characterWorldTables(s).zones.find(z=>z.id===definition!.zone)!,tier=activeWorldTier(s),difficulty=tierDifficulty(tier),currency=tierReward(tier,starseaKillReward(zone.levelBand[1],'normal',s.level,v.region,Boolean(s.starsea?.hardmode))),data:FieldActivity={spawnRadius:v.kind==='event'?Math.max(3,(definition as Event).radius-4):undefined,worldTier:tier,difficulty,eliteAffixes:worldTier(tier).eliteAffixes,instance:randomUUID(),character:s.id,target:v.target,region:v.region,kind:v.kind,name:'name' in definition!?String(definition!.name):'宝箱',status:v.kind==='chest'?'success':'running',startedAt:Date.now(),cooldownUntil:0,attempt,definition:structuredClone(definition!),level:zone.levelBand[1],position:{...position},waves:0,waveCount:v.kind==='event'?(definition as Event).waves.length:v.kind==='rare'?1:0,tick:0,seed:randomInt(1,2147483647),reason:'',settled:false,lastInputAt:Date.now(),renderEvents:[],loot:freezeFieldLoot(definition!.loot,currency),battle:null};
    if(v.kind!=='chest'){
-    const build=resolveBuild(s),world=new World({...regionById(v.region),sprint:Boolean(!fieldFreeze.fieldSprint&&regionById(v.region).sprint&&s.starsea?.features.includes('sprint'))},build.stats,build.resolvedSkills,[],[],data.seed);world.hero.position={...position};world.anchor={...position};if(v.kind==='event'){world.radius=Math.max(3,(definition as Event).radius-4);world.autoBounds={center:{...position},radius:Math.max(2,(definition as Event).radius-2)};}world.setMode('semi');
+    const build=resolveBuild(s),world=new World({...regionById(v.region),sprint:Boolean(!fieldFreeze.fieldSprint&&regionById(v.region).sprint&&s.starsea?.features.includes('sprint'))},build.stats,build.resolvedSkills,[],[],data.seed);world.tactics=resolveTactics(s.tactics,build.resolvedSkills);world.hero.position={...position};world.anchor={...position};if(v.kind==='event'){world.radius=Math.max(3,(definition as Event).radius-4);world.autoBounds={center:{...position},radius:Math.max(2,(definition as Event).radius-2)};}world.setMode(s.gear.length>=settings.capacity?'semi':'auto');
     if(v.kind==='event'&&(definition as Event).kind==='defend'){const d=definition as Event;if(!d.objectiveHp)throw Error('守护事件缺少目标生命');world.defense={position:{...position},hp:Math.round(worldObjectiveHp(d.objectiveHp,worldTables.zones.find(z=>z.id===d.zone)!.levelBand[1],data.level)*difficulty.hp),maxHp:Math.round(worldObjectiveHp(d.objectiveHp,worldTables.zones.find(z=>z.id===d.zone)!.levelBand[1],data.level)*difficulty.hp),radius:d.radius,requiredTicks:Math.round(d.durationSeconds*30),heldTicks:0,enemyIds:[],failed:false,complete:false};}
     await enterHexCombat(c,s.id,'activity:'+data.instance,world,undefined,data.startedAt);
     spawnWave(data,0,world);data.battle=world.exportCheckpoint();
@@ -97,7 +98,7 @@ export function registerFieldActivities(app:FastifyInstance,ctx:Context){
   const who=await identity(req),v=fieldActivityInputSchema.parse(req.body);return transaction(pool,async c=>{
    const s=await state(c,who,true);await lease(c,s,who,v.lease_id);const data=(await c.query('SELECT data FROM ow_field_activities WHERE character=$1 AND instance=$2 FOR UPDATE',[s.id,v.instance])).rows[0]?.data as FieldActivity|undefined;if(!data||data.status!=='running')fail('ACTIVITY','当前活动已经结束。');
    advanceFieldActivity(data!,Date.now());if(data!.status==='running'){
-    const world=World.restore(data!.battle!);data!.lastInputAt=Date.now();if(v.destination){if(!walkable(world.region,v.destination))fail('POSITION','目标不可通行。');world.go(v.destination);}if(v.mode)world.setMode(v.mode);if(v.movement){if(Math.abs(v.movement.x)>1||Math.abs(v.movement.y)>1)fail('INPUT','移动输入超出范围。');world.control(v.movement.x,v.movement.y);}if(v.skill)world.cast(v.skill,undefined,v.target);data!.battle=world.exportCheckpoint();
+    const world=World.restore(data!.battle!);data!.lastInputAt=Date.now();if(v.destination){if(!walkable(world.region,v.destination))fail('POSITION','目标不可通行。');world.go(v.destination);}if(v.mode){if(v.mode==='auto'&&s.gear.length>=settings.capacity)fail('BAG_FULL','背包已满，先整理背包再恢复自动。');world.setMode(v.mode);}if(v.movement){if(Math.abs(v.movement.x)>1||Math.abs(v.movement.y)>1)fail('INPUT','移动输入超出范围。');world.control(v.movement.x,v.movement.y);}if(v.skill)world.cast(v.skill,undefined,v.target);data!.battle=world.exportCheckpoint();
    }
    await persist(c,data!);return {activity:fieldActivityView(data!,Date.now(),false)};
   });

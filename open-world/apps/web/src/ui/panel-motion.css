@@ -19,10 +19,8 @@
 /* tooltip / 悬浮提示出现。 */
 #tooltip{animation:ui-tip-in var(--motion-fast) var(--motion-ease-out) backwards}
 
-/* tab 下划线：一条随选中项滑动的线；原来贴在选中按钮上的静态下划线让位。 */
-.ui-tabs[data-tab-slide]{position:relative}
-.ui-tabs[data-tab-slide]::after{content:'';position:absolute;left:0;bottom:var(--space-1);height:calc(var(--border-edge) + var(--border-width));width:var(--tab-w,0);transform:translateX(var(--tab-x,0));background:var(--color-highlight);border-radius:var(--radius-round);pointer-events:none;transition:transform var(--motion-normal) var(--motion-ease-out),width var(--motion-normal) var(--motion-ease-out)}
-.ui-tabs[data-tab-slide] button[aria-selected=true]{box-shadow:none!important}
+/* Direction A capsule tabs own their selected depth in controls.css.
+   Legacy tab measurements must not replace them with a sliding underline. */
 
 @media(prefers-reduced-motion:reduce){
  #modal[data-enter],#modal[data-enter]>*,#modal[data-enter] [data-stagger],#modal.is-closing,#modal.is-closing>*,#tooltip{animation:none!important}

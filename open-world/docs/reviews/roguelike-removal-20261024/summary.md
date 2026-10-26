@@ -54,4 +54,8 @@
 
 野外monster/world-tier、HUB既有combatScale、TAC-B1源码及数值的保护哈希在唯一验证中一致。本批没有改野外/战棋，也没有补上阶层/船台被撤销的奖励。
 
-待全部本批功能验证通过后发布，记录curl真实新QA副本首段清场→走通道→第二段，及health/content/build-info五项一致。不得用战棋沙盒代替正式副本推进验收。
+2026-10-24 19:14:43 +08:00 发布成功，来源 `98e2fe206d71899c22c96c8bd2dce6267a031a48`；五项版本为0.11.57 / protocol57 / ow-97 / world-art-20261007-v24-world-runtime / db19。health/content/build-info一致，首页与14个引用JS没有潮印入口/选择指令/倒计时。未使用浏览器。
+
+19:19:35 云端新QA角色完成正常开场、wind-story-1胜利、wind-nest-1首段清场→通道开启→第二段后退出。35个curl HTTP请求全部成功；原生WS只负责现有连接、心跳和合法输入，未注入击杀、传送或数据库构筑。响应中无潮印字段。数据库容器与2026-10-18启动时间不变。
+
+部署留档：`G:/webgame/aw-deploy/release-98e2fe206d71-1792840414921`；curl与测量汇总/原始资料在 `G:/webgame/aw-deploy/roguelike-removal-20261024`，只提交本汇总。完整操作复核与Grok说明见本批handoff进度末尾。仅声明本批功能和跨段链路通过，不将一次切片验证或短冒烟说成全游戏平衡/完整实机体验通过。

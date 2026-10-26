@@ -1,0 +1,17 @@
+/* Shared graphic controls retain their original boxes and authoritative values. */
+.ui-graphic-art{display:block;pointer-events:none;user-select:none}
+.ui-pips__dot:has(>.ui-graphic-art){position:relative;background:none;border:0;transform:none}
+.ui-pips__dot.is-filled{--graphic-pip-fill:var(--pip-fill);--graphic-pip-line:var(--pip-fill)}
+.ui-pips__dot>.ui-graphic-art,.ui-meter__track>.ui-graphic-art,.ui-page-dots button>i>.ui-graphic-art,.ui-empty-slot>.ui-graphic-art--empty-slot{position:absolute;inset:0;width:100%;height:100%}
+.ui-meter__track>.ui-graphic-art{border-radius:inherit}
+.ui-empty-slot:has(>.ui-graphic-art){position:relative;isolation:isolate}
+.ui-empty-slot:has(>.ui-graphic-art)>.ui-icon{position:relative;z-index:1}
+.ui-timer>.ui-graphic-art{flex:0 0 var(--size-icon-small);width:var(--size-icon-small);height:var(--size-icon-small)}
+.ui-ring{stroke-width:var(--border-rim)}
+.ui-ring__bezel{fill:var(--color-panel-raised);stroke:var(--color-border-strong);stroke-width:var(--border-width)}
+.ui-ring__inner{stroke:var(--color-border-subtle);stroke-width:var(--border-width)}
+.ui-ring__index{fill:var(--color-primary-border);stroke:none}
+.ui-page-dots button>i:has(>.ui-graphic-art){position:relative;background:none}
+.ui-page-dots [aria-current=page]>i{--graphic-page-fill:var(--color-highlight);--graphic-page-line:var(--color-highlight)}
+.ui-page-dots button>.ui-graphic-art{width:var(--size-icon);height:var(--size-icon)}
+.ui-help>.ui-graphic-art{width:var(--size-icon-small);height:var(--size-icon-small)}

@@ -33,8 +33,14 @@ export function returnItemHtml(v: ReturnItemView): string {
     const last = v.line >= v.lines.length - 1;
     return `<section class="panel story-dialogue hub-return" data-panel="hub-return" role="dialog" aria-modal="true" aria-label="回港对白">${panelHeaderHtml(line.speaker || '拾星港', {emblemHtml: sealEmblem('people')})}<div class="story-spoken">${line.speaker ? `<strong>${esc(line.speaker)}</strong>` : ''}<p>${esc(line.text)}</p></div>${v.lines.length > 1 ? `<p class="ui-caption">${Math.min(v.line + 1, v.lines.length)} / ${v.lines.length}</p>` : ''}<div class="story-dialogue-actions">${buttonHtml(last ? (more ? '继续' : '知道了') : '继续', {action: 'hub-return-next', variant: 'primary'})}</div></section>`;
   }
-  const card = v.item.kind === 'unlock'
-    ? {kicker: '新开放', title: v.item.title, body: `<p>${esc(v.item.text)}</p>`}
-    : {kicker: '离港期间', title: `离开 ${v.item.days} 天`, body: v.item.lines.length ? `<ul class="hub-return-lines">${v.item.lines.map(l => `<li>${esc(l)}</li>`).join('')}</ul>` : ''};
-  return `<div class="confirm-overlay ui-confirm-overlay" data-panel="hub-return"><section class="confirm-box ui-confirm hub-return-card" role="dialog" tabindex="-1" aria-modal="true" aria-label="${esc(card.kicker)}"><div class="ui-confirm__body"><p class="hub-return-kicker">${esc(card.kicker)}</p><h3 class="hub-return-title">${esc(card.title)}</h3>${card.body}</div><div class="ui-confirm__actions">${more ? `<span class="ui-caption">还有 ${v.left - 1} 条</span>` : ''}${buttonHtml(more ? '继续' : '知道了', {action: 'hub-return-next', variant: 'primary'})}</div></section></div>`;
+  let card: {kicker: string; title: string; body: string};
+  if (v.item.kind === 'unlock') {
+    card = {kicker: '新开放', title: v.item.title, body: `<p>${esc(v.item.text)}</p>`};
+  } else {
+    const lines = v.item.lines;
+    card = {kicker: '离港期间', title: `离开 ${v.item.days} 天`, body: lines.length ? `<ul class="hub-return-lines">${lines.map((l: string) => `<li class="hub-return-lines__item">${esc(l)}</li>`).join('')}</ul>` : ''};
+  }
+  // 主角卡头带（浅金顶带 + kicker + title）
+  const heroBand = `<div class="hub-hero-card hub-return-hero"><div class="hub-hero-card__band"><p class="hub-return-kicker">${esc(card.kicker)}</p></div><div class="hub-hero-card__body"><h3 class="hub-return-title">${esc(card.title)}</h3></div></div>`;
+  return `<div class="confirm-overlay ui-confirm-overlay" data-panel="hub-return"><section class="confirm-box ui-confirm hub-return-card" role="dialog" tabindex="-1" aria-modal="true" aria-label="${esc(card.kicker)}"><div class="ui-confirm__body">${heroBand}${card.body}</div><div class="ui-confirm__actions">${more ? `<span class="ui-caption">还有 ${v.left - 1} 条</span>` : ''}${buttonHtml(more ? '继续' : '知道了', {action: 'hub-return-next', variant: 'primary'})}</div></section></div>`;
 }

@@ -1,3 +1,4 @@
+@layer legacy {
 /* Workshop crafting tabs (docs/crafting-system-design.md §8). Values come from ui tokens only. */
 .panel[data-panel=forge]>.craft-tabs{flex:0 0 auto;margin-bottom:var(--space-3)}
 .panel[data-panel=forge] .forge-panel,.craft-panel-wrap{flex:1;min-height:0}
@@ -55,3 +56,26 @@
 /* 设施、地点这类短词整体换行，不拆成单字竖排 */
 .craft-atom{display:inline-block;white-space:nowrap}
 .craft-professions :is([role=tab],button){white-space:nowrap}
+
+}
+
+@layer components {
+/* U4 uses the shared hub card row and the existing quality well. */
+.craft-panel-wrap>.craft-hero{min-width:0}.craft-hero .hub-hero-card__big{font-size:var(--font-size-h2)}
+.craft-panel-wrap .craft-recipe-list{gap:var(--space-3);padding:var(--space-1) var(--space-2) var(--space-2)}
+.craft-panel-wrap .craft-recipe.hub-card-row{grid-template-columns:var(--size-touch-target) minmax(0,1fr) auto;grid-template-rows:auto;min-height:var(--size-slot);flex:none;background:var(--color-panel-raised);border:var(--border-width) solid var(--color-border);box-shadow:0 var(--border-depth) 0 var(--color-border-strong)}
+.craft-panel-wrap .craft-recipe.hub-card-row.is-selected{border-color:var(--color-primary-border);background:var(--color-panel-selected);outline:var(--border-focus-width) solid var(--color-highlight);outline-offset:var(--border-focus-offset)}
+.craft-panel-wrap .craft-recipe__name{font-size:var(--font-size-body);white-space:normal}
+.craft-panel-wrap .craft-recipe .ui-status{grid-column:auto;grid-row:auto}
+.craft-material-pills{min-width:0;margin-block:var(--space-2)}
+.craft-material-pills .ui-resource{justify-self:end}.craft-material-pills .ui-resource small{display:none}.craft-material-pills .ui-cost dd{align-items:center;grid-template-columns:max-content max-content}.craft-material-pills .ui-cost__row{grid-template-columns:minmax(0,1fr)}
+.craft-panel-wrap .craft-output-card{grid-template-columns:var(--size-inventory-slot) minmax(0,1fr) auto}
+.craft-output-card>.bag-item-well{display:grid;place-items:center;width:var(--size-inventory-slot);height:var(--size-inventory-slot);border-radius:var(--radius-slot);overflow:hidden}
+.craft-output-card .bag-item-image{width:var(--size-inventory-icon);height:var(--size-inventory-icon);display:grid;place-items:center}
+.craft-output-card .bag-item-image img{width:100%;height:100%;object-fit:contain}
+.craft-panel-wrap .craft-facility.hub-card-row{display:flex;gap:var(--space-2)}
+.craft-facility header{flex-wrap:wrap}.craft-facility-rank{font-size:var(--font-size-h3);font-weight:var(--font-weight-bold);color:var(--color-emphasis)}
+.craft-panel-wrap .craft-prof.hub-card-row,.craft-panel-wrap .craft-codex.hub-card-row{display:grid;grid-template-columns:var(--size-touch-target) minmax(0,1fr) auto;padding:var(--space-2);margin-bottom:var(--space-3)}
+.craft-panel-wrap .craft-goal-where li.hub-card-row{display:grid;grid-template-columns:var(--size-touch-target) minmax(0,1fr);gap:var(--space-2);font-size:var(--font-size-body)}
+
+}

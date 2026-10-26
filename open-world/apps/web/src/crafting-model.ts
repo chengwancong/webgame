@@ -8,7 +8,7 @@ import {gearSlotLabels} from './equipment-slots.ts';
  * Display-only crafting helpers (docs/crafting-system-design.md §8).
  * Quantities, availability, prices and results always come from /api/crafting*; nothing here decides them.
  */
-export const craftTabs=[{id:'upgrade',label:'强化·重铸'},{id:'craft',label:'制作'},{id:'pattern',label:'图样'},{id:'refine',label:'提纯'},{id:'masterwork',label:'精工'},{id:'key',label:'钥匙'},{id:'facility',label:'设施'}] as const;
+export const craftTabs=[{id:'upgrade',label:'强化'},{id:'reroll',label:'重铸'},{id:'craft',label:'制作'},{id:'pattern',label:'图样'},{id:'refine',label:'提纯'},{id:'masterwork',label:'精工'},{id:'key',label:'钥匙'},{id:'facility',label:'设施'}] as const;
 export type CraftTab=typeof craftTabs[number]['id'];
 export const professionLabels={smithing:'锻造',jewelcraft:'饰品',alchemy:'炼金',enchanting:'附魔',gathering:'采集'} as const;
 export type CraftProfession=Exclude<keyof typeof professionLabels,'gathering'>;

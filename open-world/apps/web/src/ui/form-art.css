@@ -1,0 +1,18 @@
+/* SVG detail sits around native controls; no replacement of input semantics or hit areas. */
+.ui-form-art{position:absolute;inset:0;display:block;width:100%;height:100%;pointer-events:none;user-select:none}
+.ui-form-field-shell,.ui-select-field__control{display:grid;position:relative;min-width:0;max-width:100%;isolation:isolate}
+.ui-form-field-shell>input,.ui-select-field__control>select{width:100%;min-width:0}
+.ui-form-field-shell:has(input:focus-visible),.ui-select-field__control:has(select:focus-visible){--form-accent:var(--color-highlight)}
+.ui-form-field-shell:has(input[aria-invalid=true]){--form-accent:var(--color-danger)}
+.ui-form-field-shell:has(input:disabled),.ui-select-field__control:has(select:disabled){--form-accent:var(--color-border-subtle)}
+.ui-select-field__control>.ui-select{appearance:none;-webkit-appearance:none;padding-right:calc(var(--space-8) + var(--space-2))}
+.ui-select-field__control>.ui-form-art--chevron{inset:50% var(--space-3) auto auto;width:var(--size-icon-small);height:var(--size-icon-small);transform:translateY(-50%)}
+.ui-toggle__track>.ui-form-art--toggle{border-radius:inherit}
+.ui-toggle input:checked+.ui-toggle__track:has(>.ui-form-art--toggle){--form-accent:var(--color-primary-border);background:var(--color-primary-top);border-color:var(--color-primary-border)}
+.ui-toggle input:disabled+.ui-toggle__track:has(>.ui-form-art--toggle){--form-accent:var(--color-border-subtle)}
+.ui-toggle__track:has(>.ui-form-art--toggle)::after{z-index:1}
+/* Same grid row as the direct native input: no added row, height or event handling. */
+.ui-range:has(>.ui-range__rail)>input[type=range]{grid-row:2;position:relative;z-index:1;background:transparent}
+.ui-range__rail{position:relative;grid-column:1/-1;grid-row:2;align-self:center;width:100%;height:var(--space-3);min-width:0;pointer-events:none;--form-accent:var(--color-primary-border)}
+.ui-range:has(>.ui-range__rail)>input[type=range]::-webkit-slider-runnable-track{background:transparent;border-color:transparent;box-shadow:none}
+.ui-range:has(>.ui-range__rail)>input[type=range]::-moz-range-track{background:transparent;border-color:transparent;box-shadow:none}

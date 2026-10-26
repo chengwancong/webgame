@@ -1,3 +1,6 @@
+import {iconHtml,type IconName} from './icons.ts';
+import {escapeHtml} from './primitives.ts';
+import {componentArtHtml} from './component-art.ts';
 // Toast 队列（docs/hud-arbitration-plan.md §2.2）：一个通道、最多 3 条、同 key 合并、切场景清空。
 export type ToastKind='info'|'success'|'loot'|'warn'|'error';
 export type ToastInput={kind?:ToastKind;key?:string;ttl?:number;sticky?:boolean;/** 同 key 时只换文案、刷新计时，不累计 ×N（施放失败等反复按键的提示）。 */replace?:boolean};
@@ -28,3 +31,12 @@ export class ToastQueue{
  clearAll(){this.items=[];}
 }
 export const toastText=(t:Pick<Toast,'text'|'count'>)=>t.count>1?`${t.text}　×${t.count}`:t.text;
+
+const toastIcons:Record<ToastKind,IconName>={info:'info',success:'check',loot:'chest',warn:'alert',error:'alert'};
+/** Presentation only. The queue still owns expiry; fade-out finishes at that same deadline. */
+export function toastHtml(t:Toast,now:number){
+ const lifetime=Math.max(0,Number.isFinite(t.expires-now)?t.expires-now:0);
+ return `<div class="toast is-${t.kind}${t.sticky?' is-sticky':''}" data-toast-id="${t.id}" style="--toast-lifetime:${lifetime}ms" role="${t.kind==='error'?'alert':'status'}">${componentArtHtml('toast')}<span class="toast__icon" aria-hidden="true">${iconHtml(toastIcons[t.kind])}</span><span class="toast__text">${escapeHtml(toastText(t))}</span></div>`;
+}
+/** Include renewed expiry so same-key replace refreshes the visual fade timer as well. */
+export const toastViewKey=(t:Toast)=>[t.id,t.count,t.kind,t.text,t.expires,t.sticky].join(':');

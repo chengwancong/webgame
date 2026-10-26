@@ -1,0 +1,36 @@
+【已作废 2026-10-25】回合制战棋已撤销，改为实时自动战斗（planning-bd-v1/27-auto-combat-direction.md）。不要执行下面的交接。
+
+你在《深渊行者》仓库 abyss-walker-rewrite/open-world 工作。任务：补齐战棋敌人意图和伤害预览的后端规则。前端 HUD 已经由 Claude 做完，不要改前端版面。
+
+先读 docs/hub-portal-rework-20261021/handoff/tactical-hud-rework-20261025.md，重点看 §3.2、§4、§5、§6。
+
+一、执行方式
+1. 按 §6 的 T1、T2、T3（只做线协议和 sandbox-wire 部分）、T5 连续做完，中途不停下来问，也不等确认。
+2. 每批结束后写进度文件 docs/hub-portal-rework-20261021/handoff/tactical-hud-rework-progress.md，记录改了哪些文件、测试结果、采用了哪些默认裁决。
+3. 不确定的地方按 §5 的默认裁决处理。
+
+二、只有以下三种情况标记「待 Claude」，写明原因后继续做其他批次
+1. 需要改战斗数值或技能效果。
+2. 需要改 contracts/tactical.ts 里已有字段的含义。只新增字段不算。
+3. 原本通过的测试改完后失败，两次修复都不成功。
+另外，凡是需要改 controller.ts 或 tactical.css 版面的，也标记「待 Claude」，不要自己动手改。
+
+三、后端要点
+1. 预览只在服务端算，而且只读：不推进随机数、不消耗预算、不改冷却、不写库。
+2. 暴击按期望值计入。
+3. previewTacticalEncounter 新增两项：
+   - 按单位列出 units：hpBefore、hpAfter、shieldBefore、shieldAfter、damageFromHero、damageFromEnemies、killed、killedBy。
+   - phase：分 afterHero 和 afterIntents 两段。
+   原有的合计字段改为从 units 汇总。
+4. 预览不合法时返回拒绝码 code，前端把它映射成中文原因。
+5. 意图新增 threatCells 和 order。已有的意图揭示、冻结、只执行已揭示意图、致死降级、失效（附 reason）这些规则，一律不改语义。
+6. 撤销移动：同一回合、出手前可以撤销一次（后端动作 undo-move）。
+7. sandbox-wire.ts 改为直接读取 units 和 phase，不再用 projection 的前后差值推算。
+
+四、约束
+1. 不跑无头浏览器、Playwright 或自动化脚本。T5 只用 agent 内置浏览器做短时人工自查。
+2. 不提交截图和构建产物。只按路径提交自己的文件，不碰别的会话没提交的改动。
+3. 重任务一次只跑一个。
+
+五、全部做完后
+用中文回报：每批的结果、全部「待 Claude」项、测试命令及输出摘要。

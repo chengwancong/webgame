@@ -83,7 +83,7 @@ export class WorldScene extends Phaser.Scene {
  private pendingInteraction?:{world:World;point:Vec;range:number;valid:()=>boolean;action:()=>void};
  private groundLoot?:GroundLootRenderer;private spoils?:KillSpoils;
  private networkSequence=-1;private partyCasts=new Map<string,{skill:string;action:'attack'|'skill';started:number;windup:number;end:number}>();
- private networkMotion=new AuthoritativeMotion();private localPrediction=new LocalPrediction();private renderNow=0;
+ private networkMotion=new AuthoritativeMotion();private localPrediction=new LocalPrediction();private renderNow=0;private previousRenderNow=0;
  private previousWorld?:World;private previous=new Map<string,Vec>();
  private numbers?:WorldNumbers;private damageNumbersCreated=0;private backdropFrames=0;private heroDeathPlayback=new HeroDeathPlayback();
  private killStreak=new KillStreak();private killStreakRenderer?:KillStreakRenderer;private _killStreakRose=false;
@@ -282,7 +282,7 @@ export class WorldScene extends Phaser.Scene {
   if(map){preloadStarseaRuntimeAssets(this,[map.groundResource,map.backdropResource]);this.load.on(Phaser.Loader.Events.PROGRESS,progress);this.load.once(Phaser.Loader.Events.COMPLETE,()=>{this.load.off(Phaser.Loader.Events.PROGRESS,progress);setTimeout(remaining,0);});this.load.start();}else remaining();
  }
  update(_time:number,delta:number){
- this.renderNow=performance.now();
+ this.previousRenderNow=this.renderNow||performance.now();this.renderNow=performance.now();
  const world=this.bridge.world;this.starSeaView=this.bridge.starSea?.();if(this.regionId!==(world.region.presentationKey??world.region.id))this.resetRegion();if(this.loadingRegion||this.legacyLoading)return;
  if(this.previousWorld!==world&&!(this.bridge.authoritativeWorld&&this.previousWorld?.region.id===world.region.id&&world.tick>=this.previousWorld.tick)){this.skillEffects?.reset();this.feedback.reset();this.numbers?.reset();this.heroCast=undefined;this.enemyCasts.clear();this.heroDeathPlayback.reset();this.previous.clear();this.accumulator=0;for(const actor of this.actors.values())this.destroyActor(actor);this.actors.clear();for(const node of [...this.children.list])if(node.getData('damage-number'))node.destroy();this.previousWorld=world;}
  this.previousWorld=world;
@@ -308,7 +308,7 @@ export class WorldScene extends Phaser.Scene {
  if(singleStep)world.paused=true;
  this.heroDeathPlayback.advance(world.hero.hp<=0,delta,world.paused&&!this.bridge.allowDeathPlayback,this.bridge.playbackRate??1,singleStep,this.actors.get('hero')?.wardrobe?.actionDuration('death')??1.5);
  this.logicTimes.push(performance.now()-logicStart);if(this.logicTimes.length>600)this.logicTimes.shift();const renderStart=performance.now();
- const p=project(this.interpolate('hero',world.hero.position));const shake=this.skillEffects?.cameraOffset?.()??{x:0,y:0};const bossNear=world.enemies.some(e=>e.boss&&e.alive&&Math.hypot(e.position.x-world.hero.position.x,e.position.y-world.hero.position.y)<BOSS_PUSH_RANGE),cam=stepFollow(this.follow,p.x,p.y-15,delta,{reduced:Boolean(this.bridge.motionReduced),bossNear});this.cameras.main.setZoom(this.baseZoom*(1+cam.push));this.cameras.main.centerOn(cam.x+shake.x,cam.y+shake.y);
+ const p=project(this.interpolate('hero',world.hero.position));const shake=this.skillEffects?.cameraOffset?.()??{x:0,y:0};const bossNear=world.enemies.some(e=>e.boss&&e.alive&&Math.hypot(e.position.x-world.hero.position.x,e.position.y-world.hero.position.y)<BOSS_PUSH_RANGE),cam=stepFollow(this.follow,p.x,p.y-15,this.bridge.authoritativeWorld?this.renderNow-this.previousRenderNow:delta,{reduced:Boolean(this.bridge.motionReduced),bossNear});this.cameras.main.setZoom(this.baseZoom*(1+cam.push));this.cameras.main.centerOn(cam.x+shake.x,cam.y+shake.y);
  // Letterbox backdrop: one capture per map once its chunks have streamed in, never per frame.
  if(this.backdropFrames>0&&--this.backdropFrames===0)this.game.events.once(Phaser.Core.Events.POST_RENDER,()=>setStageBackdrop(this.game.canvas));
  const cx=Math.floor(world.hero.position.x/32),cy=Math.floor(world.hero.position.y/32);

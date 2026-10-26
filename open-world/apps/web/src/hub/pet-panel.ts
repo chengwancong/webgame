@@ -2,7 +2,10 @@
  * Z3 宠物面板（M17）。
  * 阵容区（1 上阵 + 2 助阵）+ 已拥有列表 + 9 个流派选择 + 图鉴。
  */
-import {esc, buttonHtml, sectionTitleHtml, stateBlockHtml, statusBadgeHtml} from '../ui-components.ts';
+import {esc, buttonHtml, sectionTitleHtml, stateBlockHtml, statusBadgeHtml, panelHeaderHtml} from '../ui-components.ts';
+import {iconHtml} from '../ui/icons.ts';
+import {hudMenuIcon} from '../hud-icons.ts';
+import {petPortraitHtml} from './pet-portrait.ts';
 import {petFlows} from '../../../../packages/contracts/zhangjian.ts';
 import type {PetsView, PetView} from '../../../../packages/contracts/zhangjian.ts';
 
@@ -40,15 +43,8 @@ const KIND_NAMES: Record<string, string> = {
   single: '单体', area: '范围', chain: '连锁', shield: '护盾',
 };
 
-/** 宠物图集路径。runtime 格式：`<family>-<form>`，如 ss-pet-wind-free-young。 */
-function petAtlasUrl(runtime: string) {
-  // family 为 runtime 去掉末尾 -young/-adult/-awakened 的部分
-  const family = runtime.replace(/-(?:young|adult|awakened)$/, '');
-  return `/art/starsea/pets/v3/${family}/actor.webp`;
-}
-
 function petAnim(runtime: string): string {
-  return `<div class="pet-anim" data-pet-runtime="${esc(runtime)}" aria-hidden="true"><img class="pet-anim__img" src="${petAtlasUrl(runtime)}" alt="" draggable="false"></div>`;
+  return petPortraitHtml(runtime, 'pet-anim');
 }
 
 /**
@@ -125,7 +121,8 @@ function slotHtml(label: string, pet: PetView | null, role: 'active' | 'support'
 function catalogEntryHtml(entry: PetCatalogEntry, owned: PetView[]): string {
   const ownedPet = owned.find(p => p.family === entry.family);
   const badge = statusBadgeHtml(STATUS_NAMES[entry.status], entry.status === 'owned' ? 'success' : 'neutral');
-  return `<li class="pet-catalog-entry ${entry.status === 'unavailable' ? 'is-unavailable' : ''}">
+  return `<li class="pet-catalog-entry is-${entry.status}">
+    ${petPortraitHtml(`ss-pet-${entry.family}-young`, 'pet-catalog-entry__portrait')}
     <b>${esc(entry.name)}</b>
     <small>${esc(TIER_NAMES[entry.tier] ?? entry.tier)} · ${esc(entry.source)}</small>
     ${badge}
@@ -137,6 +134,22 @@ export function petPanelHtml(view: PetsView, busy: boolean): string {
   const {owned, lineup, catalog} = view;
   const activeOwned = lineup.active ? owned.find(p => p.family === lineup.active) ?? null : null;
   const supportOwned = lineup.support.map(id => owned.find(p => p.family === id)).filter((p): p is PetView => Boolean(p));
+
+  // 主角卡：当前上阵宠物信息
+  const activeName = activeOwned?.name ?? '（空）';
+  const activeLevel = activeOwned ? `Lv.${activeOwned.level}` : '';
+  const activeElem = activeOwned ? (ELEMENT_NAMES[activeOwned.element] ?? activeOwned.element) : '';
+  const heroCard = `<div class="hub-hero-card">
+    <div class="hub-hero-card__band">${iconHtml('star', {size: 20})}<h3 class="hub-hero-card__title">出战阵容</h3></div>
+    <div class="hub-hero-card__body">
+      ${activeOwned ? `<span class="pet-hero__anim">${petAnim(activeOwned.runtime)}</span>` : ''}
+      <div class="pet-hero__info">
+        <b class="hub-hero-card__big" style="font-size:var(--font-size-h2)">${esc(activeName)}</b>
+        ${activeOwned ? `<span class="hub-hero-card__sub">${esc(activeLevel)} · ${esc(activeElem)}</span>` : '<span class="hub-hero-card__sub">从下方列表选择宠物上阵</span>'}
+        <span class="hub-hero-card__sub">助阵 ${supportOwned.length} / 2</span>
+      </div>
+    </div>
+  </div>`;
 
   // 阵容区
   const lineupHtml = `<section class="pet-lineup" aria-label="宠物阵容">
@@ -150,7 +163,8 @@ export function petPanelHtml(view: PetsView, busy: boolean): string {
     </div>
   </section>`;
 
-  // 已拥有列表（可点击上阵/助阵）
+  // 已拥有列表：只有第一个未上阵的宠物用 primary 上阵按钮（每屏最多 1 个主按钮）
+  let hasPrimaryActive = false;
   const ownedHtml = owned.length
     ? `<section class="pet-owned" aria-label="已拥有宠物">
         ${sectionTitleHtml('已拥有', {count: `${owned.length} 只`})}
@@ -158,14 +172,17 @@ export function petPanelHtml(view: PetsView, busy: boolean): string {
           ${owned.map(p => {
             const inLineup = p.family === lineup.active || lineup.support.includes(p.family);
             const isActive = p.family === lineup.active, isSupport = lineup.support.includes(p.family);
-            // 向前兼容：转为 PetViewExt 读取可选 activeEffect
             const pext = p as PetViewExt;
-            return `<div class="pet-owned-item${inLineup ? ' is-in-lineup' : ''}">
-              ${petAnim(p.runtime)}
-              <span class="pet-owned-item__name">${esc(p.name)}${activeEffectBadgeHtml(pext.activeEffect)}</span>
-              <span class="pet-owned-item__meta">Lv.${p.level} · ${esc(ELEMENT_NAMES[p.element] ?? p.element)}</span>
-              ${inLineup ? statusBadgeHtml(isActive ? '上阵' : '助阵', 'success', {variant: 'inline'}) : ''}
-              <span class="pet-owned-item__actions">${isActive ? '' : buttonHtml('上阵', {action: 'pet-set-active', id: p.family, size: 'compact', variant: 'primary', disabled: busy})}${isActive || isSupport ? '' : buttonHtml('助阵', {action: 'pet-set-support', id: p.family, size: 'compact', variant: 'secondary', disabled: busy || lineup.support.length >= 2})}</span>
+            const canSetActive = !inLineup && !hasPrimaryActive;
+            const activeVariant = canSetActive ? 'primary' : 'secondary';
+            if (!inLineup) hasPrimaryActive = true;
+            return `<div class="hub-card-row pet-owned-item${inLineup ? ' is-in-lineup' : ''}">
+              <span class="hub-card-row__icon pet-owned-item__portrait">${petAnim(p.runtime)}</span>
+              <div class="hub-card-row__content">
+                <span class="hub-card-row__title pet-owned-item__name">${esc(p.name)}${activeEffectBadgeHtml(pext.activeEffect)}${inLineup ? statusBadgeHtml(isActive ? '上阵' : '助阵', 'success', {variant: 'inline'}) : ''}</span>
+                <span class="hub-card-row__sub pet-owned-item__meta">Lv.${p.level} · ${esc(ELEMENT_NAMES[p.element] ?? p.element)} · ${esc(TIER_NAMES[p.tier] ?? p.tier)}</span>
+              </div>
+              <span class="hub-card-row__actions">${isActive ? '' : buttonHtml('上阵', {action: 'pet-set-active', id: p.family, size: 'compact', variant: activeVariant, disabled: busy})}${isActive || isSupport ? '' : buttonHtml('助阵', {action: 'pet-set-support', id: p.family, size: 'compact', variant: 'secondary', disabled: busy || lineup.support.length >= 2})}</span>
             </div>`;
           }).join('')}
         </div>
@@ -180,5 +197,9 @@ export function petPanelHtml(view: PetsView, busy: boolean): string {
     </ul>
   </section>`;
 
-  return `<div class="pet-panel">${lineupHtml}${ownedHtml}${catalogHtml}</div>`;
+  return `<section class="panel pet-panel-wrap" data-panel="pet" role="dialog" aria-modal="true" aria-label="宠物">
+    ${panelHeaderHtml('宠物', {closeLabel: '关闭宠物', closeAction: 'pet-close', emblemHtml: hudMenuIcon('pets')})}
+    ${heroCard}
+    <div class="pet-panel">${lineupHtml}${ownedHtml}${catalogHtml}</div>
+  </section>`;
 }

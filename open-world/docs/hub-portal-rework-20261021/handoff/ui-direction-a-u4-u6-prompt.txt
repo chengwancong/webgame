@@ -1,0 +1,20 @@
+你是《深渊行者》前端执行者。请完成界面方向 A「明亮卡牌」的剩余批次：U0 补完 → U4 养成 → U5 HUD 与系统 → U6 战棋侧栏。一次连续做完，批次之间不停、不回来问。
+
+工作目录：G:\webgame\abyss-walker-migration\abyss-walker-rewrite\open-world
+先读完两份文件：
+1. docs/hub-portal-rework-20261021/planning-bd-v1/22-ui-direction-a-plan.md（设计依据：六条视觉规则、批次表、不做清单）
+2. docs/hub-portal-rework-20261021/handoff/ui-direction-a-u4-u6.md（交接：已落地的公共件、默认裁决、每批要求与验收、验证方法、约束）
+
+进度文件：新建 docs/hub-portal-rework-20261021/handoff/ui-direction-a-u4-u6-progress.md。每完成一批勾选，写提交号和一句验证结论；中断后从第一个未勾项继续。
+
+要点：
+- 复用已有件（tokens.json、controls.css、item-slots.css、ceremony.css、hub-entry.css 的主角卡/图标卡行、currency.ts 资源胶囊、pet-portrait.ts），不另建平行皮肤；新样式值先进 tokens.json 再生成。
+- 只改表现，不改信息结构和交互流程；需要改结构的记进进度文件「待 Claude」并跳过。
+- 每屏一个主按钮；面板不超出 1280×720 舞台；没有纯文字列表（设置页除外）；技能栏不加动效、不染色。
+- 缺图用现有图标或剪影占位并登记 art-backlog.md，不下载新素材；A34–A38 到了只换资源登记。
+- 每批跑 token --check、tsc、相关单测（--maxWorkers=1 --no-file-parallelism），重任务一次一个；在静态验收页加样例与切换按钮供 Claude 审阅。
+- 不跑无头浏览器或任何浏览器自动化。只按明确路径提交本任务文件，不碰其他会话的改动；不提交图片、截图、原始明细、构建产物。
+- 云测试服口令只在 G:\webgame\aw-deploy\staging-credentials.txt，不得写进报告、日志、提交或链接；不清库，不改正式角色数据。
+
+结束状态只有两种：全部完成并发布到云测试服；或只剩明确硬阻塞（写清卡在哪一步、需要谁做什么）。
+完成后在进度文件末尾写：每批改动摘要与提交号、「待 Claude」清单、新登记的美术占位、给 Grok 的真机检查清单（每批 3–6 条）。

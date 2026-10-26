@@ -3,7 +3,8 @@
  * 结构按 backend-B0-B4.md §3.1 的节点模板（5 列 × 3 行，风栖 / 雾铃各 10 个节点），
  * 并在测试里用 packages/contracts/hub.ts 的 zod 模式校验，防止字段漂移。
  */
-import type {ChartView, ChartRegionView, ChartNodeView, NodeKind, TodayView, HubCommissionsView as CommissionsView, HubPortView as PortView, HubSettlement as HubResultBlock, ChartRegionId} from '../../../../packages/contracts/hub.ts';
+import type {ChartView, ChartRegionView, ChartNodeView, NodeKind, TodayView, HubCommissionsView as CommissionsView, HubPortView as PortView, HubSettlement as HubResultBlock, ChartRegionId, HubReturnItem} from '../../../../packages/contracts/hub.ts';
+import type {PetsView, SlotsView} from '../../../../packages/contracts/zhangjian.ts';
 
 type Slot = {slot: string; kind: NodeKind; col: number; row: number; links: string[]; name: string; line: string; drop: string; level: number; minutes: [number, number]; shards: number; challenges: ChartNodeView['challenges']; reward: string[]};
 
@@ -171,3 +172,41 @@ export const FIXTURE_RESULT: HubResultBlock = {
 };
 
 export const REGION_IDS: ChartRegionId[] = ['wind', 'mist'];
+
+export function fixturePets(patch: Partial<PetsView> = {}): PetsView {
+  return {
+    owned: [
+      {family: 'wind-free', name: '疾风犬', island: 'wind', tier: 'free', level: 7, xp: 340, xpNext: 500, form: 'adult', flow: 'blade', element: 'physical', runtime: 'ss-pet-wind-free-adult', activeLine: '每 5 秒 · 物理伤害 100%', passiveLine: '攻击 +8%', combatRole: '近战', flavor: '随主人冲锋陷阵'},
+      {family: 'mist-light', name: '雾铃狐', island: 'mist', tier: 'light', level: 3, xp: 60, xpNext: 200, form: 'young', flow: 'arcanum', element: 'arcane', runtime: 'ss-pet-mist-light-young', activeLine: '奥术爆炸 · 范围伤害 60%', passiveLine: '施法速度 +5%', combatRole: '远程', flavor: '以迷雾为家'},
+    ],
+    lineup: {active: 'wind-free', support: ['mist-light']},
+    catalog: [
+      {family: 'wind-free', name: '疾风犬', island: 'wind' as const, tier: 'free' as const, source: '风栖区域首通', status: 'owned' as const},
+      {family: 'mist-light', name: '雾铃狐', island: 'mist' as const, tier: 'light' as const, source: '雾铃区域首通', status: 'owned' as const},
+      {family: 'forge-heavy', name: '赤炉兽', island: 'forge' as const, tier: 'heavy' as const, source: '赤炉关口首通', status: 'locked' as const},
+    ],
+    ...patch,
+  };
+}
+export const FIXTURE_PETS: PetsView = fixturePets();
+
+export function fixtureSlots(patch: Partial<SlotsView> = {}): SlotsView {
+  return {
+    slots: [
+      {slot: 'weapon', rank: 3, gearId: 'sword-1', gearCap: 5, effective: 3, cost: {gold: 200, material: 2}, block: undefined},
+      {slot: 'armor', rank: 1, gearId: 'coat-1', gearCap: 4, effective: 1, cost: {gold: 120, material: 1}, block: undefined},
+      {slot: 'helmet', rank: 0, gearId: null, gearCap: 0, effective: 0, cost: null, block: '未穿戴装备'},
+      {slot: 'boots', rank: 2, gearId: 'boots-1', gearCap: 3, effective: 2, cost: {gold: 150, material: 1}, block: undefined},
+      {slot: 'accessory', rank: 0, gearId: 'ring-1', gearCap: 3, effective: 0, cost: {gold: 100, material: 1}, block: undefined},
+      {slot: 'ring', rank: 1, gearId: 'ring-2', gearCap: 3, effective: 1, cost: {gold: 100, material: 1}, block: undefined},
+    ],
+    resonance: {tier: 2, lowest: 0, next: {rank: 4, missing: 3}, bonusPercent: 4},
+    ...patch,
+  };
+}
+export const FIXTURE_SLOTS: SlotsView = fixtureSlots();
+
+export const FIXTURE_RETURN_ITEMS: HubReturnItem[] = [
+  {kind: 'unlock', id: 'unlock:forge', title: '工坊开放', text: '工坊现在可以精炼装备了，找铁拳老格聊聊吧。'},
+  {kind: 'away', days: 2, lines: ['船队带回 3 箱补给', '码头声望 +15', '发现了一处新的近岸浅礁']},
+];

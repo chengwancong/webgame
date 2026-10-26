@@ -1,6 +1,6 @@
 import {describe,it,expect} from 'vitest';
 import {regionById} from '../packages/content/index.ts';
-import {hudContext,hudModeBlocked,combatModeHtml,hudStatusHtml,questTrackerHtml} from '../apps/web/src/hud-context.ts';
+import {hudContext,hudModeBlocked,autoStatusHtml,hudStatusHtml,questTrackerHtml} from '../apps/web/src/hud-context.ts';
 import type {TaskView} from '../packages/contracts/index.ts';
 describe('HUD context and action boundaries',()=>{
  it('uses configured peaceful maps, without treating field spawn checkpoints as safe',()=>{
@@ -12,11 +12,13 @@ describe('HUD context and action boundaries',()=>{
   expect(hudModeBlocked('manual',options)).toBe(false);expect(hudModeBlocked('semi',options)).toBe(false);expect(hudModeBlocked('auto',options)).toBe(true);
   expect(hudModeBlocked('auto',{...options,context:'dungeon'})).toBe(false);expect(hudModeBlocked('manual',{...options,hp:0})).toBe(true);
  });
- it('shows the mode control only in dungeons, as an A1 menu button; field and town are manual only',()=>{
-  const dungeon={...options,context:'dungeon' as const},closed=combatModeHtml('semi',false,dungeon);
-  expect(closed).toContain('hud-mode-toggle');expect(closed).toContain('class="entry hud-mode-current"');expect(closed).toContain('半自动');expect(closed).not.toContain('data-action="mode"');
-  const open=combatModeHtml('semi',true,dungeon);expect(open.match(/data-action="mode"/g)).toHaveLength(3);expect(open.match(/aria-current="true"/g)).toHaveLength(1);
-  for(const context of ['field','home','result'] as const)expect(combatModeHtml('semi',true,{...options,context})).toBe('');
+ it('shows auto status instead of a mode switch: running, takeover, or stopped with resume (doc 27 R1)',()=>{
+  const field={...options,context:'field' as const,full:false},dungeon={...field,context:'dungeon' as const};
+  for(const o of [field,dungeon]){expect(autoStatusHtml('auto',false,o)).toContain('自动中');expect(autoStatusHtml('auto',true,o)).toContain('接管中');expect(autoStatusHtml('auto',false,o)).not.toContain('data-action');}
+  const stopped=autoStatusHtml('semi',false,field);expect(stopped).toContain('已停止');expect(stopped).toContain('data-action="auto-resume"');expect(stopped).not.toMatch(/data-action="auto-resume"[^>]*disabled/);
+  expect(autoStatusHtml('semi',false,{...field,full:true})).toMatch(/data-action="auto-resume"[^>]*disabled/);
+  for(const context of ['home','result'] as const)expect(autoStatusHtml('auto',false,{...options,context})).toBe('');
+  expect(autoStatusHtml('semi',false,field)).not.toContain('hud-mode');
  });
  const bag={gear:Array.from({length:24},()=>({})) as any[],capacity:24};
  it('never generates a return-to-town action from full inventory in an active dungeon',()=>{

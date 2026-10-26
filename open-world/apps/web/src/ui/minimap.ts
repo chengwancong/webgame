@@ -13,6 +13,7 @@ import {artColor,minimapArtFiles} from './minimap-art.ts';
 import {paintSceneMiniature} from './minimap-scene.ts';
 import {fieldMaps} from '../../../../packages/content/open-world/index.ts';
 import type {StarseaMap} from '../starsea-world-renderer.ts';
+import {storyCropMap} from '../story-crop-map.ts';
 const ink=(name:Parameters<typeof resolvedToken>[0])=>resolvedToken(name);
 export type MapProjection={scale:number;x:number;y:number;width:number;height:number;padding:number};
 export const mapCorners=(width:number,height:number)=>[{x:0,y:0},{x:width,y:0},{x:width,y:height},{x:0,y:height}];
@@ -75,7 +76,7 @@ function fogLayer(canvas:HTMLCanvasElement,region:World['region'],projection:Map
  for(let i=0;i<Math.round(region.width*region.height/1900);i++){const p=minimapPoint({x:rnd()*region.width,y:rnd()*region.height},projection),r=(14+rnd()*26)*cell/1.6,lit=rnd()<.5;f.fillStyle=lit?light:shade;f.globalAlpha=lit?.3:.16;f.beginPath();f.ellipse(p.x,p.y,r*1.6,r,0,0,Math.PI*2);f.fill();}
  f.restore();
  const grid=explorationGrid(region.width,region.height);let bits:Uint8Array;try{bits=decodeExploration(field.explored,grid.bytes);}catch{bits=new Uint8Array(grid.bytes);}
- f.globalCompositeOperation='destination-out';f.filter=`blur(${Math.max(2,cell*5)*density}px)`;f.fillStyle='#000';
+ f.globalCompositeOperation='destination-out';f.filter=`blur(${Math.max(2,cell*5)*density}px)`;f.fillStyle='black';
  f.setTransform(density*projection.scale*32,density*projection.scale*18,-density*projection.scale*32,density*projection.scale*18,density*projection.x,density*projection.y);
  for(let i=0;i<grid.columns*grid.rows;i++)if(bits[i>>>3]&(1<<(i&7)))f.fillRect((i%grid.columns)*8-1,Math.floor(i/grid.columns)*8-1,10,10);
  f.filter='none';f.globalCompositeOperation='source-over';fogLayers.set(canvas,{key,canvas:layer});return layer;
@@ -117,7 +118,7 @@ function radarLayer(owner:HTMLCanvasElement,map:StarseaMap,scale:number,density:
 export function paintMinimap(canvas:HTMLCanvasElement,world:World,options:{mode?:'radar'|'full';size?:number;radius?:number;npcs?:MapMarker[];field?:FieldMapView}={}){
  const full=options.mode==='full',region=world.region,size=options.size??(canvas.clientWidth||(full?320:192)),pad=full?18:8;
  // Same source as the scene (main.ts bridge.worldMap): produced islands carry their sealed map in fieldMaps.
- const fieldMap=fieldMaps[region.id] as StarseaMap|undefined,state=!fieldMap&&region.presentationKey?.startsWith('ss-map-')?requestMinimapMap(region.presentationKey):undefined,map=fieldMap??state?.map;
+ const fieldMap=(fieldMaps[region.id] as StarseaMap|undefined)??storyCropMap(region,fieldMaps),state=!fieldMap&&region.presentationKey?.startsWith('ss-map-')?requestMinimapMap(region.presentationKey):undefined,map=fieldMap??state?.map;
  // Produced islands are a round coast inside the square map: sea, surf, fog and markers follow the coast, not the square; the region map frames the coast itself.
  const coast=map?.boundary.points?.length?islandOutline(map):undefined,fit=full&&coast?coastBounds(coast,16):undefined,height=full?minimapHeight(region.width,region.height,size,pad,fit):size;
  const density=Math.min(3,Math.ceil(Math.max(window.devicePixelRatio||1,stageLayout().render))),pixelWidth=Math.round(size*density),pixelHeight=Math.round(height*density);

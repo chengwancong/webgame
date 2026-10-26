@@ -1,3 +1,4 @@
+// 已冻结（2026-10-25，planning-bd-v1/27 D-A4）：回合制战棋撤销，正式战斗为实时自动战斗。本目录只保留沙盒，不再开发、不接入游戏；一个月内无复用再清理。
 import type {FastifyInstance,FastifyReply,FastifyRequest} from 'fastify';
 import {randomInt,randomUUID} from 'node:crypto';
 import {z} from 'zod';

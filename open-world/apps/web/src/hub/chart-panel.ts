@@ -1,12 +1,9 @@
-/**
- * U2/U3 航图面板（方案 B「节点旁弹卡」）。
- * 顶部横排航区页签 + 右上海域难度；节点图占满；选中节点后在节点旁弹出固定尺寸的卡片，
- * 卡片放在节点左右两侧、越界时翻到另一侧，绝不压住被选中的节点。
- * 版面按 1280×720 舞台排：图区尺寸是常量，节点坐标和卡片位置都由这些常量算出，面板内不滚动。
- */
+/** 航图：左侧路线 + 右侧固定信息栏，几何与 CSS 共用生成 token。 */
 import {esc,buttonHtml,panelHeaderHtml,stateBlockHtml,statusBadgeHtml,tabsHtml} from '../ui-components.ts';
 import {iconHtml} from '../ui/icons.ts';
+import {hudMenuIcon} from '../hud-icons.ts';
 import {art} from '../ui-assets.ts';
+import {resolvedToken} from '../ui/tokens.ts';
 import {seaDifficultyHtml} from '../sea-difficulty-view.ts';
 import type {ChartView,ChartRegionView,ChartNodeView,NodeKind} from '../../../../packages/contracts/hub.ts';
 import type {LoadoutView} from '../../../../packages/contracts/zhangjian.ts';
@@ -33,17 +30,14 @@ function keySourceNodeName(keyId: string): string | null {
 }
 
 // ---- 图区几何（模板 5 列 × 3 行，见 backend-B0-B4 §3.1） ----
-export const GRAPH_W = 1200;
-export const GRAPH_H = 480;
+export const GRAPH_W = parseFloat(resolvedToken('Chart.GraphWidth'));
+export const GRAPH_H = parseFloat(resolvedToken('Chart.GraphHeight'));
 export const GRID_COLS = 5;
 export const GRID_ROWS = 3;
-/** 节点按钮占位（圆盘 + 下方名字）的半宽：卡片从这里之外开始 */
-export const NODE_HALF_W = 60;
-export const NODE_DISC = 64;
-export const CARD_W = 288;
-export const CARD_H = 376;
-export const CARD_GAP = 12;
-export const CARD_EDGE = 8;
+export const NODE_HALF_W = parseFloat(resolvedToken('Chart.NodeWidth')) / 2;
+export const NODE_DISC = parseFloat(resolvedToken('Chart.NodeDisc'));
+export const GATE_DISC = parseFloat(resolvedToken('Chart.GateDisc'));
+const NODE_ICON = parseFloat(resolvedToken('Chart.NodeIcon'));
 
 export type ChallengePick = '' | 'high' | 'nightmare';
 
@@ -103,19 +97,6 @@ export function nodeCenter(pos: {col: number; row: number}) {
   return {x: (col + 0.5) * (GRAPH_W / GRID_COLS), y: (row + 0.5) * (GRAPH_H / GRID_ROWS)};
 }
 
-/**
- * 卡片位置：默认贴在节点右侧；右侧放不下（超出图区）就翻到左侧。
- * 纵向以节点为中心，夹在图区内。卡片水平上始终避开节点占位，所以不会盖住被选中的节点。
- */
-export function cardPlacement(pos: {col: number; row: number}): {left: number; top: number; side: 'right' | 'left'} {
-  const c = nodeCenter(pos);
-  const rightLeft = c.x + NODE_HALF_W + CARD_GAP;
-  const fitsRight = rightLeft + CARD_W <= GRAPH_W - CARD_EDGE;
-  const left = fitsRight ? rightLeft : c.x - NODE_HALF_W - CARD_GAP - CARD_W;
-  const top = clamp(c.y - CARD_H / 2, 0, GRAPH_H - CARD_H);
-  return {left: Math.round(left), top: Math.round(top), side: fitsRight ? 'right' : 'left'};
-}
-
 /** 残页槽循环：空 → 第一种可用残页 → … → 空。同一堆残页不会超过持有数量。 */
 export function cycleShard(owned: ShardStack[], picks: string[], slot: number, slots: number): string[] {
   const next = Array.from({length: slots}, (_, i) => picks[i] ?? '');
@@ -163,15 +144,16 @@ function nodeHtml(n: ChartNodeView, selectedId: string | null, interactive: bool
   const selected = n.id === selectedId;
   const cls = ['hub-node', `is-${n.status}`, n.recommended && !hidden ? 'is-recommended' : '', selected ? 'is-selected' : ''].filter(Boolean).join(' ');
   const name = hidden ? '？' : n.name;
-  const disc = hidden ? cnSprite(..._CN_MARK_HIDDEN,24) : cnSprite(..._CN_FRAMES[n.kind],24);
+  const disc = hidden ? cnSprite(..._CN_MARK_HIDDEN,NODE_ICON) : cnSprite(..._CN_FRAMES[n.kind],NODE_ICON);
   const corner: string[] = [];
-  if (!hidden && n.status !== 'locked' && n.firstClearBonusAvailable) corner.push('<span class="hub-node__x2">首通 ×2</span>');
+  if (!hidden && n.status !== 'locked' && n.firstClearBonusAvailable) corner.push('<span class="hub-node__bonus" role="img" aria-label="今日首通双倍" title="今日首通双倍"></span>');
   if (!hidden && n.collectible && !n.collectible.owned) corner.push(`<span class="hub-node__collect" title="藏有收藏品">${cnSprite(..._CN_MARK_COLLECT,16,'藏有收藏品')}</span>`);
   const state = n.status === 'cleared' ? `<span class="hub-node__state">${iconHtml('check', {size: 16})}</span>` : n.status === 'locked' ? `<span class="hub-node__state">${iconHtml('lock', {size: 16})}</span>` : '';
   const label = hidden ? `未开放，${KIND_NAMES[n.kind]}` : `${n.name}，${KIND_NAMES[n.kind]}，${STATUS_NAMES[n.status]}${n.recommended ? '，推荐' : ''}`;
-  return `<button type="button" class="${cls}" style="left:${c.x - NODE_HALF_W}px;top:${c.y - NODE_DISC / 2}px" data-action="hub-node-select" data-id="${esc(n.id)}" data-kind="${n.kind}" aria-label="${esc(label)}" aria-pressed="${selected}" aria-haspopup="dialog"${hidden || !interactive ? ' disabled' : ''}>
+  return `<button type="button" class="${cls}" style="left:${c.x - NODE_HALF_W}px;top:${c.y - (n.kind === 'gate' ? GATE_DISC : NODE_DISC) / 2}px" data-action="hub-node-select" data-id="${esc(n.id)}" data-kind="${n.kind}" aria-label="${esc(label)}" aria-pressed="${selected}" aria-controls="hub-chart-rail"${hidden || !interactive ? ' disabled' : ''}>
     <span class="hub-node__disc">${disc}${state}</span>
-    <span class="hub-node__label">${esc(name)}</span>
+    <span class="hub-node__label" title="${esc(name)}">${esc(name)}</span>
+    ${n.kind === 'gate' && !hidden ? '<span class="hub-node__gate-label">关口</span>' : ''}
     ${corner.length ? `<span class="hub-node__corner">${corner.join('')}</span>` : ''}
   </button>`;
 }
@@ -247,18 +229,21 @@ export function doorRowHtml(n: ChartNodeView): string {
 }
 
 export function nodeCardHtml(n: ChartNodeView, state: ChartPanelState): string {
-  const place = cardPlacement(n.pos);
   const busy = state.busyNodeId === n.id;
   const header = `<div class="hub-card__head">
     <span class="hub-card__kind">${cnSprite(..._CN_FRAMES[n.kind],16)}${KIND_NAMES[n.kind]}</span>
-    <b class="hub-card__name">${esc(n.name)}</b>
-    ${buttonHtml('关闭节点卡片', {action: 'hub-node-deselect', size: 'icon', iconHtml: CLOSE_ICON, className: 'close', disabled: Boolean(state.busyNodeId)})}
+    <h3 class="hub-card__name">${esc(n.name)}</h3>
+    ${buttonHtml('返回航区概况', {action: 'hub-node-deselect', size: 'icon', iconHtml: CLOSE_ICON, className: 'close', disabled: Boolean(state.busyNodeId)})}
   </div>`;
 
   let body: string;
+  let foot = '';
   if (n.status === 'locked') {
+    const region = state.view.regions.find(r => r.id === n.region);
+    const previous = n.links.map(id => region?.nodes.find(candidate => candidate.id === id)).find(candidate => candidate?.status === 'open' || candidate?.status === 'cleared');
     body = `<p class="hub-card__line">${esc(n.line)}</p>
-      <p class="hub-card__lock">${iconHtml('lock', {size: 16})}<span>${esc(n.lockReason ?? '尚未解锁')}</span></p>`;
+      <p class="hub-card__lock">${iconHtml('lock', {size: 16})}<span>${esc(n.lockReason ?? '尚未解锁')}</span></p>
+      ${previous ? `<p>前置节点：${esc(previous.name)}</p>${buttonHtml('定位前置节点', {action: 'hub-node-select', id: previous.id, variant: 'secondary', disabled: Boolean(state.busyNodeId)})}` : ''}`;
   } else {
     const first = n.firstClearDone
       ? `<p class="hub-card__first is-done">${iconHtml('check', {size: 16})}已首通</p>`
@@ -282,12 +267,10 @@ export function nodeCardHtml(n: ChartNodeView, state: ChartPanelState): string {
       ${doorRowHtml(n)}
       ${shardRowHtml(n, state.view, state.selectedShards)}
       ${challengeRowHtml(n, state.selectedChallenge)}
-      <div class="hub-card__foot">
-        ${state.message ? `<p class="hub-card__error" role="alert">${esc(state.message)}</p>` : ''}
-        ${depart}
-      </div>`;
+      ${state.message ? `<p class="hub-card__error" role="alert">${esc(state.message)}</p>` : ''}`;
+    foot = `<div class="hub-card__foot">${depart}</div>`;
   }
-  return `<section class="hub-card" data-side="${place.side}" data-node-card="${esc(n.id)}" role="dialog" aria-label="${esc(n.name)}" aria-busy="${busy}" style="left:${place.left}px;top:${place.top}px;width:${CARD_W}px;height:${CARD_H}px">${header}<div class="hub-card__body">${body}</div></section>`;
+  return `<section id="hub-chart-rail" class="hub-chart-rail hub-card" data-node-card="${esc(n.id)}" role="region" aria-live="polite" aria-label="${esc(n.name)}" aria-busy="${Boolean(state.busyNodeId)}">${header}<div class="hub-card__body">${body}</div>${foot}</section>`;
 }
 
 // ---- Z4 探索圆环（ART-HF A32 分层图：底框 + 三段整圈弧用 conic 遮罩裁出） ----
@@ -308,7 +291,7 @@ export function exploreArcs(e: ExploreView): {kind: 'nodes' | 'caches' | 'doors'
   return out;
 }
 const arcMask = (from: number, to: number) => {
-  const g = `conic-gradient(transparent 0deg ${from}deg,#000 ${from}deg ${to}deg,transparent ${to}deg)`;
+  const g = `conic-gradient(transparent 0deg ${from}deg,var(--chart-mask-ink) ${from}deg ${to}deg,transparent ${to}deg)`;
   return `-webkit-mask-image:${g};mask-image:${g}`;
 };
 export function exploreDetail(e: ExploreView): string {
@@ -325,23 +308,18 @@ function regionTabsHtml(view: ChartView, region: ChartRegionView | undefined, bu
     // Z4 探索圆环：三段拆色，里程碑 50/100 星点
     let exploreMarkHtml = '';
     if (r.explore) {
-      const {percent, milestones} = r.explore;
-      const stars = milestones.map(m =>
-        `<img class="hub-explore-star" src="${EXPLORE_ART}ring-star-${m.reached ? 'on' : 'off'}.png" alt="" title="${esc(m.percent + '%：' + m.reward)}">`
-      ).join('');
+      const {percent} = r.explore;
       const arcs = exploreArcs(r.explore).map(a => `<img class="hub-explore-ring__arc" src="${EXPLORE_ART}ring-arc-${a.kind}.png" alt="" style="${arcMask(a.from, a.to)}">`).join('');
       exploreMarkHtml = `<span class="hub-explore-badge" aria-label="探索 ${percent}%" title="${esc(exploreDetail(r.explore))}">
         <span class="hub-explore-ring"><img class="hub-explore-ring__base" src="${EXPLORE_ART}ring-base.png" alt="">${arcs}</span>
-        <span class="hub-explore-badge__pct">${percent}%</span>${stars}
       </span>`;
     }
     return {
       id: r.id,
       label: r.name,
       iconHtml: seaEmblem(r.id, r.status === 'locked', 24), // 航区徽记；-locked 变体自带灰雾态
-      count: r.status === 'locked' ? undefined : `Lv.${r.levelRange[0]}–${r.levelRange[1]}`,
-      markHtml: exploreMarkHtml,
-      attributes: r.status === 'locked' && r.lockReason ? {title: r.lockReason} : undefined,
+      markHtml: r.status === 'locked' ? iconHtml('lock', {size: 16}) : exploreMarkHtml,
+      attributes: {title: r.status === 'locked' ? r.lockReason ?? '尚未解锁' : [`Lv.${r.levelRange[0]}–${r.levelRange[1]}`, r.explore ? exploreDetail(r.explore) : '', ...(r.explore?.milestones.map(m => `${m.percent}%：${m.reward}`) ?? [])].filter(Boolean).join('\n'), 'data-region-locked': String(r.status === 'locked')},
       disabled: busy,
     };
   });
@@ -368,8 +346,25 @@ function seaHtml(state: ChartPanelState): string {
 
 function gateQuestHtml(region: ChartRegionView | undefined): string {
   const quests = region?.gateQuest ?? [];
-  if (!quests.length) return '<footer class="hub-gate-quests" aria-hidden="true"></footer>';
-  return `<footer class="hub-gate-quests" aria-label="关口任务"><b>关口任务</b>${quests.map(q => `<span class="hub-gate-quest${q.done ? ' is-done' : ''}">${q.done ? iconHtml('check', {size: 16}) : '<i class="hub-gate-quest__dot" aria-hidden="true"></i>'}${esc(q.text)}</span>`).join('')}</footer>`;
+  if (!quests.length) return '';
+  return `<div class="hub-gate-quests" aria-label="关口任务"><b>关口任务</b>${quests.map(q => `<span class="hub-gate-quest${q.done ? ' is-done' : ''}">${q.done ? iconHtml('check', {size: 16}) : '<i class="hub-gate-quest__dot" aria-hidden="true"></i>'}${esc(q.text)}</span>`).join('')}</div>`;
+}
+
+/** 概况与节点详情占用同一个信息栏，不覆盖任何路线。 */
+function regionRailHtml(region: ChartRegionView | undefined): string {
+  const e = region?.explore;
+  const count = region?.nodes.filter(n => n.status !== 'hidden' && n.status !== 'locked' && n.firstClearBonusAvailable).length ?? 0;
+  const exploration = e ? `<p>探索度 <b>${e.percent}%</b>（${e.score}/${e.total}）</p>
+    <progress class="hub-region-progress" max="100" value="${e.percent}" aria-label="探索度 ${e.percent}%"></progress>
+    <dl class="hub-region-parts">${(['nodes', 'caches', 'doors'] as const).map((key, i) => `<div><dt>${['节点', '秘藏', '锁门'][i]}</dt><dd>${e.parts[key][0]} / ${e.parts[key][1]}</dd></div>`).join('')}</dl>
+    ${e.lockedByKey ? `<p>还有 ${e.lockedByKey} 处锁门要别的航区钥匙</p>` : ''}
+    ${e.dockBonus ? `<p>码头收益 +${Math.round(e.dockBonus * 100)}%</p>` : ''}
+    <div class="hub-region-milestones">${e.milestones.map(m => `<p>${m.reached ? '已达成' : '探索'} ${m.percent}%：${esc(m.reward)}</p>`).join('')}</div>` : '';
+  return `<section id="hub-chart-rail" class="hub-chart-rail hub-card" role="region" aria-live="polite" aria-label="${esc(region?.name ?? '航区')}概况">
+    <div class="hub-card__head"><h3 class="hub-card__name">${esc(region?.name ?? '航区')} · 航区概况</h3></div>
+    <div class="hub-card__body">${region ? `<p>Lv.${region.levelRange[0]}–${region.levelRange[1]}</p>` : ''}
+    ${region?.status === 'locked' ? `<p class="hub-card__lock">${iconHtml('lock', {size: 16})}<span>${esc(region.lockReason ?? '尚未解锁')}</span></p>` : `${exploration}${count ? `<p class="hub-region-bonus">今日首通 ×2 剩 ${count} 处</p>` : ''}${gateQuestHtml(region)}<p>选择地图上的节点查看详情。</p>`}
+    </div></section>`;
 }
 
 /** 渲染航图面板。调用者拥有状态，面板只负责输出 HTML。 */
@@ -392,14 +387,12 @@ export function chartPanelHtml(state: ChartPanelState): string {
       <img class="hub-chart-bg" src="${bgSrc}" alt="" aria-hidden="true">
       ${linksHtml(nodes)}
       ${nodes.map(n => nodeHtml(n, selected?.id ?? null, !busy)).join('')}
-      ${selected ? nodeCardHtml(selected, state) : ''}
     </div>`;
   }
 
   return `<section class="panel hub-chart-panel" data-panel="hub-chart" role="dialog" aria-modal="true" aria-label="航图" aria-busy="${busy}">
-  ${panelHeaderHtml('航图', {closeLabel: '关闭航图', closeAction: 'hub-chart-close', closeDisabled: busy, iconHtml: iconHtml('compass', {size: 24})})}
+  ${panelHeaderHtml('航图', {closeLabel: '关闭航图', closeAction: 'hub-chart-close', closeDisabled: busy, emblemHtml: hudMenuIcon('chart')})}
   <div class="hub-chart-topbar">${regionTabsHtml(view, region, busy)}${seaHtml(state)}</div>
-  <div class="hub-chart-stage">${stage}</div>
-  ${gateQuestHtml(region)}
+  <div class="hub-chart-body"><div class="hub-chart-stage">${stage}</div>${selected ? nodeCardHtml(selected, state) : regionRailHtml(region)}</div>
 </section>`;
 }

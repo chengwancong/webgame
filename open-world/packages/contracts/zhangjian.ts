@@ -1,3 +1,4 @@
+import {tacticsSchema} from './tactics.ts';
 // 杖剑借鉴 Z1–Z4 契约（docs/hub-portal-rework-20261021/modules/M17-zhangjian-z1-z4.md）。
 // 规则层与前端已按此实现；服务端（handoff/backend-z1-z4.md）按此存档、出视图、收请求。
 import {z} from 'zod';
@@ -28,6 +29,8 @@ export const loadoutSchema=z.object({
  skills:z.array(z.string()).max(4),
  talents:z.record(z.string(),z.number().int().min(0).max(5)),
  pets:petLineupSchema.extend({flows:z.record(petFamilyIdSchema,petFlowSchema)}).strict(),
+ /** 托管编排随方案保存（27 号 R2）；旧方案没有时切换不改当前编排。 */
+ tactics:tacticsSchema.optional(),
 }).strict();
 export type Loadout=z.infer<typeof loadoutSchema>;
 export const loadoutsStateSchema=z.object({active:z.number().int().min(0).max(2),slots:z.array(loadoutSchema.nullable()).length(3)}).strict();

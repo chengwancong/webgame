@@ -1,3 +1,4 @@
+// 已冻结（2026-10-25，planning-bd-v1/27 D-A4）：回合制战棋撤销，正式战斗为实时自动战斗。本目录只保留沙盒，不再开发、不接入游戏；一个月内无复用再清理。
 import type {TacticalProjection,TacticalEvent,TacticalUnit,TacticalCell} from '../../contracts/tactical.ts';
 import {tacticalArchetypes,tacticalGraybox} from '../../content/tactical-content.ts';
 import {area,compareCells,direction,distance,hasLineOfSight,sameCell} from './geometry.ts';

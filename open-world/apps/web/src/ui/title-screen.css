@@ -5,7 +5,7 @@
 .title-bg>div{position:absolute;pointer-events:none}
 .title-bg img{position:absolute;display:block;height:var(--h);width:auto;max-width:none;user-select:none;-webkit-user-drag:none}
 .title-bg__ground{inset:-8%;background:url('/art/open-world/textures/ow-art-grass.png') 0 0/320px 320px;filter:blur(2px) saturate(.92);animation:title-drift var(--motion-title-drift) ease-in-out infinite alternate;animation-delay:var(--tbg-phase,0s)}
-.title-bg__camp{left:50%;top:66%;width:92%;height:66%;transform:translate(-50%,-50%);background:url('/art/open-world/five-islands/textures/ow-road-stone.png') center/300px 300px;-webkit-mask-image:radial-gradient(ellipse at center,#000 38%,transparent 70%);mask-image:radial-gradient(ellipse at center,#000 38%,transparent 70%);filter:blur(1.5px);opacity:.92}
+.title-bg__camp{left:50%;top:66%;width:92%;height:66%;transform:translate(-50%,-50%);background:url('/art/open-world/five-islands/textures/ow-road-stone.png') center/300px 300px;-webkit-mask-image:radial-gradient(ellipse at center,black 38%,transparent 70%);mask-image:radial-gradient(ellipse at center,black 38%,transparent 70%);filter:blur(1.5px);opacity:.92}
 .title-bg__far,.title-bg__near{inset:-4%}
 .title-bg__far{filter:blur(1.2px);animation:title-drift-far var(--motion-title-drift) ease-in-out infinite alternate;animation-delay:var(--tbg-phase,0s)}
 .title-bg__near{animation:title-drift-near var(--motion-title-drift) ease-in-out infinite alternate;animation-delay:var(--tbg-phase,0s)}
@@ -29,3 +29,6 @@
 
 @media(prefers-reduced-motion:reduce){.title-bg__ground,.title-bg__far,.title-bg__near,.title-bg__light{animation:none}}
 [data-motion-reduced=true] .title-bg__ground,[data-motion-reduced=true] .title-bg__far,[data-motion-reduced=true] .title-bg__near,[data-motion-reduced=true] .title-bg__light{animation:none}
+
+/* Keep the title's secondary sound control readable on every background frame. */
+.title-screen .title-mute{color:var(--color-secondary-text);isolation:isolate}

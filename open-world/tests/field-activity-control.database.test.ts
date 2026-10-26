@@ -19,20 +19,20 @@ async function start(){
  const event=worldTables.events.find(e=>e.region==='ss-map-wind')!;const response=await req('field/activity/start',{command_id:randomUUID(),revision:s.revision,lease_id:lease,kind:'event',region:event.region,target:event.id,position:{x:event.x,y:event.y}});expect(response.statusCode,response.body).toBe(200);
  const data=(await pool.query('SELECT data FROM ow_field_activities WHERE character=$1 AND target=$2',[s.id,event.id])).rows[0].data;return {id:s.id,req,lease,data};
 }
-it('normal activity start is semi-auto, never autonomous movement',async()=>{const p=await start();expect(World.restore(p.data.battle).mode).toBe('semi');});
-it('HTTP rejects autonomous/manual mode overrides while accepting actual movement input',async()=>{
+it('normal activity start is full auto (doc 27 R1)',async()=>{const p=await start();expect(World.restore(p.data.battle).mode).toBe('auto');});
+it('HTTP rejects manual mode while accepting auto, semi and actual movement input',async()=>{
  const p=await start(),body={lease_id:p.lease,instance:p.data.instance};
- expect((await p.req('field/activity/input',{...body,mode:'auto'})).statusCode).toBe(400);
+ expect((await p.req('field/activity/input',{...body,mode:'auto'})).statusCode).toBe(200);
  expect((await p.req('field/activity/input',{...body,mode:'manual'})).statusCode).toBe(400);
  expect((await p.req('field/activity/input',{...body,mode:'semi',movement:{x:1,y:0}})).statusCode).toBe(200);
  const saved=(await pool.query('SELECT data FROM ow_field_activities WHERE character=$1 AND target=$2',[p.id,p.data.target])).rows[0].data,w=World.restore(saved.battle);expect(w.mode).toBe('semi');expect(w.exportCheckpoint().data.input).toEqual({x:1,y:0});
 });
-it('normalizes a legacy auto checkpoint without refilling HP or resetting enemies, RNG, cooldowns or counters',async()=>{
+it('keeps the checkpoint mode without refilling HP or resetting enemies, RNG, cooldowns or counters',async()=>{
  const p=await start();await app.close();const w=World.restore(p.data.battle);w.mode='auto';w.hero.hp=100;w.cooldowns.saved=300;w.comboReady['hex:hex-aftershock']=600;w.hexLedger={deaths:0,triggers:{'hex:hex-aftershock':{tick:w.tick,ready:600}}};
  p.data.battle=w.exportCheckpoint();const before=structuredClone(p.data.battle.data);advanceFieldActivity(p.data,p.data.startedAt+p.data.tick*1000/30,0);const restored=World.restore(p.data.battle);
- expect(restored.mode).toBe('semi');expect(restored.hero.hp).toBe(100);for(const key of ['enemies','randomState','cooldowns','comboReady','hexLedger','effectStats'])expect(p.data.battle.data[key]).toEqual(before[key]);
+ expect(restored.mode).toBe('auto');expect(restored.hero.hp).toBe(100);for(const key of ['enemies','randomState','cooldowns','comboReady','hexLedger','effectStats'])expect(p.data.battle.data[key]).toEqual(before[key]);
  await pool.query('UPDATE ow_field_activities SET data=$1 WHERE character=$2 AND target=$3',[p.data,p.id,p.data.target]);app=createApp(pool,{testLogin:true,dungeons:false});await app.ready();
- const response=(await p.req('field/activity')).json().activities.find((a:any)=>a.instance===p.data.instance);expect(World.restore(response.battle).mode).toBe('semi');
+ const response=(await p.req('field/activity')).json().activities.find((a:any)=>a.instance===p.data.instance);expect(World.restore(response.battle).mode).toBe('auto');
 });
 it('semi mode still executes automatic skills and honors explicit movement without walking to attack targets',()=>{
  const skill=skillSchema.parse({id:'control-test',name:'QA',description:'movement ownership',kind:'single',damage:10,range:3,radius:0,cooldown:30,cost:0,windup:0,duration:1});

@@ -1,0 +1,17 @@
+你是《深渊行者》前端执行者。请完成工坊与装备流程的 UX 修复（F1–F6 + 强化成功分支）：去掉工坊里无效的内层关闭按钮；强化按资源判断能不能点，并常驻显示缺口；并排比较补主属性和 ▲▼；「装备后」变化提到首屏；装备详情加去工坊按钮；工坊改成两列布局，并把「强化」「重铸」拆成两个页签。一次连续做完，各项之间不停、不回来问。
+
+工作目录：G:\webgame\abyss-walker-migration\abyss-walker-rewrite\open-world
+先读完交接文件：docs/hub-portal-rework-20261021/handoff/forge-gear-ux-20261025.md（每条的原因、改法、验收、默认裁决、测试、约束）。
+主要改动文件：apps/web/src/hub/slot-upgrade-panel.ts/.css、presentation.ts（工坊分支）、crafting-model.ts、components/CharacterPanel.ts、GearDetails.ts、BagPanel.ts、main.ts（goWorkshop 接部位参数）。F3 如果确认是快照缺 mainStat，允许在服务端快照里补这个字段，这是唯一允许的后端改动。
+
+进度文件：新建 docs/hub-portal-rework-20261021/handoff/forge-gear-ux-20261025-progress.md。按 F1–F6、强化成功分支、验收页、云测试服发布逐项勾选，写提交号和一句验证结论；中断后从第一个未勾项继续。F3 先把「快照里有没有 mainStat」的核查结论写进去。
+
+要点：
+- 只改表现和交互，不改强化消耗、成功率、上限等数值和规则；要改信息结构或接口的（F3 除外），记「待 Claude」并跳过。
+- 复用 tokens.json、controls.css、buttonHtml/tabsHtml/panelHeaderHtml/statusBadgeHtml/resourceAmountHtml；新样式值先进 tokens.json 再生成。每屏一个 primary，全买不起时没有 primary；面板不超出 1280×720，正文最小 14px，塞不下就滚动。
+- 每步跑 token --check、全仓 tsc、相关单测（--maxWorkers=1 --no-file-parallelism），重任务一次一个。新单测放在 tests/forge-gear-ux.test.ts；强化成功分支用 PG 测试证明。hub-review 验收页加工坊四种样例，供 Claude 审阅。
+- 禁无头浏览器、Playwright 探针和自动化脚本；可以用你自带的浏览器（非无头 GUI）对本地服务短时自查：背包 → 装备详情去工坊 → 缺资源提示 → 重铸页签 → 关闭，再看控制台。只按明确路径提交本任务文件；main.ts 等共享文件只暂存自己的 hunk，不碰其他会话的改动；不提交截图、原始明细、构建产物。
+- 云测试服口令只在 G:\webgame\aw-deploy\staging-credentials.txt，不得写进报告、日志、提交或链接；不清库，只允许给测试角色 ux_flow_1025 补资源，先备份。
+
+结束状态只有两种：全部完成并发布到云测试服；或只剩明确硬阻塞（写清卡在哪一步、需要谁做什么）。
+完成后在进度文件末尾写：每项改动摘要与提交号、F3 核查结论、「待 Claude」清单、给 Grok 的真机检查清单（5–7 条，覆盖：只有一个关闭按钮、资源为 0 时强化不可点并显示缺口、并排比较有主属性和 ▲▼、装备后变化首屏可见、装备详情一键到工坊并选中部位、重铸页签可用、ux_flow_1025 补资源后强化成功并扣对资源）。

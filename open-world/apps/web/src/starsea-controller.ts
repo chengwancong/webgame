@@ -1,7 +1,7 @@
 import {interactionReach} from '../../../packages/rules/world-interactions.ts';
 import {hudGoalLabel} from './hud-context.ts';
 // 星潮海主线客户端：把服务端 starseaView 变成场景对象、任务追踪、对话和航图。进度只由服务端回执改变。
-import {automaticQuestDialogues} from './automatic-quest-dialogue.ts';
+import {automaticQuestDialogues,dialogueToastText} from './automatic-quest-dialogue.ts';
 import {growthCards,growthMark,trackerGoals,type GrowthMark} from './growth-cards.ts';
 import type {Snapshot,Spawn,StarseaView,StarseaPoint} from '../../../packages/contracts/index.ts';
 import {starseaHub,starseaIslands,isStarseaRegion,bossLevels,hardmodeBossLevels,lifeCrystalHp,tideNightKills} from '../../../packages/content/starsea/index.ts';
@@ -35,7 +35,7 @@ const verb=(p?:StarseaPoint)=>p?.prop?verbOverride[p.prop]??starseaPropVerbs[p.p
 const worldGoal=(step?:{op:string;fact?:string})=>step?.op==='interact'&&!!step.fact&&step.fact!=='gate';
 const authored=(step?:{op:string;hint?:string;label:string;fact?:string})=>step?.op==='interact'&&(!step.hint||worldGoal(step))?step.label:undefined;
 type SceneGoal={x:number;y:number;label:string};
-type Dependencies={go?:(p:{x:number;y:number})=>void;sceneGoal?:()=>SceneGoal|undefined;sceneAction?:()=>boolean;settle:()=>Promise<unknown>;snapshot:()=>Snapshot|undefined;world:()=>World;write:(path:string,body:object)=>Promise<string|undefined>;travel:(region:string)=>Promise<boolean>;open:(panel:string)=>void;refresh:()=>void;notice:(message:string)=>void;card?:(text:string)=>void;lastError:()=>string;ensurePermit:()=>Promise<void>;service:(npc:string)=>void;panel:()=>string};
+type Dependencies={go?:(p:{x:number;y:number})=>void;sceneGoal?:()=>SceneGoal|undefined;sceneAction?:()=>boolean;settle:()=>Promise<unknown>;snapshot:()=>Snapshot|undefined;world:()=>World;write:(path:string,body:object)=>Promise<string|undefined>;travel:(region:string)=>Promise<boolean>;open:(panel:string)=>void;refresh:()=>void;notice:(message:string)=>void;card?:(text:string)=>void;lastError:()=>string;ensurePermit:()=>Promise<void>;service:(npc:string)=>void;panel:()=>string;/** HUB（单岛主城 + 星门）模式：任务对白不开窗口，只出一行提示 */hubMode?:()=>boolean};
 /** 港口 NPC 的服务按钮（NPC.xlsx 服务按钮 / 服务功能 / 服务面板）。 */
 const serviceNpcs=new Map(npcRows.filter(n=>n.campaign==='starsea'&&n.service_panel).map(n=>[n.id,n]));
 const services:Record<string,string>=Object.fromEntries([...serviceNpcs.values()].map(n=>[n.id,n.service_label??n.name]));
@@ -65,12 +65,12 @@ export class StarseaController{
  private linesOf(group:string){return dialogueLines(group,{player:this.deps.snapshot()?.name??'你',conditions:this.view?.conditions}).map(l=>({speaker:starseaSpeaker(l.speaker),text:l.text}));}
  /** 找回、开槽、登岛、升级新招式的卡片，排在任务完成对白之后。 */
  private growthStep(){const s=this.deps.snapshot();if(!s||s.starsea?.prologue?.done===false)return;if(this.growth?.id!==s.id){this.growth={id:s.id,mark:growthMark(s)};return;}const cards=growthCards(this.growth.mark,s);for(const card of cards){const text=card.title+'：'+card.lines.map(l=>l.text).join(' ');if(this.deps.card)this.deps.card(text);else this.deps.notice(text);}this.growth.mark=growthMark(s);}
- private popup(title:string,lines:{speaker:string;text:string}[]){if(!lines.length)return;this.popups.push({title,lines});if(this.popups.length===1){this.line=0;this.deps.open('starsea-talk');}}
+ private popup(title:string,lines:{speaker:string;text:string}[]){if(!lines.length)return;if(this.deps.hubMode?.()){const text=dialogueToastText(lines);if(text)this.deps.notice(text);return;}this.popups.push({title,lines});if(this.popups.length===1){this.line=0;this.deps.open('starsea-talk');}}
  /** 弹窗被关闭（右上角、Esc 或切到别的面板）时丢掉当前这条，面板空闲后继续播下一条。 */
  private popupClosed(){if(!this.popups.length)return;const panel=this.deps.panel();if(this.popupShown&&panel!=='starsea-talk'){this.popupShown=false;this.popups.shift();this.line=0;}if(this.popups.length&&!panel){this.line=0;this.deps.open('starsea-talk');}}
  private fire(task:string,event:TriggerRow['event'],match:(t:TriggerRow)=>boolean=()=>true){
   for(const t of triggerRows){if(t.task!==task||t.event!==event||!match(t)||t.once&&this.seen().has('trigger:'+t.id))continue;if(t.once)this.mark('trigger:'+t.id);
-   const lines=this.linesOf(t.group);if(t.mode==='popup')this.popup(taskById.get(task)?.title??'',lines);else for(const l of lines)this.deps.notice(l.speaker?l.speaker+'：'+l.text:l.text);}
+   const lines=this.linesOf(t.group);if(t.mode==='popup')this.popup(taskById.get(task)?.title??'',lines);else for(const l of this.deps.hubMode?.()?lines.slice(0,1):lines)this.deps.notice(l.speaker?l.speaker+'：'+l.text:l.text);}
  }
  /** 任务开始、到达接取地图（任务表 接取方式=arrive/none，自动接取的任务也要播接取对白）、进入地图、步骤开始、击倒过半（对话表「触发」）。 */
  private events(v:StarseaView){
@@ -356,7 +356,7 @@ export class StarseaController{
  }
  renderHud(loggedIn:boolean){
   let hud=document.getElementById('starsea-hud');if(!hud){hud=document.createElement('aside');hud.id='starsea-hud';hud.setAttribute('aria-label','星潮海任务');document.body.append(hud);}const v=this.view;hud.hidden=!loggedIn||!v;document.body.dataset.starseaActive=String(!hud.hidden);if(!v||hud.hidden)return;
-  const scene=this.sceneGuide(),step=this.waveStep??v.step,dist=this.guide()?.distance,distanceLabel=dist?`<em class="quest-track-distance num">${dist} 格</em>`:'';const label=scene?.label??(step?this.nextAction(step,step.map===this.region):this.recommendLine(v.recommend));this.paintHud(hud,(label?`<div class="quest-track-line"><small>${scene?'当前场景':v.task?'任务':v.recommend?.kind==='stage'?'当前目标':'附近'}</small><span title="${esc(label)}">${esc(hudGoalLabel(label))}</span>${distanceLabel}${questHudButton('→',{action:'starsea-goto'})}</div>`:'')+this.goalLines(scene));
+  const scene=this.sceneGuide(),step=this.waveStep??v.step,dist=this.guide()?.distance,distanceLabel=dist?`<em class="quest-track-distance num">${dist} 格</em>`:'';const isDungeonScene=!this.deps.world().region.boss&&Boolean(this.deps.sceneGoal?.());const label=scene?.label??(step?this.nextAction(step,step.map===this.region):this.recommendLine(v.recommend));this.paintHud(hud,(label&&!isDungeonScene?`<div class="quest-track-line"><small>${scene?'当前场景':v.task?'任务':v.recommend?.kind==='stage'?'当前目标':'附近'}</small><span title="${esc(label)}">${esc(hudGoalLabel(label))}</span>${distanceLabel}${questHudButton('→',{action:'starsea-goto'})}</div>`:'')+this.goalLines(isDungeonScene?undefined:scene));
  }
  /** 任务行下面最多两行养成目标（钉选装备 / 换代 / 找回），与 #tracker 同源；场景演出时不出（docs/progression-goal-plan.md §3）。 */
  private goalLines(scene:unknown){const s=this.deps.snapshot();if(scene||!s)return '';return trackerGoals(s).slice(0,2).map(g=>`<div class="quest-track-line is-goal"><small>${esc(g.kind)}</small><span title="${esc(g.goal)}"><b>${esc(g.title)}</b><em>${esc(g.goal)}</em></span>${questHudButton('→',{action:g.action,id:g.id})}</div>`).join('');}

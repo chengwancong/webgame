@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>深渊行者 · 方向 A 验收页</title>
+<link rel="stylesheet" href="/src/ui-entry.css">
+<link rel="stylesheet" href="/src/hub/hub-entry.css">
+<style>
+  html{background:#2a3540;min-height:100%}
+  body{margin:0;padding:0;--stage-width:1280px;--stage-height:720px}
+  .qa-scene{position:relative;width:1280px;min-height:720px;margin:0 auto;background:radial-gradient(ellipse at 50% 40%,#3a5060,#1a2830);overflow:hidden}
+  #toolbar{position:sticky;top:0;z-index:200;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:6px 12px;background:#111c22ee;color:#ddd;font:13px/1.5 sans-serif}
+  #toolbar button{padding:4px 12px;font:inherit;background:#2a3a46;color:#ddd;border:1px solid #4a6070;border-radius:4px;cursor:pointer}
+  #toolbar button:hover{background:#3a4e5c}
+  #toolbar button.active{background:#4a6a44;border-color:#6a9a64}
+  .qa-section{margin:24px 32px;padding:24px 32px;background:var(--color-panel);border-radius:16px}
+  .qa-section h2{font:bold 16px/1.4 sans-serif;color:var(--color-text-primary);letter-spacing:.1em;text-transform:uppercase;margin:0 0 16px;border-bottom:2px solid var(--color-border);padding-bottom:8px}
+  .qa-row{display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--color-border-subtle)}
+  .qa-row label{font:13px/1.5 sans-serif;color:var(--color-text-secondary);min-width:80px}
+  .qa-modal-overlay{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:#182e3b80;padding:16px}
+  .qa-modal-overlay[hidden]{display:none}
+</style>
+</head>
+<body>
+<div id="toolbar">
+  <span style="color:#f9d97f;font-weight:bold">方向 A 验收</span>
+  <button id="btn-result-win">结算：胜利（enter=true）</button>
+  <button id="btn-result-hub">结算：胜利 + hub 块</button>
+  <button id="btn-replay">重播入场</button>
+  <button id="btn-close">关闭结算</button>
+  <span style="margin-left:8px;color:#aaa">│</span>
+  <button id="btn-u2-common">U2 提示框：普通</button>
+  <button id="btn-u2-magic">U2 提示框：魔法</button>
+  <button id="btn-u2-rare">U2 提示框：稀有</button>
+  <button id="btn-u2-legendary">U2 提示框：传说</button>
+  <button id="btn-u2-hex">U2 提示框：带 HEX</button>
+  <button id="btn-u2-equipped">U2 提示框：已装备</button>
+  <button id="btn-u2-close">关闭 U2</button>
+</div>
+<div class="qa-scene">
+  <!-- U0 组件画廊 -->
+  <div class="qa-section">
+    <h2>U0 按钮</h2>
+    <div class="qa-row" id="gallery-buttons"></div>
+    <h2>U0 页签</h2>
+    <div class="qa-row" id="gallery-tabs"></div>
+    <h2>U0 徽章</h2>
+    <div class="qa-row" id="gallery-badges"></div>
+    <h2>U0 物品格（四品质）</h2>
+    <div class="qa-row battle-result" id="gallery-slots"></div>
+    <h2>U0 资源数值</h2>
+    <div class="qa-row" id="gallery-resources"></div>
+  </div>
+
+  <!-- U2 背包格 + 装备提示框 -->
+  <div class="qa-section" id="u2-section">
+    <h2>U2 背包格（四品质 + 空格）</h2>
+    <div class="qa-row" id="gallery-bag-wells" style="align-items:flex-end"></div>
+    <h2>U2 装备提示框（静态展示，工具栏按钮切换）</h2>
+    <div id="u2-tip-container" style="display:flex;gap:16px;flex-wrap:wrap;min-height:200px">
+      <div id="tooltip" class="equipment-tip" style="display:block;position:relative;width:344px;flex:none;z-index:1"></div>
+    </div>
+  </div>
+</div>
+<div class="qa-modal-overlay" id="modal-overlay" hidden>
+  <div id="modal"></div>
+</div>
+<script type="module" src="/src/ui-direction-a-qa.ts"></script>
+</body>
+</html>

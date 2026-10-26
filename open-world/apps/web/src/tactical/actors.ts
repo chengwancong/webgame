@@ -11,6 +11,7 @@ import {appearanceSlots} from '../../../../packages/contracts/appearance.ts';
 import type {ResolvedAppearance} from '../../../../packages/contracts/appearance.ts';
 import type {WardrobeAction} from '../wardrobe-renderer.ts';
 import {esc} from '../ui-components.ts';
+import {cellFoot} from './board-layout.ts';
 import type {TacticalCell,TacticalPetView,TacticalUnitView} from './contract.ts';
 import {PIXEL_PET_TILE,pixelSkin,pixelTile,pixelUnitTile} from './pixel-skin.ts';
 
@@ -30,7 +31,7 @@ const findPet=(id:string)=>(petAsset??=loadJSON<{assets:{id:string;name:string;[
   status:'ready',dependencies:[],notes:[],actions:{},states:{},runtime:row as unknown as Asset['runtime']} as Asset:undefined;}).catch(()=>undefined));
 
 export class TacticalActors{
- private actors=new Map<string,Actor>();private raf=0;private cell=80;private reduced=false;
+ private actors=new Map<string,Actor>();private raf=0;private cell=80;private rowHeight=80;private reduced=false;
  onStatus?:(rows:ActorStatus[])=>void;
  constructor(private readonly layer:HTMLElement,private readonly fx:HTMLElement){this.raf=requestAnimationFrame(t=>this.frame(t));}
  setReducedMotion(value:boolean){this.reduced=value;}
@@ -38,7 +39,8 @@ export class TacticalActors{
  statuses():ActorStatus[]{return [...this.actors.values()].map(a=>({id:a.id,status:a.status}));}
 
  /** 投影同步：位置以投影为准（动画中的单位等动画结束后自然落到同一格）。 */
- sync(units:readonly TacticalUnitView[],pet:TacticalPetView|null,cell:number,activeId:string|null){
+ sync(units:readonly TacticalUnitView[],pet:TacticalPetView|null,cell:number,activeId:string|null,rowHeight=cell){
+  this.rowHeight=rowHeight;
   if(cell!==this.cell){this.cell=cell;for(const a of this.actors.values())a.el.remove(),a.painter?.destroy();this.actors.clear();}
   const live=new Set<string>();
   for(const unit of units){
@@ -65,7 +67,7 @@ export class TacticalActors{
   el.setAttribute('aria-hidden','true');
   const plate=document.createElement('div');plate.className='tb-plate';
   const token=document.createElement('div');token.className='tb-token';token.textContent=side==='pet'?'宠':name.slice(0,1);
-  el.append(token,plate);if(side==='pet')plate.innerHTML='<span class="tb-plate-name">不占格</span>';
+  el.append(token,plate);
   this.layer.append(el);
   const actor:Actor={id,el,plate,painter:null,status:'loading',pos:{x:0,y:0},path:[],stepMs:220,stepStart:0,action:'idle',actionStart:performance.now(),facing:1,alive:true,side};
   this.actors.set(id,actor);return actor;
@@ -126,8 +128,9 @@ export class TacticalActors{
   const c=this.cell;
   for(const a of this.actors.values()){
    const {w,h}=this.size(a.side);
-   const ox=a.side==='pet'?-c*.32:0,oy=a.side==='pet'?c*.18:0;
-   const left=(a.pos.x+.5)*c+ox-w/2,top=(a.pos.y+.82)*c+oy-h*(a.side==='pet'?.9:.86);
+   const ox=a.side==='pet'?-c*.32:0,oy=a.side==='pet'?this.rowHeight*.18:0;
+   const foot=cellFoot(a.pos,{cell:c,rowHeight:this.rowHeight});
+   const left=foot.x+ox-w/2,top=foot.y+oy-h*(a.side==='pet'?.9:.86);
    a.el.style.cssText=`width:${w}px;height:${h}px;transform:translate(${left.toFixed(1)}px,${top.toFixed(1)}px);z-index:${Math.round((a.pos.y+(a.side==='pet'?.5:0))*10)+10}`;
   }
  }
@@ -149,7 +152,7 @@ export class TacticalActors{
  float(unitId:string,text:string,tone:'damage-dealt'|'damage-taken'|'shield'|'info'){
   const a=this.actors.get(unitId);if(!a)return;
   const el=document.createElement('div');el.className=`tb-float tb-float-${tone}`;el.textContent=text;
-  el.style.left=`${(a.pos.x+.5)*this.cell}px`;el.style.top=`${(a.pos.y)*this.cell}px`;
+  el.style.left=`${(a.pos.x+.5)*this.cell}px`;el.style.top=`${(a.pos.y)*this.rowHeight}px`;
   this.fx.append(el);setTimeout(()=>el.remove(),this.reduced?900:1100);
  }
  pulsePet(){const a=this.actors.get('pet');if(!a)return;a.el.classList.remove('is-assist');void a.el.offsetWidth;a.el.classList.add('is-assist');setTimeout(()=>a.el.classList.remove('is-assist'),950);}

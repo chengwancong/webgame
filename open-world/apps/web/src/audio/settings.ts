@@ -1,5 +1,6 @@
 export type AudioSettings={master:number;music:number;ambience:number;effects:number;ui:number;muteBackground:boolean};
-export const defaultAudioSettings:AudioSettings={master:.8,music:.6,ambience:.7,effects:.8,ui:.7,muteBackground:true};
+// 2026-10-25 用户要求默认关闭声音：总音量默认 0，标题页「声音」按钮或设置里打开（打开为 0.8）。
+export const defaultAudioSettings:AudioSettings={master:0,music:.6,ambience:.7,effects:.8,ui:.7,muteBackground:true};
 export function resolveAudioSettings(saved:unknown):AudioSettings{const root=saved&&typeof saved==='object'?saved as Record<string,unknown>:{},audio=root.audio&&typeof root.audio==='object'?root.audio as Record<string,unknown>:{},result={...defaultAudioSettings};for(const key of ['master','music','ambience','effects','ui'] as const){const value=audio[key]??(key==='master'?root.volume:undefined);if(typeof value==='number'&&Number.isFinite(value))result[key]=Math.max(0,Math.min(1,value));}if(typeof audio.muteBackground==='boolean')result.muteBackground=audio.muteBackground;return result;}
 export function loadAudioSettings(){try{return resolveAudioSettings(JSON.parse(localStorage.getItem('aw-settings')??'{}'));}catch{return {...defaultAudioSettings};}}
 export function saveAudioSettings(audio:AudioSettings){let saved:Record<string,unknown>={};try{saved=JSON.parse(localStorage.getItem('aw-settings')??'{}');}catch{}localStorage.setItem('aw-settings',JSON.stringify({...saved,volume:audio.master,audio}));}

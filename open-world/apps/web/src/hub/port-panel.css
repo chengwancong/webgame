@@ -1,19 +1,31 @@
-/* U9 港口建设：左列 200px + 右侧固定详情区，整块 800×480，不滚动 */
-.hub-port-panel{width:800px;height:480px;max-height:none;display:flex;flex-direction:column;gap:var(--space-3);overflow:hidden}
+/* U9/U3 港口建设：固定 800×500，右侧详情随奖励/文案增长在面板内滚动。 */
+.hub-port-panel{width:800px;height:500px;max-height:none;display:flex;flex-direction:column;gap:var(--space-3);overflow:hidden}
 .hub-port-panel>*{flex:0 0 auto;min-width:0}
 .hub-port-body{flex:1 1 0;min-height:0;display:grid;grid-template-columns:200px minmax(0,1fr);gap:var(--space-4)}
-.hub-port-tabs{align-self:start;overflow:hidden}
-.hub-port-tabs button{justify-content:flex-start}
+/* 左侧建筑列表：选中项浅金实底 */
+.hub-port-tabs{align-self:start;overflow:hidden;display:flex;flex-direction:column;gap:var(--space-1)}
+.hub-port-tabs button{justify-content:flex-start;border-radius:var(--radius-control);min-height:var(--space-10);padding-left:var(--space-2)}
 .hub-port-tabs button>span:first-of-type{flex:1 1 auto;text-align:left}
 .hub-port-tabs button small{margin-left:auto}
+/* 左列红点 */
+.hub-port-tabs button[data-actionable=true]::after{content:'';display:inline-block;width:var(--space-3);height:var(--space-3);margin-left:var(--space-1);border-radius:var(--radius-round);background:var(--color-danger)}
 
-.hub-port-detail{min-width:0;min-height:0;display:flex;flex-direction:column;gap:var(--space-3);padding:var(--space-3) var(--space-4);overflow:hidden;background:var(--color-panel-secondary);border:var(--border-width) solid var(--color-border-subtle);border-radius:var(--radius-well)}
-.hub-port-detail__head{display:flex;align-items:flex-start;gap:var(--space-3)}
-.hub-port-detail__head-text{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:var(--space-1)}
+.hub-port-detail{min-width:0;min-height:0;display:flex;flex-direction:column;gap:var(--space-3);padding:var(--space-3) var(--space-4);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;background:var(--color-panel-secondary);border:var(--border-width) solid var(--color-border-subtle);border-radius:var(--radius-well)}
+.hub-port-detail>*{flex:0 0 auto;min-width:0}
+/* 建筑主角卡顶部大图 */
+.hub-port-detail__hero{overflow:hidden}
+.hub-port-detail__hero .hub-hero-card__band{padding:0;align-items:stretch;gap:0}
+.hub-port-detail__card-lg{flex:0 0 auto;overflow:hidden;border-radius:0;border-right:var(--border-width) solid var(--color-primary-border)}
+.hub-port-detail__head-text{flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;gap:var(--space-1);padding:var(--space-2) var(--space-3)}
+.hub-port-detail__head-text .hub-hero-card__title{font-size:var(--font-size-h2)}
 .hub-port-detail__head h3{margin:0;font-size:var(--font-size-h2);font-weight:var(--font-weight-bold)}
 .hub-port-detail__npc{color:var(--color-text-secondary);font-size:var(--font-size-caption)}
 .hub-port-detail__card{flex:0 0 auto;border-radius:var(--radius-well);overflow:hidden}
 .hub-port-rep{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:var(--space-3);color:var(--color-text-secondary);font-size:var(--font-size-caption)}
+/* 主角卡内声望行 */
+.hub-port-rep-body{flex-direction:column;align-items:stretch;gap:var(--space-2)}
+.hub-port-rep__label{display:flex;align-items:center;gap:var(--space-1);font-size:var(--font-size-caption);color:var(--color-text-secondary)}
+.hub-port-rep__bar .ui-meter__track{height:var(--space-3)}
 
 .hub-tiers{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--space-2)}
 .hub-tier{display:grid;grid-template-columns:80px 88px minmax(0,1fr) 96px;align-items:center;gap:var(--space-3);min-height:var(--space-10);padding:var(--space-1) var(--space-3);background:var(--color-panel-raised);border:var(--border-width) solid var(--color-border);border-radius:var(--radius-control)}
@@ -37,3 +49,11 @@
 
 .hub-port-msg{margin:auto 0 0;min-height:var(--space-5);font-size:var(--font-size-caption);color:var(--color-success)}
 .hub-port-msg.is-error{color:var(--color-danger)}
+/* Port hero stacks vertically (illustration band on top, reputation body below); the shared hub hero card is a row. */
+.hub-port-detail__hero{flex-direction:column}
+.hub-port-detail__hero .hub-hero-card__band{border-right:0;border-bottom:var(--border-width) solid var(--color-primary-border)}
+/* Building emblem shrinks to a title badge so the illustration stays the main visual. */
+.hub-port-detail__head-text .hub-port-rep-icon{width:var(--space-10);height:var(--space-10);object-fit:contain;vertical-align:middle;margin-right:var(--space-2)}
+/* Reputation body: label above a full-width meter (the shared hero body is a wrapping row, which squeezed the bar to nothing). */
+.hub-port-detail__hero .hub-port-rep-body{flex-direction:column;align-items:stretch;gap:var(--space-1)}
+.hub-port-detail__hero .hub-port-rep__bar{width:100%}

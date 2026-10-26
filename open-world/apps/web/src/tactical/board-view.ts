@@ -4,7 +4,7 @@
  */
 import {esc} from '../ui-components.ts';
 import {cellKey,sameCell} from './contract.ts';
-import type {TacticalCell,TacticalEncounterView,TacticalIntentView,TacticalLegalMove} from './contract.ts';
+import type {TacticalCell,TacticalCellView,TacticalEncounterView,TacticalIntentView,TacticalLegalMove} from './contract.ts';
 import type {SelectionState} from './selection.ts';
 
 export const DRESSING_ART:Record<string,{src:string;label:string;scale:number}>={
@@ -14,6 +14,18 @@ export const DRESSING_ART:Record<string,{src:string;label:string;scale:number}>=
 };
 import {PIXEL_DRESSING,pixelFloor,pixelSkin,pixelTile} from './pixel-skin.ts';
 export const GROUND_ART='/art/open-world/five-islands/textures/ow-art-mist-ground-main.png';
+
+/** Registered visual variants on already blocked cells; never adds collision. */
+export function cellDressingArt(cell:TacticalCellView){
+ if(!cell.walkable&&(!cell.dressing||cell.dressing==='rocks')){
+  const variant=(cell.x*31+cell.y*17)%4;
+  if(variant===0)return {src:'/art/open-world/plane-kits/props-contract/maze/pillar-362ac39bde66.png',label:'石柱',scale:.85};
+  if(variant===1)return {src:'/art/open-world/five-islands/sprites/ow-art-mist-camp-cargo.png',label:'木箱',scale:.9};
+  if(variant===2)return {src:'/art/open-world/five-islands/sprites/ow-art-mist-rocks-flat.png',label:'碎石',scale:1.05};
+  return DRESSING_ART.rocks;
+ }
+ return cell.dressing?DRESSING_ART[cell.dressing]:undefined;
+}
 
 export type BoardOverlay={
  reach:Map<string,TacticalLegalMove>;path:TacticalCell[]|null;pathKind:'hover'|'preview'|null;
@@ -75,7 +87,7 @@ function cellLabel(view:TacticalEncounterView,o:BoardOverlay,x:number,y:number){
  const c=view.board.cells[y*view.board.width+x],parts=[`第${x+1}列第${y+1}行`];
  const unit=view.units.find(u=>u.alive&&u.cell.x===x&&u.cell.y===y);
  if(unit)parts.push(`${unit.side==='hero'?'我方':'敌方'}${unit.name}，生命${unit.hp.current}/${unit.hp.max}`);
- if(c&&!c.walkable)parts.push(`${(pixelSkin?PIXEL_DRESSING:DRESSING_ART)[c.dressing??'']?.label??'障碍'}，无法通行`);
+ if(c&&!c.walkable)parts.push(`${(pixelSkin?PIXEL_DRESSING[c.dressing??'']:cellDressingArt(c))?.label??'障碍'}，无法通行`);
  if(c?.hazard)parts.push(`${c.hazard.label}：${c.hazard.detail}`);
  const key=x+','+y,m=o.reach.get(key);
  if(m)parts.push(`可到达，移动步数：${m.cost}`);
@@ -106,7 +118,7 @@ export function boardCellsHtml(view:TacticalEncounterView,s:SelectionState,o:Boa
   if(sameCell(s.cursor,{x,y}))classes.push('is-cursor');
   if(s.command==='move'&&c.walkable&&!unit&&!o.reach.has(key))classes.push('is-out');
   const pix=pixelSkin&&c.dressing?PIXEL_DRESSING[c.dressing]??PIXEL_DRESSING.rocks:undefined;
-  const art=pix?{src:pixelTile(pix.tile),scale:1}:c.dressing?DRESSING_ART[c.dressing]:undefined;
+  const art=pix?{src:pixelTile(pix.tile),scale:1}:cellDressingArt(c);
   const step=pathIndex.get(key);
   const intentG=o.intentGrid.get(key);
   if(intentG){classes.push(intentG.fizzled?'is-intent-grid-fizzled':'is-intent-grid');}
@@ -128,16 +140,16 @@ export function boardCellsHtml(view:TacticalEncounterView,s:SelectionState,o:Boa
 }
 
 /** SVG 覆盖层：路径折线 + 箭头、目标准星、意图直线。单位为格。 */
-export function boardSvg(view:TacticalEncounterView,o:BoardOverlay,cell:number){
- const w=view.board.width*cell,h=view.board.height*cell,center=(c:TacticalCell)=>`${(c.x+.5)*cell},${(c.y+.5)*cell}`;
+export function boardSvg(view:TacticalEncounterView,o:BoardOverlay,cell:number,rowHeight=cell){
+ const w=view.board.width*cell,h=view.board.height*rowHeight,center=(c:TacticalCell)=>`${(c.x+.5)*cell},${(c.y+.5)*rowHeight}`;
  const parts:string[]=[];
  if(o.path&&o.path.length>1){
   const points=o.path.map(center).join(' ');
   parts.push(`<polyline class="tb-path-under" points="${points}"/><polyline class="tb-path tb-path--${o.pathKind}" points="${points}" marker-end="url(#tb-arrow)"/>`);
  }
  if(o.target){
-  const x=(o.target.x+.5)*cell,y=(o.target.y+.5)*cell,r=cell*.36;
-  parts.push(`<g class="tb-reticle${o.denied?' is-denied':''}"><circle cx="${x}" cy="${y}" r="${r}"/><path d="M${x-r-6} ${y}h12M${x+r-6} ${y}h12M${x} ${y-r-6}v12M${x} ${y+r-6}v12"/></g>`);
+  const x=(o.target.x+.5)*cell,y=(o.target.y+.5)*rowHeight,r=cell*.36,ry=rowHeight*.36;
+  parts.push(`<g class="tb-reticle${o.denied?' is-denied':''}"><ellipse cx="${x}" cy="${y}" rx="${r}" ry="${ry}"/><path d="M${x-r-6} ${y}h12M${x+r-6} ${y}h12M${x} ${y-ry-6}v12M${x} ${y+ry-6}v12"/></g>`);
  }
  // 意图直线（锁定型/冲锋型）
  for(const il of o.intentLines){
@@ -147,11 +159,12 @@ export function boardSvg(view:TacticalEncounterView,o:BoardOverlay,cell:number){
  }
  return `<svg class="tb-overlay" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><defs>
 <marker id="tb-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z"/></marker>
-<marker id="tb-intent-arrow-lock" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--tb-intent-lock-color,#e05)"/></marker>
-<marker id="tb-intent-arrow-fizzle" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--tb-intent-fizzle-color,#888)"/></marker>
+<marker id="tb-intent-arrow-lock" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--tb-intent-lock-color)"/></marker>
+<marker id="tb-intent-arrow-fizzle" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--tb-intent-fizzle-color)"/></marker>
 </defs>${parts.join('')}</svg>`;
 }
 
 export function fitCell(view:Pick<TacticalEncounterView,'board'>,width:number,height:number){
- return Math.max(40,Math.min(88,Math.floor(Math.min(width/view.board.width,height/view.board.height))));
+ // Larger encounters must fit the same stage; a minimum tile size cannot override its bounds.
+ return Math.max(1,Math.min(88,Math.floor(Math.min(width/view.board.width,height/view.board.height))));
 }

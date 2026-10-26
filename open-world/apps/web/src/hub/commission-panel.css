@@ -1,17 +1,31 @@
-/* U8 委托板：640 宽，行内确认，不滚动（最多 4 条委托 × 96px 行高） */
-.hub-commission-panel{width:640px;max-height:none;display:flex;flex-direction:column;gap:var(--space-3);overflow:hidden}
+/* U8/U3 委托板：主角卡 + 卡行，640 宽，行内确认，不滚动（最多 4 条委托） */
+.hub-commission-panel{width:640px;max-height:calc(var(--stage-height,100dvh) - var(--space-8));display:flex;flex-direction:column;gap:var(--space-3);overflow:hidden}
 .hub-commission__summary{display:flex;gap:var(--space-5);color:var(--color-text-secondary);font-size:var(--font-size-caption)}
 .hub-commission__list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--space-2)}
-.hub-commission__row{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"main actions" "reward actions";align-items:center;column-gap:var(--space-4);row-gap:var(--space-1);height:96px;padding:var(--space-2) var(--space-3);background:var(--color-panel-secondary);border:var(--border-width) solid var(--color-border-subtle);border-left:calc(var(--border-width) * 3) solid var(--color-primary);border-radius:var(--radius-control)}
-.hub-commission__row.is-ready{border-left-color:var(--color-success)}
-.hub-commission__row.is-confirming{border-color:var(--color-danger);border-left-color:var(--color-danger)}
+.hub-commission__row{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"main actions" "reward actions";align-items:center;column-gap:var(--space-4);row-gap:var(--space-2);padding:var(--space-2) var(--space-3);background:var(--color-panel-raised);border:var(--border-width) solid var(--color-border);border-left:calc(var(--border-width) * 3) solid var(--color-primary-border);border-radius:var(--radius-control);box-shadow:0 var(--border-depth) 0 var(--color-border-strong)}
+.hub-commission__row.is-ready{border-left-color:var(--color-success);border-color:var(--color-success);box-shadow:0 var(--border-depth) 0 color-mix(in srgb,var(--color-success) 60%,var(--color-panel)),0 0 var(--space-3) color-mix(in srgb,var(--color-success) 20%,transparent)}
+.hub-commission__row.is-confirming{border-color:var(--color-danger);border-left-color:var(--color-danger);box-shadow:0 var(--border-depth) 0 var(--color-danger-strong)}
 .hub-commission__main{grid-area:main;min-width:0;display:flex;flex-direction:column;gap:var(--space-1)}
 .hub-commission__head{display:flex;align-items:center;gap:var(--space-2);min-width:0}
-.hub-commission__title{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--font-size-h3)}
+.hub-commission__title{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--font-size-h3);font-weight:var(--font-weight-semibold)}
 .hub-commission__region{flex:0 0 auto;color:var(--color-text-secondary);font-size:var(--font-size-caption)}
 .hub-commission__target{margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--color-text-secondary);font-size:var(--font-size-caption)}
 .hub-commission__progress{min-width:0}
-.hub-commission__reward{grid-area:reward;margin:0;color:var(--color-text-secondary);font-size:var(--font-size-caption)}
-.hub-commission__actions{grid-area:actions;display:flex;gap:var(--space-2);justify-content:flex-end}
+/* 进度条加粗 */
+.hub-commission__progress .ui-meter__track{height:var(--space-3);border-radius:var(--radius-round)}
+.hub-commission__reward-pills{grid-area:reward;display:flex;flex-wrap:wrap;gap:var(--space-2);align-items:center}
+/* 声望胶囊 */
+.hub-commission__rep-pill{display:inline-flex;align-items:center;gap:var(--space-1);background:var(--color-panel-raised);border:2px solid color-mix(in srgb,var(--color-highlight) 50%,white);border-radius:var(--radius-round);padding:0 var(--space-2) 0 var(--space-1);box-shadow:0 3px 0 color-mix(in srgb,var(--color-highlight) 40%,var(--color-panel));font-size:var(--font-size-body);color:var(--color-highlight)}
+.hub-commission__rep-pill b{font-size:var(--font-size-body);font-weight:var(--font-weight-bold);margin-right:2px}
+.hub-commission__rep-pill small{font-size:var(--font-size-caption)}
+.hub-commission__actions{grid-area:actions;display:flex;gap:var(--space-2);justify-content:flex-end;flex-direction:column;align-items:flex-end}
+.hub-commission__hero-body{align-items:center;gap:var(--space-6)}
 .hub-commission__msg{margin:0;min-height:var(--space-5);font-size:var(--font-size-caption);color:var(--color-success)}
 .hub-commission__msg.is-error{color:var(--color-danger)}
+
+/* Direction A: compact one-line reward pills (icon + number; label stays for screen readers). */
+.hub-commission__reward-pills .ui-resource--pill{padding:0 var(--space-2) 0 var(--space-1);box-shadow:0 2px 0 var(--color-resource-gold-shade)}
+.hub-commission__reward-pills .ui-resource--compact b{font-size:var(--font-size-body)}
+.hub-commission__rep-pill small{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%)}
+/* The list scrolls inside the stage-height cap; head, hero card and message stay put. */
+.hub-commission-panel .hub-commission__list{min-height:0;overflow-y:auto;overscroll-behavior:contain}

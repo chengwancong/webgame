@@ -1,0 +1,11 @@
+/* Empty equipment positions get inner guides; quality items retain only E7 frames. */
+.ui-slot-art{position:absolute;inset:0;display:block;width:100%;height:100%;pointer-events:none;user-select:none}
+.bag-eq.is-empty>.ui-slot-art--empty,.character-slot.empty .character-slot-art>.ui-slot-art--empty{z-index:0}
+.character-slot.empty .character-slot-art>img{position:relative;z-index:1}
+#tooltip.item-tip>.ui-slot-art--tip{z-index:0}
+#tooltip.item-tip>.item-tip-heading,#tooltip.item-tip>.row,#tooltip.item-tip>.item-tip-description,#tooltip.item-tip>.item-tip-note,#tooltip.item-tip>footer{position:relative;z-index:1}
+/* Component review samples preserve slot space and the existing name below it. */
+.ui-svg-slots-row{display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-3)}
+.ui-svg-slot-sample{display:grid;place-items:start center;position:relative;width:var(--size-inventory-slot);min-height:calc(var(--size-inventory-slot) + var(--space-6));flex:none}
+.ui-svg-slot-sample>.bag-eq{position:relative;width:var(--size-inventory-slot);height:var(--size-inventory-slot)}
+#tooltip.ui-svg-tip-sample{position:relative;display:block;max-width:100%}

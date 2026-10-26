@@ -1,3 +1,4 @@
+@layer legacy {
 /* Layout only; shared primitives own action, cost, badge and state skins. */
 .progression-entry.slot .progression-entry-copy small{position:static;inset:auto;max-width:100%;text-align:left}
 .panel[data-panel=progression]{width:min(var(--size-panel-max),calc(var(--stage-width,100vw) - var(--space-6)));height:calc(var(--stage-height,100dvh) - var(--space-6));max-height:calc(var(--stage-height,100dvh) - var(--space-6));min-width:0;max-width:none;display:flex;flex-direction:column;overflow:hidden;padding:var(--space-4);border:var(--border-width) solid var(--color-border);border-radius:var(--radius-panel);background:var(--fill-window);box-shadow:var(--shadow-panel)}
@@ -63,3 +64,25 @@
 .progression-overview{min-height:var(--size-control-compact)}
 
 
+
+}
+
+@layer components {
+/* U4: same navigation and item selection, shared hub framing. */
+.progression-workspace>.progression-hero{min-width:0}.progression-hero .hub-hero-card__big{font-size:var(--font-size-h2)}
+.progression-library .progression-entry.hub-card-row{display:grid;grid-template-columns:var(--size-icon-slot) minmax(0,1fr);border:var(--border-width) solid var(--color-border);background:var(--color-panel-raised);box-shadow:0 var(--border-depth) 0 var(--color-border-strong);gap:var(--space-3);padding:var(--space-2) var(--space-3)}
+.progression-library .progression-entry.hub-card-row.is-selected{background:var(--color-panel-selected);border-color:var(--color-primary-border);box-shadow:0 var(--border-depth) 0 var(--color-primary-edge)}
+.progression-library.is-grid .progression-entry.hub-card-row{display:flex;align-items:center;text-align:center;min-height:0}
+.progression-library .progression-entry.hub-card-row .progression-symbol{width:var(--size-icon-slot);height:var(--size-icon-slot)}
+.progression-rank{display:inline-flex;gap:var(--space-1);font-size:var(--font-size-h3);color:var(--color-emphasis);font-weight:var(--font-weight-bold);margin-bottom:var(--space-1)}
+.progression-library :is(.glyph-cards,.progression-tracks,.reputation-regions)>.hub-card-row{display:grid;grid-template-columns:var(--size-icon-slot) minmax(0,1fr);height:auto;min-height:var(--size-slot);gap:var(--space-2);padding:var(--space-3);box-shadow:0 var(--border-depth) 0 var(--color-border-strong);text-align:left}
+.progression-library :is(.glyph-cards,.progression-tracks,.reputation-regions)>.hub-card-row>.hub-card-row__icon{grid-column:1;grid-row:1/span 3;width:var(--size-icon-slot);height:var(--size-icon-slot)}
+.progression-library :is(.glyph-cards,.progression-tracks,.reputation-regions)>.hub-card-row>:not(.hub-card-row__icon):not(.ui-slot-mark){grid-column:2;min-width:0}
+.progression-library .hub-card-row .ui-meter{margin-top:var(--space-2)}
+.challenge-list .challenge-card{box-shadow:0 var(--border-depth) 0 var(--color-border-strong);background:var(--color-panel-raised)}
+.challenge-card>header>h3{display:flex;align-items:center;gap:var(--space-2)}
+.challenge-card .challenge-reward{display:flex;align-items:center;flex-wrap:wrap;gap:var(--space-2)}
+.challenge-list>.hub-hero-card{min-width:0}.challenge-ranking>li .ui-stat__label{display:flex;gap:var(--space-2);align-items:center}
+[data-motion-reduced=true] .progression-entry.slot{transition:none}
+
+}

@@ -1,3 +1,4 @@
+// 已冻结（2026-10-25，planning-bd-v1/27 D-A4）：回合制战棋撤销，正式战斗为实时自动战斗。本目录只保留沙盒，不再开发、不接入游戏；一个月内无复用再清理。
 /**
  * 预览页入口 —— 仅由 tactical-board.html 使用，不进入游戏 bundle，不替换 World 运行路径。
  * URL 参数：
@@ -14,6 +15,8 @@ import type {TacticalSource} from './contract.ts';
 import type {SandboxCreateOptions} from './sandbox-source.ts';
 import type {SandboxCatalogWire} from './sandbox-wire.ts';
 import {SKILL_LABEL} from './sandbox-wire.ts';
+import {iconHtml} from '../ui-components.ts';
+import {fitTacticalStage} from './viewport.ts';
 
 const esc=(t:string)=>t.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
 const q=new URLSearchParams(location.search);
@@ -21,22 +24,43 @@ const sourceParam=q.get('source')||'auto';
 const scenarioParam=q.get('scenario');
 // ?scenario= 存在时始终走 fixture
 const forceFixture=scenarioParam!=null;
+// Clean play link still opens the explicit, non-persistent sandbox setup.
+// Fixture / automatic fallback previews always retain their data-source toolbar.
+if(q.get('play')==='1'&&sourceParam==='sandbox'&&!forceFixture)document.body.classList.add('tb-play');
 
 const stage=document.querySelector<HTMLElement>('#stage')!;
+const stageWrap=document.querySelector<HTMLElement>('#stage-wrap')!;
 const toolbar=document.querySelector<HTMLElement>('#toolbar')!;
 const diag=document.querySelector<HTMLElement>('#diag')!;
 const sourceLabel=document.querySelector<HTMLElement>('#source-label');
+document.querySelector('.sandbox-card h2')?.insertAdjacentHTML('afterbegin',iconHtml('swords',{size:32}));
 
 let reduced=q.get('motion')==='reduced'||matchMedia('(prefers-reduced-motion: reduce)').matches;
+document.querySelector('#sandbox-panel')?.setAttribute('data-motion-reduced',String(reduced));
 let controller:TacticalBoardController|null=null;
 let activeSource:TacticalSource|null=null;
 
+let fitFrame=0;
 function fit(){
- const bar=toolbar?.offsetHeight??0;
- const scale=Math.min(innerWidth/1280,(innerHeight-bar)/720);
- document.documentElement.style.setProperty('--tb-stage-scale',String(Math.max(.25,scale)));
+ fitFrame=0;
+ const styles=document.documentElement.style,toolbarHeight=`${toolbar.offsetHeight}px`;
+ if(styles.getPropertyValue('--tb-toolbar-height')!==toolbarHeight)styles.setProperty('--tb-toolbar-height',toolbarHeight);
+ // Safe-area insets and the toolbar are already excluded by #stage-wrap's layout.
+ const scale=String(fitTacticalStage(stageWrap.clientWidth,stageWrap.clientHeight).scale);
+ if(styles.getPropertyValue('--tb-stage-scale')!==scale)styles.setProperty('--tb-stage-scale',scale);
 }
-addEventListener('resize',fit);fit();
+function scheduleFit(){if(!fitFrame)fitFrame=requestAnimationFrame(fit);}
+const viewportResize=typeof ResizeObserver==='undefined'?null:new ResizeObserver(scheduleFit);
+viewportResize?.observe(stageWrap);viewportResize?.observe(toolbar);
+addEventListener('resize',scheduleFit);
+window.visualViewport?.addEventListener('resize',scheduleFit);
+addEventListener('pagehide',event=>{
+ if(event.persisted)return;
+ viewportResize?.disconnect();removeEventListener('resize',scheduleFit);
+ window.visualViewport?.removeEventListener('resize',scheduleFit);
+ if(fitFrame)cancelAnimationFrame(fitFrame);
+});
+fit();
 
 // ── 工具条标准按钮 ───────────────────────────────────────────────────────
 
@@ -45,6 +69,7 @@ const button=(id:string)=>document.querySelector<HTMLButtonElement>('#'+id)!;
 button('btn-motion').setAttribute('aria-pressed',String(reduced));
 button('btn-motion').addEventListener('click',()=>{
  reduced=!reduced;controller?.setReducedMotion(reduced);
+ document.querySelector('#sandbox-panel')?.setAttribute('data-motion-reduced',String(reduced));
  button('btn-motion').setAttribute('aria-pressed',String(reduced));
 });
 button('btn-refresh').addEventListener('click',()=>{
@@ -101,6 +126,21 @@ async function startWithSandbox(){
 
 let lastSandboxOpts:SandboxCreateOptions|null=null;
 
+/** Async catalogue loading must not steal focus from a field the player is editing. */
+function focusSandboxInitial(panel:HTMLElement,explicitOpen=false){
+ if(panel.hidden)return;
+ const active=document.activeElement;
+ const unowned=!active||active===document.body||active===document.documentElement||
+  !(active instanceof HTMLElement)||!active.isConnected||active.matches(':disabled')||!!active.closest('[hidden],[inert]');
+ if(!explicitOpen&&!unowned)return;
+ const board=panel.querySelector<HTMLSelectElement>('#sandbox-board');
+ const hero=panel.querySelector<HTMLSelectElement>('#sandbox-hero');
+ const start=panel.querySelector<HTMLButtonElement>('#sandbox-start');
+ const control=board&&!board.disabled&&board.options.length?board:
+  hero&&!hero.disabled&&hero.options.length?hero:start&&!start.disabled?start:null;
+ control?.focus({preventScroll:true});
+}
+
 function showSandboxPanel(src:SandboxSource){
  const panel=document.querySelector<HTMLElement>('#sandbox-panel');
  if(!panel){return;}
@@ -147,9 +187,10 @@ function fillCatalog(panel:HTMLElement,catalog:SandboxCatalogWire,src:SandboxSou
   priorityList.innerHTML=skills.map((s,i)=>`
 <li class="sandbox-priority-item" data-skill="${esc(s)}" draggable="false">
  <span class="sandbox-priority-order">${i+1}</span>
+ ${iconHtml('star',{size:24})}
  <span class="sandbox-priority-label">${labelOf(s)}</span>
- <button type="button" class="sandbox-priority-up" data-up="${esc(s)}" aria-label="上移 ${labelOf(s)}" ${i===0?'disabled':''}>▲</button>
- <button type="button" class="sandbox-priority-down" data-down="${esc(s)}" aria-label="下移 ${labelOf(s)}" ${i===skills.length-1?'disabled':''}>▼</button>
+ <button type="button" class="sandbox-priority-up ui-button ui-button--tertiary ui-button--compact" data-up="${esc(s)}" aria-label="上移 ${labelOf(s)}" ${i===0?'disabled':''}>▲</button>
+ <button type="button" class="sandbox-priority-down ui-button ui-button--tertiary ui-button--compact" data-down="${esc(s)}" aria-label="下移 ${labelOf(s)}" ${i===skills.length-1?'disabled':''}>▼</button>
 </li>`).join('');
  }
  buildPriority(heroSel.value);
@@ -198,8 +239,8 @@ function fillCatalog(panel:HTMLElement,catalog:SandboxCatalogWire,src:SandboxSou
   }
  });
 
- // 键盘可操作（panel 内 focus trap 不做，依赖 tab 顺序）
  panel.hidden=false;
+ focusSandboxInitial(panel);
 }
 
 // ── 暴露"再来一局"入口 ─────────────────────────────────────────────────
@@ -208,7 +249,7 @@ function fillCatalog(panel:HTMLElement,catalog:SandboxCatalogWire,src:SandboxSou
 (window as any).__sandboxRestart=()=>{
  if(!(activeSource instanceof SandboxSource))return;
  const panel=document.querySelector<HTMLElement>('#sandbox-panel');
- if(panel){panel.hidden=false;}
+ if(panel){panel.hidden=false;focusSandboxInitial(panel,true);}
 };
 
 // ── 诊断 ─────────────────────────────────────────────────────────────────
@@ -248,7 +289,7 @@ async function init(){
    const msg=err instanceof Error?err.message:'沙盒接口未开启（需服务端 TACTICAL_SANDBOX=1）';
    if(sourceLabel)sourceLabel.textContent=msg;
    // 强制 sandbox 失败时显示错误而不退回 fixture
-   stage.innerHTML=`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:40px;text-align:center;color:var(--color-danger-strong,#c00)"><p>${msg}</p></div>`;
+   stage.innerHTML=`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:40px;text-align:center;color:var(--color-danger-strong)"><p>${msg}</p></div>`;
   }
   return;
  }

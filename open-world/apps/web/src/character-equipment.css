@@ -1,5 +1,11 @@
 /* Fixed six-part paper doll. Character-only rules never alter the shared slot primitive. */
 .panel[data-panel=character] .character-panel{display:grid;grid-template-columns:minmax(0,1fr) 344px;grid-template-rows:minmax(0,1fr) var(--size-control);gap:var(--space-3) var(--space-5);flex:1;min-width:0;min-height:0;overflow:visible}
+/* The optional plan toolbar is a full-width row, never a peer of the paperdoll.
+   Explicit body placement also preserves the three-column equipment comparison. */
+.panel[data-panel=character] .character-panel.has-loadout{grid-template-rows:auto minmax(0,1fr) var(--size-control)}
+.character-panel.has-loadout>.loadout-bar{grid-column:1/-1;grid-row:1;min-width:0;margin-bottom:0}
+.character-panel.has-loadout>:is(.character-paperdoll,.character-summary,.character-chooser,.character-compare){grid-row:2}
+.character-panel.has-loadout>.character-footer{grid-row:3}
 .character-paperdoll{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;border:var(--border-width) solid var(--color-border);border-radius:var(--radius-panel);background:var(--color-panel-inset);overflow:hidden}.character-paper-heading{display:flex;justify-content:space-between;align-items:center;flex:0 0 38px;padding:var(--space-3) var(--space-5) 0}.character-paper-heading h3{font-size:var(--font-size-body);font-weight:var(--font-weight-semibold);margin:0}.character-paper-heading>span{font-size:var(--font-size-caption);color:var(--color-text-secondary)}
 .character-doll{position:relative;flex:1;min-height:0;isolation:isolate}.character-identity{position:absolute;left:190px;right:190px;top:var(--space-3);text-align:center;z-index:1}.character-identity h3{margin:0;font-size:var(--font-size-item-name);font-weight:var(--font-weight-bold);line-height:var(--font-line-heading);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.character-identity p{margin:var(--space-1) 0 0;font-size:var(--font-size-caption);color:var(--color-text-secondary)}
 .panel[data-panel=character] .character-doll>.doll-hero{position:absolute;left:50%;bottom:var(--space-4);top:auto;width:min(44%,320px);height:calc(100% - 72px);transform:translateX(-50%);object-fit:contain;image-rendering:pixelated;pointer-events:none;z-index:0;filter:drop-shadow(0 8px 8px var(--color-shadow))}.character-ground{position:absolute;left:50%;bottom:var(--space-6);width:180px;height:var(--space-6);transform:translateX(-50%);border-radius:var(--radius-round);background:var(--color-shadow);pointer-events:none}
@@ -33,3 +39,15 @@
 .gear-comparison-heading{margin:var(--space-2) 0 0;font-size:var(--font-size-caption);font-weight:var(--font-weight-semibold);color:var(--color-text-secondary)}.gear-comparison-none,.character-detail-empty{grid-column:1/-1;margin:var(--space-2) 0 0;font-size:var(--font-size-caption);color:var(--color-text-secondary)}
 
 .character-effects p,.character-effects ul{font-size:var(--font-size-body);color:var(--color-text-primary)}.character-doll>.character-slot{background:var(--color-panel-raised)}.character-slot{position:relative}.character-core-value>.ui-stat__label{grid-column:1/-1}.character-core-value>strong{grid-column:1/-1}.character-slot-copy>small{font-weight:var(--font-weight-medium)}
+
+/* U2 Direction A: character equip slots get quality rim border + depth shadow when gear is equipped. */
+/* (Quality vars --qr/--qrs come from item-slots.css .quality-* rules.) */
+.character-doll>.character-slot[class*=quality-]:not(.empty){
+  border-color:var(--qr,var(--color-border));
+  box-shadow:0 var(--border-rim) 0 var(--qrs,var(--color-border)),var(--shadow-control);
+}
+/* Empty equip slot: inset appearance with no quality border. */
+.character-doll>.character-slot.empty{
+  background:var(--color-panel-inset);
+  box-shadow:inset 0 2px 4px var(--color-shadow);
+}

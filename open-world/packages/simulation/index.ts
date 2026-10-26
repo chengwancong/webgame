@@ -1,3 +1,4 @@
+import type {Tactics,SkillCondition} from '../contracts/tactics.ts';
 import {newHexStatistics,hexStatisticsRule,hexStatisticsSchema,type HexStatistics} from './hex-combat-stats.ts';
 import {starseaBossMaps} from '../content/starsea/index.ts';
 import {resolvedSkillTags,resolvedMechanismTags} from '../content/skill-mechanism-tags.ts';
@@ -28,6 +29,7 @@ import {comboLimits,isComboRuleId,statusVfxKey,type ComboRule,type ComboAction} 
 import {settings,effects,aiRules,bodyCollision,skillCatalog,type Region} from '../content/index.ts';
 import {moveBody,segmentContact,terrainContact,contactNormal,type Body} from './collision.ts';
 import {SpatialGrid} from './spatial.ts';
+import {burstSkillIds,newBurst,newPetCommand,stepBurst,windowOpen,type BreakWindow} from './burst.ts';
 import {distance,move,findPath,walkable,lineOfSight} from './navigation.ts';
 import {chapterBossSkills,chapterDamageTypes,inBeam,type BossCast,type WarningDisplay,monsterSkills,getBossPhase,getAvailableSkills,getBossDefinition} from '../content/chapter-combat.ts';
 export type {WarningDisplay} from '../content/chapter-combat.ts';
@@ -43,7 +45,7 @@ export type WorldPlayer={id:string;hero:World['hero'];stats:Stats;skills:Skill[]
 const outOfCombatTicks=120;
 // 自动施法时，指向敌人的冲刺技只对这个距离内的敌人放：只是一个短突进，不会自己把角色拽过半个屏幕（docs/progression-goal-plan.md §11.1）。
 const autoDashMaxDistance=4;
-const heroFields=['autoBounds','skillCharges','hero','stats','skills','cooldowns','pending','heroSlowUntil','targetId','mode','autoState','stopReason','anchor','radius','avoidElite','targetPriority','autoSkills','path','pathGoal','stuck','input','destination','dodge','wardCooldown','lastCastFailure','combatAt','hurtAt','comboReady','comboCounts','effectHitWindows','effectMarks','hexCombat','hexLedger','hexResetFrame','hexRecoveryWindow','hexManaWindow','echoes','castIntent','hexStatistics','effectStats','conditionClock','selfBuffs','effectKillTicks','effectMoved','effectLastPosition','effectsStarted','effectObservedShield','effectShieldPeak','effectPassive','effectCastHits'] as const;
+const heroFields=['autoBounds','takeoverAt','tactics','skillCharges','hero','stats','skills','cooldowns','pending','heroSlowUntil','targetId','mode','autoState','stopReason','anchor','radius','avoidElite','targetPriority','autoSkills','path','pathGoal','stuck','input','destination','dodge','wardCooldown','lastCastFailure','combatAt','hurtAt','comboReady','comboCounts','effectHitWindows','effectMarks','hexCombat','hexLedger','hexResetFrame','hexRecoveryWindow','hexManaWindow','echoes','castIntent','hexStatistics','effectStats','conditionClock','selfBuffs','effectKillTicks','effectMoved','effectLastPosition','effectsStarted','effectObservedShield','effectShieldPeak','effectPassive','effectCastHits','burst','petCommand'] as const;
 const encode=(v:any):any=>v instanceof Map?{$map:[...v].map(([k,x])=>[k,encode(x)])}:v instanceof Set?{$set:[...v]}:Array.isArray(v)?v.map(encode):v&&typeof v==='object'?Object.fromEntries(Object.entries(v).map(([k,x])=>[k,encode(x)])):v;
 function decode(v:any):any{
  if(typeof v==='number'&&!Number.isFinite(v))throw Error('Invalid combat number');
@@ -56,6 +58,8 @@ function decode(v:any):any{
 }
 /** 画面朝向：等距视角下屏幕左右由 x−y 决定，不是世界 x。正上/正下方时保持原朝向。 */
 export function screenFacing(from:Vec,to:Vec,current=1){const d=(to.x-to.y)-(from.x-from.y);return Math.abs(d)<1e-6?current:d>0?1:-1;}
+/** 临时接管后松手多久回到自动：1.5 秒（30 tick/秒）。 */
+export const takeoverResumeTicks=45;
 export class World {
  rules=structuredClone({hexPolicy,eliteAffixes,combatNumerics,monsters:monsterContent,aiRules,settings,effects,bodyCollision,encounterBalance,chapterBossSkills,monsterSkills,chapterDamageTypes,statusPolicy,damagePermissions});
  defense:DefenseTarget|null=null;
@@ -159,7 +163,14 @@ export class World {
  enemies:Entity[]=[];events:CombatEvent[]=[];projectiles:Projectile[]=[];zones:Zone[]=[];cooldowns:Record<string,number>={};skillCharges:Record<string,SkillChargeState>={};
  bossClock:{started:number;limit:number;enraged:boolean}|null=null;bossCasts:BossCast[]=[];heroSlowUntil=0;private bossSkillAt=new Map<string,number>();
  warnings:WarningDisplay[]=[];  // 新增：预警UI列表
- autoBounds?:{center:Vec;radius:number};kills:{source_id:string;tick:number}[]=[];pickups:Vec[]=[];anchor:Vec;radius=this.rules.settings.autoRadius;avoidElite=false;targetPriority:'near'|'ranged'='near';autoSkills=true;
+ autoBounds?:{center:Vec;radius:number};kills:{source_id:string;tick:number}[]=[];
+ /** 27 号 R3 出手点（burst.ts）：副本里打开；能量/宠物指令按玩家存，破绽窗口全场共用。 */
+ burstEnabled=false;burst=newBurst();petCommand=newPetCommand();breakWindow:BreakWindow|null=null;breakWindows=0;breakClock:Record<string,number>={};breakOpened:Record<string,number>={};breakCasts:number[]=[];breakPending:{boss:string;at:number}[]=[];burstCasting=false;
+pickups:Vec[]=[];anchor:Vec;radius=this.rules.settings.autoRadius;avoidElite=false;targetPriority:'near'|'ranged'='near';autoSkills=true;
+ /** 托管编排（27 号 R2）：技能优先级、目标、站位、保命、单技能条件。未设置时保持改版前的自动行为。 */
+ tactics?:Tactics;
+ /** 临时接管（27 号 R1）：全自动下玩家移动输入只暂停自动走位，最后一次输入后 takeoverResumeTicks 回到自动；-1 表示未接管。 */
+ takeoverAt=-1;
  /** Zoned field roaming: stay inside `bounds`; with no living enemy there, walk to `next()` (an
   * unexplored or possibly refreshed camp); when that is empty too, stop with `emptyReason`. */
  roamGuide?:{bounds:{x:number;y:number;w:number;h:number};next:()=>Vec|undefined;emptyReason:string};skills:Skill[];stats:Stats;
@@ -169,7 +180,7 @@ export class World {
  this.grid=new SpatialGrid<Entity>(region.activationRadius?8:2);this.randomState=seed>>>0;this.stats=stats;this.skills=skills;this.anchor={...region.safe};this.hero={position:{...region.safe},hp:stats.hp,mana:stats.mana,shield:0,shieldUntil:0,facing:1,action:'idle',actionUntil:0};
  this.enemies=spawns.filter(s=>!completed.includes(s.id)).map(s=>({...s,maxHp:s.hp,alive:true,cooldown:(seed+s.id.length)%60,slow:0,burn:0,position:{x:s.x,y:s.y},facing:-1,action:'idle',actionUntil:0,reward:true,skillCooldowns:new Map(),currentPhase:1}));this.grid.rebuild(this.enemies);
  }
- setMode(mode:Mode){this.cancelCastIntent();this.destination=undefined;this.mode=mode;this.stopReason='';this.stuck=0;this.path=[];this.pathGoal='';this.dodge=undefined;this.anchor={...this.hero.position};}
+ setMode(mode:Mode){this.takeoverAt=-1;this.cancelCastIntent();this.destination=undefined;this.mode=mode;this.stopReason='';this.stuck=0;this.path=[];this.pathGoal='';this.dodge=undefined;this.anchor={...this.hero.position};}
  bindCamp(camp:{x:number;y:number;radius:number},ids:readonly string[]){const extra=this.rules.encounterBalance.openWorldNavigation?.leashExtra;if(!Number.isFinite(extra)||!Number.isFinite(camp.radius)||camp.radius<0||!walkable(this.region,camp))throw Error('Invalid frozen camp navigation');const wanted=new Set(ids);for(const e of this.enemies)if(wanted.has(e.id)){e.home={x:camp.x,y:camp.y};e.leashRadius=camp.radius+extra!;e.returning=false;}}
  addSpawns(spawns:Spawn[]){const ids=new Set(this.enemies.map(e=>e.id));if(spawns.some(s=>ids.has(s.id))||new Set(spawns.map(s=>s.id)).size!==spawns.length)throw Error('Duplicate encounter spawn');const seeded=new World(this.region,this.stats,this.skills,spawns,[],this.randomState);this.enemies.push(...seeded.enemies);this.grid.rebuild(this.enemies.filter(e=>e.alive));}
  /** Unload far camp members: the dead and the idle (untouched, unengaged) only; returns the removed ids. */
@@ -178,8 +189,10 @@ export class World {
   * rewards. Its pending attacks disappear; unrelated combat remains intact. */
  cancelSpawns(ids:readonly string[]){const wanted=new Set(ids);this.enemies=this.enemies.filter(e=>!wanted.has(e.id));this.monsterPending=this.monsterPending.filter(p=>!wanted.has(p.owner));this.projectiles=this.projectiles.filter(p=>!p.sourceId||!wanted.has(p.sourceId));this.zones=this.zones.filter(z=>!z.sourceId||!wanted.has(z.sourceId));this.refreshSpatial(true);}
  stop(reason:string){if(this.mode==='auto')this.mode='semi';this.stopReason=reason;this.autoState='已停止';}
- control(dx:number,dy:number){this.input={x:dx,y:dy};if(dx||dy){this.cancelCastIntent();if(this.mode==='auto')this.setMode('semi');this.destination=undefined;this.path=[];}}
- go(p:Vec){this.cancelCastIntent();if(this.mode==='auto')this.setMode('semi');this.destination=p;this.path=findPath(this.region,this.hero.position,p);}
+ control(dx:number,dy:number){this.input={x:dx,y:dy};if(dx||dy){this.cancelCastIntent();if(this.mode==='auto')this.takeoverAt=this.tick;this.destination=undefined;this.path=[];}}
+ go(p:Vec){this.cancelCastIntent();if(this.mode==='auto')this.takeoverAt=this.tick;this.destination=p;this.path=findPath(this.region,this.hero.position,p);}
+ /** 是否处于临时接管（全自动下玩家正在或刚刚移动）。 */
+ takingOver(){return this.mode==='auto'&&(this.takeoverAt??-1)>=0;}
  isWalkingTo(p:Vec){return this.destination===p;}
  cancelWalk(){this.destination=undefined;this.path=[];}
  movementIntent(){return {destination:this.destination?{...this.destination}:undefined,input:{...this.input}};}
@@ -187,10 +200,13 @@ export class World {
  /** Independent island arenas own this default approach; authoritative and legacy encounters retain their targeting policy. */
  soloBossTarget(){const boss=this.region.boss&&starseaBossMaps.includes(this.region.id)&&this.players.size===0?this.enemies.find(e=>e.alive&&e.boss):undefined;return boss?(this.enemies.find(e=>e.id===this.targetId&&e.alive)??boss):undefined;}
  private bossNeedsApproach(){const b=this.soloBossTarget();return !!b&&(distance(this.hero.position,b.position)>=this.autoAttackStopRange()||!lineOfSight(this.region,this.hero.position,b.position));}
+ /** 目标偏好：编排的「目标」开关在交战距离（12 格）内基本压过远近，旧的设置项 targetPriority 只做轻微偏好。 */
+ targetBias(e:Entity){const t=this.tactics?.target;if(t){if(t==='near'||distance(e.position,this.hero.position)>12)return 0;if(t==='ranged')return ['ranged','shaman','artillery'].includes(e.kind)?-12:0;if(t==='elite')return e.elite||e.boss?-12:0;return -12*(1-e.hp/Math.max(1,e.maxHp));}
+  return this.targetPriority==='ranged'&&['ranged','shaman','artillery'].includes(e.kind)?-4:0;}
  closest(){const chosen=this.enemies.find(e=>e.id===this.targetId&&e.alive);if(chosen)return chosen;const boss=this.mode!=='manual'?this.soloBossTarget():undefined;if(boss)return boss;
- let nearest:Entity|undefined,best=Infinity;for(const e of this.enemies){if(!e.alive)continue;const score=distance(e.position,this.hero.position)+(this.targetPriority==='ranged'&&['ranged','shaman','artillery'].includes(e.kind)?-4:0);if(score<best||score===best&&nearest&&e.id.localeCompare(nearest.id)<0){nearest=e;best=score;}}
+ let nearest:Entity|undefined,best=Infinity;for(const e of this.enemies){if(!e.alive)continue;const score=distance(e.position,this.hero.position)+this.targetBias(e);if(score<best||score===best&&nearest&&e.id.localeCompare(nearest.id)<0){nearest=e;best=score;}}
  return nearest;}
- cast(id:string,target=this.closest(),position?:Vec):boolean{
+ cast(id:string,target=this.closest(),position?:Vec):boolean{if(this.burstEnabled&&burstSkillIds.has(id)&&!this.burstCasting)return false;
  if(!this.stepping)this.cancelCastIntent();
  const skill=this.skills.find(s=>s.id===id);
  if(skill&&this.stats.weapon!==undefined&&!permitsWeapon(skill.weapons,this.stats.weapon))return this.failure(skill,'weapon');
@@ -388,7 +404,7 @@ export class World {
  }this.zones=this.zones.filter(z=>z.life>0);
  this.downedInDefense();
  if(this.defense){const d=this.defense;if(d.hp<=0)d.failed=true;else if(!d.failed&&!d.complete){if(distance(this.hero.position,d.position)<=d.radius)d.heldTicks=Math.min(d.requiredTicks,d.heldTicks+1);d.complete=d.heldTicks>=d.requiredTicks&&!this.enemies.some(e=>d.enemyIds.includes(e.id)&&e.alive);}}
- if(this.separatedCount!==this.enemies.length)this.separateBodies();this.stepping=false;
+ stepBurst(this);if(this.separatedCount!==this.enemies.length)this.separateBodies();this.stepping=false;
  if(!this.players.size&&this.hero.hp<=0)this.stop('你已倒下，请返回安全点。');
  }
  private stepTrackedHero(){this.stepEffects();const before={...this.hero.position};this.effectLastPosition=before;this.stepHero();this.effectMoved+=distance(before,this.hero.position);if(distance(before,this.hero.position)>.001){this.conditionClock.moving++;this.conditionClock.still=0;}else{this.conditionClock.still++;this.conditionClock.moving=0;}}
@@ -401,16 +417,21 @@ export class World {
  else if(this.region.calmRegen&&this.tick-(this.hurtAt??-outOfCombatTicks)>=outOfCombatTicks)this.hero.hp=Math.min(this.stats.hp,this.hero.hp+this.stats.hp*this.region.calmRegen/30);
  const h=this.hero.position;
  if(this.hasStatus(this.playerId,'fear')){const status=this.activeStatuses(this.playerId).find(s=>s.effect.kind==='fear')!,source=this.actorPosition(status.sourceId)??status.sourcePosition;this.moveHero({x:h.x+(h.x-source.x),y:h.y+(h.y-source.y)});}
- else if(this.input.x||this.input.y){const length=Math.hypot(this.input.x,this.input.y);this.moveHero({x:h.x+this.input.x/length,y:h.y+this.input.y/length});}
+ else if(this.input.x||this.input.y){if(this.mode==='auto')this.takeoverAt=this.tick;const length=Math.hypot(this.input.x,this.input.y);this.moveHero({x:h.x+this.input.x/length,y:h.y+this.input.y/length});}
  else if(this.castIntent)this.advanceCastIntent();
- else if(this.destination){if(distance(h,this.destination)<.3){this.destination=undefined;this.path=[];}else this.follow();}
- else if(this.mode==='auto')this.autoMove();
+ else if(this.destination){if(this.takingOver())this.takeoverAt=this.tick;if(distance(h,this.destination)<.3){this.destination=undefined;this.path=[];}else this.follow();}
+ else if(this.takingOver()&&this.tick-this.takeoverAt<takeoverResumeTicks){if(this.hero.actionUntil<this.tick)this.hero.action='idle';}
+ else if(this.mode==='auto'){if(this.takingOver()){this.takeoverAt=-1;this.anchor={...this.hero.position};this.path=[];this.pathGoal='';this.stuck=0;}this.autoMove();}
  else if(this.mode==='semi'&&this.bossNeedsApproach())this.autoMove(true);
  else if(this.hero.actionUntil<this.tick)this.hero.action='idle';
  this.stepEchoes();const ready=this.pending.filter(p=>p.at<=this.tick);this.pending=this.pending.filter(p=>p.at>this.tick);
  for(const p of ready)this.withVfx(p.vfx,()=>{const ally=(p as any).ally?this.players.get((p as any).ally):undefined;if((p as any).ally){if(!ally?.active||ally.hero.hp<=0||distance(this.hero.position,ally.hero.position)>this.supportRange&&this.supportRange>0||!lineOfSight(this.region,this.hero.position,ally.hero.position))return;if(p.skill.mechanics)this.executeDeclared(p.skill,undefined,p.position,0,ally.id);else{this.events.push({...p.vfx,type:'cast_released',id:this.playerId,position:{...this.hero.position},target:{...ally.hero.position},skill:p.skill.id,tick:this.tick});if(p.skill.kind==='heal')ally.hero.hp=Math.min(ally.stats.hp,ally.hero.hp+p.skill.damage);else{ally.hero.shield=p.skill.damage;ally.hero.shieldUntil=this.tick+p.skill.duration;}}}else this.execute(p.skill,p.target,p.position);});
- if(!this.castIntent&&this.region.id!=='town'&&!this.region.rest&&this.mode!=='manual'&&this.autoSkills&&(!this.players.size||this.players.get(this.playerId)?.connected)){const target=this.closest();for(const s of this.skills){
+ if(!this.castIntent&&this.region.id!=='town'&&!this.region.rest&&this.mode!=='manual'&&this.autoSkills&&(!this.players.size||this.players.get(this.playerId)?.connected)){const target=this.closest(),hurt=this.hero.hp<this.stats.hp*.5;let saving=false;for(const s of this.autoSkillOrder(hurt)){
   if(this.stats.weapon!==undefined&&!permitsWeapon(s.weapons,this.stats.weapon))continue;
+  if(!this.skillConditionMet(s,this.tactics?.conditions[s.id],target))continue;
+  // 编排优先级要有分量：排在前面的伤害技能冷却好了只差蓝时，攒蓝等它，后面耗蓝的技能不抢（零耗蓝的照放）。
+  if(saving&&s.cost>0)continue;
+  if(this.tactics&&s.cost>this.hero.mana&&s.damage>0&&!['shield','heal','dash'].includes(s.kind)&&!s.charges&&(this.cooldowns[s.id]??0)<=this.tick){saving=true;continue;}
   if(s.mechanics?.statuses.some(e=>e.scope==='self'&&this.hasStatus(this.playerId,e.kind)))continue;
   if(s.mechanics?.targeting==='direction'){if(this.defensiveThreat()&&this.cast(s.id,undefined,this.escapePoint(s.range)))break;continue;}
   if(s.kind==='heal'&&this.supportRange>0){this.savePlayer();const ally=[...this.players.values()].filter(p=>p.active&&p.hero.hp>0&&p.stats.hp-p.hero.hp>0&&distance(p.hero.position,this.hero.position)<=this.supportRange).sort((a,b)=>(b.stats.hp-b.hero.hp)-(a.stats.hp-a.hero.hp)||a.id.localeCompare(b.id))[0];if(ally&&this.castAlly(this.playerId,ally.id,s.id,this.supportRange))break;}
@@ -436,8 +457,22 @@ export class World {
   if(this.pathGoal!==goal||!this.path.length||this.stuck>3){this.pathGoal=goal;this.path=this.castApproachPath(target);}
   this.follow();
  }
- private autoAttackStopRange(){const primary=this.skills.find(s=>s.damage>0&&!['heal','shield'].includes(s.kind)),orbit=primary?.mechanics?.projectile?.orbit;return orbit?Math.max(.6,orbit.radius-.4):this.skills.some(s=>s.kind==='projectile')?7:this.meleeStopRange();}
+ private autoAttackStopRange(){const primary=this.skills.find(s=>s.damage>0&&!['heal','shield'].includes(s.kind)),orbit=primary?.mechanics?.projectile?.orbit;if(orbit)return Math.max(.6,orbit.radius-.4);const stance=this.tactics?.stance;if(stance==='close')return this.meleeStopRange();if(stance)return this.skills.some(s=>s.kind==='projectile')?7:Math.max(this.meleeStopRange(),Math.min(7,Math.max(...this.skills.filter(s=>s.damage>0&&!['heal','shield','dash'].includes(s.kind)).map(s=>s.range),0)-.4));return this.skills.some(s=>s.kind==='projectile')?7:this.meleeStopRange();}
  private meleeStopRange(){const primary=this.skills.find(s=>s.kind==='single');return primary?Math.min(primary.range-.4,2.6):2.6;}
+ /** 编排优先级：按 order 排；保命开关打开且生命低于 50% 时，防护/治疗/位移技能提到最前。 */
+ private autoSkillOrder(hurt:boolean){const order=this.tactics?.order,own=this.skills.filter(s=>!burstSkillIds.has(s.id));let list=order?[...own].sort((a,b)=>{const i=order.indexOf(a.id),j=order.indexOf(b.id);return (i<0?99:i)-(j<0?99:j);}):own;
+  if(this.tactics?.survival&&hurt){const guard=(s:Skill)=>['shield','heal'].includes(s.kind)||s.mechanics?.targeting==='direction';list=[...list.filter(guard),...list.filter(s=>!guard(s))];}
+  return list;}
+ /** 单技能固定条件（只从固定列表选，D-A3）。 */
+ private skillConditionMet(s:Skill,condition:SkillCondition|undefined,target:Entity|undefined){
+  if(!condition)return true;if(condition==='manual')return false;
+  if(condition==='hurt')return this.hero.hp<this.stats.hp*.5;
+  if(condition==='mana')return this.hero.mana>=this.stats.mana*.6;
+  if(condition==='burst')return windowOpen(this);
+  if(!target)return false;
+  if(condition==='elite')return Boolean(target.elite||target.boss);
+  const reach=Math.max(2.5,s.radius);return this.enemies.filter(e=>e.alive&&distance(e.position,target.position)<=reach).length>=3;
+ }
  private defensiveThreat():boolean{
  const h=this.hero.position;
  if(this.enemies.some(e=>e.alive&&distance(e.position,h)<=this.monsterAi(e).range&&lineOfSight(this.region,e.position,h)))return true;
@@ -449,9 +484,9 @@ export class World {
  return distance(nearest,h)<this.rules.aiRules.projectileHitRadius&&lineOfSight(this.region,p.position,h);
  });
  }
- private moveHero(to:Vec){if(this.movementBlocked(this.playerId))return;if(this.mode==='auto'&&this.autoBounds){const b=this.autoBounds,d=distance(to,b.center);if(d>b.radius)to={x:b.center.x+(to.x-b.center.x)*b.radius/d,y:b.center.y+(to.y-b.center.y)*b.radius/d};}const before=this.hero.position,amount=this.effectiveStats().speed/30*(this.heroSlowUntil>this.tick&&!this.hasStatus(this.playerId,'slow')?.6:1),bodies=[...this.enemyBodies(before,2),...this.playerBodies(this.playerId)];
+ private moveHero(to:Vec){if(this.movementBlocked(this.playerId))return;if(this.mode==='auto'&&!this.takingOver()&&this.autoBounds){const b=this.autoBounds,d=distance(to,b.center);if(d>b.radius)to={x:b.center.x+(to.x-b.center.x)*b.radius/d,y:b.center.y+(to.y-b.center.y)*b.radius/d};}const before=this.hero.position,amount=this.effectiveStats().speed/30*(this.heroSlowUntil>this.tick&&!this.hasStatus(this.playerId,'slow')?.6:1),bodies=[...this.enemyBodies(before,2),...this.playerBodies(this.playerId)];
  this.hero.position=moveBody(this.region,before,to,amount,this.rules.bodyCollision.heroRadius,bodies);
- if((this.mode==='auto'||this.castIntent)&&distance(before,this.hero.position)<amount*.2){
+ if((this.mode==='auto'&&!this.takingOver()||this.castIntent)&&distance(before,this.hero.position)<amount*.2){
   const heading=Math.atan2(to.y-before.y,to.x-before.x),options=[-Math.PI/3,Math.PI/3,-Math.PI/2,Math.PI/2].map(angle=>moveBody(this.region,before,{x:before.x+Math.cos(heading+angle),y:before.y+Math.sin(heading+angle)},amount,this.rules.bodyCollision.heroRadius,bodies)).filter(p=>distance(p,before)>amount*.5);
   const next=options.sort((a,b)=>distance(a,to)-distance(b,to))[0];if(next)this.hero.position=next;
  }
@@ -476,7 +511,7 @@ export class World {
  if(this.region.roam&&!candidates.length&&!this.pickups.some(p=>distance(p,this.anchor)<=this.radius)){const g=this.roamGuide,inside=(p:Vec)=>!g||p.x>=g.bounds.x&&p.x<g.bounds.x+g.bounds.w&&p.y>=g.bounds.y&&p.y<g.bounds.y+g.bounds.h;
   const next=this.enemies.filter(e=>e.alive&&(this.avoidElite? !e.elite:true)&&inside(e.position)).sort((a,b)=>distance(a.position,h)-distance(b.position,h)||a.id.localeCompare(b.id))[0];if(next){this.anchor={...next.position};candidates.push(next);}
   else if(g){const camp=g.next();if(!camp){this.stop(g.emptyReason);return;}if(distance(camp,this.anchor)>.5)this.anchor={...camp};}}
- const priority=(e:Entity)=>this.targetPriority==='ranged'&&['ranged','shaman','artillery'].includes(e.kind)?-4:0;
+ const priority=(e:Entity)=>this.targetBias(e);
  const target=candidates.sort((a,b)=>distance(a.position,h)+priority(a)-distance(b.position,h)-priority(b)||a.id.localeCompare(b.id))[0];
  const pickup=this.pickups.filter(p=>distance(p,this.anchor)<=this.radius).sort((a,b)=>distance(a,h)-distance(b,h))[0];
  const collecting=!sceneBoss&&pickup&&(!target||distance(target.position,h)>4)&&(!target||distance(pickup,h)<distance(target.position,h));
@@ -497,6 +532,8 @@ export class World {
  this.autoState='避开危险';return;
  }
  this.dodge=undefined;
+ // 编排站位「风筝」：敌人贴近 2.5 格内就先退一步再打（远程技能射程内照常放）。
+ if(this.tactics?.stance==='kite'){const near=this.enemies.filter(e=>e.alive&&distance(e.position,h)<2.5).sort((a,b)=>distance(a.position,h)-distance(b.position,h)||a.id.localeCompare(b.id))[0];if(near){const dx=h.x-near.position.x,dy=h.y-near.position.y,len=Math.hypot(dx,dy)||1,to={x:h.x+dx/len*2,y:h.y+dy/len*2};if(walkable(this.region,to)&&lineOfSight(this.region,h,to)){const before={...h};this.moveHero(to);if(distance(before,this.hero.position)>.01){this.autoState='风筝';return;}}}}
  if(!goal){this.autoState='等待敌群刷新';return;}
  if(collecting&&distance(h,goal)<1.5){this.autoState='拾取战利品';return;}
  if(target&&distance(h,target.position)<this.autoAttackStopRange()&&lineOfSight(this.region,h,target.position)){this.autoState='战斗';if(this.hero.actionUntil<this.tick)this.hero.action='idle';return;}
@@ -608,7 +645,7 @@ export class World {
   const conditional=(this.stats.conditional??[]).filter(c=>c.pool==='cond'&&matches(c.when,this.conditionContext(context?.skill,e))).reduce((n,c)=>n+c.value,0);const damageBuffs=hitBuffs.filter(b=>b.action.consume!=='nextCast'&&b.action.consume!=='nextSkillCast'&&(!b.action.consume||category==='direct')&&(b.action.consume!=='nextMelee'||!!context?.skill&&resolvedSkillTags({...context.skill,category:skillCatalog.find(s=>s.id===context.skill!.id)?.category}).includes('melee'))),buffDamage=buffAmount(damageBuffs,'damageAdd')+buffAmount(damageBuffs,'damageMult');const scaling=hexDamageScale(damageBuffs,conditional,hexDamageFactor,this.rules.hexPolicy?.damageMultiplierCap);if(conditional||buffDamage||scaling.multiplier!==1)amount=Math.round(amount*scaling.multiplier);hexDamageFactor=scaling.hexFactor;
    // Weapon combos: reference = crit/execute-applied hit before amplify and armor; carried = statuses before this hit.
    const fromPlayer=sourceId===this.playerId||this.players.has(sourceId),reference=amount,carried=fromPlayer&&combatRules(this.stats).length?this.activeStatuses(e.id).map(x=>({...x,effect:structuredClone(x.effect)})):[];
-   if(fromPlayer){const shock=this.strength(e.id,'shock');let mult=1+(shock+this.strength(e.id,'vulnerable'))*(1+this.conditionalValue('vulnerableBonus',context?.skill,e));for(const r of this.combosFor('passive'))if(r.action.type==='amplify'&&this.comboMatches(r,context,damageType,e,carried)&&(this.upperBound||!r.action.against.length||r.action.against.some(k=>carried.some(x=>x.effect.kind===k)))){this.effectTriggered(r);const count=r.action.selfHpSteps?(this.upperBound?r.action.maxSteps??9:Math.min(r.action.maxSteps??9,Math.floor((1-this.hero.hp/this.stats.hp+1e-8)/r.action.selfHpSteps))):r.action.perCrowd?(this.upperBound?r.action.crowdCap??10:Math.min(r.action.crowdCap??10,this.conditionContext(context?.skill,e).target?.crowd??0)):1;const missing=r.action.targetMissingHp,missingBonus=missing?this.upperBound?missing.cap:Math.min(missing.cap,Math.max(0,1-e.hp/e.maxHp)*missing.coefficient):0;const amp=1+(r.action.perCrowd??r.action.ratio)*count+missingBonus;if(r.rule.hexMechanism&&this.rules.hexPolicy&&hexDamageFactor>0){const applied=Math.min(amp,Math.max(1,(1+this.rules.hexPolicy.damageMultiplierCap)/hexDamageFactor));mult*=applied;hexDamageFactor*=applied;}else mult*=amp;}if(mult!==1)amount=Math.round(amount*mult);}
+   if(fromPlayer){const shock=this.strength(e.id,'shock');let mult=1+(shock+this.strength(e.id,'vulnerable'))*(1+this.conditionalValue('vulnerableBonus',context?.skill,e));if(this.breakWindow&&windowOpen(this,e.id))mult*=1+this.breakWindow.bonus;for(const r of this.combosFor('passive'))if(r.action.type==='amplify'&&this.comboMatches(r,context,damageType,e,carried)&&(this.upperBound||!r.action.against.length||r.action.against.some(k=>carried.some(x=>x.effect.kind===k)))){this.effectTriggered(r);const count=r.action.selfHpSteps?(this.upperBound?r.action.maxSteps??9:Math.min(r.action.maxSteps??9,Math.floor((1-this.hero.hp/this.stats.hp+1e-8)/r.action.selfHpSteps))):r.action.perCrowd?(this.upperBound?r.action.crowdCap??10:Math.min(r.action.crowdCap??10,this.conditionContext(context?.skill,e).target?.crowd??0)):1;const missing=r.action.targetMissingHp,missingBonus=missing?this.upperBound?missing.cap:Math.min(missing.cap,Math.max(0,1-e.hp/e.maxHp)*missing.coefficient):0;const amp=1+(r.action.perCrowd??r.action.ratio)*count+missingBonus;if(r.rule.hexMechanism&&this.rules.hexPolicy&&hexDamageFactor>0){const applied=Math.min(amp,Math.max(1,(1+this.rules.hexPolicy.damageMultiplierCap)/hexDamageFactor));mult*=applied;hexDamageFactor*=applied;}else mult*=amp;}if(mult!==1)amount=Math.round(amount*mult);}
  const passivePen=this.combosFor('passive').reduce((p,r)=>r.action.type==='amplify'&&r.action.penetration&&this.comboMatches(r,context,damageType,e,carried)?1-(1-p)*(1-r.action.penetration):p,0);
  const penetration=Math.max(0,Math.min(1,1-(1-(context?.penetration??this.stats.penetration??0))*(1-(context?.skill?.mechanics?.penetration??0))*(1-passivePen))),armorDown=1-this.strength(e.id,'armor_down');
  // M17 Z1：航区弱点只放大玩家方伤害，在护甲之前乘。
@@ -1379,7 +1416,7 @@ export class World {
  applyBuild(stats:Stats,skills:Skill[]){const ratio=this.hero.hp/this.stats.hp;this.removeHexEffects((this.stats.rules??[]).filter(r=>r.id.startsWith('hex-')&&!(stats.rules??[]).some(n=>n.id===r.id&&n.source===r.source)).map(r=>r.id));this.stats=stats;this.skills=skills;this.hero.hp=ratio===0?0:Math.min(stats.hp,Math.max(1,Math.round(stats.hp*ratio)));this.hero.mana=Math.min(this.hero.mana,stats.mana);this.pending=[];}
 
  private savePlayer(){const p=this.players.get(this.playerId);if(p)for(const key of heroFields)p[key]=(this as any)[key];}
- focusPlayer(id:string){const p=this.players.get(id);if(!p)return false;this.savePlayer();this.playerId=id;for(const key of heroFields)(this as any)[key]=p[key];this.combatAt??=0;this.comboReady??={};this.comboCounts??={};this.echoes??=[];this.effectStats??={};this.conditionClock??={still:0,moving:0,manaSpent:0,kills:0,start:0};this.selfBuffs??=[];this.effectKillTicks??=[];this.effectMoved??=0;this.effectLastPosition??={...this.hero.position};this.effectsStarted??=false;this.effectObservedShield??=this.hero.shield;this.effectShieldPeak??=this.hero.shield;this.effectPassive??={};this.effectCastHits??={};return true;}
+ focusPlayer(id:string){const p=this.players.get(id);if(!p)return false;this.savePlayer();this.playerId=id;for(const key of heroFields)(this as any)[key]=p[key];this.takeoverAt??=-1;this.combatAt??=0;this.comboReady??={};this.comboCounts??={};this.echoes??=[];this.effectStats??={};this.burst??=newBurst();this.petCommand??=newPetCommand();this.conditionClock??={still:0,moving:0,manaSpent:0,kills:0,start:0};this.selfBuffs??=[];this.effectKillTicks??=[];this.effectMoved??=0;this.effectLastPosition??={...this.hero.position};this.effectsStarted??=false;this.effectObservedShield??=this.hero.shield;this.effectShieldPeak??=this.hero.shield;this.effectPassive??={};this.effectCastHits??={};return true;}
  forPlayer(id:string,run:()=>void){const previous=this.playerId;if(this.players.size&&!this.focusPlayer(id))return;try{run();}finally{this.savePlayer();if(this.players.size)this.focusPlayer(previous);}}
  /** A new stage has new terrain/targets. Run counters, charges and self buffs
   * remain owned by this actor; map-bound navigation and outgoing work expire in
@@ -1389,7 +1426,7 @@ export class World {
   this.forPlayer(id,()=>this.copyActorRun(previous));
  }
  private copyActorRun(previous:WorldPlayer){
-  const local=new Set<string>(['hero','stats','skills','pending','echoes','targetId','autoState','stopReason','anchor','radius','path','pathGoal','stuck','input','destination','dodge','castIntent','effectLastPosition','effectCastHits']);
+  const local=new Set<string>(['hero','stats','skills','pending','echoes','targetId','takeoverAt','autoState','stopReason','anchor','radius','path','pathGoal','stuck','input','destination','dodge','castIntent','effectLastPosition','effectCastHits']);
   const position={...this.hero.position};for(const key of heroFields)if(!local.has(key)&&previous[key]!==undefined)(this as any)[key]=structuredClone(previous[key]);this.hero={...structuredClone(previous.hero),position,action:previous.hero.hp>0?'idle':'death'};this.hero.hp=Math.min(this.hero.hp,this.stats.hp);this.hero.mana=Math.min(this.hero.mana,this.stats.mana);this.effectLastPosition={...position};
   // New D10 rules are stage-scoped; legacy non-HEX run buffs retain their old
   // carry semantics. Mechanism cooldowns stay in the copied comboReady ledger.

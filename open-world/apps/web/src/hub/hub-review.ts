@@ -1,20 +1,32 @@
+import {renderForgeReview,forgeReviewStates,type ForgeReviewState} from './forge-review.ts';
 /**
  * 预览页入口 —— 仅由 hub-review.html 使用，不进入游戏 bundle。
  * 驱动真实的 HubController：用本页的 fetch 桩回应 /api/hub/*（写操作会改动样例状态），
  * 所以出发 / 切换海域 / 领取 / 放弃等整条交互链都能点。
  * URL 参数 ?scenario=default|404|error|bagfull|slow|fail 切换后端状态。
  */
+import {installPanelMotion, installTabSlide} from '../ui/panel-motion.ts';
 import {HubController, type HubLaunch} from './hub-controller.ts';
-import {fixtureChart, fixtureToday, fixtureCommissions, fixturePort, FIXTURE_RESULT} from './hub-fixtures.ts';
+import {fixtureChart, fixtureToday, fixtureCommissions, fixturePort, FIXTURE_RESULT, FIXTURE_PETS, FIXTURE_SLOTS, FIXTURE_RETURN_ITEMS} from './hub-fixtures.ts';
 import {battleResultHtml} from '../battle-result-panel.ts';
+import {petPanelHtml} from './pet-panel.ts';
+import {hydratePetPortraits} from './pet-portrait.ts';
+import {slotUpgradePanelHtml} from './slot-upgrade-panel.ts';
+import {returnItemHtml} from './return-queue.ts';
 import type {ChartView, TodayView, HubCommissionsView as CommissionsView, HubPortView as PortView, ChartNodeView} from '../../../../packages/contracts/hub.ts';
 import {regions} from '../../../../packages/content/index.ts';
-import type {BattleResult} from '../../../../packages/contracts/index.ts';
+import type {BattleResult, Snapshot} from '../../../../packages/contracts/index.ts';
 
 type Scenario = 'default' | '404' | 'error' | 'bagfull' | 'slow' | 'fail';
 const scenario = (new URLSearchParams(location.search).get('scenario') ?? 'default') as Scenario;
 
 let chart: ChartView = fixtureChart(scenario === 'bagfull' ? {bagFull: true} : {});
+// 完整七航区导航，状态数据仅用于此验收页，不提交给真实服务。
+chart.regions[0].gateQuest = [{text: '通关风栖节点', done: false}, {text: '找回招牌技能', done: true}];
+chart.regions[0].explore = {percent: 50, score: 12, total: 24, parts: {nodes: [3, 10], caches: [3, 8], doors: [2, 2]}, lockedByKey: 0, dockBonus: .25, milestones: [{percent: 50, reached: true, reward: '码头派遣产出 +25%'}, {percent: 100, reached: false, reward: '码头派遣产出 +50%，获得该岛稀有宠物'}]};
+for (const [id, name] of [['forge', '赤炉'], ['frost', '霜镜'], ['rift', '沉星'], ['dragon', '龙眠'], ['deep', '深潮']] as const) {
+  chart.regions.push({...chart.regions[1], id, name, nodes: [], lockReason: '完成前一航区关口后开放'});
+}
 let today: TodayView = fixtureToday();
 let commissions: CommissionsView = fixtureCommissions();
 let port: PortView = fixturePort();
@@ -63,6 +75,8 @@ window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
 // ---- 假宿主：模拟 main.ts 里 #modal 与 action 分发 ----
 
 const modal = document.getElementById('modal') as HTMLElement;
+installPanelMotion(modal);
+installTabSlide(modal);
 const noteBox = document.getElementById('note') as HTMLElement;
 let current = '';
 let lastDepart = '';
@@ -116,6 +130,7 @@ document.addEventListener('click', e => {
   if (action === 'hub-result-retry') { void ctrl.relaunch(id); return; }
   if (action === 'hub-result-next') { ctrl.selectNode(id); open('hub-chart'); return; }
   if (action === 'result-return') { open(''); return; }
+  if(current==='forge-review'){if(action==='close'){open('');return;}if(['slot-select','craft-tab'].includes(action))renderForgeReview(modal,forgeState,action,id);else if(['slot-upgrade','reroll'].includes(action))noteBox.textContent='静态验收样例，不提交真实强化或重铸。';return;}
   const panel = current;
   const mapped = (action === 'sea-tier-pick' && panel === 'hub-chart') ? 'hub-sea-tier-pick' : action;
   void ctrl.handle(mapped, id, panel);
@@ -140,15 +155,50 @@ bind('btn-commission', () => open('hub-commission'));
 bind('btn-port', () => open('hub-port'));
 bind('btn-result', () => showResult(true));
 bind('btn-result-plain', () => showResult(false));
-bind('btn-flip', () => {
-  // 把选中节点依次切到四个角附近的节点，检查卡片翻转
-  const c = ctrl.chart;
-  if (!c) { noteBox.textContent = '先打开航图。'; return; }
-  const ids = ['wind-story-1', 'wind-nest-1', 'wind-treasure', 'wind-gate'];
-  const next = ids[(ids.indexOf(c.selectedNode ?? '') + 1) % ids.length];
-  ctrl.selectNode(next);
-  render();
+
+// U3 新增面板预览
+const STUB_SNAPSHOT: Pick<Snapshot, 'gold' | 'material'> = {gold: 1500, material: 8};
+
+bind('btn-pet', () => {
+  current = 'pet';
+  modal.classList.add('open');
+  modal.innerHTML = petPanelHtml(FIXTURE_PETS, false);
+  hydratePetPortraits(modal);
 });
+
+let forgeState:ForgeReviewState='zero';
+const forgeSelect=document.getElementById('forge-state') as HTMLSelectElement;
+function showForge(value:string){if(!forgeReviewStates.includes(value as ForgeReviewState))return;forgeState=value as ForgeReviewState;current='forge-review';renderForgeReview(modal,forgeState);noteBox.textContent='工坊静态样例：不写真实角色。';}
+forgeSelect?.addEventListener('change',()=>showForge(forgeSelect.value));
+bind('btn-slot-upgrade',()=>showForge(forgeSelect?.value??'zero'));
+
+bind('btn-return-unlock', () => {
+  current = 'hub-return';
+  modal.classList.add('open');
+  modal.innerHTML = returnItemHtml({item: FIXTURE_RETURN_ITEMS[0], lines: [], line: 0, left: 2});
+});
+
+bind('btn-return-away', () => {
+  current = 'hub-return';
+  modal.classList.add('open');
+  modal.innerHTML = returnItemHtml({item: FIXTURE_RETURN_ITEMS[1], lines: [], line: 0, left: 1});
+});
+export const CHART_REVIEW_STATES = ['overview', 'open', 'locked', 'gate', 'region-locked', 'sea'] as const;
+type ChartReviewState = typeof CHART_REVIEW_STATES[number];
+async function showChartState(value: string) {
+  if (!CHART_REVIEW_STATES.includes(value as ChartReviewState)) return;
+  await openPanel('hub-chart');
+  if (!ctrl.ready) return;
+  if (ctrl.chart?.seaOpen) await ctrl.handle('hub-sea-toggle', '', 'hub-chart');
+  await ctrl.handle('hub-region-select', value === 'region-locked' ? 'mist' : 'wind', 'hub-chart');
+  const node = {open: 'wind-story-3', locked: 'wind-nest-3', gate: 'wind-gate'}[value as 'open' | 'locked' | 'gate'];
+  if (node) await ctrl.handle('hub-node-select', node, 'hub-chart');
+  if (value === 'sea') await ctrl.handle('hub-sea-toggle', '', 'hub-chart');
+  noteBox.textContent = '验收样例数据，不写真实角色。';
+  render();
+}
+const chartSelect = document.getElementById('chart-state') as HTMLSelectElement | null;
+chartSelect?.addEventListener('change', () => { void showChartState(chartSelect.value); });
 
 const select = document.getElementById('scenario') as HTMLSelectElement | null;
 if (select) {
@@ -160,4 +210,8 @@ void (async () => {
   await ctrl.load();
   if (scenario === '404' || !ctrl.ready) { noteBox.textContent = scenario === '404' ? '航图入口已隐藏（404）。' : ''; }
   open(ctrl.ready ? 'hub-chart' : '');
+  const initial = new URLSearchParams(location.search).get('chart') ?? 'overview';
+  if (chartSelect && CHART_REVIEW_STATES.includes(initial as ChartReviewState)) chartSelect.value = initial;
+  if (ctrl.ready) await showChartState(initial);
+  const forge=new URLSearchParams(location.search).get('forge');if(forge){if(forgeSelect)forgeSelect.value=forge;showForge(forge);}
 })();

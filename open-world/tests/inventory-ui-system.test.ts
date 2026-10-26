@@ -25,8 +25,8 @@ it('gear actions wait for authoritative quotes and reuse shared control markup',
  const html=GearDetails(gear,snapshot,'bag',false);
  expect(html).toMatch(/data-action="salvage-confirm"[^>]*disabled/);
  // Upgrade and reroll live only in the port workshop (2026-10-11); bag and character only point there.
- for(const context of ['bag','character'] as const){const view=GearDetails(gear,snapshot,context,false);expect(view).not.toContain('data-action="upgrade"');expect(view).not.toContain('副属性重铸');expect(view).toContain(context==='bag'?'拾星港工坊':'前往拾星港工坊');}
- const forge=GearDetails(gear,snapshot,'forge',false);expect(forge).toMatch(/data-action="upgrade"[^>]*disabled/);expect(forge).not.toContain('salvage-confirm');expect(forge).not.toContain('前往拾星港工坊');
+ for(const context of ['bag','character'] as const){const view=GearDetails(gear,snapshot,context,false);expect(view).not.toContain('data-action="upgrade"');expect(view).not.toContain('副属性重铸');expect(view).toContain('去工坊强化');}
+ const forge=GearDetails(gear,snapshot,'forge',false);expect(forge).not.toContain('data-action="upgrade"');expect(forge).not.toContain('salvage-confirm');expect(forge).not.toContain('前往拾星港工坊');
  expect(html).toContain('ui-button__label');expect(html).toContain('aria-busy="true"');expect(html).toContain('id="gear-primary-summary"');expect(html).not.toContain('cmp-attributes');
  const character=GearDetails(gear,snapshot,'character',false);expect(character).toContain('class="gear-quote-state"');expect(character).toContain('ui-stat');
 });

@@ -34,13 +34,13 @@ export class FieldActivities{
   if(!active&&this.current)await this.finish();
   const now=performance.now();if(previous?.instance!==this.current?.instance||previous?.status!==this.current?.status||now-this.refreshAt>=250){this.refreshAt=now;this.deps.refresh();}
  }catch(error){this.deps.notice(error instanceof Error?error.message:'世界活动暂时无法同步');}finally{this.pending=false;}}
- private async finish(){const current=this.deps.world(),prior=this.prior;this.current=undefined;this.prior=undefined;if(prior){prior.carrySoloRunState(current);prior.hero.position={...current.hero.position};prior.anchor={...prior.hero.position};prior.setMode('semi');this.deps.replace(prior);}await this.deps.returned();if(prior)importSnapshotHexCooldowns(this.deps.world(),this.deps.snapshot());}
+ private async finish(){const current=this.deps.world(),prior=this.prior;this.current=undefined;this.prior=undefined;if(prior){prior.carrySoloRunState(current);prior.hero.position={...current.hero.position};prior.anchor={...prior.hero.position};prior.setMode('auto');this.deps.replace(prior);}await this.deps.returned();if(prior)importSnapshotHexCooldowns(this.deps.world(),this.deps.snapshot());}
  async interact(id:string){if(this.running)return;const object=this.objects().find(o=>o.id===id);if(!object||distance(object.position,this.deps.world().hero.position)>(object.reach??interactionReach.activity))return;
   if(id.startsWith('field-dungeon:')){this.deps.dungeon(id.slice('field-dungeon:'.length));return;}
   if(id.startsWith('plane-gate:')){const gate=worldTables.planeGates.find(g=>'plane-gate:'+g.id===id);if(gate)this.deps.plane(gate.plane,gate.id);return;}
   const kind=id.startsWith('field-event:')?'event':id.startsWith('field-rare:')?'rare':'chest',target=id.slice(id.indexOf(':')+1);await this.deps.settle();const result=await this.deps.write('field/activity/start',{kind,target,region:this.deps.world().region.id,position:{...this.deps.world().hero.position}});if(result!=='success')return;
   const view=await api<{activities:FieldActivityView[]}>('field/activity');this.activities=view.activities;const started=this.activities.find(a=>a.target===target)!;
-  if(kind==='chest'){await this.deps.write('field/activity/claim',{instance:started.instance});await this.poll();}else{await this.poll();await this.input({mode:'semi'});}
+  if(kind==='chest'){await this.deps.write('field/activity/claim',{instance:started.instance});await this.poll();}else await this.poll();
  }
  move(x:number,y:number){x=Math.max(-1,Math.min(1,x));y=Math.max(-1,Math.min(1,y));const key=x+','+y,now=performance.now();if(!this.running||this.inputPending||key===this.movement&&(!x&&!y||now-this.inputAt<400))return;this.inputAt=now;this.movement=key;void this.input({movement:{x,y}});}
  go(destination:{x:number;y:number}){void this.input({destination});}

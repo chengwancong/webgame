@@ -10,3 +10,37 @@
 .equip-tip-quality{color:var(--quality-color,var(--color-text-primary))}#tooltip.equipment-tip .gear-affix-list{margin:0;padding:0;border:0}#tooltip.equipment-tip .gear-affix{border-bottom:var(--border-width) solid var(--color-border-subtle)}.equip-tip-comparison .equip-tip-current{margin-bottom:var(--space-2)}
 
 #tooltip.equipment-tip .gear-affix-list h4{font-size:var(--font-size-h3)}.equip-tip-eyebrow{font-weight:var(--font-weight-regular)}.equip-tip-quality{font-weight:var(--font-weight-semibold)}.equip-tip-effect .ui-stat__numeric{color:var(--color-text-primary);font-weight:var(--font-weight-semibold)}
+
+/* U2 Direction A: quality head band ─ 3px quality top border + glow gradient, fills tooltip width via negative margin. */
+.equip-tip-header[class*=quality-]{
+  margin:calc(-1 * var(--space-4)) calc(-1 * var(--space-4)) var(--space-4);
+  padding:calc(var(--space-4) + var(--border-rim)) var(--space-4) var(--space-3);
+  border-top:var(--border-rim) solid var(--qr,var(--color-border));
+  border-radius:calc(var(--radius-panel) - var(--border-width)) calc(var(--radius-panel) - var(--border-width)) 0 0;
+  background:linear-gradient(to bottom,color-mix(in srgb,var(--qg,transparent) 80%,transparent),transparent 100%);
+}
+/* Name uses contrast-safe RimShade (dark enough on cream for ≥4.5:1). */
+.equip-tip-header h3[class*=quality-]{color:var(--qrs,var(--color-text-primary))}
+/* Quality badge: pill with dark quality fill (RimShade, white text >=4.5:1) + bevel edge. */
+.equip-tip-quality{
+  display:inline-flex;align-items:center;
+  padding:0 var(--space-2);height:var(--space-5);line-height:1;
+  border-radius:var(--radius-round);
+  background:var(--qrs,var(--color-text-secondary));
+  color:var(--color-text-inverse);
+  font-size:var(--font-size-micro);font-weight:var(--font-weight-bold);
+  border:1.5px solid var(--color-bevel-light);
+  vertical-align:middle;
+}
+
+/* Section h4 gets a small pale-gold diamond prefix (same pattern as ceremony loot-caption). */
+.equip-tip-effect h4::before,
+.equip-tip-comparison h4::before,
+#tooltip.equipment-tip .gear-affix-list h4::before{
+  content:'◆';
+  display:inline-block;
+  margin-right:var(--space-1);
+  color:var(--color-primary-border);
+  font-size:var(--font-size-micro);
+  vertical-align:middle;
+}

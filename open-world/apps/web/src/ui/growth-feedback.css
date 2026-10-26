@@ -1,0 +1,9 @@
+@layer components {
+ .ui-growth-number{position:relative;display:inline-grid;place-items:center;isolation:isolate;font-variant-numeric:tabular-nums;line-height:var(--font-line-heading)}
+ .ui-growth-number>.ui-number{position:relative;z-index:1;color:inherit;font:inherit}
+ .ui-growth-number>.ui-growth-rays{display:none;position:absolute;inset:50% auto auto 50%;width:var(--size-slot);height:var(--size-slot);transform:translate(-50%,-50%);pointer-events:none;animation:none}
+ .ui-growth-number.is-growth>.ui-growth-rays{display:block;animation:ui-growth-reveal var(--motion-growth-count) var(--motion-ease-out) both}
+ @keyframes ui-growth-reveal{from{opacity:0;scale:.9}to{opacity:0;scale:1.04}50%{opacity:1}}
+ @media(prefers-reduced-motion:reduce){.ui-growth-number.is-growth>.ui-growth-rays{animation:none;display:none}}
+ [data-motion-reduced=true] .ui-growth-number.is-growth>.ui-growth-rays{animation:none;display:none}
+}

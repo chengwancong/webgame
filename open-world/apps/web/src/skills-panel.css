@@ -1,3 +1,4 @@
+@layer legacy {
 /* Grouped skill book: semantic tokens and shared controls own the visual system. */
 .panel[data-panel=skills]{width:min(1160px,calc(var(--stage-width,100vw)*96/100));max-width:1160px;height:min(680px,calc(var(--stage-height,100dvh) - 32px));display:flex;flex-direction:column;overflow:hidden;padding:var(--space-5);color:var(--color-text-primary);background:var(--fill-window);border:var(--border-width) solid var(--color-border);border-radius:var(--radius-panel);box-shadow:var(--shadow-panel)}
 .panel[data-panel=skills]>.error:empty{display:none}
@@ -87,3 +88,50 @@
 .skill-book .skill-detail-tags{margin:0 0 var(--space-2);font-size:var(--font-size-caption);color:var(--color-text-secondary);overflow-wrap:anywhere}
 
 .skill-book .skill-school{display:flex;align-items:center;gap:var(--space-2);overflow:visible}
+
+}
+
+@layer components {
+/* U4: retain the grouped book and bottom loadout; the learned skill art leads. */
+.panel[data-panel=skills] .skill-book{grid-template-rows:auto minmax(0,1fr) calc(var(--skill-loadout-icon) + var(--space-6))}
+.skill-book>.skill-hero{grid-column:1/-1;grid-row:1;min-width:0}
+.skill-book .skill-library{grid-row:2}.skill-book .skill-detail{grid-row:2/span 2}.skill-book .skill-loadout{grid-row:3}
+/* 27 号 R2：托管编排与技能册同页切换，编排视图占满内容区，左优先级右开关。 */
+.skill-book>.skill-hero{display:flex;align-items:stretch}.skill-book>.skill-hero>.hub-hero-card__body{flex:1}.skill-book .skill-view-switch{display:flex;align-items:center;gap:var(--space-1);padding:0 var(--space-3)}
+.skill-book .skill-tactics{grid-column:1/-1;grid-row:2/span 2;overflow-y:auto;min-height:0;padding:var(--space-2) var(--space-3);border:var(--border-width) solid var(--color-border);border-radius:var(--radius-panel);background:var(--color-panel-inset);display:flex;flex-direction:column;gap:var(--space-2)}
+.skill-book .tactics-desc,.skill-book .tactics-locked{margin:0}
+.skill-book .tactics-locked{color:var(--color-warning)}
+.skill-book .tactics-order{display:flex;flex-direction:column;gap:var(--space-1)}
+.skill-book .tactics-row{display:flex;align-items:center;gap:var(--space-2);padding:var(--space-1) var(--space-2);border-radius:var(--radius-control);cursor:grab}
+.skill-book .tactics-row:hover{background:var(--color-panel-hover)}
+.skill-book .tactics-row.drag-over{outline:var(--border-focus-width) solid var(--color-highlight);outline-offset:var(--border-focus-offset)}
+.skill-book .tactics-row.is-dragging{opacity:.5}
+.skill-book .tactics-num{font-size:var(--font-size-caption);color:var(--color-text-secondary);min-width:var(--space-4);text-align:right;flex:0 0 auto}
+.skill-book .tactics-icon{width:var(--size-icon);height:var(--size-icon);border-radius:var(--radius-slot);object-fit:contain;flex:0 0 auto}
+.skill-book .tactics-name{flex:1;font-size:var(--font-size-body);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-width:0}
+.skill-book .tactics-row .ui-select-field{flex:0 0 auto;min-width:0;max-width:calc(var(--space-16) + var(--space-16))}
+.skill-book .tactics-section{display:flex;align-items:center;flex-wrap:wrap;gap:var(--space-2)}
+.skill-book .tactics-label{font-size:var(--font-size-caption);color:var(--color-text-secondary);flex:0 0 var(--space-8)}
+.skill-book .tactics-btns{display:flex;gap:var(--space-1);flex-wrap:wrap}
+.skill-book .tactics-stance-desc,.skill-book .tactics-inline-desc{margin:0;font-size:var(--font-size-caption);color:var(--color-text-secondary);flex-basis:100%}
+.skill-book .tactics-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:var(--space-4);align-items:start}.skill-book .tactics-col{display:flex;flex-direction:column;gap:var(--space-3);min-width:0}.skill-book .tactics-heading{margin:0;font-size:var(--font-size-body)}
+.skill-book .tactics-footer{display:flex;justify-content:flex-end;padding-top:var(--space-1)}
+.skill-book .category-skills{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:max-content;gap:var(--space-3)}
+.skill-book .lib-card[data-state],.skill-book .lib-card.is-focus{padding:var(--space-2);border-width:var(--border-rim);box-shadow:0 var(--border-depth) 0 var(--color-border-strong)}
+.skill-book .lib-card[data-state=learned]{--node-line:var(--color-rim-magic);border-color:var(--color-rim-magic)}
+.skill-book .lib-card[data-upgradeable=true]{--node-line:var(--color-rim-rare);border-color:var(--color-rim-rare)}
+.skill-book .lib-card.is-focus{outline:var(--border-focus-width) solid var(--color-highlight);outline-offset:var(--border-focus-offset);background:var(--color-panel-selected)}
+.skill-book .lib-pick{display:flex;flex-direction:column;gap:var(--space-2);text-align:center}
+.skill-book .lib-pick>.ui-node--skill{width:var(--size-inventory-slot);height:var(--size-inventory-slot);flex:none;position:relative;margin-inline:auto}
+.skill-book .skill-card-copy{width:100%;padding:0;gap:var(--space-1)}
+.skill-book .skill-card-title{justify-content:center;flex-wrap:wrap;gap:var(--space-1)}
+.skill-book .skill-card-title>.ui-pips{display:none}
+.skill-book .skill-card-copy>.skill-card-tags{font-size:var(--font-size-caption)}
+.skill-book .skill-rank-badge{position:absolute;right:calc(-1 * var(--space-1));bottom:calc(-1 * var(--space-1));z-index:2;white-space:nowrap;padding:var(--space-1) var(--space-2);border:var(--border-edge) solid var(--qr);border-radius:var(--radius-round);background:var(--color-panel-raised);color:var(--color-text-primary);font-size:var(--font-size-caption);font-weight:var(--font-weight-bold);line-height:var(--font-line-heading);box-shadow:0 var(--border-depth-pressed) 0 var(--qrs)}
+.skill-book .skill-detail-rank{display:inline-flex;gap:var(--space-1);font-size:var(--font-size-h3);font-weight:var(--font-weight-bold);margin-bottom:var(--space-2);color:var(--color-emphasis)}
+.skill-book .skill-detail-content{overflow-y:auto;min-height:0}.skill-book .skill-detail-body{flex:none;overflow:visible;mask-image:none;padding-bottom:var(--space-2)}
+.skill-book .skill-training{flex:none;overflow:visible}
+.skill-book .lib-card[data-state=locked] .ui-node--skill>img{filter:grayscale(1)}
+.skill-book .lib-card[data-state=available] .ui-node--skill>img,.skill-book .lib-card[data-state=learned] .ui-node--skill>img{filter:none}
+
+}

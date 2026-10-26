@@ -6,6 +6,7 @@ import {handleUITabKey,handleUIDialogKey} from './ui/interaction.ts';
 import {hudIcon,hudMenuIcon} from './hud-icons.ts';
 import {sealEmblem} from './ui/icons.ts';
 import {art} from './ui-assets.ts';
+import {resourcePillHtml,ribbonTitleHtml,rewardRevealHtml} from './ui-components.ts';
 const root=document.querySelector<HTMLElement>('#ui-system')!;
 const colors:TokenName[]=['Color.Background','Color.Panel','Color.PanelSecondary','Color.PanelInset','Color.Primary','Color.Secondary','Color.TextPrimary','Color.TextSecondary','Color.TextDisabled','Color.Success','Color.Warning','Color.Danger','Color.Rarity.Common','Color.Rarity.Magic','Color.Rarity.Rare','Color.Rarity.Epic','Color.Rarity.Legendary'];
 const chip=(name:TokenName)=>`<div class="ds-swatch"><span style="background:${cssToken(name)}"></span><b>${name.replace('Color.','')}</b><code>${tokenValues.dark[name]}</code></div>`;
@@ -28,3 +29,4 @@ root.insertAdjacentHTML('beforeend',`<section class="ds-panel" id="ds-graphic-ic
 // Every panel head that carries a seal emblem (2026-10-20), for visual acceptance.
 const sealHeads:[string,string][]=[['背包',hudMenuIcon('bag')],['人物',hudMenuIcon('appearance')],['技能',hudMenuIcon('build')],['养成',hudMenuIcon('growth')],['任务',hudMenuIcon('goal')],['游戏设置',hudMenuIcon('settings')],['拾星港工坊',hudMenuIcon('combat')],['远行目的地',sealEmblem('compass')],['副本',sealEmblem('house')],['进入首领试炼',sealEmblem('skull')],['悬赏板',sealEmblem('swords')],['奖励',sealEmblem('chest')],['海域难度',sealEmblem('compass')],['自动战斗设置',sealEmblem('auto')],['角色正在别处游玩',sealEmblem('link')],['为远行者命名',sealEmblem('house')],['NPC 交谈',sealEmblem('people')],['总加成',sealEmblem('diamond')]];
 root.insertAdjacentHTML('beforeend',`<section class="ds-panel" id="ds-seal-heads"><div class="ds-seal-grid">${sealHeads.map(([title,emblem])=>`<div>${panelHeaderHtml(title,{emblemHtml:emblem,close:false})}</div>`).join('')}</div></section>`);
+root.insertAdjacentHTML('beforeend',`<section class="ds-panel" id="ds-direction-a">${panelHeaderHtml('方向 A · 仪式与奖励',{close:false})}<p><a href="./u4-u6-qa.html">打开 U0 / U4–U6 状态切换验收页</a></p>${ribbonTitleHtml('通关',{grade:'A',stars:2})}<div class="ds-controls-row">${resourcePillHtml('gold',1280,120)}${resourcePillHtml('material',0,-3)}</div>${rewardRevealHtml([{name:'奖励格占位',quality:'legendary',isNew:true,isHex:true}])}</section>`);

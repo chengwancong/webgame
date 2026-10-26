@@ -1,7 +1,13 @@
-/* Z3 宠物面板样式 */
+/* Z3/U3 宠物面板样式 */
+
+/* 面板包装：主角卡 + 内容区 */
+.pet-panel-wrap{width:760px;max-height:none;display:flex;flex-direction:column;gap:var(--space-3);overflow:hidden}
+.pet-hero__anim{flex:0 0 auto;width:56px;height:56px;overflow:hidden}
+.pet-hero__anim .pet-anim{width:100%;height:100%}
+.pet-hero__info{display:flex;flex-direction:column;gap:2px;min-width:0}
 
 /* 外容器 */
-.pet-panel{display:flex;flex-direction:column;gap:var(--space-4)}
+.pet-panel{display:flex;flex-direction:column;gap:var(--space-3);overflow-y:auto;max-height:400px}
 
 /* 阵容区 */
 .pet-lineup{display:flex;flex-direction:column;gap:var(--space-3)}
@@ -19,6 +25,7 @@
 .pet-card--support .pet-card__img{width:32px;height:32px}
 .pet-card__name{font-size:var(--font-size-caption);font-weight:var(--font-weight-bold);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pet-card__tier{font-size:var(--font-size-caption);color:var(--color-text-secondary)}
+.pet-card__meta{font-size:var(--font-size-caption);color:var(--color-text-secondary)}
 .pet-card__remove-btn{margin-top:auto}
 .pet-card--main .pet-card__info{display:flex;flex-direction:column;gap:var(--space-1)}
 
@@ -50,13 +57,13 @@
 .pet-card__name-row{display:flex;align-items:center;gap:var(--space-1);flex-wrap:wrap;overflow-wrap:anywhere}
 
 /* 攻击型 / 辅助型徽章 */
-.pet-role-badge{display:inline-flex;align-items:center;gap:0;padding:1px 5px;border-radius:var(--radius-pill,999px);font-size:10px;font-weight:var(--font-weight-semibold,600);line-height:1.4;white-space:nowrap;flex-shrink:0}
-.pet-role--attack{background:color-mix(in srgb,var(--color-highlight,#d4a042) 18%,transparent);color:var(--color-highlight,#d4a042);border:1px solid color-mix(in srgb,var(--color-highlight,#d4a042) 40%,transparent)}
-.pet-role--support{background:color-mix(in srgb,var(--color-primary,#6bc8cc) 16%,transparent);color:var(--color-primary,#6bc8cc);border:1px solid color-mix(in srgb,var(--color-primary,#6bc8cc) 38%,transparent)}
+.pet-role-badge{display:inline-flex;align-items:center;gap:0;padding:1px 5px;border-radius:var(--radius-pill,999px);font-size:var(--font-size-micro);font-weight:var(--font-weight-semibold,600);line-height:1.4;white-space:nowrap;flex-shrink:0}
+.pet-role--attack{background:color-mix(in srgb,var(--color-highlight) 18%,transparent);color:var(--color-highlight);border:1px solid color-mix(in srgb,var(--color-highlight) 40%,transparent)}
+.pet-role--support{background:color-mix(in srgb,var(--color-primary) 16%,transparent);color:var(--color-primary);border:1px solid color-mix(in srgb,var(--color-primary) 38%,transparent)}
 .pet-role-badge__kind{opacity:.75;font-weight:var(--font-weight-regular,400)}
 
 /* 宠物卡：行前缀小标签（"被动"/"适合"/"代价"）*/
-.pet-card__label{display:inline-block;font-size:10px;font-weight:var(--font-weight-semibold,600);color:var(--color-text-disabled);margin-right:var(--space-1);flex-shrink:0}
+.pet-card__label{display:inline-block;font-size:var(--font-size-micro);font-weight:var(--font-weight-semibold,600);color:var(--color-text-disabled);margin-right:var(--space-1);flex-shrink:0}
 
 /* combatRole / flavor 小字说明行 */
 .pet-card__desc{font-size:var(--font-size-caption);color:var(--color-text-secondary);margin:0;overflow-wrap:anywhere}
@@ -76,3 +83,35 @@
 .pet-slot--filled.pet-slot--support{background-image:url(/art/hub-ui/pets/lineup-support.png)}
 .pet-slot--empty.pet-slot--support{background-image:url(/art/hub-ui/pets/lineup-support-empty.png)}
 .pet-card__flows [aria-pressed="true"]{background:url(/art/hub-ui/pets/flow-selected.png) center/100% 100% no-repeat}
+
+/* U3 头像：图集待机帧居中等比缩放（pet-portrait.ts 注入 __frame） */
+.pet-portrait{position:relative;display:block;width:48px;height:48px;overflow:hidden;flex:0 0 auto}
+.pet-portrait__frame{position:absolute;left:50%;top:50%;translate:-50% -50%;background-repeat:no-repeat;pointer-events:none}
+.pet-hero__anim{width:72px;height:72px;border-radius:var(--radius-well);background:var(--color-panel-inset)}
+.pet-hero__anim .pet-portrait{width:100%;height:100%}
+.pet-card > .pet-portrait{width:64px;height:64px;align-self:center;border-radius:var(--radius-well);background:var(--color-panel-inset)}
+
+/* U3 已拥有：带头像的卡行 */
+.pet-owned__list{display:flex;flex-direction:column;gap:var(--space-2)}
+.pet-owned-item{grid-template-columns:52px minmax(0,1fr) auto}
+.pet-owned-item__portrait{width:48px;height:48px;overflow:hidden}
+.pet-owned-item__portrait .pet-portrait{width:100%;height:100%}
+.pet-owned-item__name{display:flex;align-items:center;gap:var(--space-1);flex-wrap:wrap}
+.pet-owned-item__meta{font-size:var(--font-size-caption);color:var(--color-text-secondary)}
+.pet-owned-item.is-in-lineup{border-color:var(--color-primary-border)}
+
+/* U3 图鉴：头像卡，未解锁显示剪影 */
+.pet-catalog__list{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));list-style:none;margin:0;padding:0}
+.pet-catalog-entry{background:var(--color-panel-raised);box-shadow:0 2px 0 var(--color-border-subtle);text-align:center}
+.pet-catalog-entry.is-owned{border-color:var(--color-primary-border);box-shadow:0 3px 0 var(--color-primary-edge)}
+.pet-catalog-entry__portrait{width:56px;height:56px;border-radius:var(--radius-well);background:var(--color-panel-inset)}
+.pet-catalog-entry.is-locked .pet-portrait__frame,.pet-catalog-entry.is-unavailable .pet-portrait__frame{filter:brightness(0);opacity:.35}
+.pet-catalog-entry.is-unavailable{opacity:.6}
+.pet-catalog-entry small{color:var(--color-text-secondary);font-size:var(--font-size-caption)}
+
+/* U3 阵容卡横排：头像左、信息右，流派与撤下占满下一行 */
+.pet-card--active,.pet-card--support{display:grid;grid-template-columns:64px minmax(0,1fr);column-gap:var(--space-3);row-gap:var(--space-2);align-items:start}
+.pet-card--support > .pet-portrait{width:64px;height:64px}
+.pet-card > .pet-card__flows,.pet-card > .ui-button{grid-column:1 / -1}
+.pet-card > .ui-button{justify-self:end}
+.pet-card__info p{margin:0}

@@ -17,14 +17,47 @@
 .ui-slot-mark--hex{padding:0;background:none;border:0;box-shadow:none}
 /* HEX sits top-right (d13); when another top-right mark (equipped / candidate count) shares the corner, step left of it. */
 .ui-slot-mark--tr:not(.ui-slot-mark--hex)~.ui-slot-mark--hex.ui-slot-mark--tr,.ui-slot-mark--hex.ui-slot-mark--tr:has(~.ui-slot-mark--tr:not(.ui-slot-mark--hex)){right:calc(var(--size-corner-mark) + var(--space-1) + var(--border-width))}
-.ui-slot-mark--hex .hex-badge-icon{display:block;width:calc(var(--size-corner-mark) + 2px);height:calc(var(--size-corner-mark) + 2px);filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}
+.ui-slot-mark--hex .hex-badge-icon{display:block;width:calc(var(--size-corner-mark) + 2px);height:calc(var(--size-corner-mark) + 2px);filter:drop-shadow(0 1px 1px var(--shadow-color-soft))}
 .bag-hexbtn .hex-badge-icon{width:100%;height:100%}
 .hex-resonance{margin:0;font-size:var(--font-size-micro);color:var(--color-text-secondary)}
-.hex-playstyle-tag{display:inline-block;padding:0 8px;border:1px solid currentColor;border-radius:999px;font-weight:600;color:var(--accent,#d9b36c)}
-.hex-prereq-missing{color:#e5736a;margin:4px 0 0}
+.hex-playstyle-tag{display:inline-block;padding:0 8px;border:1px solid currentColor;border-radius:999px;font-weight:600;color:var(--accent,var(--color-highlight))}
+.hex-prereq-missing{color:var(--color-danger);margin:4px 0 0}
 .hex-flavor{margin:6px 0 0;font-style:italic;opacity:.75}
 .hex-preview ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
 .hex-preview-row{display:flex;justify-content:space-between;gap:8px}
-.hex-preview-row.is-activate .hex-preview-state{color:var(--color-success,#5fbf6a)}
+.hex-preview-row.is-activate .hex-preview-state{color:var(--color-success)}
 .hex-preview-row.is-deactivate{opacity:.7}
 .hex-preview-row.is-deactivate .hex-preview-state,.hex-preview-row.is-unchanged .hex-preview-state{color:var(--color-text-secondary)}
+
+/* U2 Direction A: HEX section purple styling. */
+/* Section background tint + left accent strip. */
+.equip-tip-hex{
+  margin-top:var(--space-3);
+  padding:var(--space-2) var(--space-3);
+  border-left:3px solid var(--color-hex-line);
+  border-radius:0 var(--radius-well) var(--radius-well) 0;
+  background:var(--color-hex-line-fill);
+}
+/* HEX section h4: "HEX" prefix pill + diamond. */
+.equip-tip-hex h4{
+  margin:0 0 var(--space-2);
+  font-size:var(--font-size-caption);
+  font-weight:var(--font-weight-semibold);
+  color:var(--color-hex-chip);
+}
+.equip-tip-hex h4::before{
+  content:'HEX';
+  display:inline-flex;align-items:center;
+  padding:0 var(--space-2);height:var(--space-5);line-height:1;
+  border-radius:var(--radius-round);
+  background:var(--color-hex-chip);
+  color:var(--color-hex-chip-text);
+  font-size:var(--font-size-micro);font-weight:var(--font-weight-bold);
+  border:1.5px solid var(--color-bevel-light);
+  margin-right:var(--space-2);
+  vertical-align:middle;
+}
+/* HEX chip as purple pill (hex-rune-view slot marks use SVG; this targets text badges). */
+.hex-playstyle-tag{border-color:var(--color-hex-chip);color:var(--color-hex-chip)}
+/* Inactive state still muted. */
+.equip-tip-hex.is-inactive{opacity:.75}

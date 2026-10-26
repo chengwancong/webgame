@@ -1,0 +1,254 @@
+/* ceremony.css — Direction A (2026-10-24): U1 结算仪式样式。
+   缎带标题、放射光、星形粒子、逐张翻入掉落卡、footer 尺寸。
+   颜色/时长全部引用 Token，不写十六进制字面量。 */
+
+/* ── 1. 结算面板 footer 底边留空（防止 border-depth 投影被裁切）── */
+.battle-result .result-footer,
+.battle-result .hub-result-footer{padding-bottom:var(--border-depth)}
+
+/* ── 2. 缎带标题 ── */
+:is(.result,.ui-ribbon)[data-outcome=success] .result-title h1{
+  display:inline-block;
+  background:linear-gradient(180deg,var(--color-ribbon-top),var(--color-ribbon-bottom));
+  border:3px solid var(--color-ribbon-highlight);
+  border-radius:var(--radius-control);
+  box-shadow:0 5px 0 var(--color-ribbon-edge),var(--shadow-lift);
+  color:var(--color-ribbon-text);
+  font-weight:900;
+  font-size:var(--font-size-h1);
+  letter-spacing:.3em;
+  line-height:1.3;
+  margin:0;
+  padding:.2em 48px;
+  text-shadow:0 2px 0 var(--color-ribbon-text-glow);
+  position:relative;
+}
+/* Swallowtail left */
+:is(.result,.ui-ribbon)[data-outcome=success] .result-title h1::before{
+  content:'';
+  position:absolute;
+  left:calc(-1 * var(--space-3));
+  top:0;bottom:0;
+  width:var(--space-3);
+  background:linear-gradient(180deg,var(--color-ribbon-top),var(--color-ribbon-bottom));
+  clip-path:polygon(0 50%,100% 0,100% 100%);
+  border-left:3px solid var(--color-ribbon-highlight);
+}
+/* Swallowtail right */
+:is(.result,.ui-ribbon)[data-outcome=success] .result-title h1::after{
+  content:'';
+  position:absolute;
+  right:calc(-1 * var(--space-3));
+  top:0;bottom:0;
+  width:var(--space-3);
+  background:linear-gradient(180deg,var(--color-ribbon-top),var(--color-ribbon-bottom));
+  clip-path:polygon(0 0,100% 50%,0 100%);
+  border-right:3px solid var(--color-ribbon-highlight);
+}
+
+/* failure / pending: RibbonRetreat colours, no shine tails */
+:is(.result,.ui-ribbon)[data-outcome=failure] .result-title h1,
+:is(.result,.ui-ribbon)[data-outcome=pending] .result-title h1{
+  display:inline-block;
+  background:linear-gradient(180deg,var(--color-ribbon-retreat-top),var(--color-ribbon-retreat-bottom));
+  border:3px solid color-mix(in srgb,var(--color-ribbon-retreat-top) 60%,white);
+  border-radius:var(--radius-control);
+  box-shadow:0 4px 0 var(--color-ribbon-retreat-edge);
+  color:var(--color-ribbon-retreat-text);
+  font-weight:900;
+  letter-spacing:.3em;
+  line-height:1.3;
+  margin:0;
+  padding:.2em 48px;
+  text-shadow:none;
+}
+
+/* ── 3. 放射光圈 (hero-rays) ── */
+:is(.result,.ui-ribbon)[data-outcome=success] .hero-rays,.ui-growth-rays{
+  display:block;
+  background:conic-gradient(
+    from 0deg,
+    transparent 0deg 18deg,
+    var(--color-celebrate-ray) 19deg 27deg,
+    transparent 28deg 45deg,
+    var(--color-celebrate-ray) 46deg 54deg,
+    transparent 55deg 72deg,
+    var(--color-celebrate-ray) 73deg 81deg,
+    transparent 82deg 90deg,
+    var(--color-celebrate-ray) 91deg 99deg,
+    transparent 100deg 117deg,
+    var(--color-celebrate-ray) 118deg 126deg,
+    transparent 127deg 144deg,
+    var(--color-celebrate-ray) 145deg 153deg,
+    transparent 154deg 171deg,
+    var(--color-celebrate-ray) 172deg 180deg,
+    transparent 181deg 198deg,
+    var(--color-celebrate-ray) 199deg 207deg,
+    transparent 208deg 225deg,
+    var(--color-celebrate-ray) 226deg 234deg,
+    transparent 235deg 252deg,
+    var(--color-celebrate-ray) 253deg 261deg,
+    transparent 262deg 279deg,
+    var(--color-celebrate-ray) 280deg 288deg,
+    transparent 289deg 306deg,
+    var(--color-celebrate-ray) 307deg 315deg,
+    transparent 316deg 333deg,
+    var(--color-celebrate-ray) 334deg 342deg,
+    transparent 343deg 360deg
+  );
+  mask-image:radial-gradient(ellipse,black 4%,transparent 54%);
+  opacity:.5;
+  animation:ceremony-ray-spin var(--motion-ray-spin) linear infinite;
+}
+@keyframes ceremony-ray-spin{to{rotate:360deg}}
+
+/* ── 4. 粒子 sparks ── */
+:is(.result,.ui-ribbon)[data-outcome=success] .spark{
+  width:7px;height:7px;
+  clip-path:polygon(50% 0%,58% 38%,100% 38%,66% 60%,77% 100%,50% 76%,23% 100%,34% 60%,0 38%,42% 38%);
+  background:var(--color-celebrate-spark);
+  box-shadow:0 0 4px var(--color-celebrate-spark-edge);
+  border-radius:0;
+  transform:none;
+}
+
+/* ── 5. hero-byline pill ── */
+.hero-byline p{
+  background:color-mix(in srgb,var(--color-panel-raised) 70%,transparent);
+  border-radius:var(--radius-round);
+  padding:0 var(--space-2);
+}
+
+/* ── 6. resource-row pill 观感 ── */
+.battle-result .resource-row .ui-resource{
+  background:var(--color-panel-raised);
+  border:2px solid var(--color-resource-gold-border);
+  border-radius:var(--radius-round);
+  padding:var(--space-1) var(--space-3) var(--space-1) var(--space-2);
+  box-shadow:0 3px 0 var(--color-resource-gold-shade);
+  justify-content:center;
+}
+.battle-result .resource-row .ui-resource[data-resource=xp]{
+  border-color:color-mix(in srgb,var(--color-resource-experience) 60%,white);
+  box-shadow:0 3px 0 color-mix(in srgb,var(--color-resource-experience) 40%,var(--color-panel));
+}
+.battle-result .resource-row .ui-resource[data-resource=material]{
+  border-color:color-mix(in srgb,var(--color-resource-spirit) 60%,white);
+  box-shadow:0 3px 0 color-mix(in srgb,var(--color-resource-spirit) 40%,var(--color-panel));
+}
+.battle-result .resource-row .ui-resource b{font-size:var(--font-size-h2);font-weight:var(--font-weight-bold)}
+
+/* ── 7. loot 分隔线换成浅金渐隐线 ── */
+.loot-body{
+  border-top:0;
+  border-bottom:0;
+  position:relative;
+}
+/* 资源胶囊变高后，收紧掉落区上下留白，保证一整行卡（含底边厚度）不被裁 */
+.battle-result .loot-body{padding:var(--space-1) 0}
+.loot-body::before,.loot-body::after{
+  content:'';
+  position:absolute;
+  left:0;right:0;
+  height:2px;
+  background:linear-gradient(to right,transparent,var(--color-ribbon-edge) 30%,var(--color-ribbon-top) 50%,var(--color-ribbon-edge) 70%,transparent);
+}
+.loot-body::before{top:0}
+.loot-body::after{bottom:0}
+
+/* loot-caption h2 前加浅金菱形 */
+.loot-caption h2::before{
+  content:'◆';
+  display:inline-block;
+  margin-right:var(--space-2);
+  color:var(--color-ribbon-edge);
+  font-size:var(--font-size-micro);
+  vertical-align:.1em;
+}
+
+/* ── 8. 掉落卡逐张翻入 ── */
+/* flip-in entrance when .result-hero.enter is present */
+.battle-result:has(.result-hero.enter) .loot-tile{
+  animation:loot-tile-flip var(--motion-reveal) var(--motion-ease-back) both;
+}
+.battle-result:has(.result-hero.enter) .loot-tile:nth-child(1){animation-delay:min(calc(0 * var(--motion-reveal-stagger)),calc(var(--motion-reveal-total) - var(--motion-reveal)))}
+.battle-result:has(.result-hero.enter) .loot-tile:nth-child(2){animation-delay:min(calc(1 * var(--motion-reveal-stagger)),calc(var(--motion-reveal-total) - var(--motion-reveal)))}
+.battle-result:has(.result-hero.enter) .loot-tile:nth-child(3){animation-delay:min(calc(2 * var(--motion-reveal-stagger)),calc(var(--motion-reveal-total) - var(--motion-reveal)))}
+.battle-result:has(.result-hero.enter) .loot-tile:nth-child(4){animation-delay:min(calc(3 * var(--motion-reveal-stagger)),calc(var(--motion-reveal-total) - var(--motion-reveal)))}
+.battle-result:has(.result-hero.enter) .loot-tile:nth-child(5){animation-delay:min(calc(4 * var(--motion-reveal-stagger)),calc(var(--motion-reveal-total) - var(--motion-reveal)))}
+.battle-result:has(.result-hero.enter) .loot-tile:nth-child(6){animation-delay:min(calc(5 * var(--motion-reveal-stagger)),calc(var(--motion-reveal-total) - var(--motion-reveal)))}
+.battle-result:has(.result-hero.enter) .loot-tile:nth-child(7){animation-delay:min(calc(6 * var(--motion-reveal-stagger)),calc(var(--motion-reveal-total) - var(--motion-reveal)))}
+.battle-result:has(.result-hero.enter) .loot-tile:nth-child(8){animation-delay:min(calc(7 * var(--motion-reveal-stagger)),calc(var(--motion-reveal-total) - var(--motion-reveal)))}
+.battle-result:has(.result-hero.enter) .loot-tile:nth-child(9){animation-delay:min(calc(8 * var(--motion-reveal-stagger)),calc(var(--motion-reveal-total) - var(--motion-reveal)))}
+.battle-result:has(.result-hero.enter) .loot-tile:nth-child(10){animation-delay:min(calc(9 * var(--motion-reveal-stagger)),calc(var(--motion-reveal-total) - var(--motion-reveal)))}
+.battle-result:has(.result-hero.enter) .loot-tile:nth-child(11){animation-delay:min(calc(10 * var(--motion-reveal-stagger)),calc(var(--motion-reveal-total) - var(--motion-reveal)))}
+.battle-result:has(.result-hero.enter) .loot-tile:nth-child(12){animation-delay:min(calc(11 * var(--motion-reveal-stagger)),calc(var(--motion-reveal-total) - var(--motion-reveal)))}
+/* n>12 uses delay of the 12th tile */
+.battle-result:has(.result-hero.enter) .loot-tile:nth-child(n+13){animation-delay:min(calc(11 * var(--motion-reveal-stagger)),calc(var(--motion-reveal-total) - var(--motion-reveal)))}
+
+@keyframes loot-tile-flip{
+  0%{opacity:0;transform:scale(.6) rotateY(90deg)}
+  70%{transform:scale(1.04) rotateY(0deg);opacity:1}
+  100%{transform:scale(1) rotateY(0deg);opacity:1}
+}
+
+/* ── 9. footer 主按钮尺寸 ── */
+.result-footer .ui-button--primary{
+  min-width:160px;
+  height:48px;
+  min-height:48px;
+  font-size:var(--font-size-h3);
+}
+.result-footer .ui-button{
+  height:48px;
+  min-height:48px;
+}
+
+/* ── 10. hub 记录行卡 ── */
+.hub-record{
+  background:var(--color-panel-raised);
+  border:var(--border-width) solid var(--color-border);
+  box-shadow:0 2px 0 var(--color-border-subtle);
+  border-radius:var(--radius-well);
+}
+.hub-record--unlock{
+  background:var(--color-panel-selected);
+  border-color:var(--color-primary-border);
+  box-shadow:0 3px 0 var(--color-primary-edge);
+}
+
+/* ── 11. 减少动效 ── */
+@media (prefers-reduced-motion:reduce){
+  :is(.result,.ui-ribbon)[data-outcome=success] .hero-rays{animation:none}
+  .battle-result:has(.result-hero.enter) .loot-tile{animation:none}
+}
+[data-motion-reduced=true] :is(.result,.ui-ribbon)[data-outcome=success] .hero-rays{animation:none}
+[data-motion-reduced=true] .battle-result:has(.result-hero.enter) .loot-tile{animation:none}
+
+/* U0 shared ceremony primitives. U1 keeps its existing structure and selectors. */
+.ui-resource-pill{display:inline-flex;align-items:center;flex-wrap:wrap;gap:var(--space-2)}
+.ui-resource-delta{font-size:var(--font-size-body);font-weight:var(--font-weight-bold)}
+.ui-resource-delta--positive{color:var(--color-success)}
+.ui-resource-delta--negative{color:var(--color-danger)}
+.ui-ribbon{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:var(--space-3);min-width:0}
+.ui-ribbon .result-title{min-width:0;text-align:center}
+.ui-ribbon .result-title h1{max-width:100%;overflow-wrap:anywhere}
+.ui-ribbon__grade{width:var(--size-ceremony-grade);height:var(--size-ceremony-grade);object-fit:contain}
+.ui-ribbon__stars{display:flex;justify-content:center;gap:var(--space-1);flex-basis:100%}
+.ui-ribbon__star{display:inline-flex;color:var(--color-text-disabled)}
+.ui-ribbon__star.is-lit{color:var(--color-primary-text)}
+.ui-ribbon__star svg{width:var(--size-icon);height:var(--size-icon)}
+.ui-ribbon__star:not(.is-lit) svg path{fill:var(--color-panel-inset);stroke:var(--color-border-strong)}
+.ui-ribbon[data-tone=unlock] .result-title h1{background:var(--color-panel-selected)}
+.ui-reward-reveal{display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-3);padding:var(--space-2) 0}
+.ui-reward-card{display:grid;justify-items:center;align-content:start;gap:var(--space-1);width:var(--size-reward-card);min-width:0;text-align:center;animation:loot-tile-flip var(--motion-reveal) var(--motion-ease-out) both;animation-delay:min(calc(var(--reward-index) * var(--motion-reveal-stagger)),calc(var(--motion-reveal-total) - var(--motion-reveal)))}
+.ui-reward-card>b{max-width:100%;overflow-wrap:anywhere;font-size:var(--font-size-body);color:var(--color-text-primary)}
+.ui-reward-card .ui-reward-card__art{display:grid;place-items:center;width:var(--size-inventory-slot);height:var(--size-inventory-slot);padding:var(--space-2);margin:0;flex:none;border-radius:var(--radius-slot);pointer-events:none}
+.ui-reward-card__icon,.ui-reward-card__icon>:is(img,svg){display:block;width:var(--size-inventory-icon);height:var(--size-inventory-icon);object-fit:contain}
+.ui-reward-card__marks{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;min-height:var(--space-5);width:100%;gap:var(--space-1)}
+.ui-reward-mark{padding:0 var(--space-1);border-radius:var(--radius-tag);color:var(--color-primary-text);background:var(--color-primary);font-size:var(--font-size-micro);font-weight:var(--font-weight-bold)}
+.ui-reward-mark--hex{color:var(--color-rarity-epic);background:var(--color-panel-raised)}
+.ui-reward-mark--quality{color:var(--qrs,var(--color-text-primary));background:var(--color-panel-raised)}
+.ui-growth-rays{animation:none;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.ui-motion-safe .ui-reward-card,.ui-motion-safe .gear-card::before,.ui-motion-safe .gear-card::after{animation:none;transform:none}}
+[data-motion-reduced=true] .ui-motion-safe .ui-reward-card,[data-motion-reduced=true] .ui-motion-safe .gear-card::before,[data-motion-reduced=true] .ui-motion-safe .gear-card::after{animation:none;transform:none}

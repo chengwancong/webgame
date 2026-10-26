@@ -1,0 +1,19 @@
+你是《深渊行者》前端执行者。请完成航图面板改版：浮动节点卡片改为右侧固定信息栏，并精简页签、放大节点图标、处理未解锁节点的下一步和字号（R1–R5）。一次连续做完，各项之间不停、不回来问。
+
+工作目录：G:\webgame\abyss-walker-migration\abyss-walker-rewrite\open-world
+先读完交接文件：docs/hub-portal-rework-20261021/handoff/chart-panel-rail-20261025.md（问题、目标布局、R1–R5 要求、默认裁决、测试与验收、约束）。
+改动主要在 apps/web/src/hub/chart-panel.ts、chart-panel.css、tests/hub-panels.test.ts、apps/web/src/hub/hub-review.ts；hub-controller.ts 只做必要改动。
+
+进度文件：新建 docs/hub-portal-rework-20261021/handoff/chart-panel-rail-20261025-progress.md。按 R1–R5 + 验收页 + 云测试服发布逐项勾选，写提交号和一句验证结论；中断后从第一个未勾项继续。
+
+要点：
+- 只改表现和布局，不改接口、contracts、出发/残页/档位/海域难度逻辑；需要改结构的记进进度文件「待 Claude」并跳过。
+- 复用 tokens.json、controls.css、buttonHtml/tabsHtml；新样式值先进 tokens.json 再生成；每屏一个主按钮（出发）。
+- 面板不超出 1280×720 舞台；正文最小 14px，塞不下让信息栏内容区滚动，不缩字号。
+- 动效遵守 prefers-reduced-motion 和 [data-motion-reduced=true]。
+- 每步跑 token --check、全仓 tsc、相关单测（--maxWorkers=1 --no-file-parallelism），重任务一次一个；在 hub-review 验收页加航图六种状态样例供 Claude 审阅。
+- 禁无头浏览器、Playwright 探针和自动化脚本；可以用你自带的浏览器（非无头 GUI）对本地服务短时自查航图四态（未选/选中/未解锁/关口）和控制台，一次一个、保持简短。只按明确路径提交本任务文件，不碰其他会话的改动；不提交图片、截图、原始明细、构建产物。缺图用 CSS 或现有图标占位并登记 art-backlog.md，不下载新素材。
+- 云测试服口令只在 G:\webgame\aw-deploy\staging-credentials.txt，不得写进报告、日志、提交或链接；不清库，不改正式角色数据。
+
+结束状态只有两种：全部完成并发布到云测试服；或只剩明确硬阻塞（写清卡在哪一步、需要谁做什么）。
+完成后在进度文件末尾写：改动摘要与提交号、「待 Claude」清单、新登记的美术占位、给 Grok 的真机检查清单（4–6 条，覆盖：信息栏不挡节点、未选/选中/未解锁三态切换、定位前置节点、页签可读、海域难度弹层不被遮挡）。

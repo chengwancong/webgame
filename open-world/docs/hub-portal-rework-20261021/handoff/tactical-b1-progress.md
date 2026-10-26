@@ -1,3 +1,5 @@
+> **已作废（2026-10-25）**：用户撤销回合制战棋，改为实时战斗、以自动战斗为主体，见 `planning-bd-v1/27-auto-combat-direction.md`。本文不再执行，GPT 停止相关工作；战棋代码冻结不删（D-A4）。
+
 # TAC-B1 战棋战斗核心：进度
 
 交接：`tactical-b1-combat-core.md`；决策日志：`tactical-b1-decisions.md`（执行者创建）。

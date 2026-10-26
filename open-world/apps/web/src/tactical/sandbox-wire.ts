@@ -6,6 +6,7 @@
  * 中文名称表只是展示层（契约里只有 ID）；正式版名称以后由内容目录下发。
  */
 import type {TacticalAction,TacticalEvent as WireEvent,TacticalIntent,TacticalProjection,TacticalUnit} from '../../../../packages/contracts/tactical.ts';
+import {tacticalAbilityArt} from './ability-art.ts';
 import type {
  TacticalAbilityView,TacticalCell,TacticalCellView,TacticalCommand,TacticalControlCommand,TacticalDenial,
  TacticalEncounterView,TacticalEvent,TacticalForecast,TacticalIntentView,TacticalPreview,TacticalPreviewRequest,
@@ -76,7 +77,7 @@ export function projectionToView(p:TacticalProjection,meta:SandboxMeta=fallbackM
   art:u.side==='hero'?{kind:'hero-native',assetId:'mini-hero/navy'}:{kind:'starsea-atlas',assetId:'ss-mon-dusk-blade'},
   tier:u.kind==='boss'?'boss':u.eliteAffixes.length?'elite':'normal'}));
  const basic=meta.basic.get(p.heroId);
- const abilities:TacticalAbilityView[]=p.skills.map((s,i)=>({id:s.id,slot:i,label:SKILL_LABEL[s.id]??s.id,iconSrc:null,
+ const abilities:TacticalAbilityView[]=p.skills.map((s,i)=>({id:s.id,slot:i,label:SKILL_LABEL[s.id]??s.id,iconSrc:tacticalAbilityArt(s.id),
   category:s.id===basic?'basic':'skill',migration:'supported',available:s.available,reason:s.reason??null,cost:'主行动',
   cooldown:s.cooldown?`冷却 ${s.cooldown}`:null,rangeText:null,description:SKILL_DESC[s.id]??''}));
  const c=p.control,mode=c?.mode??p.controlMode,ended=!!p.outcome||p.phase==='ended';

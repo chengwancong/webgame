@@ -16,6 +16,12 @@ describe('camera follow (UX-A05)',()=>{
   const s=newFollow();run(s,120,i=>[i*4,0]);const o=run(s,240,()=>[119*4,0]);
   expect(Math.abs(o.x-119*4)).toBeLessThan(1);
  });
+ it('keeps the hero steady on screen when frames arrive unevenly, as long as it gets the real frame time (副本镜头抖动 2026-10-26)',()=>{
+  // 副本里主角位置按真实时间插值；镜头若拿 Phaser 平滑后的 delta，前瞻速度忽大忽小，主角在屏幕上每帧来回 1–2.5 px。
+  const gaps=[3,25,9,23,16,33,8,21,12,19,24,10],s=newFollow();let t=0,prev:number|undefined,max=0;
+  for(let i=0;i<600;i++){const real=gaps[i%gaps.length];t+=real;const hero=t*.15,o=stepFollow(s,hero,0,real,{reduced:false,bossNear:false}),rel=hero-o.x;if(i>120&&prev!==undefined)max=Math.max(max,Math.abs(rel-prev));prev=rel;}
+  expect(max).toBeLessThan(.3);
+ });
  it('snaps instead of gliding across a teleport',()=>{
   const s=newFollow();run(s,30,()=>[0,0]);const o=stepFollow(s,2000,900,16.7,{reduced:false,bossNear:false});
   expect(o.x).toBe(2000);expect(o.y).toBe(900);

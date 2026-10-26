@@ -42,3 +42,37 @@
 | A36 | NEW / HEX 角标 + 经验图标 | 96×48 / 128×128 | 金币图标 | CSS 角标、绿圆 | `resourcePillHtml`、`rewardRevealHtml` | 已交 GPT（G3） |
 | A37 | 结算放射光底 + 星屑粒子 ×8 | 800×800 / 32–48px | 浅金 | 无 | `ceremony.css`（U1） | 已交 GPT（G4） |
 | A38 | 空状态插画 ×6 | 320×240 | 港口建筑原稿、items-chibi | 线条图标 | `stateBlockHtml` | 已交 GPT（G5） |
+| A39 | 战棋棋盘地表：按航区手绘地表块（草/土/石板各 3 变体 + 过渡边）、棋盘四周收边（崖壁/灌木/水岸）、格线改地表浅刻纹 | 128×128 无缝贴片图集 + 收边九宫格；2× 出图 | `docs/scene-dressing.md` 野外地表与道路材质；Q 版角色的柔和深描边 | 单张草地平铺 + CSS 网格线 | `tactical/board-view.ts` 地表层（接入由 Claude 做） | 作废（2026-10-25 撤销战棋，见 planning-bd-v1/27） |
+| A40 | 战棋场景构图摆件：每航区 8–12 件（残墙、木箱、篝火、旗帜、碎石堆等），分占格 / 不占格两类 | 透明 PNG，显示宽 0.6–1.6 格，锚点底部中心 | 现有棋盘树木/岩石摆件；港口建筑手绘厚涂 | 只有树和石头，中间大片空地 | `tactical` 遭遇配置的 dressing 列表 | 作废（同 A39） |
+| A41 | 战棋 HUD 牌匾件：金边牌匾九宫格（回合牌/行动序/生命牌）、技能槽底座 可用/选中/锁定 3 态、圆形图标钮底 | 九宫格 PNG；槽底 128×128；钮底 96×96 | E7 `ui-ornaments` 稀有金框；方向 A 4px 底边 + 内高光；禁皮革/铜钉/浮雕 | CSS 金边渐变 + E7 稀有框覆层 | `tactical/tactical.css` HUD 材质段 | 作废（同 A39；金边牌匾材质可留给 R3 爆发键另行提需求） |
+
+## 方向 A 剩余批次占位接入登记（2026-10-24）
+
+沿用现有资源，正式素材交付后只更新登记/URL；以下为新增使用位置，不重复启动美术制作。
+
+| 批次 / 用途 | 当前占位 | 接入位置 | 后续替换依据 |
+|---|---|---|---|
+| U0 缎带、星级、NEW/HEX、空奖励 | 现有 CSS 缎带、`star` 图标及暗星色、CSS 角标、空状态线图 | `ui/primitives.ts`、`ui/ceremony.css` | A34–A38，当前登记库未见对应交付条目 |
+| U4 工坊配方分类 / 设施 | `swords`、`diamond`、`book`、`armor`、`arcane`、`poison` / `hammer` | `components/CraftingPanel.ts` | 现有 `ui/icons.ts`，以后按配方/设施正式图登记替换 |
+| U4 养成模块 | 雕文 `skillRadius`、突破阶段 `star`、声望 `compass` | `progression-layouts.ts`、`progression-panel.ts` | 现有通用图标；材料继续使用 A20/A22 的既有解析器 |
+| U6 未带物品 ID 的战棋奖励 | `chest` 宝箱图标、中性格 | `tactical/presentation.ts` | 先由 Claude 裁决奖励元数据契约，再按真实物品登记替换；不推测品质/评级 |
+| U6 开局技能优先级 / 双方标识 | `star` / `people`、`skull` | `tactical/tactical-board.ts`、`tactical/controller.ts` | 已有通用图标；正式技能图仅在真实 iconSrc 存在时接入 |
+
+
+## 战棋紧凑 HUD 使用登记（2026-10-25）
+
+用户最新确认：布局沿用，组件复用项目现有公共件。H3 在本页面改用现有 SVG 角饰、按钮和槽位，不接入独立厚重牌匾皮肤；H1/H2 交付状态不因本轮 HUD 落地而改变。
+
+| 用途 | 当前占位 / 复用 | 接入位置 | 后续替换依据 |
+|---|---|---|---|
+| 行动区双方标识 | 公共 people / skull 图标与真实单位名 | tactical/controller.ts | 有正式头像映射后只替换资源，不推测敌人身份 |
+| 技能缺图 / 空槽 | 公共 swords / lock | tactical/hud.ts | iconSrc 存在时直接使用已登记图标；空槽不补造技能 |
+| 宠物头像加载中或缺图 | pet-portrait.ts；缺资源时公共 star | tactical/compact-status.ts | 使用真实 runtimeId 对应图集，加载完成后替换占位；状态角标不代表当前护盾 |
+
+
+### 2026-10-25 实机纠偏更新
+
+- H1/H2 当前场景层实际复用 `scene-art.ts` 中的海面、sand/soil/stone、cliff-straight 与已有柱/箱/旗/花草；A39/A40 专用素材仍未交付。未引入生成背景或第三方新素材。
+- 行动区主角改用已有 portrait-bust，敌人按真实 assetId 读取既有图集 idle 帧；people/skull 仅保留失败占位。
+- 沙盒八种技能已按真实技能 ID 接入已登记的手绘符记，通用 swords 只用于未知或缺图的能力。空槽继续 lock，不新增技能内容。
+- 单位标签统一布局后不再并排叠加旧姓名板和意图 pill。美术加载或数据缺口均不能用“测试通过”代替视觉验收。

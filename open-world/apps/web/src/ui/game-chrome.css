@@ -17,8 +17,7 @@
 .ui-tabs[data-tabs-orientation=vertical] button[data-actionable=true]:after{position:absolute;right:calc(var(--space-1) * -1);top:calc(var(--space-1) * -1);width:var(--space-3);height:var(--space-3);flex:none;background:var(--color-danger);border:var(--border-edge) solid var(--color-panel-raised)}
 .ui-meter__track{box-shadow:inset 0 var(--border-edge) 0 color-mix(in srgb,var(--color-text-primary) 14%,transparent)}
 .ui-meter__fill{background:linear-gradient(180deg,color-mix(in srgb,var(--meter-ink) 70%,var(--panel-head-title-highlight)),var(--meter-ink) 55%);box-shadow:inset 0 calc(var(--border-edge) * -1) 0 color-mix(in srgb,var(--meter-ink) 80%,var(--color-text-primary))}
-.ui-button--primary:not(:disabled){box-shadow:0 var(--border-edge) 0 var(--button-edge),inset 0 var(--border-edge) 0 var(--panel-head-title-highlight)}
-.ui-button--primary:active:not(:disabled){box-shadow:none}
+/* Primary button depth and pressed state are owned by controls.css. */
 /* Settings: lipped group cards, chunky sliders with round gold thumbs, keycap buttons. */
 .settings-group{background:var(--color-panel-raised);border:calc(var(--border-width) * 1.5) solid var(--color-border);box-shadow:0 var(--border-edge) 0 var(--color-border-strong)}
 .settings-workspace{padding:var(--space-1) var(--space-2) var(--space-2) var(--space-1)}
@@ -44,5 +43,5 @@
 /* Upgrade preview: stat deltas read as small cards with a green ▲ / red ▼. */
 .progression-comparison{display:flex;flex-direction:column;gap:var(--space-2)}
 .progression-comparison .ui-stat.ui-stat--delta{padding:var(--space-1) var(--space-3);border:calc(var(--border-width) * 1.5) solid var(--color-border);border-radius:var(--radius-control);background:var(--color-panel-raised);box-shadow:0 var(--border-edge) 0 var(--color-border-strong)}
-.progression-comparison .ui-stat--delta .ui-stat__change:before{content:'▲ ';font-size:.8em}
+.progression-comparison .ui-stat--delta .ui-stat__change:before{content:'▲ ';font-size:var(--font-size-micro)}
 .progression-comparison .ui-stat--delta .ui-stat__change--negative:before{content:'▼ '}

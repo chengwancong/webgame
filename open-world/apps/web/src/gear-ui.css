@@ -21,3 +21,23 @@
 .gear-set-bonus.inactive p{color:var(--color-text-primary)}
 
 .gear-primary-stat>.ui-number{white-space:nowrap;overflow-wrap:normal}
+
+/* U2 Direction A: bag-detail-heading quality head band (same pattern as equip-tip-header). */
+/* The quality class is on .bag-card; .bag-detail-heading is its first child with border-bottom. */
+.bag-card[class*=quality-] .bag-detail-heading{
+  margin:calc(-1 * var(--space-4)) calc(-1 * var(--space-4)) var(--space-3);
+  padding:calc(var(--space-4) + var(--border-rim)) var(--space-4) var(--space-3);
+  border-top:var(--border-rim) solid var(--qr,var(--color-border));
+  border-radius:calc(var(--radius-panel) - var(--border-width)) calc(var(--radius-panel) - var(--border-width)) 0 0;
+  background:linear-gradient(to bottom,color-mix(in srgb,var(--qg,transparent) 80%,transparent),transparent 100%);
+}
+/* Name uses contrast-safe RimShade. */
+.bag-detail-heading h3[class*=quality-]{color:var(--qrs,var(--color-text-primary))}
+/* Gear-card-heading (character compare / GearCard inline view). */
+.gear-card-detail[class*=quality-] .gear-card-heading>img{
+  background:radial-gradient(circle at 50% 45%,var(--qg,transparent),transparent 70%),var(--item-surface,var(--color-item-surface));
+  border-color:var(--qr,var(--color-border));
+  box-shadow:0 3px 0 var(--qrs,var(--color-border));
+  position:relative;
+}
+.gear-card-heading h4[class*=quality-]{color:var(--qrs,var(--color-text-primary))}

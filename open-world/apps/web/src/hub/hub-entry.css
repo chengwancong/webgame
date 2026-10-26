@@ -17,4 +17,30 @@
   #sysbar .entry .badge.dot{min-width:var(--space-3);width:var(--space-3);height:var(--space-3);padding:0}
   /* 加载中 / 出错 / 未开放的整页状态 */
   .hub-state-panel{width:480px;max-height:none;display:flex;flex-direction:column;gap:var(--space-3);overflow:hidden}
+
+  /* ── U3 共用：主角卡 ── */
+  .hub-hero-card{border-radius:var(--radius-control);border:var(--border-width) solid var(--color-primary-border);box-shadow:0 var(--border-depth) 0 var(--color-primary-edge);overflow:hidden;flex:0 0 auto}
+  .hub-hero-card__band{display:flex;align-items:center;gap:var(--space-2);padding:var(--space-2) var(--space-3);background:linear-gradient(to bottom,var(--color-panel-selected),var(--color-primary-top));border-bottom:var(--border-width) solid var(--color-primary-border)}
+  .hub-hero-card__title{margin:0;font-size:var(--font-size-h3);font-weight:var(--font-weight-bold);color:var(--color-text-primary)}
+  .hub-hero-card__body{display:flex;align-items:baseline;flex-wrap:wrap;gap:var(--space-3);padding:var(--space-3);background:var(--color-panel-raised)}
+  .hub-hero-card__big{font-size:var(--font-size-display);font-weight:var(--font-weight-bold);color:var(--color-emphasis);line-height:1;font-variant-numeric:tabular-nums}
+  .hub-hero-card__big-denom{font-size:var(--font-size-h2);font-weight:var(--font-weight-semibold);color:var(--color-text-secondary)}
+  .hub-hero-card__sub{display:inline-flex;align-items:center;gap:var(--space-1);font-size:var(--font-size-caption);color:var(--color-text-secondary)}
+  .hub-hero-card__sub--reset{margin-left:auto}
+  .hub-hero-card__stats{display:flex;align-items:baseline;gap:var(--space-4);flex-wrap:wrap}
+  .hub-hero-card__stat{display:flex;flex-direction:column;align-items:center;gap:2px}
+  .hub-hero-card__stat-num{font-size:var(--font-size-display);font-weight:var(--font-weight-bold);color:var(--color-emphasis);line-height:1;font-variant-numeric:tabular-nums}
+  .hub-hero-card{display:flex;align-items:stretch}
+  .hub-hero-card__band{border-bottom:0;border-right:var(--border-width) solid var(--color-primary-border);flex:0 0 auto}
+  .hub-hero-card__body{flex:1 1 auto;align-items:center;padding:var(--space-2) var(--space-3)}
+  .hub-hero-card__stat-label{font-size:var(--font-size-caption);color:var(--color-text-secondary)}
+
+  /* ── U3 共用：带图标卡行 ── */
+  .hub-card-row{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:var(--space-3);min-height:var(--space-12);padding:var(--space-2) var(--space-3);background:var(--color-panel-raised);border:var(--border-width) solid var(--color-border);border-radius:var(--radius-control);box-shadow:0 var(--border-depth) 0 var(--color-border-strong)}
+  .hub-card-row__icon{display:grid;place-items:center;width:40px;height:40px;border-radius:var(--radius-well);background:var(--color-panel-inset);color:var(--color-highlight);flex:0 0 auto}
+  .hub-card-row__content{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .hub-card-row__title{font-weight:var(--font-weight-semibold);font-size:var(--font-size-body);display:block}
+  .hub-card-row__value{font-size:var(--font-size-body);color:var(--color-text-primary);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hub-card-row__actions{display:flex;gap:var(--space-2);justify-content:flex-end;flex:0 0 auto}
+  .hub-card-row__actions:empty{display:none}
 }

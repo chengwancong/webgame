@@ -70,13 +70,13 @@ export function installDialogueBar(host:HTMLElement){
   captions.filter(c=>c!==counter).forEach(c=>c.classList.add('dlg-role'));
   panel.prepend(avatarFor(speaker));spoken.dataset.narrator=String(!speaker);
   if(actions){const hint=document.createElement('span');hint.className='dlg-hint';hint.textContent='点击或按空格继续';actions.prepend(hint);if(counter)actions.prepend(counter);}
-  if(history.length>1&&head){const log=document.createElement('button');log.type='button';log.className='dlg-log-toggle';log.dataset.dlgLog='';log.textContent=historyOpen?'收起回看':'回看';log.setAttribute('aria-expanded',String(historyOpen));head.insertBefore(log,head.querySelector('.close'));}
+  if(history.length>1&&head){const log=document.createElement('button');log.type='button';log.className='dlg-log-toggle ui-button ui-button--tertiary ui-button--compact';log.dataset.dlgLog='';log.textContent=historyOpen?'收起回看':'回看';log.setAttribute('aria-expanded',String(historyOpen));head.insertBefore(log,head.querySelector('.close'));}
   if(historyOpen&&history.length>1)panel.append(historyList(history.slice(0,-1)));
   typeIn(p,key,full);
  };
- new MutationObserver(enhance).observe(host,{childList:true,attributes:true,attributeFilter:['class']});enhance();
+ const observer=new MutationObserver(enhance);observer.observe(host,{childList:true,attributes:true,attributeFilter:['class']});enhance();
 
- host.addEventListener('click',event=>{
+ const onClick=(event:MouseEvent)=>{
   const target=event.target as HTMLElement,panel=target.closest<HTMLElement>('.story-dialogue[data-bar]');if(!panel)return;
   if(target.closest('[data-dlg-log]')){
    event.stopPropagation();event.preventDefault();historyOpen=!historyOpen;
@@ -85,15 +85,17 @@ export function installDialogueBar(host:HTMLElement){
   }
   const button=target.closest('button');
   if(typing&&(!button||button===primary())){event.stopPropagation();event.preventDefault();finish();}
- },true);
- window.addEventListener('keydown',event=>{
+ };
+ const onKeyDown=(event:KeyboardEvent)=>{
   if(event.code!=='Space'&&event.code!=='Enter')return;if(event.repeat||event.ctrlKey||event.metaKey||event.altKey)return;
   if(!host.querySelector('.story-dialogue[data-bar]'))return;const el=event.target as HTMLElement;
   if(['INPUT','SELECT','TEXTAREA'].includes(el.tagName))return;
   const btn=el.closest?.('button');if(btn&&btn!==primary()&&host.contains(btn))return;
   event.preventDefault();event.stopImmediatePropagation();
   if(typing){finish();return;}primary()?.click();
- },true);
+ };
  /* 空格的原生点击在 keyup 触发，keydown 已处理过，这里拦掉避免翻两页。 */
- window.addEventListener('keyup',event=>{if(event.code==='Space'&&host.querySelector('.story-dialogue[data-bar]')&&!['INPUT','SELECT','TEXTAREA'].includes((event.target as HTMLElement).tagName))event.preventDefault();},true);
+ const onKeyUp=(event:KeyboardEvent)=>{if(event.code==='Space'&&host.querySelector('.story-dialogue[data-bar]')&&!['INPUT','SELECT','TEXTAREA'].includes((event.target as HTMLElement).tagName))event.preventDefault();};
+ host.addEventListener('click',onClick,true);window.addEventListener('keydown',onKeyDown,true);window.addEventListener('keyup',onKeyUp,true);
+ return ()=>{observer.disconnect();if(typing)clearInterval(typing.timer);typing=null;host.removeEventListener('click',onClick,true);window.removeEventListener('keydown',onKeyDown,true);window.removeEventListener('keyup',onKeyUp,true);};
 }

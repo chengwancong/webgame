@@ -5,6 +5,7 @@
  */
 import {esc,buttonHtml,panelHeaderHtml,stateBlockHtml,statusBadgeHtml,tabsHtml} from '../ui-components.ts';
 import {iconHtml} from '../ui/icons.ts';
+import {hudMenuIcon} from '../hud-icons.ts';
 import {meterHtml} from '../ui/graphics.ts';
 import {art} from '../ui-assets.ts';
 import type {HubPortView as PortView} from '../../../../packages/contracts/hub.ts';
@@ -79,9 +80,17 @@ function tierRow(b: PortBuilding, t: PortBuilding['tiers'][number], busyKey: str
 function buildingDetail(b: PortBuilding, busyKey: string): string {
   const target = repTarget(b);
   const cardImg = buildCardImg(b.id);
-  return `<div class="hub-port-detail__head">${cardImg ? `<div class="hub-port-detail__card">${cardImg}</div>` : ''}<div class="hub-port-detail__head-text"><h3>${buildRepIcon(b.id)}${esc(b.name)}</h3><span class="hub-port-detail__npc">${esc(b.npc)}</span></div></div>
-    <div class="hub-port-rep"><span>声望</span>${meterHtml({value: b.rep, max: target, label: `${b.name}声望`, valueText: 'end'})}</div>
-    <ol class="hub-tiers">${b.tiers.map(t => tierRow(b, t, busyKey)).join('')}</ol>`;
+  // 主角卡：建筑插画放大 + 名称标题 + 声望进度
+  const heroCard = `<div class="hub-hero-card hub-port-detail__hero">
+    <div class="hub-hero-card__band">${cardImg ? `<div class="hub-port-detail__card-lg">${_pbSprite(_CARD_FRAMES[b.id]?.[0] ?? 0, _CARD_FRAMES[b.id]?.[1] ?? 0, 480, 320, 200, 134)}</div>` : ''}
+      <div class="hub-port-detail__head-text"><h3 class="hub-hero-card__title">${buildRepIcon(b.id)}${esc(b.name)}</h3><span class="hub-port-detail__npc">${esc(b.npc)}</span></div>
+    </div>
+    <div class="hub-hero-card__body hub-port-rep-body">
+      <span class="hub-port-rep__label">${iconHtml('star', {size: 16})}声望 <b class="ui-number">${b.rep}</b> / ${target}</span>
+      <div class="hub-port-rep__bar">${meterHtml({value: b.rep, max: target, label: `${b.name}声望`, valueText: 'none'})}</div>
+    </div>
+  </div>`;
+  return `${heroCard}<ol class="hub-tiers">${b.tiers.map(t => tierRow(b, t, busyKey)).join('')}</ol>`;
 }
 
 function collectionRow(label: string, owned: number, total: number, cellIcon?: string): string {
@@ -130,7 +139,7 @@ export function portPanelHtml(state: PortPanelState): string {
     : '<p class="hub-port-msg" aria-hidden="true"></p>';
 
   return `<section class="panel hub-port-panel" data-panel="hub-port" role="dialog" aria-modal="true" aria-label="港口建设" aria-busy="${Boolean(busyKey)}">
-  ${panelHeaderHtml('港口建设', {closeLabel: '关闭港口建设', closeAction: 'hub-port-close', closeDisabled: Boolean(busyKey), iconHtml: iconHtml('house', {size: 24})})}
+  ${panelHeaderHtml('港口建设', {closeLabel: '关闭港口建设', closeAction: 'hub-port-close', closeDisabled: Boolean(busyKey), emblemHtml: hudMenuIcon('port-build')})}
   <div class="hub-port-body">
     ${tabsHtml({label: '港口建设分类', action: 'hub-port-select', selected: active, items, orientation: 'vertical', className: 'hub-port-tabs'})}
     <div class="hub-port-detail" role="tabpanel">${detail}${msg}</div>

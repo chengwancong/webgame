@@ -1,0 +1,19 @@
+你是《深渊行者》内容执行者。请完成任务表对齐 HUB（T1–T5）：挂节点任务的文案和对白降到每组 1 句、一个节点只留一条带对白的任务、港口强制对话改为自动完成、等级奖励核对报告、新增防回归测试。一次连续做完，各项之间不停、不回来问。
+
+工作目录：G:\webgame\abyss-walker-migration\abyss-walker-rewrite\open-world
+先读完交接文件：docs/hub-portal-rework-20261021/handoff/task-table-hub-align-20261025.md（背景、现状清单、T1–T5 要求、默认裁决、验证、约束）。
+
+进度文件：新建 docs/hub-portal-rework-20261021/handoff/task-table-hub-align-20261025-progress.md。按 T1–T5 + 云测试服发布逐项勾选，写提交号和一句验证结论；中断后从第一个未勾项继续。
+
+要点：
+- 改源表 config/excel/任务.xlsx、对话.xlsx，再按现有流程导出 json；不改规则层、后端、前端代码。需要新事实 key 或规则支持的，记进「待 Claude」，该条先 frozen=true 兜住并继续。
+- 对白每组 ≤1 句、每句 ≤40 字；删掉 narrator 指路和玩家质问、NPC 辩解的来回；每个剧情任务至少留 1 句。触发表 popup 一律改 notice。
+- talk 步骤改 hub_fact 时，原来发的奖励、功能、船员、宠物一样都不能丢，要用 PG 测试证明。
+- T4 只报告等级和奖励的偏差，不调数值。
+- 新测试写在 tests/hub-task-alignment.test.ts；不要改 tools/validate-content.ts（其他会话在改）。
+- 每步跑导出校验、全仓 tsc、相关单测和 HUB 相关 PG 测试（--maxWorkers=1 --no-file-parallelism），重任务一次一个。旧测试因对白句数变化失败的，改断言，不恢复旧对白。
+- 禁无头浏览器、Playwright 探针和自动化脚本；可以用你自带的浏览器（非无头 GUI）短时自查：新角色打一个剧情节点再回港，确认只出一行提示。只按明确路径提交本任务文件，不碰其他会话的改动；不提交截图、原始明细、构建产物。
+- 云测试服口令只在 G:\webgame\aw-deploy\staging-credentials.txt，不得写进报告、日志、提交或链接；需要清档先备份。
+
+结束状态只有两种：全部完成并发布到云测试服；或只剩明确硬阻塞（写清卡在哪一步、需要谁做什么）。
+完成后在进度文件末尾写：每项改动摘要与提交号、冻结任务清单（含奖励并到哪条）、T4 偏差表、「待 Claude」清单、给 Grok 的真机检查清单（4–6 条，覆盖：剧情节点只在顶栏出一句、回港只出一行提示不弹窗、章节尾声任务随关口首通自动完成、奖励和功能解锁照常）。

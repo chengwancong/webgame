@@ -1,4 +1,4 @@
-// 收获流水（#feed）：连续战报的金币/经验合并成一行，整行数秒后淡出，避免三行同样的“获得 X 金币”一直叠在屏上（Grok 第四轮：Toast 叠层）。
+// 收获流水（feed-log）：连续战报的金币/经验合并成一行，整行数秒后淡出，避免三行同样的“获得 X 金币”一直叠在屏上（Grok 第四轮：Toast 叠层）。
 export const FEED_LIMIT=3;
 export const FEED_TTL=6000;
 export const GAIN_MERGE_MS=4000;

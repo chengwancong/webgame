@@ -34,7 +34,7 @@ export function resistOf(stats:Stats,type:DamageType){return type==='physical'||
 export function snapshotLoadout(s:CharacterState,name:string):Loadout{
  const p=ensureProgression(s),lineup=s.pets?.lineup??{active:null,support:[]},flows:Record<string,PetFlow>={};
  for(const id of [lineup.active,...lineup.support])if(id&&s.pets?.owned[id])flows[id]=s.pets.owned[id].flow;
- return {name,equipment:Object.fromEntries(rankSlots.flatMap(slot=>s.equipment[slot]?[[slot,s.equipment[slot]!]]:[])),weaponGrid:[...p.weaponGrid],skills:[...s.skills],talents:{...p.talents},pets:{active:lineup.active,support:[...lineup.support],flows}};
+ return {name,equipment:Object.fromEntries(rankSlots.flatMap(slot=>s.equipment[slot]?[[slot,s.equipment[slot]!]]:[])),weaponGrid:[...p.weaponGrid],skills:[...s.skills],talents:{...p.talents},pets:{active:lineup.active,support:[...lineup.support],flows},...(s.tactics?{tactics:structuredClone(s.tactics)}:{})};
 }
 function same(a:Loadout,b:Loadout){const strip=(l:Loadout)=>JSON.stringify({...l,name:'',equipment:Object.fromEntries(Object.entries(l.equipment).sort()),talents:Object.fromEntries(Object.entries(l.talents).filter(([,v])=>v>0).sort())});return strip(a)===strip(b);}
 export function loadoutDirty(s:CharacterState){const l=s.loadouts;if(!l)return false;const saved=l.slots[l.active];return !saved||!same(saved,snapshotLoadout(s,saved.name));}
@@ -58,6 +58,8 @@ export function applyLoadout(s:CharacterState,index:number):{skipped:string[];eq
  const total=Object.values(l.talents).reduce((n,v)=>n+v,0),valid=Object.entries(l.talents).every(([id,v])=>{const t=talentDefinitions.find(t=>t.id===id);return t&&v<=t.max;});
  if(valid&&total<=talentPoints(s))p.talents={...l.talents};else skipped.push('天赋点数不够，保留当前天赋');
  if(s.pets){const owned=(id:string|null)=>id&&s.pets!.owned[id]?id:null;s.pets.lineup={active:owned(l.pets.active),support:l.pets.support.filter(id=>owned(id)&&id!==l.pets.active)};for(const [id,flow] of Object.entries(l.pets.flows))if(s.pets.owned[id])s.pets.owned[id].flow=flow;}
+ // 托管编排随方案走（27 号 R2）：方案没存编排就回到默认编排。
+ if(l.tactics)s.tactics=structuredClone(l.tactics);else delete s.tactics;
  s.loadouts!.active=index;s.build++;return {skipped,equipped};
 }
 export function loadoutView(s:CharacterState,stats:Stats,switchBlock?:string):LoadoutView{

@@ -11,12 +11,11 @@ export function hudModeBlocked(mode:Mode,options:{blocked:boolean;processing:boo
  return options.blocked||options.processing||options.hp<=0||mode==='auto'&&options.full&&options.context==='field';
 }
 export const hudExitIcon='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h4M10 12h10m-4-4 4 4-4 4"/></svg>';
-// Field and town are fixed semi-auto: skills auto-cast, the player moves (user 2026-10-11). The mode switch exists only inside dungeons.
-export function combatModeHtml(mode:Mode,open:boolean,options:Parameters<typeof hudModeBlocked>[1]){
- if(options.context!=='dungeon')return '';
- const labels={manual:'手动',semi:'半自动',auto:'全自动'},disabled=options.blocked||options.processing||options.hp<=0;
- const current=`<button type="button" class="entry hud-mode-current" data-action="hud-mode-toggle" aria-label="战斗模式：${labels[mode]}" aria-expanded="${open}" aria-controls="hud-mode-options"${disabled?' disabled':''}><span class="entry-orb">${hudMenuIcon('combat')}</span><span class="entry-name">${labels[mode]}</span></button>`;
- return current+(open?`<div id="hud-mode-options" class="hud-mode-options" role="group" aria-label="选择战斗模式">${(['manual','semi','auto'] as Mode[]).map(id=>buttonHtml((id===mode?'✓ ':'')+labels[id],{action:'mode',id,variant:'tertiary',className:'hud-mode-option',disabled:hudModeBlocked(id,options),attributes:id===mode?{'aria-current':'true'}:{}})).join('')}</div>`:'');
+// 27 号 R1（2026-10-25）：野外与副本默认全自动，走位输入即临时接管、松手 1.5 秒回自动；不再有模式切换，只显示状态。满包等停止后给“恢复自动”。
+export function autoStatusHtml(mode:Mode,takingOver:boolean,options:Parameters<typeof hudModeBlocked>[1]){
+ if(options.context==='home'||options.context==='result')return '';
+ if(mode==='auto')return `<div class="hud-auto-status${takingOver?' is-takeover':''}" role="status"><span class="hud-auto-dot" aria-hidden="true"></span>${takingOver?'接管中':'自动中'}</div>`;
+ return `<div class="hud-auto-status is-stopped" role="status"><span class="hud-auto-dot" aria-hidden="true"></span>已停止${buttonHtml('恢复自动',{action:'auto-resume',size:'compact',variant:'secondary',disabled:options.blocked||options.processing||options.hp<=0||options.full,attributes:{title:options.full?'背包已满，整理后再恢复':'恢复自动战斗'}})}</div>`;
 }
 export function hudStatusHtml(s:Pick<Snapshot,'gear'|'capacity'>&Partial<Pick<Snapshot,'rewards'>>,context:HudContext,processing=false,stopReason=''){
  if(context==='result')return '';

@@ -1,0 +1,48 @@
+/* Decorative vectors stay inside existing boxes; all text remains native HTML. */
+.ui-component-art{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;user-select:none}
+.ui-panel-head__title-label{position:relative;z-index:1;min-width:0;overflow-wrap:inherit}
+.ui-panel-head--ribbon .ui-panel-head__seal:has(>.ui-component-art){border-color:transparent;background:none;box-shadow:none}
+.ui-panel-head--ribbon .ui-panel-head__seal>.ui-component-art--seal{width:100%;height:100%;inset:0}
+.ui-panel-head--ribbon .ui-panel-head__seal>:not(.ui-component-art){position:relative;z-index:1}
+.ui-panel-head--ribbon>h2:has(>.ui-component-art){isolation:isolate;border-color:transparent;background:none;box-shadow:none}
+.ui-panel-head--ribbon>h2>.ui-component-art--title{z-index:0}
+.ui-resource.ui-resource--pill:has(>.ui-component-art){--component-accent:var(--color-resource-gold-border);--component-fill:var(--color-panel-raised);position:relative;isolation:isolate;border-color:transparent;background:none;box-shadow:none}
+.ui-resource.ui-resource--pill[data-resource=xp]{--component-accent:var(--color-resource-experience)}
+.ui-resource.ui-resource--pill[data-resource=material]{--component-accent:var(--color-resource-spirit)}
+.ui-resource--pill:has(>.ui-component-art)>span{position:relative;z-index:1}
+.ui-reward-mark:has(>.ui-component-art){--component-accent:var(--color-primary-border);--component-fill:var(--color-primary-top);position:relative;isolation:isolate;background:none}
+.ui-reward-mark--quality:has(>.ui-component-art){--component-accent:var(--qrs,var(--color-border-strong));--component-fill:var(--color-panel-raised)}
+.ui-reward-mark--hex:has(>.ui-component-art){--component-accent:var(--color-rarity-epic);--component-fill:var(--color-panel-raised)}
+.ui-reward-mark__label{position:relative;z-index:1}
+/* Dialogue deliberately uses a quiet caption, never a second header plaque. */
+.story-dialogue[data-bar] .dlg-head>h2>.ui-component-art{display:none}
+
+/* Controls keep their CSS-owned surface, minimum size and pressed depth. */
+.ui-button:has(>.ui-component-art--control){--component-accent:var(--button-line);isolation:isolate}
+.ui-button>.ui-component-art--control{border-radius:inherit;z-index:0}
+.ui-button:has(>.ui-component-art--control)>.ui-button__labels,.ui-button:has(>.ui-component-art--control)>.ui-button__icon{position:relative;z-index:1}
+.ui-button:has(>.ui-component-art--control)>.ui-button__spinner{z-index:1}
+.ui-button:disabled>.ui-component-art--control{display:none}
+.ui-tabs button:has(>.ui-component-art--tab){--component-accent:var(--color-primary-border);position:relative;isolation:isolate}
+.ui-tabs button>.ui-component-art--tab{display:none;z-index:0;border-radius:inherit}
+.ui-tabs button[aria-selected=true]:not(:disabled)>.ui-component-art--tab{display:block}
+.ui-tabs button:has(>.ui-component-art--tab)>span:not(.ui-tab-mark),.ui-tabs button:has(>.ui-component-art--tab)>small{position:relative;z-index:1}
+.ui-tabs button:has(>.ui-component-art--tab)>svg:not(.ui-component-art){position:relative;z-index:1}
+/* Toast position, lifetime and opacity animation remain owned by hud.css/queue. */
+#toast .toast:has(>.ui-component-art--toast){--component-accent:var(--toast-edge);--component-fill:var(--color-panel);isolation:isolate;border-color:transparent;background:none;box-shadow:none}
+#toast .toast:has(>.ui-component-art--toast)::before{display:none}
+#toast .toast:has(>.ui-component-art--toast)>.toast__icon,#toast .toast:has(>.ui-component-art--toast)>.toast__text{z-index:1}
+/* Small state illustrations stay in the original 48px slot, not an overlay. */
+.ui-state>.ui-state-art{display:block;flex:none;animation:none}
+
+/* Remaining data/panel surfaces reuse their current geometry and CSS fill. */
+.ui-confirm:has(>.ui-component-art--panel),.ui-cost:has(>.ui-component-art--well),.ui-stat-tile:has(>.ui-component-art--stat),.ui-badge:has(>.ui-component-art--status){position:relative;isolation:isolate}
+.ui-confirm>.ui-component-art--panel,.ui-cost>.ui-component-art--well,.ui-stat-tile>.ui-component-art--stat,.ui-badge>.ui-component-art--status{z-index:0}
+.ui-confirm:has(>.ui-component-art--panel)>:not(.ui-component-art),.ui-cost:has(>.ui-component-art--well)>:not(.ui-component-art),.ui-stat-tile:has(>.ui-component-art--stat)>:not(.ui-component-art),.ui-badge:has(>.ui-component-art--status)>span{position:relative;z-index:1}
+.ui-section-title:has(>.ui-component-art--divider){position:relative}
+.ui-section-title>.ui-component-art--divider{inset:auto 0 calc(-1 * var(--space-1));height:var(--border-depth)}
+:is(.result,.ui-ribbon) .result-title>.ui-svg-ceremony-heading:has(>.ui-component-art){position:relative;isolation:isolate;border-color:transparent;background:none;box-shadow:none}
+:is(.result,.ui-ribbon) .result-title>.ui-svg-ceremony-heading:has(>.ui-component-art)::before,:is(.result,.ui-ribbon) .result-title>.ui-svg-ceremony-heading:has(>.ui-component-art)::after{display:none}
+.ui-ceremony-label{position:relative;z-index:1}
+:is(.result,.ui-ribbon):is([data-outcome=failure],[data-outcome=pending]) .ui-svg-ceremony-heading{--component-fill:var(--color-ribbon-retreat-top);--component-low:var(--color-ribbon-retreat-bottom);--component-edge:var(--color-ribbon-retreat-edge);--component-accent:var(--color-ribbon-retreat-edge)}
+.ui-ribbon[data-tone=unlock] .ui-svg-ceremony-heading{--component-fill:var(--color-panel-selected);--component-low:var(--color-primary-top)}

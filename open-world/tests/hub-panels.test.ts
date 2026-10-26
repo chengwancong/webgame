@@ -17,8 +17,8 @@ vi.mock('../apps/web/src/network.ts', () => ({api: net.api, ApiFailure: net.ApiF
 import {chartViewSchema, todayViewSchema, hubCommissionsViewSchema, hubPortViewSchema, hubSettlementSchema} from '../packages/contracts/hub.ts';
 import {fixtureChart, fixtureToday, fixtureCommissions, fixturePort, FIXTURE_RESULT, buildRegion} from '../apps/web/src/hub/hub-fixtures.ts';
 import {
-  nodeCenter, cardPlacement, cycleShard, launchShards, nodeCardHtml, chartPanelHtml,
-  GRAPH_W, GRAPH_H, GRID_COLS, GRID_ROWS, NODE_HALF_W, NODE_DISC, CARD_W, CARD_H, CARD_EDGE, type ChartPanelState,
+  nodeCenter, cycleShard, launchShards, nodeCardHtml, chartPanelHtml,
+  GRAPH_W, GRAPH_H, GRID_COLS, GRID_ROWS, NODE_HALF_W, NODE_DISC, GATE_DISC, type ChartPanelState,
 } from '../apps/web/src/hub/chart-panel.ts';
 import {hasClaimable, tiersReached, repTarget, portPanelHtml} from '../apps/web/src/hub/port-panel.ts';
 import {todayRows, formatResetAt, todayPanelHtml} from '../apps/web/src/hub/today-panel.ts';
@@ -57,7 +57,7 @@ describe('样例数据符合后端契约', () => {
 
 // ---------- 节点图几何 ----------
 
-describe('节点位置与卡片翻转', () => {
+describe('固定图区节点位置', () => {
   const nodes = fixtureChart().regions[0].nodes;
 
   it('nodeCenter 把越界坐标收进网格', () => {
@@ -69,32 +69,16 @@ describe('节点位置与卡片翻转', () => {
     expect(nodeCenter({col: 1.4, row: 0}).x).toBe(nodeCenter({col: 1, row: 0}).x);
   });
 
-  it('所有 5×3 网格位置：卡片都在图区内，且不遮挡被选中的节点', () => {
+  it('所有节点圆盘在图区内，关口仍在最右列', () => {
     for (let col = 0; col < GRID_COLS; col++) for (let row = 0; row < GRID_ROWS; row++) {
       const c = nodeCenter({col, row});
-      const p = cardPlacement({col, row});
-      expect(p.left).toBeGreaterThanOrEqual(0);
-      expect(p.left + CARD_W).toBeLessThanOrEqual(GRAPH_W - CARD_EDGE + 1);
-      expect(p.top).toBeGreaterThanOrEqual(0);
-      expect(p.top + CARD_H).toBeLessThanOrEqual(GRAPH_H);
-      const overlapsX = p.left < c.x + NODE_HALF_W && p.left + CARD_W > c.x - NODE_HALF_W;
-      expect(overlapsX, `col ${col} row ${row}`).toBe(false);
-      expect(c.y - NODE_DISC / 2).toBeGreaterThanOrEqual(0);
+      expect(c.x - NODE_HALF_W).toBeGreaterThanOrEqual(0);
+      expect(c.x + NODE_HALF_W).toBeLessThanOrEqual(GRAPH_W);
+      expect(c.y - GATE_DISC / 2).toBeGreaterThanOrEqual(0);
+      expect(c.y + GATE_DISC / 2).toBeLessThanOrEqual(GRAPH_H);
     }
-  });
-
-  it('左列贴右侧，右侧放不下的列翻到左侧（四个角都成立）', () => {
-    expect(cardPlacement({col: 0, row: 0}).side).toBe('right');
-    expect(cardPlacement({col: 0, row: 2}).side).toBe('right');
-    expect(cardPlacement({col: 4, row: 0}).side).toBe('left');
-    expect(cardPlacement({col: 4, row: 2}).side).toBe('left');
-    expect(cardPlacement({col: 4, row: 1}).side).toBe('left');
-  });
-
-  it('模板里的 gate 节点（最右列）卡片在其左侧', () => {
-    const gate = nodes.find(n => n.kind === 'gate')!;
-    const c = nodeCenter(gate.pos);
-    expect(cardPlacement(gate.pos).left + CARD_W).toBeLessThanOrEqual(c.x - NODE_HALF_W);
+    expect(nodes.find(n => n.kind === 'gate')!.pos.col).toBe(GRID_COLS - 1);
+    expect(NODE_DISC).toBe(64);
   });
 });
 
@@ -155,6 +139,76 @@ describe('航图渲染', () => {
     const html = chartPanelHtml(chartState({selectedRegion: 'mist'}, view));
     expect(html).not.toContain('data-action="hub-node-go"');
   });
+
+  it('满信息栏主体可滚动，出发按钮独立在正文外，钥匙来源单独占行', () => {
+    const node = {...fixtureChart().regions[0].nodes.find(n => n.id === 'wind-story-3')!, elements: {threat: 'fire' as const, weakness: 'cold' as const}, cache: {found: false}, door: {id: 'door-qa', key: 'wind' as const, keyName: '风栖关口钥匙', keyOwned: false, opened: false}};
+    const html = nodeCardHtml(node, chartState({selectedNode: node.id, message: '保留完整失败说明，仍可滚动到出发按钮。'}));
+    expect(html).toContain('hub-chart-rail');
+    expect(html).not.toContain('data-side=');
+    expect(html).not.toContain('role="dialog"');
+    expect(html).toContain('role="region" aria-live="polite"');
+    expect(html).toMatch(/<\/div><div class="hub-card__foot">/);
+    expect(html).toContain('hub-card__door-source');
+    expect(html).toContain('data-action="hub-node-go"');
+    const css = readFileSync(new URL('../apps/web/src/hub/chart-panel.css', import.meta.url), 'utf8');
+    expect(css).toMatch(/\.hub-card__body\{[^}]*min-height:0[^}]*overflow-y:auto/);
+    expect(css).toMatch(/\.hub-card__body>\*\{[^}]*flex:0 0 auto/);
+    expect(css).toMatch(/\.hub-card__row--door\{[^}]*display:grid/);
+    expect(css).toMatch(/\.hub-card__door-source\{[^}]*grid-column:1\/-1/);
+  });
+});
+
+describe('航图固定信息栏交接要求', () => {
+  it('减少动态的媒体规则不被推荐动画的高优先级选择器覆盖', () => {
+    const css = readFileSync(new URL('../apps/web/src/hub/chart-panel.css', import.meta.url), 'utf8');
+    expect(css).toContain('@media(prefers-reduced-motion:reduce){.hub-node.is-recommended:not(.is-selected) .hub-node__disc{animation:none}');
+    expect(css).toContain('[data-motion-reduced=true] .hub-node.is-recommended .hub-node__disc{animation:none}');
+  });
+  it('默认概况包含关口目标和实际首通处数，零奖励不显示', () => {
+    const view = fixtureChart();
+    view.regions[0].gateQuest = [{text: '完成关口准备', done: false}];
+    const html = chartPanelHtml(chartState({}, view));
+    expect(html).toContain('风栖 · 航区概况');
+    expect(html).toContain('完成关口准备');
+    expect(html).toContain('今日首通 ×2 剩 1 处');
+    expect(html).not.toContain('<footer');
+    expect(html).not.toContain('hub-node-go');
+    view.regions[0].nodes.forEach(n => n.firstClearBonusAvailable = false);
+    expect(chartPanelHtml(chartState({}, view))).not.toContain('今日首通 ×2 剩');
+  });
+  it('锁定节点定位 links 中第一个可用前置，找不到不生成假按钮', () => {
+    const view = fixtureChart(), n = view.regions[0].nodes.find(n => n.id === 'wind-nest-3')!;
+    n.links = ['wind-hunt', 'wind-story-3', 'wind-nest-2'];
+    const html = nodeCardHtml(n, chartState({}, view));
+    expect(html).toContain('前置节点：两条进港路');
+    expect(html).toMatch(/data-action="hub-node-select"[^>]*data-id="wind-story-3"/);
+    expect(html).toContain('定位前置节点');
+    expect(html).not.toContain('hub-node-go');
+    n.links = ['wind-hunt', 'missing'];
+    expect(nodeCardHtml(n, chartState({}, view))).not.toContain('定位前置节点');
+  });
+  it('页签只留徽记名字圆环/锁，详细进度进入概况与提示', () => {
+    const view = fixtureChart();
+    view.regions[0].explore = {percent: 50, score: 5, total: 10, parts: {nodes: [3, 5], caches: [2, 5], doors: [0, 0]}, lockedByKey: 0, dockBonus: 0, milestones: [{percent: 50, reached: true, reward: '奖励甲'}, {percent: 100, reached: false, reward: '奖励乙'}]};
+    const html = chartPanelHtml(chartState({}, view));
+    const tabs = html.slice(html.indexOf('class="hub-chart-topbar"'), html.indexOf('class="hub-chart-body"'));
+    const text = tabs.replace(/<[^>]*>/g, '');
+    expect(text).not.toMatch(/50%|100%|Lv\./);
+    expect(tabs).toContain('hub-explore-ring');
+    expect(tabs).toContain('50%：奖励甲');
+    expect(html).toContain('探索度 <b>50%</b>');
+    expect(html).toContain('奖励乙');
+  });
+  it('首通为可访问圆点，隐藏节点不泄露奖励，关口有专门标记', () => {
+    const view = fixtureChart();
+    const html = chartPanelHtml(chartState({}, view));
+    expect(html).toContain('class="hub-node__bonus" role="img" aria-label="今日首通双倍"');
+    expect(html).not.toContain('hub-node__x2');
+    expect(html).toContain('hub-node__gate-label');
+    expect(html).toContain('width:40px;height:40px');
+    const hidden = view.regions[0].nodes.find(n => n.status === 'hidden')!;
+    expect(chartPanelHtml(chartState({selectedNode: hidden.id}, view))).not.toContain('data-node-card=');
+  });
 });
 
 // ---------- 港口 ----------
@@ -182,6 +236,20 @@ describe('港口建设', () => {
   it('失败信息显示在右侧详情区', () => {
     const html = portPanelHtml({view: port, selected: 'forge', busyKey: '', message: '领取失败，请重试。', messageTone: 'error'});
     expect(html).toContain('领取失败，请重试。');
+  });
+
+  it('长阶级列表与反馈保留在固定面板的可滚动详情中，不裁掉末行', () => {
+    const view = fixturePort();
+    view.buildings[0].tiers = Array.from({length: 8}, (_, i) => ({tier: i + 1, threshold: (i + 1) * 100, rewards: ['完整奖励说明'], claimed: false, claimable: false}));
+    const html = portPanelHtml({view, selected: 'forge', busyKey: '', message: '最后一行反馈', messageTone: 'success'});
+    expect(html).toContain('第 8 阶');
+    expect(html).toContain('最后一行反馈');
+    const css = readFileSync(new URL('../apps/web/src/hub/port-panel.css', import.meta.url), 'utf8');
+    const detail = css.match(/\.hub-port-detail\{([^}]+)\}/)?.[1] ?? '';
+    expect(detail).toContain('min-height:0');
+    expect(detail).toContain('overflow-y:auto');
+    expect(detail).not.toContain('overflow:hidden');
+    expect(css).toMatch(/\.hub-port-detail>\*\{[^}]*flex:0 0 auto/);
   });
 });
 

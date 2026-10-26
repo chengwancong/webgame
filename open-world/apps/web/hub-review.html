@@ -9,7 +9,7 @@
 <style>
   /* 只有预览工具条用到的样式；面板本身全部来自游戏的样式表 */
   html{background:#222}
-  #toolbar{position:fixed;left:0;right:0;bottom:0;z-index:2000;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:6px 12px;background:rgba(0,0,0,.85);color:#ddd;font:13px sans-serif}
+  #toolbar{position:relative;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:6px 12px;background:rgba(0,0,0,.85);color:#ddd;font:13px sans-serif}
   #toolbar button,#toolbar select{padding:4px 10px;font:inherit}
   #note{margin-left:8px;color:#ffd77a}
   #stage{position:relative;width:1280px;height:720px;margin:0 auto;overflow:hidden;background:#3a4a58}
@@ -26,7 +26,19 @@
   <button id="btn-port">港口建设</button>
   <button id="btn-result">结算（有 hub 块）</button>
   <button id="btn-result-plain">结算（无 hub 块）</button>
-  <button id="btn-flip">轮换四角节点</button>
+  <button id="btn-pet">宠物</button>
+  <button id="btn-slot-upgrade">工坊</button>
+  <label>工坊样例 <select id="forge-state"><option value="zero">资源为 0</option><option value="exact">资源刚好够</option><option value="max">部位已满</option><option value="reroll">重铸页签</option></select></label>
+  <button id="btn-return-unlock">回港（开放）</button>
+  <button id="btn-return-away">回港（离港）</button>
+  <label>航图状态 <select id="chart-state">
+    <option value="overview">未选节点 · 航区概况</option>
+    <option value="open">可出发节点</option>
+    <option value="locked">未解锁节点 · 定位前置</option>
+    <option value="gate">关口节点</option>
+    <option value="region-locked">锁定航区</option>
+    <option value="sea">海域难度弹层</option>
+  </select></label>
   <label>后端状态
     <select id="scenario">
       <option value="default">正常</option>

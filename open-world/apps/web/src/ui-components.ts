@@ -1,11 +1,14 @@
 /** Shared V2 controls. Chrome is CSS; icons resolve through ui-assets. */
 export {currencyIconHtml,resourceAmountHtml} from './ui/currency.ts';
+export {resourcePillHtml,ribbonTitleHtml,rewardRevealHtml,ceremonyHeadingHtml} from './ui/primitives.ts';
+export type {RibbonTitleOptions,RewardRevealItem} from './ui/primitives.ts';
 
 import {marksHtml,type SlotMark,type NodeState} from './ui/graphics.ts';
 export {pipsHtml,meterHtml,marksHtml,deltaHtml,rewardStripHtml,emptySlotHtml,timerHtml,ringHtml,pageDotsHtml,helpHtml} from './ui/graphics.ts';
 export {iconHtml,statIcon,statPlateHtml,iconNames,sealEmblem} from './ui/icons.ts';
 export type {SlotMark,NodeState} from './ui/graphics.ts';
 import {escapeHtml as esc} from './ui/primitives.ts';
+import {slotArtHtml} from './ui/slot-art.ts';
 export {esc};
 export {toggleHtml,rangeFieldHtml,selectFieldHtml} from './ui/form-controls.ts';
 export type {StatusTone,ResourceCost,ButtonOptions} from './ui/primitives.ts';
@@ -15,7 +18,8 @@ export {statTilesHtml,sectionTitleHtml,buttonHtml,panelHeaderHtml,confirmationHt
 export function itemSlot(opts: {action: string; id: string; label: string; src?: string; pressed?: boolean; className?: string; extra?: string; tip?: string; equipmentPart?:string; equipmentTip?:{id:string;revision:number}; disabled?: boolean; loading?: boolean; marks?:SlotMark[];state?:NodeState;title?:string;attributes?:Partial<Record<`data-${string}`|`aria-${string}`,string|number|boolean>>}) {
   const tip = opts.equipmentTip?` data-equipment-tip="${esc(opts.equipmentTip.id)}" data-equipment-revision="${opts.equipmentTip.revision}"`:opts.tip ? ` data-tip="${esc(opts.tip)}"` : '';
   const extraAttributes=Object.entries({...opts.attributes,...(opts.state?{'data-state':opts.state}:{})}).map(([name,value])=>`${name}="${esc(value)}"`).join(' ');
-  return `<button ${extraAttributes} class="slot ${opts.className ?? ''}" type="button" data-action="${esc(opts.action)}" data-id="${esc(opts.id)}"${opts.equipmentPart?` data-equipment-part="${esc(opts.equipmentPart)}"`:''} aria-pressed="${opts.pressed ? 'true' : 'false'}" aria-label="${esc([opts.label,...(opts.marks??[]).map(mark=>mark.label)].join('，'))}"${opts.title?` title="${esc(opts.title)}"`:''}${opts.disabled?' disabled':''}${opts.loading?' aria-busy="true" disabled':''}${tip}>${opts.src ? `<img src="${opts.src}" alt="" draggable="false">` : ''}${opts.extra ?? ''}${marksHtml(opts.marks)}</button>`;
+  const classes=(opts.className??'').split(/\s+/),emptyEquipment=classes.includes('bag-eq')&&classes.includes('is-empty')&&!classes.some(name=>name.startsWith('quality-'));
+  return `<button ${extraAttributes} class="slot ${opts.className ?? ''}" type="button" data-action="${esc(opts.action)}" data-id="${esc(opts.id)}"${opts.equipmentPart?` data-equipment-part="${esc(opts.equipmentPart)}"`:''} aria-pressed="${opts.pressed ? 'true' : 'false'}" aria-label="${esc([opts.label,...(opts.marks??[]).map(mark=>mark.label)].join('，'))}"${opts.title?` title="${esc(opts.title)}"`:''}${opts.disabled?' disabled':''}${opts.loading?' aria-busy="true" disabled':''}${tip}>${emptyEquipment?slotArtHtml('empty'):''}${opts.src ? `<img src="${opts.src}" alt="" draggable="false">` : ''}${opts.extra ?? ''}${marksHtml(opts.marks)}</button>`;
 }
 
 export function statusBar(kind: 'hp' | 'mp' | 'neutral', ratio: number, label: string) {

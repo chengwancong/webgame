@@ -1,9 +1,10 @@
 /* Bag board (2026-10-20): character stage | scrolling slot shelf | detail card. Sizes and colors come from tokens (Bag group). */
-.bag-board{--qc:var(--color-border);--qs:var(--color-item-common);--qt:var(--color-text-primary);display:grid;grid-template-columns:var(--bag-stage-width) minmax(0,1fr) var(--bag-card-width);grid-template-rows:minmax(0,1fr) max-content;gap:var(--space-3) var(--space-4);flex:1;min-height:0;min-width:0;color:var(--color-text-primary)}
-.bag-board .quality-common{--qc:var(--color-border);--qs:var(--color-item-common);--qt:var(--color-text-primary)}
-.bag-board .quality-magic{--qc:var(--color-rarity-magic);--qs:var(--color-item-magic);--qt:var(--color-rarity-magic)}
-.bag-board .quality-rare{--qc:var(--bag-rare-edge);--qs:var(--color-item-rare);--qt:var(--color-rarity-rare)}
-.bag-board .quality-legendary{--qc:var(--color-rarity-legendary);--qs:var(--color-item-legendary);--qt:var(--color-rarity-legendary)}
+/* Direction A: bag board quality colours now use Rim tokens for consistent raised borders. */
+.bag-board{--qc:var(--color-rim-common);--qs:var(--color-item-common);--qt:var(--color-text-primary);display:grid;grid-template-columns:var(--bag-stage-width) minmax(0,1fr) var(--bag-card-width);grid-template-rows:minmax(0,1fr) max-content;gap:var(--space-3) var(--space-4);flex:1;min-height:0;min-width:0;color:var(--color-text-primary)}
+.bag-board .quality-common{--qc:var(--color-rim-common);--qs:var(--color-item-common);--qt:var(--color-text-primary)}
+.bag-board .quality-magic{--qc:var(--color-rim-magic);--qs:var(--color-item-magic);--qt:var(--color-rarity-magic)}
+.bag-board .quality-rare{--qc:var(--color-rim-rare);--qs:var(--color-item-rare);--qt:var(--color-rarity-rare)}
+.bag-board .quality-legendary{--qc:var(--color-rim-legendary);--qs:var(--color-item-legendary);--qt:var(--color-rarity-legendary)}
 .bag-board__stage{grid-column:1;grid-row:1;display:flex;min-height:0}
 .bag-shelf{grid-column:2;grid-row:1;display:flex;flex-direction:column;gap:var(--space-3);min-width:0;min-height:0}
 .bag-detail-region{grid-column:3;grid-row:1;display:flex;min-width:0;min-height:0}

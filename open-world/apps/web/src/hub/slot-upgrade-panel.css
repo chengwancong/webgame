@@ -1,30 +1,15 @@
-/* Z2 部位强化面板样式 */
-
-/* 外容器 */
-.slot-upgrade-panel{display:flex;flex-direction:column;gap:var(--space-4)}
-
-/* 共鸣徽记区域 */
-.slot-resonance{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3);border-radius:var(--radius-well);background:var(--color-panel-inset)}
-.slot-resonance__ring{flex:0 0 auto;width:56px;height:56px;object-fit:contain}
-.slot-resonance__info{flex:1 1 auto;min-width:0}
-.slot-resonance__label{font-size:var(--font-size-caption);color:var(--color-text-secondary)}
-.slot-resonance__value{font-size:var(--font-size-h3);font-weight:var(--font-weight-bold)}
-
-/* 6 格部位网格 */
-.slot-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-2)}
-
-/* 单个部位格 */
-.slot-card{display:flex;flex-direction:column;gap:var(--space-2);padding:var(--space-3);border-radius:var(--radius-card);border:var(--border-width) solid var(--color-border-strong);background:var(--color-panel) url(/art/hub-ui/resonance/slot-normal.png) center/100% 100% no-repeat}
-.slot-card.is-maxed{background-image:url(/art/hub-ui/resonance/slot-maxed.png)}
-.slot-card.is-limited{background-image:url(/art/hub-ui/resonance/slot-limited.png)}
-.slot-card__head{display:flex;align-items:center;gap:var(--space-2);min-width:0}
-.slot-card__name{flex:1 1 auto;font-size:var(--font-size-caption);color:var(--color-text-secondary)}
-.slot-card__level{flex:0 0 auto;font-size:var(--font-size-caption);font-weight:var(--font-weight-bold)}
-.slot-card__bonus{font-size:var(--font-size-caption);color:var(--color-text-secondary);min-height:var(--font-size-caption);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.slot-card__cost{display:flex;align-items:center;gap:var(--space-1);font-size:var(--font-size-caption);color:var(--color-text-secondary)}
-.slot-card__cost .ui-resource-amount{font-size:var(--font-size-caption)}
-.slot-card__upgrade-btn{width:100%}
-
-/* 最大等级状态 */
-.slot-card.is-max .slot-card__bonus{color:var(--color-success)}
-.slot-card.is-max .slot-card__cost{display:none}
+.forge-upgrade{display:grid;grid-template-columns:var(--forge-list-width) minmax(0,1fr);gap:var(--space-4);min-height:0;flex:1;width:100%;font-size:var(--font-size-body)}
+.forge-slot-list,.forge-slot-detail{min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain}
+.forge-slot-list ul{list-style:none;margin:0;padding:0;display:grid;gap:var(--space-2)}
+.forge-slot-choice{width:100%;min-height:var(--forge-row-min-height);height:auto;justify-content:space-between;white-space:normal}
+.forge-slot-summary{display:flex;flex-direction:column;gap:var(--space-1);min-width:0;text-align:left;font-size:var(--font-size-body)}
+.forge-slot-summary b{overflow-wrap:anywhere}.forge-slot-summary .ui-status{white-space:normal}
+.forge-slot-detail{display:flex;flex-direction:column;gap:var(--space-2);padding:var(--space-3);background:var(--color-panel-inset);border-radius:var(--radius-well)}
+.forge-slot-detail p{margin:0;font-size:var(--font-size-body)}
+.forge-cost-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:var(--space-2);padding-block:var(--space-1)}
+.forge-cost-row.is-short,.forge-block{color:var(--color-danger)}
+.forge-upgrade-changes{min-height:var(--forge-comparison-min-height)}
+.forge-slot-actions{margin-top:auto;position:sticky;bottom:0;background:var(--color-panel-inset);padding-block:var(--space-2)}
+.forge-slot-actions>.ui-button{width:100%}
+.character-swap .gear-detail>.gear-scroll{min-height:0}.gear-comparison-priority{min-height:var(--forge-comparison-min-height)}
+.gear-comparison-more summary{cursor:pointer;font-size:var(--font-size-body)}
