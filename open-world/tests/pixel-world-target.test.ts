@@ -1,21 +1,40 @@
-import {it,expect,vi} from 'vitest';
+import {it,expect,vi} from 'vitest';import {createRequire} from 'node:module';import fs from 'node:fs';import path from 'node:path';import vm from 'node:vm';
+import {EventEmitter} from 'node:events';
 import {PixelWorldTarget} from '../apps/web/src/pixel-world-target.ts';
-function fixture(){
- const main={id:1,scrollX:12,scrollY:22,roundPixels:false},text:any={type:'Text',cameraFilter:1,scene:true},sprite:any={type:'Sprite',cameraFilter:0,scene:true};
- const cam={setZoom:vi.fn(),setScroll:vi.fn(),id:0,roundPixels:false};
- const target:any={texture:{setFilter:vi.fn()},camera:cam,type:'RenderTexture',cameraFilter:0,scene:true,clear:vi.fn(),draw:vi.fn(),destroy:vi.fn()};
- for(const name of ['setOrigin','setScrollFactor','setScale','setDepth'])target[name]=vi.fn(()=>target);
- const scene:any={cameras:{main},children:{list:[sprite,text]},add:{renderTexture:vi.fn(()=>{scene.children.list.push(target);return target;})}};
- return {scene,main,text,sprite,target,cam};
+const require=createRequire(import.meta.url),phaser=fs.realpathSync(path.resolve('node_modules/phaser/src'));
+/** Real installed Phaser classes; replace only browser/GPU-dependent dependencies. No DOM. */
+function engineModule(file:string,overrides:Record<string,any>={}){const absolute=path.join(phaser,file),local=createRequire(absolute),module={exports:{} as any};const load=(id:string)=>id in overrides?overrides[id]:local(id);vm.runInThisContext('(function(require,module,exports){'+fs.readFileSync(absolute,'utf8')+'\n})',{filename:absolute})(load,module,module.exports);return module.exports;}
+const Camera=engineModule('cameras/2d/Camera.js',{'../../gameobjects/components':{FilterList:class{length=0;}}});
+const DynamicTexture=engineModule('textures/DynamicTexture.js',{'../cameras/2d/Camera':Camera,'./Texture':function(){},'../display/canvas/CanvasPool':{},'../renderer/webgl/DrawingContext':function(){},'../renderer/webgl/Utils':{},'./Frame':class{}});
+const GameObject=engineModule('gameobjects/GameObject.js',{'./components':{Filters:{},RenderSteps:{}}});
+const GetCalcMatrix=require(path.join(phaser,'gameobjects/GetCalcMatrix.js'));
+function object(type='Sprite',filter=0):any{return{type,cameraFilter:filter,scene:true,renderFlags:GameObject.RENDER_MASK,displayList:undefined,willRender:GameObject.prototype.willRender,x:12,y:22,scrollFactorX:1,scrollFactorY:1,rotation:0,scaleX:1,scaleY:1,renderCanvas:vi.fn()};}
+function fixture(scale=1){
+ const main=new Camera(0,0,1280*scale,720*scale).setZoom(scale).setScroll(12,22);main.id=1;main.roundPixels=false;
+ const text=object('Text',1),sprite=object(),cam=new Camera(0,0,640,360);cam.id=0;
+ // Execute Phaser's actual clear/draw/render command buffer on its Canvas path.
+ const texture=Object.assign(Object.create(DynamicTexture.prototype),{camera:cam,commandBuffer:[],width:640,height:360,renderer:{type:1,setContext:vi.fn()},manager:{},context:{clearRect:vi.fn()},setFilter:vi.fn()});
+ const target:any={texture,camera:cam,type:'RenderTexture',cameraFilter:0,scene:true,x:0,y:0,scaleX:2,scaleY:2,scrollFactorX:0,scrollFactorY:0,rotation:0,clear:vi.fn(()=>texture.clear()),draw:vi.fn((entries:any[])=>texture.draw(entries)),render:vi.fn(()=>texture.render()),destroy:vi.fn()};
+ for(const name of ['setOrigin','setScrollFactor','setScale','setDepth'])target[name]=vi.fn(()=>target);target.setPosition=vi.fn((x:number,y:number)=>{target.x=x;target.y=y;return target;});
+ const scene:any={events:new EventEmitter(),cameras:{main},children:{list:[sprite,text]},add:{renderTexture:vi.fn(()=>{scene.children.list.push(target);return target;})}};
+ return{scene,main,text,sprite,target,cam,texture};
 }
-it('draws the world once at 640x360 and leaves text to its full-resolution camera',()=>{
- const f=fixture(),world=new PixelWorldTarget(f.scene);world.render();
- expect(f.scene.add.renderTexture).toHaveBeenCalledWith(0,0,640,360);expect(f.cam.setZoom).toHaveBeenCalledWith(.5);
- expect(f.target.draw).toHaveBeenCalledWith([f.sprite]);expect(f.target.setScale).toHaveBeenCalledWith(2);
- expect(f.sprite.cameraFilter&1).toBe(1);expect(f.text.cameraFilter&1).toBe(1);
- world.destroy();expect(f.sprite.cameraFilter&1).toBe(0);expect(f.text.cameraFilter&1).toBe(1);expect(f.main.roundPixels).toBe(false);
+it('flushes the actual Phaser 4 queue, producing world draws before the main camera masks are restored',()=>{
+ const f=fixture(),world=new PixelWorldTarget(f.scene);f.sprite.renderCanvas.mockImplementation(()=>{expect(f.sprite.cameraFilter&1).toBe(0);});world.render();
+ expect(f.scene.add.renderTexture).toHaveBeenCalledWith(0,0,640,360);expect(f.cam.zoomX).toBe(.5);expect(f.target.setScale).toHaveBeenCalledWith(2);
+ expect(f.sprite.renderCanvas).toHaveBeenCalledTimes(1);expect(f.text.renderCanvas).not.toHaveBeenCalled();expect(f.texture.commandBuffer).toEqual([]);expect(f.target.render).toHaveBeenCalledOnce();
+ expect(f.sprite.cameraFilter&1).toBe(1);world.destroy();expect(f.sprite.cameraFilter&1).toBe(0);expect(f.text.cameraFilter&1).toBe(1);expect(f.main.roundPixels).toBe(false);
 });
-it('restores camera masking even when a world draw fails',()=>{
- const f=fixture(),world=new PixelWorldTarget(f.scene);f.target.draw.mockImplementation(()=>{expect(f.sprite.cameraFilter&1).toBe(0);throw Error('render failed');});
- expect(()=>world.render()).toThrow('render failed');expect(f.sprite.cameraFilter&1).toBe(1);world.destroy();expect(f.sprite.cameraFilter&1).toBe(0);
-});
+it('honors visibility and existing camera filters instead of drawing every object queued to a dynamic texture',()=>{const f=fixture(),hidden=object(),ignored=object('Image',1);hidden.renderFlags=0;f.scene.children.list.push(hidden,ignored);const world=new PixelWorldTarget(f.scene);world.render();expect(f.sprite.renderCanvas).toHaveBeenCalledOnce();expect(hidden.renderCanvas).not.toHaveBeenCalled();expect(ignored.renderCanvas).not.toHaveBeenCalled();world.destroy();expect(ignored.cameraFilter).toBe(1);});
+it('flushes nested containers while world children are visible and text children are masked',()=>{const f=fixture(),child=object(),label=object('Text'),container:any=object('Container');container.list=[child,label];container.renderCanvas.mockImplementation(()=>{for(const node of container.list)if(node.willRender(f.cam))node.renderCanvas();});f.scene.children.list.push(container);const world=new PixelWorldTarget(f.scene);world.render();expect(child.renderCanvas).toHaveBeenCalledOnce();expect(label.renderCanvas).not.toHaveBeenCalled();world.destroy();expect(child.cameraFilter&1).toBe(0);expect(label.cameraFilter&1).toBe(0);});
+it('restores camera masks when the engine fails during actual queue execution',()=>{const f=fixture(),world=new PixelWorldTarget(f.scene);f.sprite.renderCanvas.mockImplementation(()=>{throw Error('render failed');});expect(()=>world.render()).toThrow('render failed');expect(f.sprite.cameraFilter&1).toBe(0);world.destroy();expect(f.sprite.cameraFilter&1).toBe(0);});
+it.each([.5,.8,1,1.25,1.5,2])('aligns world sprites and fixed overlays with text at backing scale %s',scale=>{const f=fixture(scale),world=new PixelWorldTarget(f.scene);world.render();f.main.preRender();const targetMatrix=GetCalcMatrix(f.target,f.main).calc;expect(targetMatrix.e).toBeCloseTo(0,3);expect(targetMatrix.f).toBeCloseTo(0,3);
+ for(const factor of [0,.3,1]){const p={x:532,y:286,rotation:0,scaleX:1,scaleY:1,scrollFactorX:factor,scrollFactorY:factor};const native=GetCalcMatrix(p,f.cam).calc,px=native.e,py=native.f;const screen=GetCalcMatrix(f.target,f.main).calc,projected=screen.transformPoint(px,py);const original=GetCalcMatrix(p,f.main).calc;expect(projected.x).toBeCloseTo(original.e,3);expect(projected.y).toBeCloseTo(original.f,3);}
+ world.destroy();});
+it('clears the previous command buffer and renders again every frame',()=>{const f=fixture(),world=new PixelWorldTarget(f.scene);world.render();world.render();expect(f.sprite.renderCanvas).toHaveBeenCalledTimes(2);expect(f.texture.commandBuffer).toHaveLength(0);world.destroy();});
+
+it('restores camera visibility for input after the frame and detaches the render listener on disable',()=>{const f=fixture(),world=new PixelWorldTarget(f.scene);world.render();expect(f.sprite.willRender(f.main)).toBe(false);f.scene.events.emit('render');expect(f.sprite.willRender(f.main)).toBe(true);expect(f.text.willRender(f.main)).toBe(false);world.render();f.scene.events.emit('render');expect(f.sprite.willRender(f.main)).toBe(true);world.destroy();expect(f.scene.events.listenerCount('render')).toBe(0);});
+
+it('executes the installed WebGL DynamicTextureHandler before remasking the world',()=>{const f=fixture(),world=new PixelWorldTarget(f.scene),Handler=engineModule('renderer/webgl/renderNodes/DynamicTextureHandler.js',{'./RenderNode':function(){}}),handler=Object.assign(Object.create(Handler.prototype),{onRunBegin:vi.fn(),onRunEnd:vi.fn()}),context:any={camera:f.cam,blendMode:0,framebuffer:{renderTexture:{}},setScissorBox:vi.fn(),setScissorEnable:vi.fn(),use:vi.fn(),release:vi.fn(),clear:vi.fn()};context.getClone=()=>context;const renderer={type:2,gl:{COLOR_BUFFER_BIT:1,DEPTH_BUFFER_BIT:2,STENCIL_BUFFER_BIT:4},glTextureUnits:{units:[]},renderNodes:{getNode:()=>handler}};context.renderer=renderer;f.texture.renderer=renderer;f.texture.drawingContext=context;f.sprite.blendMode=0;f.sprite.renderWebGLStep=vi.fn(()=>expect(f.sprite.cameraFilter&1).toBe(0));world.render();expect(f.sprite.renderWebGLStep).toHaveBeenCalledOnce();expect(f.texture.commandBuffer).toHaveLength(0);world.destroy();});
+
+it('can shut down after Phaser has already removed cameras.main',()=>{const f=fixture(),world=new PixelWorldTarget(f.scene);world.render();f.scene.cameras.main=undefined;expect(()=>world.destroy()).not.toThrow();expect(f.sprite.cameraFilter&1).toBe(0);expect(f.main.roundPixels).toBe(false);expect(f.scene.events.listenerCount('render')).toBe(0);});
