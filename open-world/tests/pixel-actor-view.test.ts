@@ -24,3 +24,4 @@ it('maps the existing cast release boundary to its authored impact frame',()=>{
 it('keeps damage-flash fills inside the shared master palette',()=>{
  const palette=Object.values(master.ramps).flat().map(c=>parseInt(c.slice(1),16));for(const color of [0xffffff,0xff0000,0x00ffff,0x993377])expect(palette).toContain(pixelFeedbackTint(color));
 });
+it('uses native x1 sockets for the fine-density actor instead of doubling its coordinates again',()=>{const a=actor();a.asset.frame=[128,128];a.asset.anchor=[64,120];a.asset.scale=1;a.asset.actions!.attack.sockets=a.asset.actions!.attack.sockets.map(s=>({...s,weapon:[90,92]}));const pose=authoredActorPose(a.image,'ss-mon-dusk-blade')!;expect(pose.scale).toBe(1);expect(pose.socket!('weapon',pose.releaseFrame!)).toEqual({x:126,y:172});});

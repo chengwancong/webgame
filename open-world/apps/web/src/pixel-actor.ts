@@ -1,4 +1,4 @@
-import {loadPixelManifest,loadPixelImage,pixelAsset,pixelFrameIndex,pixelSocket,pixelOutfit,type PixelAsset,type PixelAction} from './pixel-assets.ts';
+import {loadPixelManifest,loadPixelImage,pixelAsset,pixelFrameIndex,pixelFrameSource,pixelSocket,pixelOutfit,type PixelAsset,type PixelAction} from './pixel-assets.ts';
 import type {WardrobeRenderState} from './wardrobe-renderer.ts';
 import type {ResolvedAppearance} from '../../../packages/contracts/appearance.ts';
 import palette from '../../../packages/asset-manifest/pixel-palette.json';
@@ -48,11 +48,11 @@ export class PixelActorPainter{
  render(state:WardrobeRenderState):boolean{
   const asset=this.asset,image=this.image,phaseAction=state.pixelPhase==='phase-enter'||state.pixelPhase==='phase-end'?'idle':state.action,phase=state.pixelPhase+':'+phaseAction,name=asset?.actions?.[phase]?phase:state.motionFamily&&asset?.actions?.[state.motionFamily+':'+state.action]?state.motionFamily+':'+state.action:state.action,clip=asset?.actions?.[name];if(!asset||!image||!clip)return false;this.actionName=name;
   this.clip=clip;this.index=pixelFrameIndex(clip,state.clock,clip.loop??(state.action==='idle'||state.action==='move'),state.cast);this.mirror=state.facing<0;
-  this.scale=Math.max(1,Math.floor(this.options.height/48));this.foot=[Math.round(this.canvas.width*this.options.footX),Math.round(this.canvas.height*this.options.footY)];
+  this.scale=Math.max(1,Math.floor(this.options.height/(asset.bodyHeight??48)));this.foot=[Math.round(this.canvas.width*this.options.footX),Math.round(this.canvas.height*this.options.footY)];
   const key=[this.requestIdentity,name,this.index,this.mirror,this.canvas.width,this.canvas.height,this.scale].join(':');if(this.key===key)return false;this.key=key;
   const ctx=this.canvas.getContext('2d')!;ctx.clearRect(0,0,this.canvas.width,this.canvas.height);ctx.save();ctx.imageSmoothingEnabled=false;
   ctx.translate(this.foot[0],this.foot[1]);ctx.scale(this.mirror?-this.scale:this.scale,this.scale);
-  const layers=this.layers.length?this.layers:[image];for(let i=0;i<layers.length;i++){if(i===1&&this.appearance?.kit&&!this.appearance.kit.weapon)continue;ctx.drawImage(layers[i],this.index*asset.frame[0],clip.row*asset.frame[1],...asset.frame,-asset.anchor[0],-asset.anchor[1],...asset.frame);}
+  const [sourceX,sourceY]=pixelFrameSource(asset,clip,this.index),layers=this.layers.length?this.layers:[image];for(let i=0;i<layers.length;i++){if(i===1&&this.appearance?.kit&&!this.appearance.kit.weapon)continue;ctx.drawImage(layers[i],sourceX,sourceY,...asset.frame,-asset.anchor[0],-asset.anchor[1],...asset.frame);}
   if(this.overlay)ctx.drawImage(this.overlay,(clip.poses?.[this.index]??this.index)*64,(clip.overlayRow??clip.row)*64,64,64,-asset.anchor[0],-asset.anchor[1],64,64);
   ctx.restore();return true;
  }

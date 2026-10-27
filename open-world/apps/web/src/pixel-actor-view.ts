@@ -21,6 +21,6 @@ export function authoredActorFrame(image:Phaser.GameObjects.Image,art?:string){
 export function authoredActorPose(image:Phaser.GameObjects.Image,art:string):RenderPose|undefined{
  const frame=authoredActorFrame(image,art);if(!frame)return;
  const {id,asset,name,clip,index,flip}=frame,position={x:image.x,y:image.y};
- return{art,frame:`pixel-${id}#${name}_${index}`,releaseFrame:`pixel-${id}#${name}_${clip.impactFrame}`,position,scale:2,flip,
-  socket:(socket,requested)=>{const match=/#([^#]+)_(\d+)$/.exec(requested),action=match?asset.actions?.[match[1]]:clip,n=match?Number(match[2]):index,p=action?.sockets[n]?.[socket];return p?{x:position.x+(p[0]-asset.anchor[0])*2*(flip?-1:1),y:position.y+(p[1]-asset.anchor[1])*2}:undefined;}};
+ return{art,frame:`pixel-${id}#${name}_${index}`,releaseFrame:`pixel-${id}#${name}_${clip.impactFrame}`,position,scale:asset.scale??2,flip,
+  socket:(socket,requested)=>{const match=/#([^#]+)_(\d+)$/.exec(requested),action=match?asset.actions?.[match[1]]:clip,n=match?Number(match[2]):index,p=action?.sockets[n]?.[socket];return p?{x:position.x+(p[0]-asset.anchor[0])*(asset.scale??2)*(flip?-1:1),y:position.y+(p[1]-asset.anchor[1])*(asset.scale??2)}:undefined;}};
 }

@@ -1,11 +1,12 @@
 import type Phaser from 'phaser';
 
-/** World-only 640x360 render target; text keeps the existing full-resolution camera. */
+/** Native stage resolution preserves fine pixel art; text keeps its independent camera. */
 export class PixelWorldTarget{
  target:Phaser.GameObjects.RenderTexture;
  private masked=new Map<Phaser.GameObjects.GameObject,number>();
  private previousRound:boolean;
  private main:Phaser.Cameras.Scene2D.Camera;
+ private captureOffset:[number,number]=[0,0];
  private restoreMasks=()=>{
   const id=this.main.id;
   for(const [object,old] of this.masked)if(object.scene)object.cameraFilter=(object.cameraFilter&~id)|old;
@@ -18,8 +19,15 @@ export class PixelWorldTarget{
   scene.events.on('render',this.restoreMasks);
  }
  private createTarget(){
-  const target=this.scene.add.renderTexture(0,0,640,360).setOrigin(0).setScrollFactor(0).setScale(2).setDepth(-30000).setData('pixel-authored',true);
-  target.texture.setFilter(1);target.camera.setZoom(.5);target.camera.roundPixels=true;return target;
+  const target=this.scene.add.renderTexture(0,0,1280,720).setOrigin(0).setScrollFactor(0).setScale(1).setDepth(-30000).setData('pixel-authored',true);
+  target.texture.setFilter(1);target.camera.setZoom(1);target.camera.roundPixels=true;
+  const camera=target.camera as Phaser.Cameras.Scene2D.Camera,preRender=camera.preRender;
+  camera.preRender=()=>{preRender.call(camera);const[x,y]=this.captureOffset;
+   // At zoom=1 the camera origin cannot create a translation. Shift the native
+   // view matrix explicitly, including its cull rectangle, without changing scrollFactor semantics.
+   const matrix=camera.getViewMatrix(true);matrix.e+=x;matrix.f+=y;camera.matrixCombined.e+=x;camera.matrixCombined.f+=y;
+   camera.worldView.x-=x;camera.worldView.y-=y;camera.midPoint.x-=x;camera.midPoint.y-=y;
+  };return target;
  }
  render(){
   this.restoreMasks();
@@ -35,8 +43,8 @@ export class PixelWorldTarget{
   const capture=this.target.camera as Phaser.Cameras.Scene2D.Camera,zoomX=main.zoomX,zoomY=main.zoomY;
   Object.assign(capture,{id});capture.setScroll(main.scrollX,main.scrollY);
   // Match the main camera's zoom pivot, including scrollFactor=0 backgrounds/HUD.
-  // The main backing resolution changes with the window; this target stays 640x360.
-  capture.setOrigin(main.width*main.originX*(1-zoomX)/(640*zoomX),main.height*main.originY*(1-zoomY)/(360*zoomY));
+  // The main backing resolution changes with the window; this target stays 1280x720.
+  this.captureOffset=[main.width*main.originX*(1-zoomX)/zoomX,main.height*main.originY*(1-zoomY)/zoomY];
   this.target.setPosition(main.width*main.originX*(1-1/zoomX),main.height*main.originY*(1-1/zoomY));
   let rendered=false;
   try{

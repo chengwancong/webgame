@@ -1,0 +1,11 @@
+/* Stateful controls retain their CSS value/focus/checked colors; only their pixel drawing changes. */
+body.pixel-mode :is(.ui-form-art:not([data-pixel-icon]),.ui-graphic-art:not([data-pixel-icon]),.ui-ring,.hub-links,.paragon-links){
+ shape-rendering:crispEdges;
+ stroke-linecap:square;
+ stroke-linejoin:miter;
+ filter:none;
+ --border-width:1px;
+ --border-edge:2px;
+ --border-depth:3px;
+}
+body.pixel-mode :is(.ui-ring__bezel,.ui-ring__inner,.ui-ring__track,.ui-ring__value){filter:none;stroke-width:2px}

@@ -1,4 +1,4 @@
-import {AnimationState,AnimationStateData,AtlasAttachmentLoader,Physics,RegionAttachment,Skeleton,SkeletonJson,TextureAtlas} from '@esotericsoftware/spine-webgl';
+import {AnimationState,AnimationStateData,AtlasAttachmentLoader,Physics,RegionAttachment,MeshAttachment,Skeleton,SkeletonJson,TextureAtlas} from '@esotericsoftware/spine-webgl';
 export type ShibaRaster={width:number;height:number;data:Uint8Array|Uint8ClampedArray};
 export type ShibaAction='idle'|'run'|'attack';
 /** Same official Spine parser/evaluator drives the offline sample and the visible reviewer. */
@@ -21,7 +21,13 @@ export class ShibaSpineSample{
  /** Inverse-map actual Spine world quads at native pixel centres. No antialiased canvas rotations. */
  frame(width=64,height=64,anchor:[number,number]=[32,60],mirror=false){
   const out=new Uint8ClampedArray(width*height*4),v=new Float32Array(8);
-  for(const slot of this.skeleton.drawOrder){const a=slot.getAttachment();if(!(a instanceof RegionAttachment)||slot.color.a===0)continue;const src=this.images[a.path];if(!src)throw Error('Missing cutout '+a.path);a.computeWorldVertices(slot,v,0,2);
+  for(const slot of this.skeleton.drawOrder){const a=slot.getAttachment();if(slot.color.a===0)continue;
+   if(a instanceof MeshAttachment){const src=this.images[a.path];if(!src)throw Error('Missing mesh '+a.path);const vertices=new Float32Array(a.worldVerticesLength);a.computeWorldVertices(slot,0,a.worldVerticesLength,vertices,0,2);const uv=a.regionUVs;
+    for(let n=0;n<a.triangles.length;n+=3){const ia=a.triangles[n]*2,ib=a.triangles[n+1]*2,ic=a.triangles[n+2]*2,ax=anchor[0]+vertices[ia],ay=anchor[1]-vertices[ia+1],bx=anchor[0]+vertices[ib],by=anchor[1]-vertices[ib+1],cx=anchor[0]+vertices[ic],cy=anchor[1]-vertices[ic+1],ux=bx-ax,uy=by-ay,vx=cx-ax,vy=cy-ay,det=ux*vy-vx*uy;if(Math.abs(det)<1e-8)continue;
+     for(let y=Math.max(0,Math.floor(Math.min(ay,by,cy)));y<Math.min(height,Math.ceil(Math.max(ay,by,cy)));y++)for(let x=Math.max(0,Math.floor(Math.min(ax,bx,cx)));x<Math.min(width,Math.ceil(Math.max(ax,bx,cx)));x++){const dx=x+.5-ax,dy=y+.5-ay,b=(dx*vy-dy*vx)/det,c=(ux*dy-uy*dx)/det;if(b< -1e-7||c< -1e-7||b+c>1+1e-7)continue;const sx=Math.max(0,Math.min(src.width-1,Math.floor((uv[ia]+b*(uv[ib]-uv[ia])+c*(uv[ic]-uv[ia]))*src.width))),sy=Math.max(0,Math.min(src.height-1,Math.floor((uv[ia+1]+b*(uv[ib+1]-uv[ia+1])+c*(uv[ic+1]-uv[ia+1]))*src.height))),i=(sy*src.width+sx)*4;if(src.data[i+3]<128)continue;const mx=mirror?Math.round(anchor[0]*2-x-1):x;if(mx<0||mx>=width)continue;const o=(y*width+mx)*4;out[o]=src.data[i];out[o+1]=src.data[i+1];out[o+2]=src.data[i+2];out[o+3]=255;}
+    }continue;
+   }
+   if(!(a instanceof RegionAttachment))continue;const src=this.images[a.path];if(!src)throw Error('Missing cutout '+a.path);a.computeWorldVertices(slot,v,0,2);
    const x0=anchor[0]+v[2],y0=anchor[1]-v[3],ux=(v[4]-v[2])/src.width,uy=-(v[5]-v[3])/src.width,vx=(v[0]-v[2])/src.height,vy=-(v[1]-v[3])/src.height,det=ux*vy-vx*uy;
    if(Math.abs(det)<1e-8)continue;const xs=[v[0],v[2],v[4],v[6]].map(x=>anchor[0]+x),ys=[v[1],v[3],v[5],v[7]].map(y=>anchor[1]-y);
    for(let y=Math.max(0,Math.floor(Math.min(...ys)));y<Math.min(height,Math.ceil(Math.max(...ys)));y++)for(let x=Math.max(0,Math.floor(Math.min(...xs)));x<Math.min(width,Math.ceil(Math.max(...xs)));x++){

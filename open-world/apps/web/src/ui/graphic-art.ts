@@ -1,5 +1,6 @@
 /** Static marks inside the shared graphic controls. Numbers and actions remain native HTML. */
 export type GraphicArtKind='pip'|'diamond-pip'|'bar-pip'|'meter'|'empty-slot'|'timer'|'page'|'page-prev'|'page-next'|'help';
+export const staticGraphicArtKinds=['empty-slot','timer','page-prev','page-next','help'] as const;
 const fine='stroke-width="var(--border-width)" vector-effect="non-scaling-stroke"';
 const edge='stroke-width="var(--border-edge)" vector-effect="non-scaling-stroke"';
 const pipFill='var(--graphic-pip-fill,var(--color-panel-raised))';
@@ -18,5 +19,6 @@ const artwork:Record<GraphicArtKind,{viewBox:string;body:string}>={
 };
 export function graphicArtHtml(kind:GraphicArtKind){
  const art=artwork[kind];
- return `<svg xmlns="http://www.w3.org/2000/svg" class="ui-graphic-art ui-graphic-art--${kind}" viewBox="${art.viewBox}" preserveAspectRatio="${kind==='meter'||kind==='bar-pip'?'none':'xMidYMid meet'}" aria-hidden="true" focusable="false" fill="none" stroke-linecap="round" stroke-linejoin="round">${art.body}</svg>`;
+ const pixel=(staticGraphicArtKinds as readonly GraphicArtKind[]).includes(kind)?` data-pixel-icon="inline:graphic:${kind}"`:'';
+ return `<svg${pixel} xmlns="http://www.w3.org/2000/svg" class="ui-graphic-art ui-graphic-art--${kind}" viewBox="${art.viewBox}" preserveAspectRatio="${kind==='meter'||kind==='bar-pip'?'none':'xMidYMid meet'}" aria-hidden="true" focusable="false" fill="none" stroke-linecap="round" stroke-linejoin="round">${art.body}</svg>`;
 }

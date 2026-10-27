@@ -13,7 +13,11 @@
 
 ## 验证与发布
 
-全 2958 项像素清单校验通过（0 issues）；`tsc --noEmit` 通过。新增测试覆盖全部主角入口、衣服换色不污染犬毛，以及死亡各帧完整轮廓；既有动作时长／命中边界测试通过。相关测试共 23 文件／105 项通过（`--maxWorkers=1 --no-file-parallelism`）。本机 8612 实际返回 20 个 Shiba 主角条目。发布回执完成后补入。
+全 2958 项像素清单校验通过（0 issues）；`tsc --noEmit` 通过。新增测试覆盖全部主角入口、衣服换色不污染犬毛，以及死亡各帧完整轮廓；既有动作时长／命中边界测试通过。相关测试共 23 文件／105 项通过（`--maxWorkers=1 --no-file-parallelism`）。本机 8612 实际返回 20 个 Shiba 主角条目。
+
+已提交并发布 `f53b00b743ddffcac8a5742ac88bd8623e751039`。先执行 `node tools/deploy-staging.mjs --remote-web --dry-run`，确认 art-pixel 白名单 2877 文件／2872 图片／17,356,691 字节，再执行正式发布。发布号 `release-f53b00b743dd-1793114722615`；云端 build-info 来源与该提交一致，health／content／build-info HTTP 200，client 0.11.59、protocol 59、rules ow-99、assets world-art-20261007-v24-world-runtime、db 19 一致。API 启动探测短暂拒绝后自动重试，于 23:26:41 健康。未清库或操作玩家数据。
+
+云端 manifest 返回 20 个柴犬主角入口；启动角色、剑／杖／弓以及身体、武器层共 7 张关键图片的下载 SHA256 与本地一致。本机启动角色、杖、剑图片也已通过 HTTP 内容哈希核对。图片和构建产物未提交 Git。
 
 没有运行浏览器自动化，也未修改其他会话的 main.ts、API、存档或配置表。HUD／对话头像沿用原流程，本次重点是世界角色与换装预览的像素形象。
 

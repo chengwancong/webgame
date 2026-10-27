@@ -3,12 +3,16 @@
  * 先输出占位 span，挂到 DOM 后调用 hydratePetPortraits；资源缺失时保持空占位，不报错。
  */
 import {esc} from '../ui-components.ts';
-import {loadPixelManifest,pixelAsset} from '../pixel-assets.ts';
+import {loadPixelManifest,pixelAsset,type PixelAsset} from '../pixel-assets.ts';
 import {pixelRuntime,onPixelChange} from '../pixel-texture.ts';
 
 type PetArt = {image: string; atlas: string};
 type Frame = {image: string; x: number; y: number; w: number; h: number};
 type AtlasJson = {frames: Record<string, {frame: {x: number; y: number; w: number; h: number}}>};
+type PixelPortraitAsset=Pick<PixelAsset,'file'|'frame'|'actions'>&{portraitFrame?:{x:number;y:number;w:number;h:number}};
+/** Crop the visible creature, not the mostly empty authoring cell, into the unchanged avatar box. */
+export function pixelPetPortraitFrame(asset:PixelPortraitAsset):Frame{const row=asset.actions?.idle?.row??0,f=asset.portraitFrame;return f?{image:asset.file,x:f.x,y:row*asset.frame[1]+f.y,w:f.w,h:f.h}:{image:asset.file,x:0,y:row*asset.frame[1],w:asset.frame[0],h:asset.frame[1]};}
+export function petPortraitScale(frame:Pick<Frame,'w'|'h'>,width:number,height:number,pixel:boolean){const fit=Math.min((width||frame.w)/frame.w,(height||frame.h)/frame.h);return pixel&&fit>1?Math.floor(fit):fit;}
 
 let manifest: Promise<Map<string, PetArt>> | undefined;
 const frames = new Map<string, Promise<Frame | null>>();
@@ -49,11 +53,10 @@ export function hydratePetPortraits(root: ParentNode): void {
     const runtime = el.dataset.petRuntime!;
     const mount = async (original: Frame | null) => {
       let f=original;const version=pixelRuntime.version;
-      if(pixelRuntime.cellStage>0){await loadPixelManifest();const a=pixelAsset(runtime);if(a){const row=a.actions?.idle?.row??0;f={image:a.file,x:0,y:row*a.frame[1],w:a.frame[0],h:a.frame[1]};}}
+      if(pixelRuntime.cellStage>0){await loadPixelManifest();const a=pixelAsset(runtime);if(a)f=pixelPetPortraitFrame(a.small?pixelAsset(a.small)??a:a);}
       if(version!==pixelRuntime.version)return;
       if (!f || !el.isConnected) return;
-      const fit=Math.min((el.clientWidth || f.w) / f.w, (el.clientHeight || f.h) / f.h);
-      const k=pixelRuntime.cellStage>0?Math.max(1,Math.floor(fit)):fit;
+      const k=petPortraitScale(f,el.clientWidth,el.clientHeight,pixelRuntime.cellStage>0);
       el.replaceChildren();
       const sprite = document.createElement('i');
       sprite.className = 'pet-portrait__frame';

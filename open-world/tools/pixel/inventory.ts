@@ -66,9 +66,11 @@ export function collectInventory():InventoryRow[]{
  for(const [type,family] of Object.entries(legacyFamilies))add(`hero:${type}:wardrobe`,[(wardrobe.motions as Record<string,{url:string}>)[family].url],'hero','PX1','wardrobe motion family');
  for(const [id,npc] of Object.entries(story.npcs))add(`story-npc:${id}`,[npc.profile],'npc','PX3','story-npcs.json');
  add('unit-shadow',['code:apps/web/src/scene.ts#unit-shadow'],'props','PX5','runtime generated shadow');
+ for(const name of ['hero-portrait','hero-figure'])add('pixel-ui:'+name,['code:apps/web/src/pixel-images.ts#'+name],'image','PX8','pixel-mode hero HUD and character figure');
+ for(const registry of ['pixel-inline-art.json','pixel-generated-art.json']){const inlineIndex=path.join(root,'packages/asset-manifest',registry);if(fs.existsSync(inlineIndex))for(const row of read(inlineIndex))add(row.key,row.paths,row.category,row.batch,row.source);}
  for(const [id,a] of Object.entries(ui.assets)){
   // Dialogue portraits remain in their original style, as required by PX3.
-  if(a.kind==='portrait'||id.startsWith('portrait-'))continue;
+  if(a.kind==='portrait'||id.startsWith('portrait-')||id==='sample-world')continue;
   add(id,imagePaths(a),'icon','PX8','ui.v2.json');
  }
  // Retain every shipped modular part: any accepted outfit may be selected at runtime.

@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import sharp from 'sharp';
-import {pixelFrameIndex,pixelSocket,pixelObjectOrigin,type PixelAction,type PixelAsset} from '../apps/web/src/pixel-assets.ts';
+import {pixelFrameIndex,pixelFrameSource,pixelSocket,pixelObjectOrigin,type PixelAction,type PixelAsset} from '../apps/web/src/pixel-assets.ts';
 import {pixelHeroKey} from '../apps/web/src/pixel-actor.ts';
 import type {ResolvedAppearance} from '../packages/contracts/appearance.ts';
 // @ts-expect-error The production checker is a directly executable Node ESM CLI.
@@ -19,6 +19,10 @@ describe('authored frame playback',()=>{
   expect(pixelFrameIndex(clip,0,false,{elapsed:.8,windup:.8,recovery:.2})).toBe(2);
   expect(pixelFrameIndex(clip,0,false,{elapsed:1,windup:.8,recovery:.2})).toBe(5);
   expect(clip.duration).toBe(1);expect(clip.impactTime).toBe(.35);
+ });
+ it('reads packed actor frames across sheet rows while retaining legacy row playback',()=>{
+  expect(pixelFrameSource({frame:[160,160]},{...clip,positions:[[320,0],[0,160]]},1)).toEqual([0,160]);
+  expect(pixelFrameSource({frame:[128,128]},{...clip,row:2},1)).toEqual([128,256]);
  });
  it('mirrors sockets around the same integer foot anchor as the sprite',()=>{
   expect(pixelSocket([45,30],[32,60],[256,384],2,false)).toEqual([282,324]);
@@ -55,5 +59,11 @@ describe('pixel production quality gate',()=>{
  });
  it('rejects forged actor timing and missing per-frame sockets',async()=>{
   expect(await codes(undefined,a=>{a.kind='actor';a.actions={attack:{...clip,row:0,count:1,frameTimes:[0],impactFrame:0,sockets:[]}};})).toContain('impact');
+ });
+ it('validates packed frame occupancy and bounds rather than assuming a single row',async()=>{
+  const make=(a:any,positions:number[][])=>{a.kind='actor';a.frame=[4,4];a.anchor=[2,4];a.actions={idle:{row:0,count:2,duration:1,impactTime:0,impactFrame:0,frameTimes:[0,.5],positions,sockets:[0,1].map(()=>Object.fromEntries(['feet','chest','hand','weapon','muzzle'].map(k=>[k,[2,2]])))}};};
+  expect(await codes(undefined,a=>make(a,[[0,0],[4,4]]))).toEqual([]);
+  expect(await codes(undefined,a=>make(a,[[0,0],[8,4]]))).toContain('grid');
+  expect(await codes(undefined,a=>make(a,[[0,0],[3,4]]))).toContain('grid');
  });
 });

@@ -1,0 +1,4 @@
+import {it,expect} from 'vitest';
+import {pixelPetPortraitFrame,petPortraitScale} from '../apps/web/src/hub/pet-portrait.ts';
+it('crops the native pet bounds from the correct idle row instead of treating 128px padding as the creature',()=>{const a={file:'/art-pixel/pet.png',frame:[128,128] as [number,number],actions:{idle:{row:2}} as any,portraitFrame:{x:35,y:47,w:58,h:74}};expect(pixelPetPortraitFrame(a)).toEqual({image:a.file,x:35,y:303,w:58,h:74});});
+it('shrinks a high-density creature to a 64px avatar box without clipping or enlarging low-density sources',()=>{expect(petPortraitScale({w:128,h:128},64,64,true)).toBe(.5);const fine=petPortraitScale({w:58,h:84},64,64,true);expect(84*fine).toBeCloseTo(64);expect(58*fine).toBeLessThan(64);expect(petPortraitScale({w:44,h:44},64,64,true)).toBe(1);expect(petPortraitScale({w:44,h:44},64,64,false)).toBeCloseTo(64/44);});

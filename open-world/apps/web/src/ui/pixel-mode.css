@@ -1,7 +1,14 @@
+@import './pixel-inline-art.css';
+
 /* 像素画风 DOM HUD 皮肤（body.pixel-mode 下生效）
    --px          像素块边长（CSS px，由 TS 在 applyPixelMode 中写入 document.documentElement.style）
    --px-frame-*  各面板的 SVG 九宫格 url()，由 TS 写入
 */
+
+/* The final stage canvas must not be bilinearly resampled by the CSS compositor. */
+body.pixel-mode canvas{image-rendering:pixelated!important;image-rendering:crisp-edges!important}
+html[data-stage]:has(body.pixel-mode)::before{background:none}
+html[data-stage] body.pixel-mode{box-shadow:none}
 
 /* 通用面板：圆角→0，九宫格边框，硬像素投影 */
 body.pixel-mode .plate,
@@ -13,14 +20,14 @@ body.pixel-mode .hud-wallet,
 body.pixel-mode .minimap.plate {
   border-radius: 0 !important;
   border-image: var(--px-frame-panel,none) 4 fill / var(--border-width,1px) / 0 !important;
-  box-shadow: 0 var(--px,3px) 0 rgba(24,46,59,.35) !important;
+  box-shadow: 0 var(--px,3px) 0 var(--color-chrome-ink) !important;
 }
 
 /* 技能格：圆角→0，九宫格边框 */
 body.pixel-mode .skill-slot {
   border-radius: 0 !important;
   border-image: var(--px-frame-panel,none) 4 fill / var(--border-focus-width,2px) / 0 !important;
-  box-shadow: 0 var(--px,3px) 0 rgba(24,46,59,.28) !important;
+  box-shadow: 0 var(--px,3px) 0 var(--color-chrome-ink) !important;
 }
 
 /* 技能格内图标：像素化 */
@@ -31,7 +38,7 @@ body.pixel-mode #sysbar .entry,
 body.pixel-mode #modebar .entry {
   border-radius: 0 !important;
   border-image: var(--px-frame-panel,none) 4 fill / var(--border-width,1px) / 0 !important;
-  box-shadow: 0 var(--px,3px) 0 rgba(24,46,59,.35) !important;
+  box-shadow: 0 var(--px,3px) 0 var(--color-chrome-ink) !important;
 }
 body.pixel-mode .hud-menu-illustration { image-rendering: pixelated; }
 
@@ -39,22 +46,22 @@ body.pixel-mode .hud-menu-illustration { image-rendering: pixelated; }
 body.pixel-mode .ui-button--primary {
   border-radius: 0 !important;
   border-image: var(--px-frame-primary,none) 4 fill / var(--border-width,1px) / 0 !important;
-  box-shadow: 0 var(--px,3px) 0 rgba(24,46,59,.28) !important;
+  box-shadow: 0 var(--px,3px) 0 var(--color-chrome-ink) !important;
 }
 body.pixel-mode .ui-button--secondary {
   border-radius: 0 !important;
   border-image: var(--px-frame-secondary,none) 4 fill / var(--border-width,1px) / 0 !important;
-  box-shadow: 0 var(--px,3px) 0 rgba(24,46,59,.28) !important;
+  box-shadow: 0 var(--px,3px) 0 var(--color-chrome-ink) !important;
 }
 
 /* 圆形元素保留 border-radius 但用 box-shadow 模拟硬边框（替代软发光） */
 body.pixel-mode .burst-slot,
 body.pixel-mode .pet-slot {
-  box-shadow: 0 0 0 var(--px,3px) rgba(24,46,59,.55) !important;
+  box-shadow: 0 0 0 var(--px,3px) var(--color-chrome-ink) !important;
 }
 body.pixel-mode .minimap canvas {
   border-radius: var(--radius-round) !important;
-  box-shadow: 0 0 0 var(--px,3px) rgba(24,46,59,.55) !important;
+  box-shadow: 0 0 0 var(--px,3px) var(--color-chrome-ink) !important;
 }
 
 /* 背包/装备/技能模态浮层 */
@@ -62,7 +69,7 @@ body.pixel-mode #modal .plate,
 body.pixel-mode .confirm-box {
   border-radius: 0 !important;
   border-image: var(--px-frame-panel,none) 4 fill / var(--border-width,1px) / 0 !important;
-  box-shadow: 0 var(--px,3px) 0 rgba(24,46,59,.35) !important;
+  box-shadow: 0 var(--px,3px) 0 var(--color-chrome-ink) !important;
 }
 
 /* 物品/装备插槽图标 */
@@ -77,5 +84,85 @@ body.pixel-mode .bag-cell::after,body.pixel-mode .bag-eq::after,body.pixel-mode 
 body.pixel-mode .title-bg__ground{background-image:url('/art-pixel/ui-code/title-grass.png');background-size:32px 32px;filter:none;animation:none}
 body.pixel-mode .title-bg__camp{background-image:url('/art-pixel/ui-code/title-road.png');background-size:32px 32px;filter:none;mask-image:none;-webkit-mask-image:none;opacity:1}
 body.pixel-mode .title-bg img{filter:none;animation:none}
-body.pixel-mode .desk-place>img{max-width:none;object-fit:none!important;object-position:center}
+body.pixel-mode .desk-place>img{max-width:100%;object-fit:contain!important;object-position:center}
 body.pixel-mode .desk-place>div:not(.missing-art){background:transparent;text-shadow:2px 2px var(--color-background)}
+
+/* Shared controls across inventory, skills, character, travel, quests and settings. Layout stays owned by each page. */
+body.pixel-mode :is(.ui-panel,.ui-card,.ui-tab,.gear-card,.pet-card,.quest-card,.settings-group,.modal-panel,.character-card){border-radius:0!important;background-image:none!important;box-shadow:0 2px 0 var(--color-secondary-border)!important;backdrop-filter:none!important}
+body.pixel-mode :is(button,[role="button"],[role="tab"],select,input:not([type="checkbox"]):not([type="radio"]):not([type="range"])){border-radius:0!important;background-image:none!important;text-shadow:none!important;backdrop-filter:none!important}
+body.pixel-mode :is(.ui-button,.ui-tab,[role="tab"],.tab-button){box-shadow:0 2px 0 var(--color-secondary-border)!important}
+body.pixel-mode :is(.who,.hud-wallet,.skill-slot,.bag-cell,.bag-eq,.item-slot,.equip-slot){backdrop-filter:none!important}
+body.pixel-mode :is(.appearance-preview,.doll-preview,.hero-preview) canvas{image-rendering:pixelated}
+
+/* The pixel skin shares the art palette; original theme variables resume when the toggle is off. */
+body.pixel-mode{
+  --color-background:#e6d9b4;
+  --color-panel:#fcfaf5;
+  --color-panel-secondary:#e7e0c6;
+  --color-panel-raised:#fcfaf5;
+  --color-panel-inset:#e6d9b4;
+  --color-panel-hover:#e7e0c6;
+  --color-panel-pressed:#c1b99a;
+  --color-panel-selected:#f6d27a;
+  --color-primary:#f0bf4f;
+  --color-primary-top:#f6d27a;
+  --color-primary-hover:#f6d27a;
+  --color-primary-pressed:#c48f2a;
+  --color-primary-text:#513637;
+  --color-primary-border:#c48f2a;
+  --color-primary-edge:#a77549;
+  --color-secondary:#e7e0c6;
+  --color-secondary-top:#e7e0c6;
+  --color-secondary-hover:#e6d9b4;
+  --color-secondary-pressed:#c1b99a;
+  --color-secondary-text:#243343;
+  --color-secondary-border:#c1b99a;
+  --color-secondary-edge:#95927a;
+  --color-border:#c1b99a;
+  --color-border-subtle:#e6d9b4;
+  --color-border-strong:#95927a;
+  --color-chrome-ink:#243343;
+  --color-chrome-dark:#513637;
+  --color-chrome-light:#e6b774;
+  --color-chrome-rivet:#c58953;
+  --color-icon-paper:#fcfaf5;
+  --color-icon-leather:#a77549;
+  --color-icon-leather-light:#e6b774;
+  --color-icon-leather-dark:#513637;
+  --color-icon-steel:#687886;
+  --color-icon-steel-light:#a1adb0;
+  --color-icon-steel-dark:#243343;
+  --color-icon-blue:#507fa5;
+  --color-icon-purple:#9a85b2;
+  --color-icon-purple-dark:#4c426f;
+  --color-icon-orange:#c58953;
+  --color-highlight:#79503b;
+  --color-text-primary:#243343;
+  --color-text-secondary:#405465;
+  --color-text-disabled:#687886;
+  --color-text-inverse:#fcfaf5;
+  --color-danger:#823b46;
+  --color-danger-strong:#4e293f;
+  --color-success:#2a4e40;
+  --color-warning:#79503b;
+  --color-info:#194667;
+  --color-vital-health:#b95643;
+  --color-vital-health-end:#b95643;
+  --color-vital-mana:#65b8c2;
+  --color-vital-shield:#345985;
+  --color-vital-text:#fcfaf5;
+  --color-resource-gold:#79503b;
+  --color-resource-spirit:#194667;
+  --color-resource-experience:#2a4e40;
+  --color-resource-gold-icon:#f0bf4f;
+  --color-resource-gold-light:#f6d27a;
+  --color-resource-gold-shade:#c48f2a;
+  --color-resource-gold-border:#c48f2a;
+}
+body.pixel-mode :is(.meter,.meter .shield-band,.chip,#vitals .who small){border-radius:0!important;box-shadow:0 1px 0 var(--color-chrome-ink);background-image:none!important}
+body.pixel-mode .meter.hp i{background:var(--color-vital-health)!important;box-shadow:inset 0 2px 0 var(--color-icon-orange)}
+body.pixel-mode .meter.mp i{background:var(--color-vital-mana)!important;box-shadow:inset 0 2px 0 var(--color-icon-steel-light)}
+body.pixel-mode .meter.mp .numv{color:var(--color-text-primary)}
+body.pixel-mode #vitals .who img{border-radius:0!important;box-shadow:2px 2px 0 var(--color-chrome-ink)}
+body.pixel-mode #vitals .identity{text-shadow:1px 1px 0 var(--color-chrome-ink)}
+body.pixel-mode :is(#tracker,#story-hud,.hint,.hud-wallet){background-color:var(--color-panel);background-image:none!important}

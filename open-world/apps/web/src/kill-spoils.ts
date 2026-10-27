@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import {resolvedToken} from './ui/tokens.ts';
 import {worldTextResolution} from './ui/world-text.ts';
-import {hasArt,smallArt,art} from './ui-assets.ts';
+import {hasArt,originalArt,artResourceKey} from './ui-assets.ts';
 
 /** 击杀战利品演出（docs/progression-goal-plan.md §11.4）：只画服务端本来就会发的东西，不改结算。
  * - 每只有奖励的怪倒下，尸体处蹦出金币和强化石，随后飞进角色（这两样每次击杀都发）。
@@ -32,7 +32,7 @@ export class KillSpoils{
   const now=this.scene.time.now,size=named?26:18;
   list.forEach((item,i)=>{
    const key=this.texture(item.icon),angle=-Math.PI/2+(i-(list.length-1)/2)*.9,dist=named?30:22;
-   const ready=this.scene.textures.exists(key),image=this.scene.add.image(0,0,ready?key:COIN).setDisplaySize(size,size);
+   const ready=this.scene.textures.exists(key),image=this.scene.add.image(0,0,ready?key:COIN).setDisplaySize(size,size).setData('pixel-art-id',item.icon===COIN?'hud-icon:coin':item.icon===STONE?'item-material-enhance_stone':artResourceKey(item.icon)).setData('pixel-preserve-size',true);
    // 第一次用到的图标还在加载：先用金币占位，加载完立刻换成正式图标。
    if(!ready&&key!==COIN)this.scene.load.once('filecomplete-image-'+key,()=>{if(image.active)image.setTexture(key).setDisplaySize(size,size);});
    const parts:Phaser.GameObjects.GameObject[]=[image];
@@ -46,7 +46,7 @@ export class KillSpoils{
   if(icon===COIN||icon===STONE)return icon;
   const key='spoil:'+icon;if(this.scene.textures.exists(key)||this.requested.has(key))return key;
   this.requested.add(key);if(!hasArt(icon))return COIN;
-  try{let path:string;try{path=smallArt(icon);}catch{path=art(icon);}this.scene.load.image(key,path);if(!this.scene.load.isLoading())this.scene.load.start();}catch{}
+  try{this.scene.load.image(key,originalArt(icon,true));if(!this.scene.load.isLoading())this.scene.load.start();}catch{}
   return key;
  }
  /** 金币与强化石的小图标，形状与界面货币图标一致（圆币、菱形石）。 */

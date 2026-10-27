@@ -11,7 +11,7 @@ export async function checkAsset(asset,{publicRoot=path.join(root,'apps/web/publ
  const add=(code,detail)=>issues.push({code,detail});
  if(!(fw>0&&fh>0&&Number.isInteger(fw)&&Number.isInteger(fh)))return [{code:'grid',detail:'Invalid native frame size'}];
  if(!point(asset.anchor,fw+1,fh+1))add('anchor','Missing or out-of-bounds integer foot anchor');
- if(asset.scale!==2)add('scale','Native art must be displayed at x2');
+ if(asset.scale!==1&&asset.scale!==2)add('scale','Native art supports x1 fine pixels or x2 legacy pixels only');
  if(!['authored-pixels','adapted-pixels'].includes(asset.provenance?.method)||!asset.provenance.reviewed||!asset.provenance.recipe)add('provenance','Authored pixel cleanup review missing');
  if(asset.provenance?.method==='adapted-pixels'){const u=asset.provenance.upstream;if(!validPixelLicense(u)||!/^https:\/\//.test(u?.url??'')||!/^[0-9a-f]{64}$/.test(u?.sourceSha256??'')||!u?.author||!u?.file||!u?.package||!/^[0-9a-f]{64}$/.test(u?.archiveSha256??'')||!Array.isArray(u?.modifications))add('license','Adapted pixel art requires a pinned reviewed license, source and author');}
  if(!asset.file?.startsWith('/art-pixel/')||asset.file.includes('..'))return [...issues,{code:'file',detail:'Unsafe or non-pixel path'}];
@@ -37,12 +37,13 @@ export async function checkAsset(asset,{publicRoot=path.join(root,'apps/web/publ
  if(asset.kind==='actor'){
   if(!asset.actions||!Object.keys(asset.actions).length)add('animation','No authored actions');
   for(const [name,a] of Object.entries(asset.actions??{})){
-   if(!Number.isInteger(a.row)||a.row<0||(a.row+1)*fh>h||!Number.isInteger(a.count)||a.count<1||a.count*fw>w)add('grid',name+': frames outside sheet');
+   const packed=Array.isArray(a.positions);if(!Number.isInteger(a.row)||a.row<0||!Number.isInteger(a.count)||a.count<1||(!packed&&((a.row+1)*fh>h||a.count*fw>w)))add('grid',name+': frames outside sheet');
+   if(packed&&(a.positions.length!==a.count||a.positions.some(p=>!point(p,w,h)||p[0]%fw||p[1]%fh||p[0]+fw>w||p[1]+fh>h)))add('grid',name+': invalid packed frame positions');
    if(!(a.duration>0&&Number.isFinite(a.duration))||!(a.impactTime>=0&&a.impactTime<=a.duration))add('timing',name+': invalid timing');
    if(a.frameTimes?.length!==a.count||a.frameTimes[0]!==0||a.frameTimes.some((t,i)=>!Number.isFinite(t)||t<0||t>=a.duration||(i>0&&t<=a.frameTimes[i-1])))add('timing',name+': invalid frame boundaries');
    if(!Number.isInteger(a.impactFrame)||a.impactFrame<0||a.impactFrame>=a.count||Math.abs(a.frameTimes?.[a.impactFrame]-a.impactTime)>1e-6)add('impact',name+': impact frame does not start at source impact time');
    if(a.sockets?.length!==a.count)add('socket',name+': missing per-frame sockets');
-   for(let n=0;n<a.count;n++)if(!occupiedFrames.has(`${n},${a.row}`))add('empty',`${name}[${n}] is blank`);
+   for(let n=0;n<a.count;n++){const p=a.positions?.[n],tile=p?`${p[0]/fw},${p[1]/fh}`:`${n},${a.row}`;if(!occupiedFrames.has(tile))add('empty',`${name}[${n}] is blank`);}
    for(let n=0;n<a.count;n++)for(const key of ['feet','chest','hand','weapon','muzzle'])if(!point(a.sockets?.[n]?.[key],fw,fh))add('socket',`${name}[${n}].${key} missing or invalid`);
   }
  }
@@ -52,11 +53,11 @@ export async function checkManifest(manifest,options={}){
  const issues=[],keys=Object.keys(manifest.assets??{});
  const palette=options.palette??JSON.parse(fs.readFileSync(path.join(root,'packages/asset-manifest/pixel-palette.json'),'utf8')),colors=Object.values(palette.ramps).flat();
  if(colors.length>64||new Set(colors).size!==colors.length)issues.push({key:'palette',code:'palette',detail:'Master palette must have at most 64 unique colors'});
- if(manifest.schemaVersion!==1||JSON.stringify(manifest.canvas)!=='[640,360]'||JSON.stringify(manifest.stage)!=='[1280,720]')issues.push({key:'manifest',code:'schema',detail:'Wrong canvas contract'});
+ if(manifest.schemaVersion!==1||!['[640,360]','[1280,720]'].includes(JSON.stringify(manifest.canvas))||JSON.stringify(manifest.stage)!=='[1280,720]')issues.push({key:'manifest',code:'schema',detail:'Wrong canvas contract'});
  if(!keys.length&&!options.allowEmpty)issues.push({key:'manifest',code:'coverage',detail:'No approved pixel art'});
  for(const key of keys){
   const asset=manifest.assets[key];
-  for(const layer of asset.layers??[]){const target=manifest.assets[layer];if(!target||target.scale!==2||JSON.stringify(target.frame)!==JSON.stringify(asset.frame))issues.push({key,code:'layer',detail:'Missing or mismatched authored layer '+layer});}
+  for(const layer of asset.layers??[]){const target=manifest.assets[layer];if(!target||target.scale!==asset.scale||JSON.stringify(target.frame)!==JSON.stringify(asset.frame))issues.push({key,code:'layer',detail:'Missing or mismatched authored layer '+layer});}
   for(const issue of await checkAsset(asset,{...options,palette}))issues.push({key,...issue});
  }
  for(const [key,set] of Object.entries(manifest.appearances??{})){

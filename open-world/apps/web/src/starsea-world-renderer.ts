@@ -62,7 +62,7 @@ export class StarseaWorldRenderer{
   const dressing=groundDressingSteps(ctx,map,{k:1,ox:groundLeft-origin.x,oy:groundTop-origin.y,width:groundWidth,height:groundHeight,quality:4,blur:2},(resource,tint,wash,plain)=>{const asset=starseaAsset(resource);if(!asset)throw Error('Ground dressing missing '+resource);return this.material(asset,tint,wash,plain);});
   while(!dressing.next().done){spent+=performance.now()-started;yield;started=performance.now();}spent+=performance.now()-started;
   this.chunkMs.push(spent);if(this.chunkMs.length>20)this.chunkMs.shift();
-  let output=canvas,left=origin.x-groundLeft,top=origin.y-groundTop,pixel=false;
+  let output=canvas,left=origin.x-groundLeft,top=origin.y-groundTop,pixel=false,pixelScale=1;
   if(pixelRuntime.cellStage>0){
    const banks:TerrainBank[]=[],tags=new Map<string,HTMLCanvasElement>();let ready=true;
    const material=(resource:string,tint?:string,wash?:{color:string;alpha:number},plain=false)=>{
@@ -74,7 +74,7 @@ export class StarseaWorldRenderer{
    if(base){tag.translate(groundLeft-origin.x,groundTop-origin.y);tag.beginPath();this.rect(tag,cx*32-groundPadding,cy*32-groundPadding,32+groundPadding*2,32+groundPadding*2);tag.clip();
     if(map.boundary.points?.length){const rock=material(coastStone(map));if(rock)paintCoastSkirt(tag,map,project,map.boundary.thicknessCells*60,rock,.5);}tag.clip(islandPath(map,project));tag.fillStyle=tag.createPattern(base,'repeat')!;tag.fillRect(-map.height*32,0,(map.width+map.height)*32,(map.width+map.height)*18);tag.setTransform(1,0,0,1,0,0);
     const masks=groundDressingSteps(tag,map,{k:1,ox:groundLeft-origin.x,oy:groundTop-origin.y,width:groundWidth,height:groundHeight,quality:1,blur:0,pixelMask:true},material);while(!masks.next().done)yield;
-    if(ready){const result=yield* bakePixelGround(canvas,banks,left,top,map.id,tagCanvas);output=result.canvas;left=result.x;top=result.y;pixel=true;}
+    if(ready){const result=yield* bakePixelGround(canvas,banks,left,top,map.id,tagCanvas);output=result.canvas;left=result.x;top=result.y;pixel=true;pixelScale=result.scale;}
    }tagCanvas.width=0;tagCanvas.height=0;
   }
   // A plain Texture uploads the finished canvas once. CanvasTexture (including
@@ -87,7 +87,7 @@ export class StarseaWorldRenderer{
     const foreground=d.occlusion==='foreground';decorations.push({id:d.id,phaseTable:d.phaseTable,image,foreground,bounds:foreground?image.getBounds():undefined});if(decorations.length%24===0)yield;}
    for(const d of this.edgeSource.get(cell)??[]){edges.push(this.sprite(d).setDepth(-11000).setVisible(false));if(edges.length%24===0)yield;}
    yield;
-   ctx.setTransform(1,0,0,1,0,0);const texture=this.scene.textures.create(key,output,output.width,output.height);if(!texture)throw Error('Unable to register ground '+key);texture.add('__BASE',0,0,0,output.width,output.height);if(pixel)texture.setFilter(1);const image=this.scene.add.image(left,top,key).setOrigin(0).setScale(pixel?2:1).setDepth(-10000).setData('pixel-authored',pixel);this.chunks.set(cell,{image,key,canvas:output});if(output!==canvas){canvas.width=0;canvas.height=0;}
+   ctx.setTransform(1,0,0,1,0,0);const texture=this.scene.textures.create(key,output,output.width,output.height);if(!texture)throw Error('Unable to register ground '+key);texture.add('__BASE',0,0,0,output.width,output.height);if(pixel)texture.setFilter(1);const image=this.scene.add.image(left,top,key).setOrigin(0).setScale(pixel?pixelScale:1).setDepth(-10000).setData('pixel-authored',pixel);this.chunks.set(cell,{image,key,canvas:output});if(output!==canvas){canvas.width=0;canvas.height=0;}
    this.decorations.set(cell,decorations);for(const edge of edges)edge.setVisible(true);this.edges.set(cell,edges);registered=true;
   }finally{if(!registered){for(const d of decorations)d.image.destroy();for(const edge of edges)edge.destroy();}}
  }

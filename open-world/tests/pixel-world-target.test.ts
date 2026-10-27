@@ -11,17 +11,17 @@ const GetCalcMatrix=require(path.join(phaser,'gameobjects/GetCalcMatrix.js'));
 function object(type='Sprite',filter=0):any{return{type,cameraFilter:filter,scene:true,renderFlags:GameObject.RENDER_MASK,displayList:undefined,willRender:GameObject.prototype.willRender,x:12,y:22,scrollFactorX:1,scrollFactorY:1,rotation:0,scaleX:1,scaleY:1,renderCanvas:vi.fn()};}
 function fixture(scale=1){
  const main=new Camera(0,0,1280*scale,720*scale).setZoom(scale).setScroll(12,22);main.id=1;main.roundPixels=false;
- const text=object('Text',1),sprite=object(),cam=new Camera(0,0,640,360);cam.id=0;
+ const text=object('Text',1),sprite=object(),cam=new Camera(0,0,1280,720);cam.id=0;
  // Execute Phaser's actual clear/draw/render command buffer on its Canvas path.
- const texture=Object.assign(Object.create(DynamicTexture.prototype),{camera:cam,commandBuffer:[],width:640,height:360,renderer:{type:1,setContext:vi.fn()},manager:{},context:{clearRect:vi.fn()},setFilter:vi.fn()});
- const target:any={texture,camera:cam,type:'RenderTexture',cameraFilter:0,scene:true,x:0,y:0,scaleX:2,scaleY:2,scrollFactorX:0,scrollFactorY:0,rotation:0,clear:vi.fn(()=>texture.clear()),draw:vi.fn((entries:any[])=>texture.draw(entries)),render:vi.fn(()=>texture.render()),destroy:vi.fn()};
+ const texture=Object.assign(Object.create(DynamicTexture.prototype),{camera:cam,commandBuffer:[],width:1280,height:720,renderer:{type:1,setContext:vi.fn()},manager:{},context:{clearRect:vi.fn()},setFilter:vi.fn()});
+ const target:any={texture,camera:cam,type:'RenderTexture',cameraFilter:0,scene:true,x:0,y:0,scaleX:1,scaleY:1,scrollFactorX:0,scrollFactorY:0,rotation:0,clear:vi.fn(()=>texture.clear()),draw:vi.fn((entries:any[])=>texture.draw(entries)),render:vi.fn(()=>texture.render()),destroy:vi.fn()};
  for(const name of ['setOrigin','setScrollFactor','setScale','setDepth','setData'])target[name]=vi.fn(()=>target);target.setPosition=vi.fn((x:number,y:number)=>{target.x=x;target.y=y;return target;});
  const scene:any={events:new EventEmitter(),cameras:{main},children:{list:[sprite,text]},add:{renderTexture:vi.fn(()=>{scene.children.list.push(target);return target;})}};
  return{scene,main,text,sprite,target,cam,texture};
 }
 it('flushes the actual Phaser 4 queue, producing world draws before the main camera masks are restored',()=>{
  const f=fixture(),world=new PixelWorldTarget(f.scene);f.sprite.renderCanvas.mockImplementation(()=>{expect(f.sprite.cameraFilter&1).toBe(0);});world.render();
- expect(f.scene.add.renderTexture).toHaveBeenCalledWith(0,0,640,360);expect(f.cam.zoomX).toBe(.5);expect(f.target.setScale).toHaveBeenCalledWith(2);
+ expect(f.scene.add.renderTexture).toHaveBeenCalledWith(0,0,1280,720);expect(f.cam.zoomX).toBe(1);expect(f.target.setScale).toHaveBeenCalledWith(1);
  expect(f.sprite.renderCanvas).toHaveBeenCalledTimes(1);expect(f.text.renderCanvas).not.toHaveBeenCalled();expect(f.texture.commandBuffer).toEqual([]);expect(f.target.render).toHaveBeenCalledOnce();
  expect(f.sprite.cameraFilter&1).toBe(1);world.destroy();expect(f.sprite.cameraFilter&1).toBe(0);expect(f.text.cameraFilter&1).toBe(1);expect(f.main.roundPixels).toBe(false);
 });
@@ -32,6 +32,7 @@ it.each([.5,.8,1,1.25,1.5,2])('aligns world sprites and fixed overlays with text
  for(const factor of [0,.3,1]){const p={x:532,y:286,rotation:0,scaleX:1,scaleY:1,scrollFactorX:factor,scrollFactorY:factor};const native=GetCalcMatrix(p,f.cam).calc,px=native.e,py=native.f;const screen=GetCalcMatrix(f.target,f.main).calc,projected=screen.transformPoint(px,py);const original=GetCalcMatrix(p,f.main).calc;expect(projected.x).toBeCloseTo(original.e,3);expect(projected.y).toBeCloseTo(original.f,3);}
  world.destroy();});
 it('clears the previous command buffer and renders again every frame',()=>{const f=fixture(),world=new PixelWorldTarget(f.scene);world.render();world.render();expect(f.sprite.renderCanvas).toHaveBeenCalledTimes(2);expect(f.texture.commandBuffer).toHaveLength(0);world.destroy();});
+it.each([.5,1,1.5,2])('keeps the native capture cull rectangle on the actual main-camera world view at %s',scale=>{const f=fixture(scale),world=new PixelWorldTarget(f.scene);world.render();f.main.preRender();expect(f.cam.worldView.x).toBeCloseTo(f.main.worldView.x,4);expect(f.cam.worldView.y).toBeCloseTo(f.main.worldView.y,4);expect(f.cam.worldView.width).toBeCloseTo(1280,4);expect(f.cam.worldView.height).toBeCloseTo(720,4);world.destroy();});
 
 it('restores camera visibility for input after the frame and detaches the render listener on disable',()=>{const f=fixture(),world=new PixelWorldTarget(f.scene);world.render();expect(f.sprite.willRender(f.main)).toBe(false);f.scene.events.emit('render');expect(f.sprite.willRender(f.main)).toBe(true);expect(f.text.willRender(f.main)).toBe(false);world.render();f.scene.events.emit('render');expect(f.sprite.willRender(f.main)).toBe(true);world.destroy();expect(f.scene.events.listenerCount('render')).toBe(0);});
 

@@ -82,15 +82,15 @@ export class PlaneSceneRenderer{
   for(let d=xs+ys;d<=xe+ye-2;d++){for(let x=Math.max(xs,d-ye+1);x<=Math.min(xe-1,d-ys);x++){const y=d-x;if(!this.rock(x,y)||map.dist[y*n+x]>PLANE_DRAW_DEPTH)continue;
    this.blockCell(ctx,x,y,top,tag,tagTiles);}if((d-xs-ys)%8===7)yield;}
   yield;
-  let output=canvas,left=origin.x-groundLeft,topY=origin.y-groundTop,pixel=false;
-  if(tagCanvas&&banks.length){const result=yield* bakePixelGround(canvas,banks,left,topY,map.id,tagCanvas);output=result.canvas;left=result.x;topY=result.y;pixel=true;tagCanvas.width=0;tagCanvas.height=0;}
+  let output=canvas,left=origin.x-groundLeft,topY=origin.y-groundTop,pixel=false,pixelScale=1;
+  if(tagCanvas&&banks.length){const result=yield* bakePixelGround(canvas,banks,left,topY,map.id,tagCanvas);output=result.canvas;left=result.x;topY=result.y;pixel=true;pixelScale=result.scale;tagCanvas.width=0;tagCanvas.height=0;}
   // Pieces are made hidden in batches and shown with their ground; the GPU upload gets a step of its own; an abandoned job destroys them.
   const nodes:Node[]=[];let registered=false;
   try{
    for(const p of this.source.get(cell)??[]){const node=this.sprite(p);node.image.setVisible(false);nodes.push(node);if(nodes.length%24===0)yield;}
    yield;
    ctx.setTransform(1,0,0,1,0,0);const texture=this.scene.textures.create(key,output,output.width,output.height);if(!texture)throw Error('Unable to register plane ground '+key);texture.add('__BASE',0,0,0,output.width,output.height);if(pixel)texture.setFilter(1);
-   const image=this.scene.add.image(left,topY,key).setOrigin(0).setScale(pixel?2:1).setDepth(-10000+cx+cy).setData('pixel-authored',pixel);this.chunks.set(cell,{image,key,canvas:output});if(output!==canvas){canvas.width=0;canvas.height=0;}
+   const image=this.scene.add.image(left,topY,key).setOrigin(0).setScale(pixel?pixelScale:1).setDepth(-10000+cx+cy).setData('pixel-authored',pixel);this.chunks.set(cell,{image,key,canvas:output});if(output!==canvas){canvas.width=0;canvas.height=0;}
    for(const node of nodes)node.image.setVisible(true);this.nodes.set(cell,nodes);registered=true;
   }finally{if(!registered)for(const node of nodes)node.image.destroy();}
  }

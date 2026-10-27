@@ -8,9 +8,9 @@
 
 ## 硬规格与资源
 
-- 舞台 1280×720；世界画到 640×360 RenderTexture，以最近邻 ×2 显示。文字保留独立相机。
-- 主色板为 `packages/asset-manifest/pixel-palette.json` 的 60 色，公开副本在 `art-pixel/palette.json`。全透明/不透明；脚下阴影唯一使用指定色和 128 alpha。
-- 人形原生 48px，64×64 画格；精英从整数坐标配方重新光栅化，不放大成品。首领使用独立大画格。地表统一 16×16、N1/E2/S4/W8 Wang 图块；图标独立绘制 32/16 两档。
+- 2026-10-28 按用户“细腻像素风”修订：舞台与世界 RenderTexture 均为 1280×720，原生 1 倍绘制，GPU／浏览器最近邻采样。文字保留独立相机。
+- 主色板为 `packages/asset-manifest/pixel-palette.json` 的 64 色，公开副本在 `art-pixel/palette.json`。全透明/不透明；脚下阴影唯一使用指定色和 128 alpha。
+- 主角／NPC 原生 96px、128×128 画格，scale1；怪物／宠物在保持原舞台身高的前提下用独立原生画格。大型首领使用紧凑帧坐标，最大图集边长 4096。地表改为原生 32×32、每块 32 舞台像素，保留 N1/E2/S4/W8 与原道路／岸线几何；图标独立绘制 32/16 两档。旧 scale2 素材兼容只用于适合的小型元素。
 - 只画右朝向，左朝向镜像。动作使用原 motion/profile 的总时长、命中时刻和阶段窗口；挂点保留 feet/chest/hand/weapon/muzzle。
 - 原画素材未改、未删。对话头像保留原风格。中文像素字体未下载；候选与协议列在进度文件。
 
@@ -18,20 +18,20 @@
 
 | 入口 | 责任 |
 |---|---|
-| `pixel-assets.ts` | 读取 manifest；按资源键、原路径、图集帧查找；图片异步解码与共享缓存 |
+| `pixel-assets.ts` | 读取 manifest；按资源键、原路径、图集帧查找；图片异步解码与 96MiB LRU 缓存 |
 | `pixel-actor.ts` / `pixel-actor-view.ts` | 整帧绘制、分层换色、动作时钟、命中帧、镜像挂点 |
 | `hero-appearance.ts` / `wardrobe-renderer.ts` | 世界与换装预览的像素角色分支；关闭后恢复原生/部件渲染 |
 | `starsea-runtime-assets.ts` / `pixel-world-assets.ts` | 原生角色、旧图集、物件和特效的像素替换及精确还原 |
 | `pixel-terrain.ts` / `pixel-ground.ts` | 原图仅供地形分类；沿用原道路/岸线/墙体几何掩膜，输出色彩全部来自重画图块。手工裁决在 `pixel-terrain.json` |
-| `pixel-world-target.ts` / `pixel-mode.ts` | 固定原生世界画布、文字相机、关闭清理；旧 size 值兼容读取，实际倍率固定 ×2 |
+| `pixel-world-target.ts` / `pixel-mode.ts` | 固定原生世界画布、文字相机、关闭清理；旧 size 值兼容读取，当前细节素材倍率为 ×1 |
 | `pixel-images.ts` | 现有 DOM 图片、HUD/HEX/工具图标和 UI 图集的开关替换；保存并恢复原 src、尺寸、样式 |
 | `hub/pet-follower.ts` / `hub/pet-portrait.ts` | 54 个 SP33 形态与面板图像；跟随者沿用原动画播放窗口 |
 
 ## 生产与校验
 
-可用生成图做草稿，必须先经过本机 `proper-pixel-art` 对齐网格并量化主色板；草稿不进入 manifest。最终素材由原生整数像素配方绘制，辨识度不足的图标和石质地表改用 CC0 像素素材加工。7Soul1 的 496 图标包裁掉原生 32px 外的透明边框，统一主色板并清理 16px 细节；Kenney Tiny Dungeon 的原生 16px 石砖/土地图块重建 Wang 边缘。原游戏厚涂图不作为压块成品。来源、包哈希和逐键绑定在 `packages/asset-manifest/pixel-open-art.json`，公开署名在 `art-pixel/open-art-credits.json`。
+可用生成图做草稿，必须先经过本机 `proper-pixel-art` 对齐网格并量化主色板；草稿不进入 manifest。最终素材由原生整数像素配方绘制，辨识度不足的图标和石质地表改用 CC0 像素素材加工。7Soul1 的 496 图标包裁掉原生 32px 外的透明边框，统一主色板并清理 16px 细节；细节版地表改用 Stealthix 原生 32px 草地／泥土与 LetargicDev 原生 32px 石地板，墙面另用合法游戏素材。原游戏厚涂图不作为压块成品。来源、包哈希和逐键绑定在 `packages/asset-manifest/pixel-open-art.json`，公开署名在 `art-pixel/open-art-credits.json`。
 
-候选先写入 `.runtime/pixel-redraw/candidates/`，通过校验、检查联络图后，使用 `approve-candidates.mjs` 的明确键名单批准。批准脚本先验证合并清单，再复制 PNG 并原子更新 manifest，失败图不会入清单。PNG 不进 Git；提交配方、JSON、测试和小报告。
+候选先写入 `.runtime/pixel-redraw/candidates/`，通过校验、检查联络图后，使用 `approve-candidates.mjs` 的明确键名单批准。批准脚本逐项验证后接入，最终运行完整清单校验；Windows 文件观察器拒绝 rename 时，明确启用带旧清单备份和失败还原的原位写入。失败图不会入清单。PNG 不进 Git；提交配方、JSON、测试和小报告。
 
 ```powershell
 node tools/pixel/check-pixel-art.mjs
@@ -54,3 +54,5 @@ node tools/deploy-staging.mjs --remote-web
 ```
 
 `--remote-web` 在云端从已提交源码隔离构建；原静态资源保留，另按 manifest 的明确白名单上传 `art-pixel` 图片、色板和地形映射，校验文件哈希后覆盖到候选发布目录。未提交或未达到 100% 的像素清单不能发布。口令只留部署凭据文件，不进入文档、日志或链接。
+
+2026-10-28 全资源细节与语义复核见 [整屏纠偏](hub-portal-rework-20261021/handoff/pixel-coherence-20261027.md)。旧 640×360／48px 规格保留在历史记录，已由本节的新规格取代。

@@ -3,7 +3,7 @@ import palette from '../packages/asset-manifest/pixel-palette.json';import {dyeS
 const manifest=JSON.parse(fs.readFileSync(path.resolve('apps/web/public/art-pixel/manifest.json'),'utf8'));
 it('ships Shiba frames for every boot/native/wardrobe hero route and retains both clothing and weapon layers',()=>{
  const heroes=Object.entries(manifest.assets).filter(([key,a]:[string,any])=>/^hero(?::|$)/.test(key)&&a.kind==='actor');expect(heroes).toHaveLength(20);
- for(const[key,a]of heroes as [string,any][]){expect(a.appearanceStyle,key).toBe('shiba');expect(a.file,key).toContain('/hero/shiba-v1/');for(const layer of a.layers??[]){expect(manifest.assets[layer].appearanceStyle).toBe('shiba');expect(manifest.assets[layer].frame).toEqual([64,64]);}}
+ for(const[key,a]of heroes as [string,any][]){expect(a.appearanceStyle,key).toBe('shiba');expect(a.file,key).toContain('/hero/shiba-fine-v1/');for(const layer of a.layers??[]){expect(manifest.assets[layer].appearanceStyle).toBe('shiba');expect(manifest.assets[layer].frame).toEqual([128,128]);}}
 });
 it('does not dye Shiba fur, muzzle, eyes or dark contours when equipment recolors the navy jacket',()=>{
  const colors=Object.values(palette.ramps).flat(),data=new Uint8ClampedArray(colors.flatMap(c=>[...Buffer.from(c.slice(1),'hex'),255])),before=data.slice();dyeShibaGarment(data,palette.ramps.arcane);
@@ -12,6 +12,6 @@ it('does not dye Shiba fur, muzzle, eyes or dark contours when equipment recolor
 });
 it('keeps the complete fallen Shiba silhouette inside each death frame',async()=>{
  for(const[key,a]of Object.entries(manifest.assets) as [string,any][]){if(!/^hero:.*:native$/.test(key)||a.kind!=='actor')continue;const body=manifest.assets[a.layers[0]],{data,info}=await sharp(path.resolve('apps/web/public'+body.file)).ensureAlpha().raw().toBuffer({resolveWithObject:true}),clip=a.actions.death;
-  for(let n=0;n<clip.count;n++){let fur=0;for(let y=0;y<64;y++)for(let x=0;x<64;x++){const i=((clip.row*64+y)*info.width+n*64+x)*4;if(!data[i+3])continue;if(data[i]>data[i+2]*1.3&&data[i]>130)fur++;expect(x===0||x===63||y===0||y===63,key+'/'+n).toBe(false);}expect(fur,key+'/'+n).toBeGreaterThan(80);}
+  for(let n=0;n<clip.count;n++){let fur=0;for(let y=0;y<128;y++)for(let x=0;x<128;x++){const i=((clip.row*128+y)*info.width+n*128+x)*4;if(!data[i+3])continue;if(data[i]>data[i+2]*1.3&&data[i]>130)fur++;expect(x===0||x===127||y===0||y===127,key+'/'+n).toBe(false);}expect(fur,key+'/'+n).toBeGreaterThan(80);}
  }
 });

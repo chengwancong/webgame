@@ -1,5 +1,6 @@
 /** Decoration for native form controls. Values, focus and interaction remain HTML-owned. */
 export type FormArtKind='field'|'toggle'|'range'|'chevron';
+export const staticFormArtKinds=['chevron'] as const;
 const accent='var(--form-accent,var(--color-border-strong))';
 const line='stroke-width="var(--border-width)" vector-effect="non-scaling-stroke"';
 const edge='stroke-width="var(--border-edge)" vector-effect="non-scaling-stroke"';
@@ -21,5 +22,5 @@ const shapes:Record<FormArtKind,{box:string;body:string}>={
 };
 export function formArtHtml(kind:FormArtKind):string{
  const art=shapes[kind];
- return `<svg xmlns="http://www.w3.org/2000/svg" class="ui-form-art ui-form-art--${kind}" viewBox="${art.box}" preserveAspectRatio="${kind==='field'||kind==='range'?'none':'xMidYMid meet'}" aria-hidden="true" focusable="false" fill="none" stroke-linecap="round" stroke-linejoin="round">${art.body}</svg>`;
+ return `<svg${kind==='chevron'?' data-pixel-icon="inline:form:chevron"':''} xmlns="http://www.w3.org/2000/svg" class="ui-form-art ui-form-art--${kind}" viewBox="${art.box}" preserveAspectRatio="${kind==='field'||kind==='range'?'none':'xMidYMid meet'}" aria-hidden="true" focusable="false" fill="none" stroke-linecap="round" stroke-linejoin="round">${art.body}</svg>`;
 }

@@ -1,5 +1,6 @@
 /** Small decorative state illustrations. Layout, labels and behavior stay in stateBlockHtml. */
 export type StateArtKind='empty'|'loading'|'error'|'success';
+export const stateArtKinds=['empty','loading','error','success'] as const;
 
 const line='stroke="var(--color-border-strong)" stroke-width="var(--border-edge)"';
 const fine='stroke-width="var(--border-width)"';
@@ -40,5 +41,5 @@ const artwork:Record<StateArtKind,string>={
 };
 
 export function stateArtHtml(kind:StateArtKind):string{
- return `<svg xmlns="http://www.w3.org/2000/svg" class="ui-state__icon ui-state-art" viewBox="0 0 64 64" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false" fill="none" stroke-linecap="round" stroke-linejoin="round">${artwork[kind]}</svg>`;
+ return `<svg data-pixel-icon="inline:state:${kind}" xmlns="http://www.w3.org/2000/svg" class="ui-state__icon ui-state-art" viewBox="0 0 64 64" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false" fill="none" stroke-linecap="round" stroke-linejoin="round">${artwork[kind]}</svg>`;
 }

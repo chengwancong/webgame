@@ -6,19 +6,28 @@ type Asset = {kind: string; path: string; size: number[]; sha256: string; icon?:
 type Manifest = {version: string; chrome: string; colors: Record<string, string>; assets: Record<string, Asset>};
 
 const data = manifest as Manifest;
+export function artResourceKey(id:string){return !data.assets[id]?.path&&id.startsWith('gear-hex-')?'hex:'+(hexGlyphForIcon(id.slice(5))??'generic'):id;}
 // Collection equipment uses its stable gear-base ID to resolve the same artwork
 // in inventory, equipment, travel previews and transparent ground loot.
 /** Single resolver for the game and the showcase. Paths come only from ui.v2.json. */
 export function art(id: string): string {
   const item = data.assets[id];
   // HEX runes are drawn in code (hex-rune-icon.ts), not shipped as manifest art.
-  if (!item?.path && id.startsWith('gear-hex-')) return resolvePixelImage(hexRuneDataUri(id.slice(5)),'hex:'+(hexGlyphForIcon(id.slice(5))??'generic'));
+  if (!item?.path && id.startsWith('gear-hex-')) return resolvePixelImage(hexRuneDataUri(id.slice(5)),artResourceKey(id));
   if (!item?.path) throw new Error(`缺少界面资源：${id}`);
   return resolvePixelImage(item.path,id);
 }
 
 /** For content whose artwork may still be pending (e.g. new crafting materials); callers pick a fallback. */
 export function hasArt(id:string):boolean{return Boolean(data.assets[id]?.path);}
+
+/** Phaser caches always keep the original source. The reversible world painter owns pixel replacement. */
+export function originalArt(id:string,compact=false):string{
+ const item=data.assets[id];
+ if(!item?.path&&id.startsWith('gear-hex-'))return hexRuneDataUri(id.slice(5));
+ if(!item?.path)throw new Error(`缺少界面资源：${id}`);
+ return compact?(item.icon?.path??item.path):item.path;
+}
 
 export function artSize(id: string): [number, number] {
   const item = data.assets[id];

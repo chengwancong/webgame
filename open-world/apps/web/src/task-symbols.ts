@@ -13,6 +13,7 @@ const drawings:Record<string,string>={
  alert:'<path d="m16 4 13 24H3z" fill="currentColor" opacity=".18"/><path d="m16 4 13 24H3zM16 12v7m0 4v1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
  diamond:'<path d="m16 4 12 12-12 12L4 16z" fill="currentColor" opacity=".18"/><path d="m16 4 12 12-12 12L4 16z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="16" r="3" fill="currentColor"/>'
 };
-export function symbol(name:string,className=''){return `<svg class="desk-symbol ${className}" viewBox="0 0 32 32" aria-hidden="true" focusable="false">${drawings[name]??drawings.diamond}</svg>`;}
+export const taskSymbolNames=Object.keys(drawings);
+export function symbol(name:string,className=''){const id=Object.hasOwn(drawings,name)?name:'diamond';return `<svg data-pixel-icon="inline:task:${id}" class="desk-symbol ${className}" viewBox="0 0 32 32" aria-hidden="true" focusable="false">${drawings[id]}</svg>`;}
 export function typeVisual(registry:TaskType[],id:string){const type=registry.find(t=>t.id===id);return {tone:type&&['gold','violet','teal'].includes(type.tone)?type.tone:'neutral',icon:type?.icon&&Object.hasOwn(drawings,type.icon)?type.icon:'diamond'};}
 export function stateSymbol(state:string){return ({ready:'chest',claimed:'check',active:'compass',pending:'hourglass',failed:'alert',busy:'hourglass'} as Record<string,string>)[state]??'diamond';}

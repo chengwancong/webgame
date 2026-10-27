@@ -86,7 +86,7 @@ function seaEmblem(regionId:string,locked:boolean,d:number):string{
 }
 const STATUS_NAMES = {hidden: '未开放', locked: '未解锁', open: '可挑战', cleared: '已首通'} as const;
 const CHALLENGE_NAMES: Record<string, string> = {'': '普通', high: '高难', nightmare: '噩梦'};
-const CLOSE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+const CLOSE_ICON = '<svg data-pixel-icon="ui-icon:multiply" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 

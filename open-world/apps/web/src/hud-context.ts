@@ -10,7 +10,7 @@ export function hudContext(region:Pick<Region,'auto'|'spawns'>,dungeon=false,res
 export function hudModeBlocked(mode:Mode,options:{blocked:boolean;processing:boolean;hp:number;full:boolean;context:HudContext}){
  return options.blocked||options.processing||options.hp<=0||mode==='auto'&&options.full&&options.context==='field';
 }
-export const hudExitIcon='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h4M10 12h10m-4-4 4 4-4 4"/></svg>';
+export const hudExitIcon='<svg data-pixel-icon="inline:hud-exit" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h4M10 12h10m-4-4 4 4-4 4"/></svg>';
 // 27 号 R1（2026-10-25）：野外与副本默认全自动，走位输入即临时接管、松手 1.5 秒回自动；不再有模式切换，只显示状态。满包等停止后给“恢复自动”。
 export function autoStatusHtml(mode:Mode,takingOver:boolean,options:Parameters<typeof hudModeBlocked>[1]){
  if(options.context==='home'||options.context==='result')return '';

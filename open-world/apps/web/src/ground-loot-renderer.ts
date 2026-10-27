@@ -6,7 +6,7 @@ import Phaser from 'phaser';
 import type {Reward,GearQuality} from '../../../packages/contracts/index.ts';
 import {groundLootArt,groundLootTexture,lootLayout,groundLootLabel,lootPillar} from './ground-loot.ts';
 import {hexContext} from './hex-rune-view.ts';
-import {smallArt} from './ui-assets.ts';
+import {originalArt,artResourceKey} from './ui-assets.ts';
 import {resolvedToken,type TokenName} from './ui/tokens.ts';
 import {worldTextResolution} from './ui/world-text.ts';
 const colors:Record<GearQuality,TokenName>={common:'Color.World.Rarity.Common',magic:'Color.World.Rarity.Magic',rare:'Color.World.Rarity.Rare',legendary:'Color.World.Rarity.Legendary'};
@@ -15,7 +15,7 @@ type Drop={id:string;landed?:boolean;node:Phaser.GameObjects.Container;image:Pha
 type Ghost={node:Phaser.GameObjects.Container;start:number;fromX:number;fromY:number};
 /** Presentation only (ms): pop out of the kill spot, one bounce, then a short beam for rare/legendary. Pickup flies into the hero. */
 const FLIGHT=420,BOUNCE=180,PICKUP=320,ARC=46;
-export function preloadGroundLoot(scene:Phaser.Scene){for(const base of ['blade','bow','coat','charm','core','shield'])scene.load.image('ground-loot:'+base,smallArt('gear-'+base));}
+export function preloadGroundLoot(scene:Phaser.Scene){for(const base of ['blade','bow','coat','charm','core','shield'])scene.load.image('ground-loot:'+base,originalArt('gear-'+base,true));}
 export class GroundLootRenderer{
  private drops=new Map<string,Drop>();private requested=new Set<string>();private errors=new Set<string>();
  private region?:string;private primed=false;private ghosts:Ghost[]=[];
@@ -30,7 +30,7 @@ export class GroundLootRenderer{
   for(const {reward:r,x,y}of lootLayout(visible)){
    let d=this.drops.get(r.id);if(!d){const key='ground-loot:'+r.gear.base;if(!this.scene.textures.exists(key)&&!this.requested.has(key)){this.requested.add(key);try{this.scene.load.image(key,groundLootTexture(r));if(!this.scene.load.isLoading())this.scene.load.start();}catch(e){this.errors.add(String(e));}}
     const quality=r.gear.quality??'common',s=size();
-    const image=this.scene.add.image(0,-s/2-7,this.scene.textures.exists(key)?key:'__WHITE').setDisplaySize(s,s).setVisible(this.scene.textures.exists(key));
+    const image=this.scene.add.image(0,-s/2-7,this.scene.textures.exists(key)?key:'__WHITE').setDisplaySize(s,s).setVisible(this.scene.textures.exists(key)).setData('pixel-art-id',artResourceKey('gear-'+r.gear.base)).setData('pixel-preserve-size',true);
     const label=this.scene.add.text(0,parseFloat(resolvedToken('Space.1')),groundLootLabel(r.gear).short,{fontFamily:resolvedToken('Font.Family'),fontSize:resolvedToken('Font.Size.Caption'),fontStyle:resolvedToken('Font.Weight.Medium'),color:resolvedToken(colors[quality]),stroke:resolvedToken('Color.World.Ink'),strokeThickness:parseFloat(resolvedToken('Border.FocusWidth'))}).setResolution(worldTextResolution()).setOrigin(.5,0);const rune=r.gear.hex?hexContext().catalog[r.gear.hex.rune]:undefined,fullLabel=groundLootLabel(r.gear,rune?.name).full,shortLabel=label.text;label.setData('full-name',fullLabel);
     const node=this.scene.add.container(x,y,[image,label]).setData('ground-reward-id',r.id).setData('ground-icon',groundLootArt(r)).setData('ground-thumbnail',groundLootTexture(r));node.setInteractive(new Phaser.Geom.Rectangle(-Math.max(s/2+8,label.width/2),-s-15,Math.max(s+16,label.width),s+45),Phaser.Geom.Rectangle.Contains);node.input!.cursor='pointer';node.on('pointerover',()=>label.setText(fullLabel));node.on('pointerout',()=>label.setText(shortLabel));const animate=this.primed&&!this.reduced();d={id:r.id,node,image,label,key,quality,hex:!!r.gear.hex,born:animate?now:undefined,fromX:(r.position.x-r.position.y)*32,fromY:(r.position.x+r.position.y)*18-24};if(animate)label.setAlpha(0);this.drops.set(r.id,d);if(this.primed&&!animate)emitAudioPresentation({kind:'loot-landed',id:r.id,quality});
    }this.place(d,x,y,now);d.label.setPosition(0,parseFloat(resolvedToken('Space.1')));const label=d.label;worldLabels(this.scene).submit({id:'loot:'+d.id,bounds:label.getBounds(),priority:40+(lootRank[d.quality]??4),steps:0,apply:visible=>label.setVisible(visible)});if(!d.image.visible&&this.scene.textures.exists(d.key))d.image.setTexture(d.key).setDisplaySize(size(),size()).setVisible(true);
@@ -45,7 +45,7 @@ export class GroundLootRenderer{
   if(d.born!==undefined&&!d.landed){d.landed=true;emitAudioPresentation({kind:'loot-landed',id:d.id,quality:d.quality});}
   const q=Math.min(1,(age-FLIGHT)/BOUNCE);d.node.setPosition(x,y-(q<1?10*Math.sin(Math.PI*q):0)).setScale(1).setDepth(y+4);d.label.setAlpha(q);
   const beam=lootPillar(d.quality,!!d.hex);if(!beam||d.born===undefined)return;
-  if(!d.pillar)d.pillar={image:this.scene.add.image(x,y-4,this.pillarTexture(resolvedToken(colors[d.quality]))).setOrigin(.5,1),start:now};
+  if(!d.pillar)d.pillar={image:this.scene.add.image(x,y-4,this.pillarTexture(resolvedToken(colors[d.quality]))).setOrigin(.5,1).setData('pixel-art-id','pixel-ui:loot-pillar:'+d.quality).setData('pixel-preserve-size',true),start:now};
   const t=now-d.pillar.start;if(t>=beam.life){d.pillar.image.setVisible(false);return;}
   const grow=Math.min(1,t/160),fade=t<beam.life*.55?1:1-(t-beam.life*.55)/(beam.life*.45);
   d.pillar.image.setPosition(x,y-4).setDisplaySize(40,beam.height*grow).setAlpha(.9*fade).setDepth(y+3);

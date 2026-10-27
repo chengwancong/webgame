@@ -46,7 +46,7 @@ export function groundTexture(scene:Phaser.Scene,r:Region,cx:number,cy:number){
   if(base&&roadBank){
    const tags=document.createElement('canvas');tags.width=2562;tags.height=1442;const tag=tags.getContext('2d')!;tag.setTransform(32,18,-32,18,1281,145);tag.translate(-cx*32,-cy*32);tag.beginPath();tag.rect(cx*32-4,cy*32-4,40,40);tag.clip();tag.fillStyle=`rgb(${base.tag.join(',')})`;tag.fillRect(cx*32-4,cy*32-4,40,40);tag.lineJoin='round';tag.lineCap='round';tag.lineWidth=2.2;tag.strokeStyle=`rgb(${roadBank.tag.join(',')})`;tag.beginPath();for(const path of routes)path.forEach((p,i)=>i?tag.lineTo(p.x,p.y):tag.moveTo(p.x,p.y));tag.stroke();if(r.id==='town'){tag.fillStyle=`rgb(${roadBank.tag.join(',')})`;tag.beginPath();tag.ellipse(r.safe.x,r.safe.y,3.3,3.3,0,0,Math.PI*2);tag.fill();}
    const worldX=(cx-cy)*1024-1281,worldY=(cx+cy)*576-145,steps=bakePixelGround(texture.canvas,[base,roadBank],worldX,worldY,r.id,tags);let result=steps.next();while(!result.done)result=steps.next();const output=result.value;
-   scene.textures.remove(key);const finished=scene.textures.create(key,output.canvas,output.canvas.width,output.canvas.height)!;finished.add('__BASE',0,0,0,output.canvas.width,output.canvas.height);finished.setFilter(1);positions.set(key,{x:output.x-worldX,y:output.y-worldY,scale:2});return key;
+   scene.textures.remove(key);const finished=scene.textures.create(key,output.canvas,output.canvas.width,output.canvas.height)!;finished.add('__BASE',0,0,0,output.canvas.width,output.canvas.height);finished.setFilter(1);positions.set(key,{x:output.x-worldX,y:output.y-worldY,scale:output.scale});return key;
   }
  }
  texture.refresh();return key;

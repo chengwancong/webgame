@@ -2,7 +2,7 @@
 import type Phaser from 'phaser';
 import {pixelRuntime} from './pixel-texture.ts';import {pixelFeedbackTint} from './pixel-actor-view.ts';
 type Point={x:number;y:number};
-const grid=(n:number)=>Math.round(n/2),stage=(n:number)=>n*2;
+const cell=()=>pixelRuntime.cellStage===1?1:2,grid=(n:number)=>Math.round(n/cell()),stage=(n:number)=>n*cell();
 export function wirePixelVfx(g:Phaser.GameObjects.Graphics){
  const raw=g as any,names=['fillStyle','lineStyle','fillRect','strokeRect','fillEllipse','strokeEllipse','fillCircle','strokeCircle','fillTriangle','strokeTriangle','beginPath','moveTo','lineTo','closePath','fillPath','strokePath','fillPoints','strokePoints','lineBetween'],original=Object.fromEntries(names.map(k=>[k,raw[k]?.bind(g)]));
  let fill={color:0xffffff,alpha:1},line={color:0xffffff,alpha:1,width:2},points:Point[]=[],closed=false,starts=new Set<number>();
