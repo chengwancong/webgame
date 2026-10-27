@@ -4,7 +4,7 @@
 
 视觉完成结论已撤回；技术覆盖不代表达到方向图。当前纠偏与待改项见 [港口纠偏记录](pixel-harbor-art-correction-20261027.md)。
 
-口径：正式 main.ts 可达模块、运行时注册、可选换装与 v3 宠物；排除 QA、legacy、preview、evidence 和对话头像。JSON 路径代表原生角色/动作包，花括号是逐项路径的等价简写，路径中的 @ 等于本行资源键，code:src/ 等于 apps/web/src/，#elite 代表原有精英显示分支。已绘包含本作重绘与已核验 CC0 加工，来源见 manifest。盘点可由 node --import tsx tools/pixel/write-progress.ts 重建。
+口径：正式 main.ts 可达模块、运行时注册、可选换装与 v3 宠物；排除 QA、legacy、preview、evidence 和对话头像。JSON 路径代表原生角色/动作包，花括号是逐项路径的等价简写，路径中的 @ 等于本行资源键，code:src/ 等于 apps/web/src/，#elite 代表原有精英显示分支。已绘仅指已有素材，含经核验许可的加工；视觉结论见纠偏记录。盘点可由 node --import tsx tools/pixel/write-progress.ts 重建。
 
 | 资源键 | 原路径 | 类别 | 批次 | 状态 |
 |---|---|---|---|---|
@@ -1941,3 +1941,7 @@ PNG/WebP 源路径缺失 860 条（包含多键共用路径，不等于独立缺
 
 
 空白画面回归修复见 [世界渲染修复](pixel-mode-empty-world-20261027.md)：补执行 Phaser 4 绘制队列、校正视口并恢复交互遮罩。
+
+港口纠偏 `0282ef10` 已发布云测试服，71 项／98 单测通过；10 张关键图片云端哈希一致。视觉待改清单与 Grok 检查见 [纠偏记录](pixel-harbor-art-correction-20261027.md)。
+
+柴犬主角游戏试用：20 个入口、58 项替换，完整动作与挂点保持原时序；验证及发布见 [接入记录](shiba-game-trial-20261027.md)。

@@ -1,0 +1,11 @@
+/** Grid recovery is performed by proper-pixel-art before this deterministic palette cleanup. */
+import fs from 'node:fs';import path from 'node:path';import sharp from 'sharp';
+import {Pixels,ramps,root} from './px0-art.mjs';
+export const sampleRoot=path.join(root,'assets/shiba-spine-sample'),work=path.join(root,'.runtime/shiba-spine');
+export const colors=Object.values(ramps).flat();
+export function clean(p){const copy=Buffer.from(p.data);for(let y=0;y<p.height;y++)for(let x=0;x<p.width;x++){const i=(y*p.width+x)*4;if(!copy[i+3])continue;let neighbor=false;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)if((dx||dy)&&x+dx>=0&&x+dx<p.width&&y+dy>=0&&y+dy<p.height&&copy[((y+dy)*p.width+x+dx)*4+3])neighbor=true;if(!neighbor)p.dot(x,y,null);}return p;}
+export async function normalize(){const input=await sharp(path.join(work,'grid.png')).ensureAlpha().raw().toBuffer({resolveWithObject:true});const{data,info}=input;let x0=info.width,y0=info.height,x1=0,y1=0;for(let y=0;y<info.height;y++)for(let x=0;x<info.width;x++)if(data[(y*info.width+x)*4+3]>=160){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y);}const width=Math.round((x1-x0+1)/(y1-y0+1)*48),p=new Pixels(64,64),palette=colors.map(c=>Buffer.from(c.slice(1),'hex'));
+ for(let y=0;y<48;y++)for(let x=0;x<width;x++){const sx=Math.min(x1,x0+Math.floor((x+.5)*(x1-x0+1)/width)),sy=Math.min(y1,y0+Math.floor((y+.5)*(y1-y0+1)/48)),i=(sy*info.width+sx)*4;if(data[i+3]<160)continue;let best=0,dist=Infinity;for(let c=0;c<palette.length;c++){const rgb=palette[c],d=2*(rgb[0]-data[i])**2+3*(rgb[1]-data[i+1])**2+(rgb[2]-data[i+2])**2;if(d<dist){best=c;dist=d;}}p.dot(7+x,12+y,colors[best]);}
+ clean(p);fs.mkdirSync(sampleRoot,{recursive:true});await p.save(path.join(sampleRoot,'shiba-native.png'));await sharp(p.data,{raw:{width:64,height:64,channels:4}}).resize(768,768,{kernel:'nearest'}).png().toFile(path.join(work,'native-large.png'));return p;
+}
+if(process.argv[1]?.endsWith('shiba-source.mjs')){const p=await normalize();console.log(JSON.stringify({frame:[64,64],characterHeight:48,colors:new Set(Array.from({length:4096},(_,i)=>p.data[i*4+3]?p.data.subarray(i*4,i*4+3).toString('hex'):null).filter(Boolean)).size}));}

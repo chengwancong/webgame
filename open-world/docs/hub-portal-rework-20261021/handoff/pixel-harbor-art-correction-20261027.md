@@ -30,7 +30,11 @@
 3. 运行全 manifest 校验、tsc、像素与角色相关单测；重任务串行。地面查找回归测试覆盖“同源路径、不同资源键”的情况。
 4. 本次没有运行浏览器自动化。离线候选图片检查、HTTP 文件核对和单测不能替代用户/Grok 的实际游戏检查。
 
-验证：全 2958 项 manifest 校验通过（0 issues），`tsc --noEmit` 通过；21 个相关测试文件、98 项单测通过，使用 `--maxWorkers=1 --no-file-parallelism`。未操作浏览器，未宣称真机视觉通过。提交／发布回执随后补入。
+验证：全 2958 项 manifest 校验通过（0 issues），`tsc --noEmit` 通过；21 个相关测试文件、98 项单测通过，使用 `--maxWorkers=1 --no-file-parallelism`。未操作浏览器，未宣称真机视觉通过。
+
+提交：`0282ef107a1edb6cac8bada4fe7703b4ba88e8ce`（港口纠偏与地形语义修复），同时发布此前 `cbfc19f7` 的换区后重建像素渲染目标修复。先执行 `node tools/deploy-staging.mjs --remote-web --dry-run`，确认 art-pixel 白名单 2877 文件／2872 图片／17,157,726 字节；随后同命令去掉 dry-run 发布。云端发布 `release-0282ef107a1e-1793108268092`，构建来源与提交一致；health、content 和 build-info HTTP 200，client 0.11.59／protocol 59／rules ow-99／assets world-art-20261007-v24-world-runtime／db 19 一致。部署过程 API 启动初期出现短暂探测拒绝，自动重试后于 21:39:05 健康；未清库或操作角色数据。此次发布只证明资源与代码已上线，仍不替代真机视觉认可。
+
+云端额外只读复核：主角、两种武器形态、港务长、房屋、工坊、树石和两种地表共 10 张关键图片下载后的 SHA256 与本地 manifest 一致；地面与道路文件确实不同。本机 8612 也返回该版 manifest。
 
 ## 给 Grok 的真机检查
 

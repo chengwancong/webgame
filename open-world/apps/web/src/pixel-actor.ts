@@ -2,6 +2,7 @@ import {loadPixelManifest,loadPixelImage,pixelAsset,pixelFrameIndex,pixelSocket,
 import type {WardrobeRenderState} from './wardrobe-renderer.ts';
 import type {ResolvedAppearance} from '../../../packages/contracts/appearance.ts';
 import palette from '../../../packages/asset-manifest/pixel-palette.json';
+import {dyeShibaGarment} from './pixel-shiba-style.ts';
 const familyWeapon:Record<string,string>={sword:'sword',axe:'axe',bow:'bow',gun:'hidden',fist:'hidden',spear:'staff',magic:'staff'};
 export function pixelHeroKey(appearance:ResolvedAppearance,mode:'native'|'wardrobe'){
  if(!appearance.kit&&mode==='wardrobe')return `hero:${appearance.family}:wardrobe`;
@@ -9,11 +10,12 @@ export function pixelHeroKey(appearance:ResolvedAppearance,mode:'native'|'wardro
  return `hero:${appearance.kit?.weapon?.type??familyWeapon[appearance.family]??'sword'}:${mode}`;
 }
 /** Apply a set's ramps within semantic body regions, once per committed outfit. */
-function dyeBody(image:HTMLImageElement,appearance:ResolvedAppearance,native=false){
+function dyeBody(image:HTMLImageElement,appearance:ResolvedAppearance,native=false,style?:PixelAsset['appearanceStyle']){
  const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;const ctx=canvas.getContext('2d')!;ctx.drawImage(image,0,0);
  const pixels=ctx.getImageData(0,0,canvas.width,canvas.height),source=palette.ramps;
  const maps=Object.fromEntries(Object.entries(appearance.parts).map(([slot,p])=>[slot,pixelOutfit(p.setId)]));
  const armor=appearance.kit?.armor,rampByFamily={sword:'navy',hammer:'copper',axe:'earth',bow:'leaf',staff:'arcane',hidden:'fire',wand:'water'} as const;
+ if(style==='shiba'){const outfit=maps.body,target=armor?palette.ramps[rampByFamily[armor.family]]:native?palette.ramps.navy:outfit?.cloth??palette.ramps.navy;dyeShibaGarment(pixels.data,target);ctx.putImageData(pixels,0,0);return canvas;}
  for(let y=0;y<canvas.height;y++)for(let x=0;x<canvas.width;x++){
   const i=(y*canvas.width+x)*4;if(!pixels.data[i+3])continue;
   const lx=x%64,ly=y%64,slot=ly<27?'head':ly>=54?'feet':ly>=44?'legs':lx<24?'back':lx>=35?'hands':'body',outfit=maps[slot];if(!outfit)continue;
@@ -37,9 +39,9 @@ export class PixelActorPainter{
   void loadPixelManifest().then(async()=>{
    const asset=pixelAsset(key);if(!asset)return;
    const image=await loadPixelImage(asset),layers=await Promise.all((asset.layers??[]).map(async k=>{const a=pixelAsset(k);if(!a)throw Error('Pixel body layer missing: '+k);return loadPixelImage(a);}));
-   const overlayKey=appearance&&pixelOutfit(appearance.parts.head.setId)?.overlay,overlayAsset=overlayKey&&pixelAsset(overlayKey),overlay=overlayAsset?await loadPixelImage(overlayAsset):undefined;
+   const overlayKey=asset.appearanceStyle!=='shiba'&&appearance&&pixelOutfit(appearance.parts.head.setId)?.overlay,overlayAsset=overlayKey&&pixelAsset(overlayKey),overlay=overlayAsset?await loadPixelImage(overlayAsset):undefined;
    return{asset,image,layers,overlay};
-  }).then(result=>{if(result&&!this.dead&&this.generation===generation){this.asset=result.asset;this.image=result.image;this.layers=result.layers.map((image,i)=>i===0&&appearance?dyeBody(image,appearance,key.endsWith(':native')):image);this.overlay=result.overlay;}}).catch(()=>{if(this.generation===generation)this.requestIdentity='';});
+  }).then(result=>{if(result&&!this.dead&&this.generation===generation){this.asset=result.asset;this.image=result.image;this.layers=result.layers.map((image,i)=>i===0&&appearance?dyeBody(image,appearance,key.endsWith(':native'),result.asset.appearanceStyle):image);this.overlay=result.overlay;}}).catch(()=>{if(this.generation===generation)this.requestIdentity='';});
  }
  get ready(){return Boolean(this.asset&&this.image);}
  supports(action:string,phase?:string){const name=phase==='phase-enter'||phase==='phase-end'?'idle':action;return Boolean(this.image&&(this.asset?.actions?.[phase+':'+name]??this.asset?.actions?.[action]));}
