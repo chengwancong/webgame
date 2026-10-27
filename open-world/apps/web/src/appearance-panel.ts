@@ -1,3 +1,4 @@
+import {resolvePixelImage} from './pixel-images.ts';
 import {appearanceSlots,type AppearanceSlot} from '../../../packages/contracts/appearance.ts';
 import type {AppearanceUI} from './appearance-controller.ts';
 import {marksHtml,iconHtml,type SlotMark,sectionTitleHtml,esc,buttonHtml,itemSlot,statusBadgeHtml,stateBlockHtml,tabsHtml} from './ui-components.ts';
@@ -5,7 +6,7 @@ import wardrobeManifest from '../../../packages/asset-manifest/wardrobe.json';
 export const appearanceSlotNames:Record<AppearanceSlot,string>={head:'头部',body:'衣甲',hands:'手部',legs:'裤装',feet:'靴子',back:'背饰',weapon:'武器'};
 const familyNames={sword:'剑',axe:'斧',bow:'弓',gun:'枪',fist:'徒手',spear:'长矛',magic:'法杖'};
 const partImage:Record<AppearanceSlot,string>={head:'face',body:'body',hands:'front_hand',legs:'front_leg',feet:'front_foot',back:'back_parts',weapon:'weapon'};
-const partThumbnail=(setId:string,slot:AppearanceSlot,profile:string)=>((wardrobeManifest.styleOverrides as Record<string,Record<string,Record<string,string>>>)[profile]?.[setId]?.[partImage[slot]])??`/art/wardrobe/sets/${setId}/${partImage[slot]}.png`;
+const partThumbnail=(setId:string,slot:AppearanceSlot,profile:string)=>resolvePixelImage(((wardrobeManifest.styleOverrides as Record<string,Record<string,Record<string,string>>>)[profile]?.[setId]?.[partImage[slot]])??`/art/wardrobe/sets/${setId}/${partImage[slot]}.png`,`wardrobe-thumb:${setId}:${slot}`);
 function feedback(ui:AppearanceUI,dirty:boolean,blocked:boolean){
  const pending=ui.status==='pending',message=ui.error||ui.message||(blocked?'连接已断开，恢复后再继续。':dirty?'有未保存的外观调整。':'当前外观已保存。');
  return `<div class="appearance-feedback" role="${ui.error?'alert':'status'}">${pending||ui.error||blocked||dirty?statusBadgeHtml(pending?'结果待确认':ui.error?'核验失败':blocked?'连接待恢复':'未保存',ui.error?'danger':'warning'):iconHtml('check',{size:20,label:ui.status==='success'?'已保存':'已同步'})}<span>${esc(message)}</span>${ui.error?stateBlockHtml({kind:'error',title:'外观读取失败',message:ui.error,compact:true,action:{label:'重新读取',action:'appearance-refresh'}}):''}${blocked||pending?buttonHtml('恢复连接',{action:'recover',variant:'secondary',size:'compact'}):''}</div>`;

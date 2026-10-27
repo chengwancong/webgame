@@ -157,9 +157,13 @@ class SharedMiniGpu{
   readonly canvas=document.createElement('canvas');
   readonly renderer:SceneRenderer;readonly gl:WebGLRenderingContext;
   clients=0;private loading=0;private resources=new Map<string,Promise<Resources>>();private managers=new Set<AssetManager>();private disposal?:ReturnType<typeof setTimeout>;
+  revision=0;lost=false;
+  private contextLost=()=>{this.lost=true;this.revision++;};
+  private contextRestored=()=>{this.lost=false;this.revision++;};
   constructor(){
     const gl=this.canvas.getContext('webgl',{alpha:true,premultipliedAlpha:true,preserveDrawingBuffer:true});
     if(!gl)throw new Error('MiniFantasy requires WebGL');this.gl=gl;this.renderer=new SceneRenderer(this.canvas,gl,true);
+    this.canvas.addEventListener('webglcontextlost',this.contextLost);this.canvas.addEventListener('webglcontextrestored',this.contextRestored);
   }
   async load(profile:MiniNativeProfile):Promise<Resources>{
     const key=JSON.stringify(profile.runtime);let pending=this.resources.get(key);
@@ -201,6 +205,7 @@ class SharedMiniGpu{
     // Keep one shared context warm briefly; final destruction still frees every resource.
     this.disposal=setTimeout(()=>{this.disposal=undefined;if(this.clients>0||this.loading>0)return;
     for(const manager of this.managers)manager.dispose();this.managers.clear();this.resources.clear();
+    this.canvas.removeEventListener('webglcontextlost',this.contextLost);this.canvas.removeEventListener('webglcontextrestored',this.contextRestored);
     this.renderer.dispose();this.gl.getExtension('WEBGL_lose_context')?.loseContext();
     if(sharedGpu===this)sharedGpu=undefined;
     },300);
@@ -233,6 +238,10 @@ export class MiniNativePreview{
   private bundle?:Bundle;private gpu?:SharedMiniGpu;private generation=0;private dead=false;
   private requested='';private drawKey='';private flipped=false;private action:WardrobeAction='idle';
   private frameIndex=0;private mappedTime=0;private retryTimer?:ReturnType<typeof setTimeout>;
+  private renderRevision=0;private lastGpuRevision=-1;private renderFailed=false;
+  get validationFrameKey(){return this.drawKey;}
+  get validationRevision(){return this.renderRevision+(this.gpu?.revision??0);}
+  get renderValid(){return !this.renderFailed&&!this.gpu?.lost;}
   private sockets:SocketSnapshot={points:{},sources:{}};private history=new Map<string,SocketSnapshot>();
   private options:{height:number;footX:number;footY:number;profileUrl:string;fitBounds:boolean};
   constructor(readonly canvas:HTMLCanvasElement,options?:MiniNativeOptions){
@@ -266,6 +275,8 @@ export class MiniNativePreview{
   drawFrame(state:WardrobeRenderState):boolean{return this.paint(state)!==false;}
   private paint(state:WardrobeRenderState):'drawn'|'same'|false{
     const bundle=this.bundle;if(!bundle||!this.gpu||this.dead)return false;
+    if(this.lastGpuRevision!==this.gpu.revision){this.lastGpuRevision=this.gpu.revision;this.drawKey='';}
+    if(this.gpu.lost)return false;
     try{
       const motion=this.motionFor(state),animation=bundle.resources.data.findAnimation(motion.name)!;
       // Frame names carry only action+index, so a new clip under the same action must not reuse cached sockets.
@@ -280,8 +291,8 @@ export class MiniNativePreview{
       if(this.history.size>180)this.history.delete(this.history.keys().next().value!);
       this.gpu.draw(bundle.playback.skeleton,this.canvas,bundle.profile.runtime.pma,this.displayScale!,
         {x:bundle.profile.ground[0],y:bundle.profile.ground[1]},this.options.footX,this.options.footY,flipped);
-      this.drawKey=key;return 'drawn';
-    }catch(error){this.recordError(error);return false;}
+      this.drawKey=key;this.renderFailed=false;return 'drawn';
+    }catch(error){if(!this.renderFailed)this.renderRevision++;this.renderFailed=true;this.drawKey='';this.recordError(error);return false;}
   }
   /** 仅计算帧元数据，不绘制 */
   resolveFrame(state:WardrobeRenderState):{motion:string;index:number;flipped:boolean}|undefined{

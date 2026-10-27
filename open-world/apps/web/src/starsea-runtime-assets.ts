@@ -8,6 +8,9 @@ import {loadJSON,type Asset,type Point,type PropState} from './starsea-assets.ts
 import type {SocketName,RenderPose} from './effect-attachments.ts';
 import {runtimeResources} from '../../../packages/asset-manifest/runtime-resources.ts';
 import {registerLoadedActorAnimations} from './loaded-actor-animations.ts';
+import {PixelActorPainter} from './pixel-actor.ts';
+import {pixelRuntime} from './pixel-texture.ts';
+import {pixelActorHeight,pixelAsset} from './pixel-assets.ts';
 
 export type StarseaPhase='default'|'phase-enter'|'phase-active'|'phase-end';
 export type StarseaSceneObject={id:string;artId:string;position:Point;reach?:number;state?:string;enabled?:boolean;label?:string;name?:string;npcId?:string;action?:string;facing?:number;phase?:StarseaPhase;actionStartedTick?:number};
@@ -68,6 +71,7 @@ export class StarseaNativeBudget{
  diagnostics(){return{limit:this.limit,reserved:this.reserved,visible:this.used.size,total:this.used.size+this.reserved,denied:this.denied};}
 }
 export class StarseaNativeActor{
+ private pixelPainter?:PixelActorPainter;private pixelTexture?:Phaser.Textures.CanvasTexture;private pixelShown=false;
  readonly sprite:Phaser.GameObjects.Sprite;
  private current?:{texture:string;sockets:Record<string,Point>;flipped:boolean;name:string};
  private errors:string[]=[];private rendered=0;private skipped=0;
@@ -80,14 +84,25 @@ export class StarseaNativeActor{
  }
  sync(id:string,point:Point,action:string,clock:number,facing:number,phase:StarseaPhase,budget:StarseaNativeBudget,cast?:{elapsed:number;windup:number;recovery:number}){
   this.point=point;this.sprite.setPosition(point.x,point.y).setDepth(point.y+2);
-  const view=this.scene.cameras.main.worldView,padding=this.asset.runtime.displayHeight??150,visible=point.x>=view.x-padding&&point.x<=view.right+padding&&point.y>=view.y&&point.y<=view.bottom+padding;
+  const view=this.scene.cameras.main.worldView,padding=pixelRuntime.cellStage>0?Math.max(this.asset.runtime.displayHeight??150,pixelActorHeight(this.asset.id)??0):this.asset.runtime.displayHeight??150,visible=point.x>=view.x-padding&&point.x<=view.right+padding&&point.y>=view.y&&point.y<=view.bottom+padding;
   if(!visible||!budget.claim(id)){this.sprite.setVisible(false);this.skipped++;return;}
+  if(action==='death')phase='default';
+  if(pixelRuntime.cellStage>0){
+   if(!this.pixelPainter){const key=`pixel-native:${this.asset.id}:${this.sprite.name}:${id}`,texture=this.scene.textures.createCanvas(key,512,512)!;texture.setFilter(1);this.pixelTexture=texture;this.pixelPainter=new PixelActorPainter(texture.canvas,{height:96,footX:.5,footY:410/512});this.pixelPainter.request(this.asset.id);}
+   this.pixelPainter.request(this.asset.id+(this.sprite.getData('pixel-elite')&&pixelAsset(this.asset.id+':elite')?':elite':''));
+   if(this.pixelPainter.supports(action,phase)){
+    if(!this.pixelShown)this.pixelPainter.reset();
+    if(this.pixelPainter.render({action:action as any,clock,facing,cast,pixelPhase:phase}))this.pixelTexture!.refresh();
+    this.sprite.setTexture(this.pixelTexture!.key).setOrigin(.5,410/512).setScale(1).setFlipX(false).setVisible(true);this.pixelShown=true;this.rendered++;return;
+   }
+  }
+  if(this.pixelShown){this.sprite.setOrigin(.5,.8);this.pixelShown=false;}
   if(action==='death')phase='default';
   const profile=nativeProfileFor(this.asset,action,phase);
   const cache=nativeFrameCache(this.scene);
   const f=cache.frame(this.asset,profile,action,clock,facing,phase,cast);
   if(typeof f==='object'){
-   if(this.current?.texture!==f.texture)this.sprite.setTexture(f.texture,'f');
+   if(this.sprite.texture.key!==f.texture)this.sprite.setTexture(f.texture,'f');
    this.sprite.setFlipX(f.flipped).setVisible(true);this.current=f;this.rendered++;
   }else{
    if(f==='error'&&this.errors.length<8){this.errors.push('frame error '+profile);console.error('[starsea-native] frame error',this.asset.id,profile);}
@@ -97,10 +112,11 @@ export class StarseaNativeActor{
   }
  }
  pose():RenderPose{
+  if(this.pixelShown&&this.pixelPainter)return{art:this.asset.id,frame:this.pixelPainter.frameName,releaseFrame:this.pixelPainter.releasePoseFrame,position:{...this.point},scale:1,flip:false,socket:(name,frame)=>{const p=this.pixelPainter!.socket(name,frame);return p?{x:this.point.x+p.x-256,y:this.point.y+p.y-410}:undefined;}};
   const cur=this.current,foot=this.foot;
   return{art:this.asset.id,frame:cur?.name??'',position:{...this.point},scale:1,flip:false,
    socket:(name:SocketName)=>{const s=cur?.sockets[name];if(!s)return;const m=mirrorSocket(s,foot.x,cur.flipped);return{x:this.point.x+m.x-foot.x,y:this.point.y+m.y-foot.y};}};}
  duration(action:string){return nativeFrameCache(this.scene).duration(this.asset,action)??this.asset.actions[action]?.duration??1.5;}
  diagnostics(){return{id:this.asset.id,profile:nativeProfileFor(this.asset,'idle','default'),frame:this.current?.name??'',flip:this.current?.flipped??false,visible:this.sprite.visible,rendered:this.rendered,skipped:this.skipped,errors:[...this.errors],cache:nativeFrameCache(this.scene).diagnostics()};}
- destroy(){if(this.destroyed)return;this.destroyed=true;this.sprite.destroy();}
+ destroy(){if(this.destroyed)return;this.destroyed=true;this.pixelPainter?.destroy();if(this.pixelTexture)this.scene.textures.remove(this.pixelTexture.key);this.sprite.destroy();}
 }

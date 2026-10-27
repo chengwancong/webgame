@@ -68,7 +68,7 @@ const _CN_MARK_HIDDEN:[number,number]=[202,102];
 /** 从 chart-nodes 图集裁一帧 */
 function cnSprite(fx:number,fy:number,d:number,alt?:string):string{
  const s=d/_CN_FW,bw=Math.round(_CN_W*s),bh=Math.round(_CN_H*s);
- return `<span ${alt?`aria-label="${esc(alt)}"`:' aria-hidden="true"'} class="tp-icon" style="width:${d}px;height:${d}px;background:url(${_CN_SRC}) ${-Math.round(fx*s)}px ${-Math.round(fy*s)}px/${bw}px ${bh}px no-repeat"></span>`;
+ return `<span ${alt?`aria-label="${esc(alt)}"`:' aria-hidden="true"'} class="tp-icon" data-pixel-atlas="${_CN_SRC}" data-pixel-rect="${fx},${fy},96,96" style="width:${d}px;height:${d}px;background:url(${_CN_SRC}) ${-Math.round(fx*s)}px ${-Math.round(fy*s)}px/${bw}px ${bh}px no-repeat"></span>`;
 }
 /** ART-HC sea-emblems 图集 924×264；帧 128×128（锚[0.5,0.5]） */
 const _SE_SRC='/art/hub-ui/sea-emblems.png',_SE_W=924,_SE_H=264,_SE_FW=128;
@@ -82,7 +82,7 @@ function seaEmblem(regionId:string,locked:boolean,d:number):string{
  const frame=_SE_FRAMES[key]??_SE_FRAMES[regionId];
  if(!frame)return '';
  const s=d/_SE_FW,bw=Math.round(_SE_W*s),bh=Math.round(_SE_H*s);
- return `<span aria-hidden="true" class="tp-icon" style="width:${d}px;height:${d}px;background:url(${_SE_SRC}) ${-Math.round(frame[0]*s)}px ${-Math.round(frame[1]*s)}px/${bw}px ${bh}px no-repeat"></span>`;
+ return `<span aria-hidden="true" class="tp-icon" data-pixel-atlas="${_SE_SRC}" data-pixel-rect="${frame[0]},${frame[1]},128,128" style="width:${d}px;height:${d}px;background:url(${_SE_SRC}) ${-Math.round(frame[0]*s)}px ${-Math.round(frame[1]*s)}px/${bw}px ${bh}px no-repeat"></span>`;
 }
 const STATUS_NAMES = {hidden: '未开放', locked: '未解锁', open: '可挑战', cleared: '已首通'} as const;
 const CHALLENGE_NAMES: Record<string, string> = {'': '普通', high: '高难', nightmare: '噩梦'};

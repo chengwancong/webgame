@@ -5,6 +5,9 @@ import {starseaAsset,starseaTexture} from './starsea-runtime-assets.ts';
 import type {Point} from './starsea-assets.ts';
 import {project} from './iso.ts';
 import {visibleWorldChunks,chunkKey,chunkViewDistance,cameraView,screenOrigin,chunkBuild,chunkBudgetMs} from './world-chunks.ts';
+import {pixelRuntime,onPixelChange} from './pixel-texture.ts';
+import {pixelTerrainBank,terrainTagCanvas,bakePixelGround} from './pixel-ground.ts';
+import type {TerrainBank} from './pixel-terrain.ts';
 const {spareChunks}=chunkBuild;
 
 /** Chunk canvases reserve TOP pixels above the floor diamond for rock rising out of it. */
@@ -24,7 +27,10 @@ const rgba=(hex:string,a:number)=>{const v=parseInt(hex.slice(1),16);return `rgb
 export class PlaneSceneRenderer{
  private chunks=new Map<string,{image:Phaser.GameObjects.Image;key:string;canvas:HTMLCanvasElement}>();private nodes=new Map<string,Node[]>();private source=new Map<string,PlanePiece[]>();
  private backdrop?:Phaser.GameObjects.Image;private pendingChunks=0;private job?:{key:string;steps:Generator<void,void>};private destroyed=false;private errors:string[]=[];private walk:Uint8Array;private lamps:V[];
+ private pixelOff:()=>void;
+ private invalidatePixelGround=()=>{if(this.destroyed)return;this.job?.steps.return();this.job=undefined;for(const key of [...this.chunks.keys()])this.release(key);};
  constructor(private scene:Phaser.Scene,readonly map:PlaneMap){
+  this.pixelOff=onPixelChange(this.invalidatePixelGround);
   this.walk=Uint8Array.from(map.cells,c=>c==='.'||c===','?1:0);
   scene.cameras.main.setBackgroundColor(map.background);
   this.backdrop=scene.add.image(0,0,this.texture('backdrop-near')).setOrigin(0).setScrollFactor(0).setDepth(-20000);
@@ -47,6 +53,10 @@ export class PlaneSceneRenderer{
  private *chunk(cx:number,cy:number):Generator<void,void>{
   const map=this.map,n=map.width,cell=`${cx},${cy}`,key=`plane-ground:${map.id}:${cx}:${cy}`,canvas=document.createElement('canvas');canvas.width=groundWidth;canvas.height=groundHeight;
   const ctx=canvas.getContext('2d')!,origin=project({x:cx*CHUNK,y:cy*CHUNK});ctx.translate(groundLeft-origin.x,groundTop-origin.y);
+  const banks:TerrainBank[]=[],tagTiles=new Map<string,HTMLCanvasElement>();let tagCanvas:HTMLCanvasElement|undefined,tag:CanvasRenderingContext2D|undefined;
+  if(pixelRuntime.cellStage>0){let ready=true;for(const part of ['ground-main','ground-path','wall-straight','wall-top']){const id=planeResource(map.kit,part,map.island),asset=starseaAsset(id),bank=asset?.runtime.file&&pixelTerrainBank(asset.runtime.file,this.image(part),id,banks.length,this.invalidatePixelGround);if(!bank){ready=false;continue;}banks.push(bank);tagTiles.set(part,terrainTagCanvas(bank));}
+   if(ready){tagCanvas=document.createElement('canvas');tagCanvas.width=groundWidth;tagCanvas.height=groundHeight;tag=tagCanvas.getContext('2d')!;tag.translate(groundLeft-origin.x,groundTop-origin.y);}
+  }
   // Floor: clipped to the padded chunk diamond so neighbouring chunks paint identical overlap.
   const clip=new Path2D();[[cx*CHUNK-1,cy*CHUNK-1],[cx*CHUNK+CHUNK+1,cy*CHUNK-1],[cx*CHUNK+CHUNK+1,cy*CHUNK+CHUNK+1],[cx*CHUNK-1,cy*CHUNK+CHUNK+1]].forEach(([x,y],i)=>{const p=project({x,y});i?clip.lineTo(p.x,p.y):clip.moveTo(p.x,p.y);});clip.closePath();
   const floor=new Path2D(),worn=new Path2D(),rock=new Path2D(),x0=Math.max(0,cx*CHUNK-4),y0=Math.max(0,cy*CHUNK-4),x1=Math.min(n,cx*CHUNK+CHUNK+4),y1=Math.min(n,cy*CHUNK+CHUNK+4);
@@ -54,6 +64,7 @@ export class PlaneSceneRenderer{
    if(c==='#')this.cell(rock,x,y);else this.cell(floor,x,y);if(c===',')this.cell(worn,x,y);}
   ctx.save();ctx.clip(clip);ctx.clip(floor);
   ctx.fillStyle=ctx.createPattern(this.image('ground-main'),'repeat')!;ctx.fill(floor);
+  if(tag){tag.save();tag.clip(clip);tag.clip(floor);tag.fillStyle=tag.createPattern(tagTiles.get('ground-main')!,'repeat')!;tag.fill(floor);tag.fillStyle=tag.createPattern(tagTiles.get('ground-path')!,'repeat')!;tag.fill(worn);tag.restore();}
   yield;
   // Worn route: feathered so it reads as trodden ground, not a cell staircase.
   ctx.globalAlpha=.85;ctx.filter='blur(7px)';ctx.fillStyle=ctx.createPattern(this.image('ground-path'),'repeat')!;ctx.fill(worn);ctx.filter='none';ctx.globalAlpha=1;
@@ -69,15 +80,17 @@ export class PlaneSceneRenderer{
   // Rock: this chunk's own cells only, back to front (ascending x+y).
   const xs=cx*CHUNK,ys=cy*CHUNK,xe=Math.min(n,xs+CHUNK),ye=Math.min(n,ys+CHUNK),top=ctx.createPattern(this.image('wall-top'),'repeat')!;
   for(let d=xs+ys;d<=xe+ye-2;d++){for(let x=Math.max(xs,d-ye+1);x<=Math.min(xe-1,d-ys);x++){const y=d-x;if(!this.rock(x,y)||map.dist[y*n+x]>PLANE_DRAW_DEPTH)continue;
-   this.blockCell(ctx,x,y,top);}if((d-xs-ys)%8===7)yield;}
+   this.blockCell(ctx,x,y,top,tag,tagTiles);}if((d-xs-ys)%8===7)yield;}
   yield;
+  let output=canvas,left=origin.x-groundLeft,topY=origin.y-groundTop,pixel=false;
+  if(tagCanvas&&banks.length){const result=yield* bakePixelGround(canvas,banks,left,topY,map.id,tagCanvas);output=result.canvas;left=result.x;topY=result.y;pixel=true;tagCanvas.width=0;tagCanvas.height=0;}
   // Pieces are made hidden in batches and shown with their ground; the GPU upload gets a step of its own; an abandoned job destroys them.
   const nodes:Node[]=[];let registered=false;
   try{
    for(const p of this.source.get(cell)??[]){const node=this.sprite(p);node.image.setVisible(false);nodes.push(node);if(nodes.length%24===0)yield;}
    yield;
-   ctx.setTransform(1,0,0,1,0,0);const texture=this.scene.textures.create(key,canvas,groundWidth,groundHeight);if(!texture)throw Error('Unable to register plane ground '+key);texture.add('__BASE',0,0,0,groundWidth,groundHeight);
-   const image=this.scene.add.image(origin.x-groundLeft,origin.y-groundTop,key).setOrigin(0).setDepth(-10000+cx+cy);this.chunks.set(cell,{image,key,canvas});
+   ctx.setTransform(1,0,0,1,0,0);const texture=this.scene.textures.create(key,output,output.width,output.height);if(!texture)throw Error('Unable to register plane ground '+key);texture.add('__BASE',0,0,0,output.width,output.height);if(pixel)texture.setFilter(1);
+   const image=this.scene.add.image(left,topY,key).setOrigin(0).setScale(pixel?2:1).setDepth(-10000+cx+cy).setData('pixel-authored',pixel);this.chunks.set(cell,{image,key,canvas:output});if(output!==canvas){canvas.width=0;canvas.height=0;}
    for(const node of nodes)node.image.setVisible(true);this.nodes.set(cell,nodes);registered=true;
   }finally{if(!registered)for(const node of nodes)node.image.destroy();}
  }
@@ -91,7 +104,7 @@ export class PlaneSceneRenderer{
  /** One rock cell as an upright block: the wall strip sheared onto its +y and +x faces (tiled
   * upward from the floor line), the top texture on its diamond, and a dark outline on the
   * silhouette and creases so it reads like the hand-drawn actors standing in front of it. */
- private blockCell(ctx:CanvasRenderingContext2D,x:number,y:number,top:CanvasPattern){
+ private blockCell(ctx:CanvasRenderingContext2D,x:number,y:number,top:CanvasPattern,tag?:CanvasRenderingContext2D,tagTiles?:Map<string,HTMLCanvasElement>){
   const map=this.map,n=map.width,e=map.heights[y*n+x],depth=map.dist[y*n+x],strip=this.image('wall-straight'),Hs=strip.height,variant=hash(x,y)%Math.max(1,Math.floor(strip.width/64));
   const level=(a:number,b:number)=>a>=n||b>=n?e:this.rock(a,b)?map.heights[b*n+a]:0,haze=HAZE[Math.min(HAZE.length-1,depth)];
   const line=(pts:number[][],alpha:number,width:number)=>{ctx.beginPath();pts.forEach(([X,Y],k)=>k?ctx.lineTo(X,Y):ctx.moveTo(X,Y));ctx.strokeStyle=rgba(map.outline,alpha*(1-haze*.7));ctx.lineWidth=width;ctx.stroke();};
@@ -103,11 +116,13 @@ export class PlaneSceneRenderer{
    ctx.restore();
    const P=(dx:number,dz:number)=>[left.x+dx,left.y+dx*slope/32-dz],path=new Path2D();[P(0,e),P(32,e),P(32,low),P(0,low)].forEach(([X,Y],k)=>k?path.lineTo(X,Y):path.moveTo(X,Y));path.closePath();
    this.finish(ctx,path,shade,this.glow(gx,gy,e/2),haze);
+   if(tag){tag.fillStyle=tag.createPattern(tagTiles!.get('wall-straight')!,'repeat')!;tag.fill(path);}
    line([P(0,e),P(0,low)],.3,1.5);line([P(32,e),P(32,low)],.3,1.5);if(!low)line([P(0,0),P(32,0)],.85,2.5);};
   const ey=level(x,y+1),ex=level(x+1,y);
   if(e>ey)wall(project({x,y:y+1}),18,ey,0,x+.5,y+1);
   if(e>ex)wall(project({x:x+1,y:y+1}),-18,ex,.42,x+1,y+.5);
   const path=new Path2D();this.cell(path,x,y,e);ctx.fillStyle=top;ctx.fill(path);this.finish(ctx,path,0,0,haze);
+  if(tag){tag.fillStyle=tag.createPattern(tagTiles!.get('wall-top')!,'repeat')!;tag.fill(path);}
   // Outline every top edge that drops to something lower: the block's silhouette and its front creases.
   const c=[[x,y],[x+1,y],[x+1,y+1],[x,y+1]].map(([i,j])=>{const p=project({x:i,y:j});return[p.x,p.y-e];});
   const edge=(a:number,b:number,other:number)=>{if(other<e)line([c[a],c[b]],.9,2.5);else if(other===e)line([c[a],c[b]],.18,1.2);};
@@ -141,5 +156,5 @@ export class PlaneSceneRenderer{
  }
  get mapData(){return undefined;}
  diagnostics(){return{map:this.map.id,kit:this.map.kit,ready:!this.destroyed||this.errors.length>0,chunks:this.chunks.size,pendingChunks:this.pendingChunks,pieces:[...this.nodes.values()].reduce((n,b)=>n+b.length,0),totalPieces:this.map.pieces.length,errors:[...this.errors]};}
- destroy(){if(this.destroyed&&!this.chunks.size&&!this.backdrop)return;this.destroyed=true;this.job?.steps.return();this.job=undefined;for(const node of this.chunks.values()){node.image.destroy();this.scene.textures.remove(node.key);node.canvas.width=0;node.canvas.height=0;}this.chunks.clear();for(const bucket of this.nodes.values())for(const n of bucket)n.image.destroy();this.nodes.clear();this.source.clear();this.backdrop?.destroy();this.backdrop=undefined;}
+ destroy(){if(this.destroyed&&!this.chunks.size&&!this.backdrop)return;this.destroyed=true;this.pixelOff();this.job?.steps.return();this.job=undefined;for(const node of this.chunks.values()){node.image.destroy();this.scene.textures.remove(node.key);node.canvas.width=0;node.canvas.height=0;}this.chunks.clear();for(const bucket of this.nodes.values())for(const n of bucket)n.image.destroy();this.nodes.clear();this.source.clear();this.backdrop?.destroy();this.backdrop=undefined;}
 }

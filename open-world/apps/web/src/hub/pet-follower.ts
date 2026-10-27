@@ -5,6 +5,8 @@
  */
 import type Phaser from 'phaser';
 import {project} from '../iso.ts';
+import {pixelAsset} from '../pixel-assets.ts';
+import {pixelRuntime} from '../pixel-texture.ts';
 
 const PET_OFFSET_WORLD = {dx: -0.8, dy: -0.4};  // 玩家身后（等距北偏）
 type PetRuntimeArt = {image: string; atlas: string; scale: number; anchor: [number, number]};
@@ -36,6 +38,7 @@ export class PetFollower {
   /** 护盾生效反馈：在这个 tick 之前保持护盾色调（浅蓝）。 */
   private shieldFlashUntilTick = 0;
   private art?: PetRuntimeArt;
+  private pixelAction='';private pixelStarted=0;private pixelShadow?:Phaser.GameObjects.Image;
 
   constructor(private deps: PetFollowerDeps) {
     this.scene = deps.scene;
@@ -66,7 +69,15 @@ export class PetFollower {
 
     // 动画：攻击 > idle
     const attacking = tick < this.attackUntilTick;
-    const anim = attacking ? `${this.runtime}-attack` : `${this.runtime}-idle`;
+    const action=attacking?'attack':'idle';
+    const anim = `${this.runtime}-${action}`;
+    if(this.pixelAction!==action){this.pixelAction=action;this.pixelStarted=tick;}
+    const clip=pixelAsset(this.runtime!)?.actions?.[action],nativeDuration=this.scene.anims.get(anim)?.duration;
+    this.sprite.setData('pixel-art-id',this.runtime).setData('pixel-clock',{action,seconds:(tick-this.pixelStarted)/30*(clip&&nativeDuration?clip.duration/(nativeDuration/1000):1)});
+    this.sprite.setData('pixel-facing',1);
+    this.shadow?.setVisible(!pixelRuntime.cellStage);
+    if(pixelRuntime.cellStage&&!this.pixelShadow&&this.scene.textures.exists('unit-shadow'))this.pixelShadow=this.scene.add.image(0,0,'unit-shadow');
+    this.pixelShadow?.setVisible(pixelRuntime.cellStage>0).setPosition(p.x,p.y+2).setDepth(p.y);
     if (this.sprite.anims.isPlaying && this.sprite.anims.currentAnim?.key === anim) return;
     if (this.scene.anims.exists(anim)) {
       this.sprite.play(anim, true);
@@ -157,7 +168,7 @@ export class PetFollower {
   }
 
   private destroySprites(): void {
-    this.sprite?.destroy();
+    this.sprite?.destroy();this.pixelShadow?.destroy();this.pixelShadow=undefined;this.pixelAction='';
     this.shadow?.destroy();
     this.sprite = undefined;
     this.shadow = undefined;

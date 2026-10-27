@@ -1,5 +1,7 @@
 import {worldLabels} from './hud-avoidance.ts';
 import {interactionReach,inInteractionReach} from '../../../packages/rules/world-interactions.ts';
+import type {Region} from '../../../packages/content/index.ts';
+import {bindLandmarkPointer,forgePointerTarget,type LandmarkPointerTarget} from './landmark-pointer.ts';
 import Phaser from 'phaser';
 import {resolvedToken} from './ui/tokens.ts';
 import {worldTextResolution} from './ui/world-text.ts';
@@ -60,11 +62,11 @@ export class StarseaStoryRenderer{
  private create(object:StarseaSceneObject):Node|undefined{const asset=starseaAsset(object.artId);if(!asset){this.fail('Unknown object art '+object.artId);return;}let native:StarseaNativeActor|undefined,image:Node['image'];
   if(asset.runtime.kind==='native'){native=new StarseaNativeActor(this.scene,asset);image=native.sprite;const h=asset.runtime.displayHeight??100;image.setInteractive(new Phaser.Geom.Rectangle(native.foot.x-npcHitWidth/2,native.foot.y-h,npcHitWidth,h+6),Phaser.Geom.Rectangle.Contains);}else if(asset.runtime.kind==='atlas'){image=this.scene.add.sprite(0,0,asset.id,starseaAtlasFrame(asset.id,'idle',0)).setInteractive();}else{const state=starseaPropState(asset,object.state);if(!state){this.fail('Undeclared prop state '+object.artId+'/'+object.state);return;}
    // 图集动画 prop（如引雷桩）：用 Sprite；静态 prop：用 Image
-   if(state.atlasKey&&state.frames?.length){image=this.scene.add.sprite(0,0,state.atlasKey,state.frames[0]).setInteractive();}else{image=this.scene.add.image(0,0,starseaTexture(state.file)).setInteractive();}}
+   if(state.atlasKey&&state.frames?.length){image=this.scene.add.sprite(0,0,state.atlasKey,state.frames[0]).setInteractive({pixelPerfect:true,alphaTolerance:1});}else{image=this.scene.add.image(0,0,starseaTexture(state.file)).setInteractive({pixelPerfect:true,alphaTolerance:1});}}
   image.setData('starsea-object-id',object.id);const label=this.scene.add.text(0,0,'',{resolution:worldTextResolution(),fontFamily:resolvedToken('Font.Family'),fontSize:resolvedToken('Font.Size.Caption'),color:resolvedToken('Color.TextPrimary'),backgroundColor:resolvedToken('Color.PanelInset'),align:'center',padding:{x:6,y:4}}).setOrigin(.5,1).setInteractive().setData('starsea-object-id',object.id);
   return{artId:object.artId,image,native,label,shadow:this.scene.add.image(0,0,'unit-shadow').setAlpha(.18),light:this.scene.add.graphics(),facing:object.facing??-1,movingUntil:0};
  }
- draw(objects:readonly StarseaSceneObject[],tick:number,hero?:Point){this.objects=objects;const used=new Set(objects.map(o=>o.id));for(const [id,node] of this.nodes)if(!used.has(id)){this.remove(node);this.nodes.delete(id);}
+ draw(objects:readonly StarseaSceneObject[],tick:number,hero?:Point,region?:Region){this.objects=objects;const used=new Set(objects.map(o=>o.id));for(const [id,node] of this.nodes)if(!used.has(id)){this.remove(node);this.nodes.delete(id);}
   for(const object of objects){let node=this.nodes.get(object.id);if(node?.artId!==object.artId){if(node)this.remove(node);this.nodes.delete(object.id);node=undefined;}if(!node){node=this.create(object);if(!node)continue;this.nodes.set(object.id,node);}
    const asset=starseaAsset(object.artId)!,point=project(object.position),camera=this.scene.cameras.main.worldView,height=asset.runtime.displayHeight??100,visible=point.x>=camera.x-height&&point.x<=camera.right+height&&point.y>=camera.y&&point.y<=camera.bottom+height;
    if(node.last&&Math.hypot(point.x-node.last.x,point.y-node.last.y)>.1){node.facing=point.x>=node.last.x?1:-1;node.movingUntil=tick+6;}node.last=point;
@@ -82,7 +84,9 @@ export class StarseaStoryRenderer{
    const shown=visible&&node.image.visible,near=!hero||inInteractionReach(hero,object.position,object.reach??interactionReach.story);node.shadow.setVisible(shown).setPosition(point.x,point.y+2).setDepth(point.y-1);const text=[object.name??asset.name,near?object.label:undefined].filter(Boolean).join('\n');node.label.setVisible(shown&&text!=='').setText(text);const color=resolvedToken(object.enabled===false?'Color.TextDisabled':'Color.TextPrimary');if(node.label.style.color!==color)node.label.setColor(color);node.label.setPosition(Math.round(point.x),Math.round(point.y-(node.native||asset.runtime.kind==='atlas'?height+10:node.image.displayHeight*node.image.originY+10))).setDepth(point.y+5);
    // 可采集物脚下画一圈浅金环，和地图上同图的装饰石堆/灌木区分开（Grok：看得到却采不到）。
    if(object.id.startsWith('gather:')&&shown){const ring=parseInt(resolvedToken('Color.Highlight').slice(1),16);if(node.native||asset.runtime.kind==='atlas')node.light.clear();node.light.lineStyle(2,ring,near?.95:.6).strokeEllipse(point.x,point.y,64,32).fillStyle(ring,near?.18:.08).fillEllipse(point.x,point.y,64,32).setDepth(point.y-2);}
-   if(object.enabled===false||!near){node.image.disableInteractive();node.label.disableInteractive();}else{node.image.setInteractive();node.label.setInteractive();}
+   const landmark:LandmarkPointerTarget|undefined=region&&object.id==='prop:ss-scene-workshop-tier'?forgePointerTarget(object.position,region):region&&object.id==='prop:ss-scene-stargate'?{kind:'portal',position:region.portal}:undefined;
+   if(landmark){if(!node.image.getData('landmark-pointer')){bindLandmarkPointer(node.image,landmark);node.image.setData('starsea-object-id',undefined);}node.label.disableInteractive();}
+   else if(object.enabled===false||!near){node.image.disableInteractive();node.label.disableInteractive();}else{node.image.setInteractive();node.label.setInteractive();}
    if(shown){const label=node.label;worldLabels(this.scene).submit({id:'story:'+object.id,bounds:label.getBounds(),priority:near?10:20,apply:(visible,lift)=>{label.setVisible(visible);if(visible&&lift)label.y-=lift;}});}
   }
  }

@@ -1,5 +1,6 @@
+import {resolvePixelImage} from './pixel-images.ts';
 import manifest from '../../../packages/asset-manifest/ui.v2.json';
-import {hexRuneDataUri} from './hex-rune-icon.ts';
+import {hexRuneDataUri,hexGlyphForIcon} from './hex-rune-icon.ts';
 
 type Asset = {kind: string; path: string; size: number[]; sha256: string; icon?:{path:string;size:number[];sha256:string}};
 type Manifest = {version: string; chrome: string; colors: Record<string, string>; assets: Record<string, Asset>};
@@ -11,9 +12,9 @@ const data = manifest as Manifest;
 export function art(id: string): string {
   const item = data.assets[id];
   // HEX runes are drawn in code (hex-rune-icon.ts), not shipped as manifest art.
-  if (!item?.path && id.startsWith('gear-hex-')) return hexRuneDataUri(id.slice(5));
+  if (!item?.path && id.startsWith('gear-hex-')) return resolvePixelImage(hexRuneDataUri(id.slice(5)),'hex:'+(hexGlyphForIcon(id.slice(5))??'generic'));
   if (!item?.path) throw new Error(`缺少界面资源：${id}`);
-  return item.path;
+  return resolvePixelImage(item.path,id);
 }
 
 /** For content whose artwork may still be pending (e.g. new crafting materials); callers pick a fallback. */
@@ -29,7 +30,7 @@ export function artSize(id: string): [number, number] {
 export function smallArt(id:string):string {
   const item=data.assets[id];
   if(!item?.icon)throw new Error(`缺少小尺寸道具资源：${id}`);
-  return item.icon.path;
+  return resolvePixelImage(item.icon.path,id,true);
 }
 
 /** Every published skill has its own formal artwork, checked during content validation. */

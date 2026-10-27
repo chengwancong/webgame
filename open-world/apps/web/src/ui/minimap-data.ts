@@ -4,7 +4,12 @@ import type {StarseaMap} from '../starsea-world-renderer.ts';
 import {mapRoads} from '../map-layout.ts';
 import {roadCells} from '../world-chunks.ts';
 
-export type MapMarker=IsoPoint&{id?:string;name:string;main:boolean;question?:boolean;resource?:string};
+export type MapMarker=IsoPoint&{id?:string;name:string;main:boolean;question?:boolean;resource?:string;priority?:number};
+/** Priority only changes the active objective arrow; all map marks still render. */
+export function minimapMainTarget(markers:readonly MapMarker[],projectPoint:(marker:MapMarker)=>IsoPoint,center:IsoPoint){
+ return markers.filter(marker=>marker.main&&!marker.question).map(marker=>{const p=projectPoint(marker);return{marker,p,d:Math.hypot(p.x-center.x,p.y-center.y)};})
+  .sort((a,b)=>(a.marker.priority??0)-(b.marker.priority??0)||a.d-b.d)[0];
+}
 /** Live scene snapshots can move residents and omit NPCs who have not arrived. */
 export function minimapNpcs(mapped:MapMarker[],live?:MapMarker[]){return live??mapped;}
 type MapState={map?:StarseaMap;npcs:MapMarker[];pending:Promise<void>};

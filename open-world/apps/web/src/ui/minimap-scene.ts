@@ -3,12 +3,15 @@ import {project} from '../iso.ts';
 import type {StarseaMap} from '../starsea-world-renderer.ts';
 import {coastStone,islandEdges,islandPath,paintCoastSkirt} from '../island-edge.ts';
 import {mapScatter,paintGroundDressing,dressingResources} from '../world-dressing.ts';
+import {pixelRuntime} from '../pixel-texture.ts';
+import {pixelAsset} from '../pixel-assets.ts';
+import {pixelGroundMaterial,pixelTerrainKey} from '../pixel-ground.ts';
 /**
  * Real-scene miniature (direction A, approved 2026-10-11): the radar and region map paint the same ground and road
  * materials, south cliff modules and decoration sprites as StarseaWorldRenderer, only scaled. Nothing is re-drawn by hand.
  */
 type Wash={color:string;alpha:number};
-type Sprite={file:string;anchor:[number,number];width:number;mirror:boolean;tint?:string;wash?:Wash;key:string};
+type Sprite={file:string;artId:string;anchor:[number,number];width:number;mirror:boolean;tint?:string;wash?:Wash;key:string};
 /** `natural` keeps scene proportion (scatter), so the region map's minimum sprite scale only enlarges authored landmarks. */
 type Placed={sprite:Sprite;x:number;y:number;natural?:boolean};
 const images=new Map<string,HTMLImageElement>();
@@ -18,6 +21,7 @@ const layouts=new WeakMap<StarseaMap,{edges:Placed[];decorations:Placed[]}>();
 function image(file:string){let i=images.get(file);if(!i){i=new Image();i.decoding='async';i.src=file;images.set(file,i);}return i.complete&&i.naturalWidth?i:undefined;}
 /** 2×2 tile with tint and wash, mirrored unless `plain` (roads, plazas), as StarseaWorldRenderer.material builds it. */
 function tile(resource:string,tint?:string,wash?:Wash,plain=false){
+ if(pixelRuntime.cellStage>0){const file=starseaAsset(resource)?.runtime.file;return file?pixelGroundMaterial(pixelTerrainKey(file,resource),()=>{}):undefined;}
  const r=starseaAsset(resource)?.runtime as {file?:string;tileSize?:number;tint?:string;wash?:Wash}|undefined;if(!r?.file)return;
  const size=r.tileSize??512,key=JSON.stringify([r.file,tint??r.tint,wash??r.wash,size,plain]);let c=tiles.get(key);if(c)return c;
  const img=image(r.file);if(!img)return;c=document.createElement('canvas');c.width=c.height=size*2;const x=c.getContext('2d')!;
@@ -28,6 +32,7 @@ function tile(resource:string,tint?:string,wash?:Wash,plain=false){
 }
 /** Sprite with the renderer's material tint/wash (five-island modules) and per-decoration tint applied once. */
 function bitmap(s:Sprite):HTMLImageElement|HTMLCanvasElement|undefined{
+ if(pixelRuntime.cellStage>0){let asset=pixelAsset(s.artId);if(!asset?.original.includes(s.file))asset=pixelAsset(s.file);if(!asset)return;const raw=image(asset.file);if(!raw)return;const frame=asset.defaultFrame&&asset.frames?.[asset.defaultFrame];if(!frame)return raw;const key='pixel:'+asset.file;let c=tinted.get(key);if(c)return c;c=document.createElement('canvas');c.width=frame.w;c.height=frame.h;c.getContext('2d')!.drawImage(raw,frame.x,frame.y,frame.w,frame.h,0,0,frame.w,frame.h);tinted.set(key,c);return c;}
  const img=image(s.file);if(!img||!s.tint&&!s.wash)return img;let c=tinted.get(s.key);if(c)return c;
  c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;const x=c.getContext('2d')!;x.drawImage(img,0,0);
  if(s.tint){x.globalCompositeOperation='multiply';x.fillStyle=s.tint;x.fillRect(0,0,c.width,c.height);x.globalCompositeOperation='destination-in';x.drawImage(img,0,0);}
@@ -37,7 +42,7 @@ function bitmap(s:Sprite):HTMLImageElement|HTMLCanvasElement|undefined{
 function sprite(d:{resourceId:string;variant?:string;displayWidth?:number;mirrorX?:boolean;tint?:string}):Sprite|undefined{
  const r=starseaAsset(d.resourceId)?.runtime as {file?:string;anchor?:[number,number];displayWidth?:number;variants?:{id:string;file:string;anchor?:[number,number];displayWidth?:number;mirrorX?:boolean}[];material?:{tint?:string;wash?:Wash}}|undefined;if(!r?.file)return;
  const v=r.variants?.find(v=>v.id===d.variant),file=v?.file??r.file,tint=d.tint??r.material?.tint,wash=r.material?.wash;
- return {file,anchor:v?.anchor??r.anchor??[.5,1],width:d.displayWidth??v?.displayWidth??r.displayWidth??180,mirror:d.mirrorX??v?.mirrorX??false,tint,wash,key:JSON.stringify([file,tint,wash])};
+ return {file,artId:d.resourceId,anchor:v?.anchor??r.anchor??[.5,1],width:d.displayWidth??v?.displayWidth??r.displayWidth??180,mirror:d.mirrorX??v?.mirrorX??false,tint,wash,key:JSON.stringify([file,tint,wash])};
 }
 /** Edge modules and decorations (authored + larger scatter: trees, bushes, rocks) in scene depth order. Flowers and road tufts are sub-pixel at map scale. */
 function layout(map:StarseaMap){
@@ -62,6 +67,7 @@ export function paintSceneMiniature(ctx:CanvasRenderingContext2D,map:StarseaMap,
  const draw=(p:Placed,s:number)=>{const img=bitmap(p.sprite);if(!img){complete=false;return;}const q=project(p),x=v.ox+q.x*v.k,y=v.oy+q.y*v.k,w=p.sprite.width*s,h=w*img.height/img.width;
   if(x+w<0||x-w>v.width||y-h>v.height||y+h<0)return;ctx.save();ctx.translate(x,y);if(p.sprite.mirror)ctx.scale(-1,1);ctx.drawImage(img,-w*p.sprite.anchor[0],-h*p.sprite.anchor[1],w,h);ctx.restore();};
  ctx.save();ctx.setTransform(d,0,0,d,0,0);
+ ctx.imageSmoothingEnabled=pixelRuntime.cellStage<=0;
  // Edge modules sit under the ground like the renderer (depth -11000 < ground -10000), so only the hanging face shows.
  for(const e of l.edges)draw(e,v.k);
  ctx.setTransform(d*v.k,0,0,d*v.k,d*v.ox,d*v.oy);
@@ -70,7 +76,7 @@ export function paintSceneMiniature(ctx:CanvasRenderingContext2D,map:StarseaMap,
  if(map.boundary.points?.length){const stone=tile(coastStone(map));if(stone)paintCoastSkirt(ctx,map,project,map.boundary.thicknessCells*60,stone,.5);else complete=false;}
  ctx.fillStyle=ctx.createPattern(ground,'repeat')!;ctx.fill(island);
  // Same soft patches, road rim, roads and plazas as the ground chunks, clipped to the island.
- ctx.save();ctx.clip(island);if(!paintGroundDressing(ctx,map,{k:d*v.k,ox:d*v.ox,oy:d*v.oy,width:Math.ceil(v.width*d),height:Math.ceil(v.height*d),quality:2,blur:1},tile))complete=false;ctx.restore();
+ ctx.save();ctx.clip(island);if(!paintGroundDressing(ctx,map,{k:d*v.k,ox:d*v.ox,oy:d*v.oy,width:Math.ceil(v.width*d),height:Math.ceil(v.height*d),quality:pixelRuntime.cellStage>0?1:2,blur:pixelRuntime.cellStage>0?0:1,pixelMask:pixelRuntime.cellStage>0},tile))complete=false;ctx.restore();
  ctx.setTransform(d,0,0,d,0,0);
  for(const p of l.decorations)draw(p,p.natural?v.k:scale);
  ctx.restore();return {painted:true,complete};

@@ -3,9 +3,10 @@
  * 字段来自服务端 hubDungeonPublicSchema（objective / segment / wave / beacon），缺字段就不显示该项，不用客户端推算。
  */
 import type {HubDungeonPublic} from '../../../../packages/contracts/hub-dungeons.ts';
-import {esc,meterHtml} from '../ui-components.ts';
+import {esc,meterHtml,statusBadgeHtml} from '../ui-components.ts';
+import {treasureChaseGoal,treasureChaseStatus} from '../treasure-chase-view.ts';
 
-type HudFrame = Partial<Pick<HubDungeonPublic, 'objective' | 'segment' | 'wave' | 'beacon' | 'opening'>>;
+type HudFrame = Partial<Pick<HubDungeonPublic, 'objective' | 'segment' | 'wave' | 'beacon' | 'opening' | 'chase'>>;
 
 /** 限时类型最后 30 秒变红 */
 export const HUB_HUD_DANGER_SECONDS = 30;
@@ -33,7 +34,9 @@ export function hubHudHtml(frame: HudFrame): string {
   const opening = frame.opening
     ? `<div class="hub-hud-opening">${meterHtml({value: Math.round((frame.opening.total - frame.opening.left) * 10) / 10, max: frame.opening.total, label: frame.opening.id.startsWith('hub-pylon-') ? '击碎引雷桩' : '开箱中', tone: 'gold', valueText: 'none'})}</div>`
     : '';
-  return `<div class="hub-hud-main">${time}<span class="hub-hud-text">${esc(o.text)}${progress}</span>${side}</div>${beacon}${opening}`;
+  const chaseState=frame.chase?treasureChaseStatus(frame.chase):undefined;
+  const chase=chaseState?`<div data-treasure-chase-state>${statusBadgeHtml(chaseState.label,chaseState.tone,{variant:'inline',title:treasureChaseGoal(frame.chase)?.label})}</div>`:'';
+  return `<div class="hub-hud-main">${time}<span class="hub-hud-text">${esc(o.text)}${progress}</span>${side}</div>${chase}${beacon}${opening}`;
 }
 
 /** 只在内容变化时重写，避免每帧重建 DOM。返回这一行是否应显示。 */

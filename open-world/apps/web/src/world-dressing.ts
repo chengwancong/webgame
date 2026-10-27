@@ -188,7 +188,7 @@ export function groundLayers(map:DressedMap):Layer[]{
 /** Device-space view: device = (ox,oy) + iso × k, iso = project(cell). */
 export type GroundView={k:number;ox:number;oy:number;width:number;height:number;
  /** Mask downscale (4 for full-size chunks, 1–2 for the minimap) and mask blur in low-res px. */
- quality:number;blur:number};
+ quality:number;blur:number;pixelMask?:boolean};
 type Scratch={low:HTMLCanvasElement;soft:HTMLCanvasElement;fade:HTMLCanvasElement;full:HTMLCanvasElement};
 const scratches=new Map<string,Scratch>();
 function scratch(w:number,h:number,lw:number,lh:number){const key=`${w}x${h}:${lw}x${lh}`;let s=scratches.get(key);if(s)return s;
@@ -219,12 +219,12 @@ export function* groundDressingSteps(ctx:CanvasRenderingContext2D,map:DressedMap
   const low=s.low.getContext('2d')!;low.setTransform(1,0,0,1,0,0);low.clearRect(0,0,lw,lh);lowView(low);low.fillStyle=low.strokeStyle='#fff';low.lineCap=low.lineJoin='round';
   drawMask(low,items);
   if(layer.cut){low.globalCompositeOperation='destination-out';drawMask(low,layer.cut.filter(hit));low.globalCompositeOperation='source-over';}
-  if(layer.fade){const f=s.fade.getContext('2d')!;f.setTransform(1,0,0,1,0,0);f.clearRect(0,0,lw,lh);lowView(f);for(const it of layer.fade.filter(hit))it.draw(f);low.setTransform(1,0,0,1,0,0);low.globalCompositeOperation='destination-in';low.drawImage(s.fade,0,0);low.globalCompositeOperation='source-over';}
-  const soft=s.soft.getContext('2d')!;soft.setTransform(1,0,0,1,0,0);soft.clearRect(0,0,lw,lh);const blur=v.blur*(layer.soften??1);soft.filter=blur?`blur(${blur}px)`:'none';soft.drawImage(s.low,0,0);soft.filter='none';
-  const full=s.full.getContext('2d')!;full.setTransform(1,0,0,1,0,0);full.clearRect(x0,y0,x1-x0,y1-y0);full.imageSmoothingEnabled=true;
+  if(layer.fade&&!v.pixelMask){const f=s.fade.getContext('2d')!;f.setTransform(1,0,0,1,0,0);f.clearRect(0,0,lw,lh);lowView(f);for(const it of layer.fade.filter(hit))it.draw(f);low.setTransform(1,0,0,1,0,0);low.globalCompositeOperation='destination-in';low.drawImage(s.fade,0,0);low.globalCompositeOperation='source-over';}
+  const soft=s.soft.getContext('2d')!;soft.setTransform(1,0,0,1,0,0);soft.clearRect(0,0,lw,lh);const blur=v.pixelMask?0:v.blur*(layer.soften??1);soft.filter=blur?`blur(${blur}px)`:'none';soft.drawImage(s.low,0,0);soft.filter='none';
+  const full=s.full.getContext('2d')!;full.setTransform(1,0,0,1,0,0);full.clearRect(x0,y0,x1-x0,y1-y0);full.imageSmoothingEnabled=!v.pixelMask;
   full.drawImage(s.soft,m+x0/q,m+y0/q,(x1-x0)/q,(y1-y0)/q,x0,y0,x1-x0,y1-y0);
   full.globalCompositeOperation='source-in';full.setTransform(v.k,0,0,v.k,v.ox,v.oy);const pattern=full.createPattern(tile,'repeat')!;if(layer.scale)pattern.setTransform(new DOMMatrix().scale(layer.scale));full.fillStyle=pattern;full.fillRect((x0-v.ox)/v.k,(y0-v.oy)/v.k,(x1-x0)/v.k,(y1-y0)/v.k);full.globalCompositeOperation='source-over';full.setTransform(1,0,0,1,0,0);
-  ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=layer.alpha;if(layer.blend)ctx.globalCompositeOperation=layer.blend;ctx.drawImage(s.full,x0,y0,x1-x0,y1-y0,x0,y0,x1-x0,y1-y0);ctx.restore();
+  ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=v.pixelMask?1:layer.alpha;if(layer.blend&&!v.pixelMask)ctx.globalCompositeOperation=layer.blend;ctx.drawImage(s.full,x0,y0,x1-x0,y1-y0,x0,y0,x1-x0,y1-y0);ctx.restore();
   yield;
  }
  return complete;

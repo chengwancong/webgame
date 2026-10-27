@@ -20,6 +20,7 @@ import {worldPhaseVisible} from '../../../packages/rules/world-phase.ts';
 import {evaluateUnlocks} from '../../../packages/rules/quest-conditions.ts';
 import {recordFieldFact,type FieldFact} from '../../../packages/rules/starsea.ts';
 import {World,distance,type WorldCheckpoint,type CombatEvent} from '../../../packages/simulation/index.ts';
+import {movementView} from '../../../packages/simulation/client-movement.ts';
 import {activeWorldTier,worldTier,tierDifficulty,tierReward} from '../../../packages/rules/world-tier.ts';
 import {starseaKillReward} from './economy.ts';
 import {worldObjectiveHp} from '../../../packages/rules/world-objective.ts';
@@ -50,7 +51,7 @@ function spawnWave(data:FieldActivity,index:number,world:World){
 /** Trusted server clock and real World only. No completion, HP, kills, reward,
  * checkpoint or elapsed-time values can be supplied through the HTTP commands. */
 export function advanceFieldActivity(data:FieldActivity,now:number,maxTicks=300){
- if(data.status!=='running'||!data.battle)return;const world=World.restore(data.battle);if(now-(data.lastInputAt??data.startedAt)>1500)world.control(0,0);const definition=data.definition as Event,due=Math.max(0,Math.floor((now-data.startedAt)*30/1000)-data.tick),limit=data.kind==='event'?Math.ceil(definition.durationSeconds*30):Infinity;
+ if(data.status!=='running'||!data.battle)return;const world=World.restore(data.battle);if(!world.clientMovement)world.configureClientMovement('activity:'+data.instance+':'+randomUUID());if(world.clientMovement?.owner!=='client'&&now-(data.lastInputAt??data.startedAt)>1500)world.control(0,0);const definition=data.definition as Event,due=Math.max(0,Math.floor((now-data.startedAt)*30/1000)-data.tick),limit=data.kind==='event'?Math.ceil(definition.durationSeconds*30):Infinity;
  for(let n=0;n<Math.min(due,maxTicks)&&data.status==='running';n++){
   while(data.kind==='event'&&data.waves<data.waveCount&&world.tick>=data.waves*definition.waveIntervalSeconds*30)spawnWave(data,data.waves,world);
   world.step();data.tick=world.tick;data.renderEvents??=[];data.renderEvents.push(...world.events);if(data.renderEvents.length>256)data.renderEvents.splice(0,data.renderEvents.length-256);
@@ -62,7 +63,7 @@ export function advanceFieldActivity(data:FieldActivity,now:number,maxTicks=300)
 }
 export function fieldActivityView(data:FieldActivity,now:number,includeBattle=true):FieldActivityView{
  const definition=data.definition as Event,battle=includeBattle&&data.battle?structuredClone(data.battle):null,actors=(data.battle?.data.enemies??[]) as {reward:boolean;alive:boolean}[],defense=data.battle?.data.defense;if(battle)battle.data.events=structuredClone(data.renderEvents??[]);
- return {hexCombatStats:serverHexCombatStats(data.battle?.data.hexStatistics,data.battle?.data.stats?.rules),instance:data.instance,target:data.target,region:data.region,kind:data.kind,name:data.name,position:data.kind==='rare'&&data.status==='claimed'&&now>=data.cooldownUntil?(data.definition as Rare).spots[data.attempt%(data.definition as Rare).spots.length]:data.position,status:data.status==='claimed'&&data.kind!=='chest'?(now<data.cooldownUntil?'cooldown':'ready'):data.status,tick:data.tick,waves:data.waves,waveCount:data.waveCount,startedAt:data.startedAt,cooldownUntil:data.cooldownUntil,remainingSeconds:data.kind==='event'&&data.status==='running'?Math.max(0,definition.durationSeconds-data.tick/30):Math.max(0,(data.cooldownUntil-now)/1000),...(defense?{objectiveHp:defense.hp,objectiveMaxHp:defense.maxHp}:{}),killed:actors.filter(e=>e.reward&&!e.alive).length,total:actors.filter(e=>e.reward).length,reason:data.reason,...(includeBattle&&battle?{battle}:{})};
+ return {movement:movementView(data.battle?.data.clientMovement,data.battle?.data.hero?.position),hexCombatStats:serverHexCombatStats(data.battle?.data.hexStatistics,data.battle?.data.stats?.rules),instance:data.instance,target:data.target,region:data.region,kind:data.kind,name:data.name,position:data.kind==='rare'&&data.status==='claimed'&&now>=data.cooldownUntil?(data.definition as Rare).spots[data.attempt%(data.definition as Rare).spots.length]:data.position,status:data.status==='claimed'&&data.kind!=='chest'?(now<data.cooldownUntil?'cooldown':'ready'):data.status,tick:data.tick,waves:data.waves,waveCount:data.waveCount,startedAt:data.startedAt,cooldownUntil:data.cooldownUntil,remainingSeconds:data.kind==='event'&&data.status==='running'?Math.max(0,definition.durationSeconds-data.tick/30):Math.max(0,(data.cooldownUntil-now)/1000),...(defense?{objectiveHp:defense.hp,objectiveMaxHp:defense.maxHp}:{}),killed:actors.filter(e=>e.reward&&!e.alive).length,total:actors.filter(e=>e.reward).length,reason:data.reason,...(includeBattle&&battle?{battle}:{})};
 }
 export function registerFieldActivities(app:FastifyInstance,ctx:Context){
  const {pool,identity,state,lease,fail,write,fieldFreeze=parseFieldFreeze()}=ctx;
@@ -88,7 +89,7 @@ export function registerFieldActivities(app:FastifyInstance,ctx:Context){
     const build=resolveBuild(s),world=new World({...regionById(v.region),sprint:Boolean(!fieldFreeze.fieldSprint&&regionById(v.region).sprint&&s.starsea?.features.includes('sprint'))},build.stats,build.resolvedSkills,[],[],data.seed);world.tactics=resolveTactics(s.tactics,build.resolvedSkills);world.hero.position={...position};world.anchor={...position};if(v.kind==='event'){world.radius=Math.max(3,(definition as Event).radius-4);world.autoBounds={center:{...position},radius:Math.max(2,(definition as Event).radius-2)};}world.setMode(s.gear.length>=settings.capacity?'semi':'auto');
     if(v.kind==='event'&&(definition as Event).kind==='defend'){const d=definition as Event;if(!d.objectiveHp)throw Error('守护事件缺少目标生命');world.defense={position:{...position},hp:Math.round(worldObjectiveHp(d.objectiveHp,worldTables.zones.find(z=>z.id===d.zone)!.levelBand[1],data.level)*difficulty.hp),maxHp:Math.round(worldObjectiveHp(d.objectiveHp,worldTables.zones.find(z=>z.id===d.zone)!.levelBand[1],data.level)*difficulty.hp),radius:d.radius,requiredTicks:Math.round(d.durationSeconds*30),heldTicks:0,enemyIds:[],failed:false,complete:false};}
     await enterHexCombat(c,s.id,'activity:'+data.instance,world,undefined,data.startedAt);
-    spawnWave(data,0,world);data.battle=world.exportCheckpoint();
+    spawnWave(data,0,world);world.configureClientMovement('activity:'+data.instance+':'+randomUUID());data.battle=world.exportCheckpoint();
    }
    await persist(c,data);return {};
   });
@@ -98,7 +99,11 @@ export function registerFieldActivities(app:FastifyInstance,ctx:Context){
   const who=await identity(req),v=fieldActivityInputSchema.parse(req.body);return transaction(pool,async c=>{
    const s=await state(c,who,true);await lease(c,s,who,v.lease_id);const data=(await c.query('SELECT data FROM ow_field_activities WHERE character=$1 AND instance=$2 FOR UPDATE',[s.id,v.instance])).rows[0]?.data as FieldActivity|undefined;if(!data||data.status!=='running')fail('ACTIVITY','当前活动已经结束。');
    advanceFieldActivity(data!,Date.now());if(data!.status==='running'){
-    const world=World.restore(data!.battle!);data!.lastInputAt=Date.now();if(v.destination){if(!walkable(world.region,v.destination))fail('POSITION','目标不可通行。');world.go(v.destination);}if(v.mode){if(v.mode==='auto'&&s.gear.length>=settings.capacity)fail('BAG_FULL','背包已满，先整理背包再恢复自动。');world.setMode(v.mode);}if(v.movement){if(Math.abs(v.movement.x)>1||Math.abs(v.movement.y)>1)fail('INPUT','移动输入超出范围。');world.control(v.movement.x,v.movement.y);}if(v.skill)world.cast(v.skill,undefined,v.target);data!.battle=world.exportCheckpoint();
+    const world=World.restore(data!.battle!);data!.lastInputAt=Date.now();
+    if(v.clientMovementReset||!world.clientMovement)world.configureClientMovement('activity:'+data!.instance+':'+randomUUID());
+    if(v.clientMovement)world.receiveClientMovement(v.clientMovement);
+    if((v.destination||v.mode||v.movement)&&world.clientMovement?.owner==='client')world.cancelClientMovement('control-changed');
+    if(v.destination){if(!walkable(world.region,v.destination))fail('POSITION','目标不可通行。');world.go(v.destination);}if(v.mode){if(v.mode==='auto'&&s.gear.length>=settings.capacity)fail('BAG_FULL','背包已满，先整理背包再恢复自动。');world.setMode(v.mode);}if(v.movement){if(Math.abs(v.movement.x)>1||Math.abs(v.movement.y)>1)fail('INPUT','移动输入超出范围。');world.control(v.movement.x,v.movement.y);}if(v.skill)world.cast(v.skill,undefined,v.target);data!.battle=world.exportCheckpoint();
    }
    await persist(c,data!);return {activity:fieldActivityView(data!,Date.now(),false)};
   });

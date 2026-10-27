@@ -26,7 +26,7 @@ function buildRepIcon(id:string):string{const key=_REP_ICON[id];return key?`<img
 
 function _pbSprite(fx:number,fy:number,fw:number,fh:number,dw:number,dh:number):string{
  const s=dw/fw,bw=Math.round(_PB_W*s),bh=Math.round(_PB_H*s);
- return `<span aria-hidden="true" class="tp-icon" style="width:${dw}px;height:${dh}px;background:url(${_PB_SRC}) ${-Math.round(fx*s)}px ${-Math.round(fy*s)}px/${bw}px ${bh}px no-repeat"></span>`;
+ return `<span aria-hidden="true" class="tp-icon" data-pixel-atlas="${_PB_SRC}" data-pixel-rect="${fx},${fy},${fw},${fh}" style="width:${dw}px;height:${dh}px;background:url(${_PB_SRC}) ${-Math.round(fx*s)}px ${-Math.round(fy*s)}px/${bw}px ${bh}px no-repeat"></span>`;
 }
 /** 建筑近景图（480×320 → 120×80） */
 function buildCardImg(id:string):string{const f=_CARD_FRAMES[id];return f?_pbSprite(f[0],f[1],480,320,120,80):'';}

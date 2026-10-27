@@ -1,3 +1,5 @@
+import {pixelRuntime} from './pixel-texture.ts';
+import {arcPoints} from './vfx-geometry.ts';
 import type Phaser from 'phaser';
 import type {VfxPool} from './vfx-pool.ts';
 import manifest from '../../../packages/asset-manifest/combat-physical-fx.json';
@@ -8,6 +10,7 @@ export class WeaponSmear{
  constructor(private scene:Phaser.Scene,private pool:VfxPool){}
  ring(key:string,id:string,age:number,center:{x:number;y:number},width:number,height:number,alpha:number,tint:number,reduced:boolean){
   const clip=manifest.clips[id as keyof typeof manifest.clips];if(!clip||!this.pool.visible(center.x,center.y,width))return;
+  if(pixelRuntime.cellStage){const g=this.pool.graphics(key,center.y-1);if(!g)return;const phase=reduced?0:Math.min(7,Math.floor(age))/7*Math.PI*2;g.lineStyle(4,tint,alpha);for(let n=0;n<3;n++){const p=arcPoints(center.x,center.y,width/2,height/2,phase+n*Math.PI*2/3,phase+n*Math.PI*2/3+1.2,12);g.beginPath();p.forEach((q,i)=>i?g.lineTo(q.x,q.y):g.moveTo(q.x,q.y));g.strokePath();}return;}
   const phase=reduced?0:Math.min(7,Math.floor(age)),textureKey='physical-smear-plane:'+id+':'+phase;
   if(!this.scene.textures.exists(textureKey)){
    const source=this.scene.textures.get(clip.key),frame=source.get(clip.peak),image=source.getSourceImage() as HTMLImageElement,texture=this.scene.textures.createCanvas(textureKey,512,512)!;const g=texture.context;

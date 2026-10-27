@@ -12,6 +12,8 @@ export class AuthoritativeMotion {
  private offset=0;private interval=100;private jitter=0;
  private shown=-Infinity;private shownAt=Number.NaN;private clock=-Infinity;
  reset(){this.snapshots=[];this.interval=100;this.jitter=0;this.shown=-Infinity;this.shownAt=Number.NaN;this.clock=-Infinity;}
+ /** An explicit local ownership handoff must not replay older hero positions. */
+ rebase(id:string,position:Vec){for(const snapshot of this.snapshots)if(snapshot.poses.has(id))snapshot.poses.set(id,{...position});}
  accept(tick:number,positions:Iterable<[string,Vec]>,now:number){
   let last=this.snapshots.at(-1);
   if(last&&tick===last.tick)return;

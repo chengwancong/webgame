@@ -4,13 +4,17 @@ import Phaser from 'phaser';
 import {starseaAsset,starseaJSON,starseaTexture,type RuntimeAsset} from './starsea-runtime-assets.ts';
 import type {Point} from './starsea-assets.ts';
 import {project} from './iso.ts';
-import {visibleWorldChunks,chunkKey,chunkViewDistance,cameraView,screenOrigin,chunkBuild,chunkBudgetMs} from './world-chunks.ts';
+import {bindLandmarkPointer} from './landmark-pointer.ts';
+import {visibleWorldChunks,chunkKey,chunkViewDistance,cameraView,screenOrigin,chunkBuild,ChunkBuildBudget} from './world-chunks.ts';
 const {spareChunks}=chunkBuild;
 import {coastStone,islandEdges,islandPath,paintCoastSkirt,type EdgePiece,type IslandBoundary} from './island-edge.ts';
 import {mapScatter,groundDressingSteps,type Dressing} from './world-dressing.ts';
+import {pixelRuntime,onPixelChange} from './pixel-texture.ts';
+import {pixelTerrainBank,terrainTagCanvas,bakePixelGround} from './pixel-ground.ts';
+import type {TerrainBank} from './pixel-terrain.ts';
 export type StarseaMap={id:string;name:string;width:number;height:number;groundResource:string;backdropResource:string;landmarks:{id:string;x:number;y:number}[];roads:{resource:string;widthCells:number;points:[number,number][];tint?:string;wash?:{color:string;alpha:number}}[];decorations:{id:string;phaseTable?:'landmarks';resourceId:string;x:number;y:number;variant?:string;displayWidth?:number;depthMode:string;occlusion?:string;mirrorX?:boolean;tint?:string}[];boundary:IslandBoundary;groundZones?:{resource:string}[];dressing?:Dressing};
 export function loadStarseaMap(id:string){const asset=starseaAsset(id);if(asset?.runtime.kind!=='map'||!asset.runtime.file)return Promise.reject(Error('Unregistered starsea map '+id));return starseaJSON<StarseaMap>(asset.runtime.file);}
-type Node={id:string;phaseTable?:'landmarks';image:Phaser.GameObjects.Image;foreground:boolean};
+type Node={id:string;phaseTable?:'landmarks';image:Phaser.GameObjects.Image;foreground:boolean;bounds?:Phaser.Geom.Rectangle};
 const groundPadding=1,groundWidth=2178,groundHeight=1226,groundLeft=1089,groundTop=37;
 /** Presentation consumes the sealed map; collision stays in the shared Region/navigation model. */
 export class StarseaWorldRenderer{
@@ -18,8 +22,11 @@ export class StarseaWorldRenderer{
  hiddenDecorations:ReadonlySet<string>=new Set();
  private map?:StarseaMap;private chunks=new Map<string,{image:Phaser.GameObjects.Image;key:string;canvas:HTMLCanvasElement}>();private decorations=new Map<string,Node[]>();private decorationSource=new Map<string,StarseaMap['decorations']>();private edgeSource=new Map<string,EdgePiece[]>();private edges=new Map<string,Phaser.GameObjects.Image[]>();private sky?:Phaser.GameObjects.Image;
  private pendingChunks=0;private chunkMs:number[]=[];private job?:{key:string;steps:Generator<void,void>};
+ private buildBudget=new ChunkBuildBudget();private buildBudgetMs=0;
  private materials=new Map<string,HTMLCanvasElement>();private destroyed=false;private errors:string[]=[];
- constructor(private scene:Phaser.Scene,readonly mapId:string,source?:StarseaMap){void (source?Promise.resolve(source):loadStarseaMap(mapId)).then(map=>{if(this.destroyed)return;if(map.id!==mapId)throw Error('Map identity differs '+mapId);this.map=map;this.createLayers(map);}).catch(error=>{if(!this.destroyed){this.errors.push(String(error));console.error('[starsea-world]',error);}});}
+ private pixelOff:()=>void;
+ private invalidatePixelGround=()=>{if(this.destroyed)return;this.job?.steps.return();this.job=undefined;for(const key of [...this.chunks.keys()])this.release(key);this.materials.clear();};
+ constructor(private scene:Phaser.Scene,readonly mapId:string,source?:StarseaMap){this.pixelOff=onPixelChange(this.invalidatePixelGround);void (source?Promise.resolve(source):loadStarseaMap(mapId)).then(map=>{if(this.destroyed)return;if(map.id!==mapId)throw Error('Map identity differs '+mapId);this.map=map;this.createLayers(map);}).catch(error=>{if(!this.destroyed){this.errors.push(String(error));console.error('[starsea-world]',error);}});}
  private imageSource(file:string){const key=starseaTexture(file);if(!this.scene.textures.exists(key))throw Error('Unloaded starsea texture '+file);return this.scene.textures.get(key).getSourceImage() as HTMLImageElement;}
  private createLayers(map:StarseaMap){
   const sky=starseaAsset(map.backdropResource);if(!sky?.runtime.file)throw Error('Map sky missing '+map.id);this.sky=this.scene.add.image(0,0,starseaTexture(sky.runtime.file)).setOrigin(0).setScrollFactor(0).setDepth(-20000);
@@ -55,15 +62,32 @@ export class StarseaWorldRenderer{
   const dressing=groundDressingSteps(ctx,map,{k:1,ox:groundLeft-origin.x,oy:groundTop-origin.y,width:groundWidth,height:groundHeight,quality:4,blur:2},(resource,tint,wash,plain)=>{const asset=starseaAsset(resource);if(!asset)throw Error('Ground dressing missing '+resource);return this.material(asset,tint,wash,plain);});
   while(!dressing.next().done){spent+=performance.now()-started;yield;started=performance.now();}spent+=performance.now()-started;
   this.chunkMs.push(spent);if(this.chunkMs.length>20)this.chunkMs.shift();
+  let output=canvas,left=origin.x-groundLeft,top=origin.y-groundTop,pixel=false;
+  if(pixelRuntime.cellStage>0){
+   const banks:TerrainBank[]=[],tags=new Map<string,HTMLCanvasElement>();let ready=true;
+   const material=(resource:string,tint?:string,wash?:{color:string;alpha:number},plain=false)=>{
+    const key=JSON.stringify([resource,tint,wash,plain]);const existing=tags.get(key);if(existing)return existing;
+    const asset=starseaAsset(resource);if(!asset?.runtime.file){ready=false;return;}
+    const bank=pixelTerrainBank(asset.runtime.file,this.material(asset,tint,wash,plain),resource,banks.length,this.invalidatePixelGround);if(!bank){ready=false;return;}banks.push(bank);const tag=terrainTagCanvas(bank);tags.set(key,tag);return tag;
+   };
+   const base=material(map.groundResource),tagCanvas=document.createElement('canvas');tagCanvas.width=groundWidth;tagCanvas.height=groundHeight;const tag=tagCanvas.getContext('2d')!;
+   if(base){tag.translate(groundLeft-origin.x,groundTop-origin.y);tag.beginPath();this.rect(tag,cx*32-groundPadding,cy*32-groundPadding,32+groundPadding*2,32+groundPadding*2);tag.clip();
+    if(map.boundary.points?.length){const rock=material(coastStone(map));if(rock)paintCoastSkirt(tag,map,project,map.boundary.thicknessCells*60,rock,.5);}tag.clip(islandPath(map,project));tag.fillStyle=tag.createPattern(base,'repeat')!;tag.fillRect(-map.height*32,0,(map.width+map.height)*32,(map.width+map.height)*18);tag.setTransform(1,0,0,1,0,0);
+    const masks=groundDressingSteps(tag,map,{k:1,ox:groundLeft-origin.x,oy:groundTop-origin.y,width:groundWidth,height:groundHeight,quality:1,blur:0,pixelMask:true},material);while(!masks.next().done)yield;
+    if(ready){const result=yield* bakePixelGround(canvas,banks,left,top,map.id,tagCanvas);output=result.canvas;left=result.x;top=result.y;pixel=true;}
+   }tagCanvas.width=0;tagCanvas.height=0;
+  }
   // A plain Texture uploads the finished canvas once. CanvasTexture (including
   // addCanvas) allocates ImageData for pixel access, which ground never needs.
   // Decorations are made hidden in batches and shown together with their ground; an abandoned job destroys them.
   const decorations:Node[]=[],edges:Phaser.GameObjects.Image[]=[];let registered=false;
   try{
-   for(const d of this.decorationSource.get(cell)??[]){decorations.push({id:d.id,phaseTable:d.phaseTable,image:this.sprite(d).setDepth(d.depthMode==='ground'?-9999:project(d).y+1).setVisible(false),foreground:d.occlusion==='foreground'});if(decorations.length%24===0)yield;}
+   for(const d of this.decorationSource.get(cell)??[]){const image=this.sprite(d).setDepth(d.depthMode==='ground'?-9999:project(d).y+1).setVisible(false);
+    const forge=d.id==='forge-visual'?map.landmarks.find(l=>l.id==='forge'):undefined;if(forge)bindLandmarkPointer(image,{kind:'forge',position:{x:forge.x,y:forge.y}});
+    const foreground=d.occlusion==='foreground';decorations.push({id:d.id,phaseTable:d.phaseTable,image,foreground,bounds:foreground?image.getBounds():undefined});if(decorations.length%24===0)yield;}
    for(const d of this.edgeSource.get(cell)??[]){edges.push(this.sprite(d).setDepth(-11000).setVisible(false));if(edges.length%24===0)yield;}
    yield;
-   ctx.setTransform(1,0,0,1,0,0);const texture=this.scene.textures.create(key,canvas,groundWidth,groundHeight);if(!texture)throw Error('Unable to register ground '+key);texture.add('__BASE',0,0,0,groundWidth,groundHeight);const image=this.scene.add.image(origin.x-groundLeft,origin.y-groundTop,key).setOrigin(0).setDepth(-10000);this.chunks.set(cell,{image,key,canvas});
+   ctx.setTransform(1,0,0,1,0,0);const texture=this.scene.textures.create(key,output,output.width,output.height);if(!texture)throw Error('Unable to register ground '+key);texture.add('__BASE',0,0,0,output.width,output.height);if(pixel)texture.setFilter(1);const image=this.scene.add.image(left,top,key).setOrigin(0).setScale(pixel?2:1).setDepth(-10000).setData('pixel-authored',pixel);this.chunks.set(cell,{image,key,canvas:output});if(output!==canvas){canvas.width=0;canvas.height=0;}
    this.decorations.set(cell,decorations);for(const edge of edges)edge.setVisible(true);this.edges.set(cell,edges);registered=true;
   }finally{if(!registered){for(const d of decorations)d.image.destroy();for(const edge of edges)edge.destroy();}}
  }
@@ -76,14 +100,14 @@ export class StarseaWorldRenderer{
   if(this.job&&!wanted.has(this.job.key)){this.job.steps.return();this.job=undefined;}
   const pending=[...wanted].filter(key=>!this.chunks.has(key)&&key!==this.job?.key).sort((a,b)=>chunkViewDistance(a,view)-chunkViewDistance(b,view));this.pendingChunks=pending.length+(this.job?1:0);
   // Bound creation work per frame (at least one step); closest ground arrives first.
-  const urgent=[...onScreen].some(key=>!this.chunks.has(key)),deadline=performance.now()+chunkBudgetMs(!this.chunks.has(chunkKey(hero)),urgent);
+  const urgent=[...onScreen].some(key=>!this.chunks.has(key));this.buildBudgetMs=this.buildBudget.next(hero,!this.chunks.has(chunkKey(hero)),urgent);const deadline=performance.now()+this.buildBudgetMs;
   do{
    if(!this.job){const key=pending.shift();if(!key)break;const [x,y]=key.split(',').map(Number);this.job={key,steps:this.chunk(x,y)};}
    if(this.job.steps.next().done){this.job=undefined;this.pendingChunks--;}
   }while(performance.now()<deadline);
-  const foot=project(hero);for(const bucket of this.decorations.values())for(const node of bucket){node.image.setVisible(!this.hiddenDecorations.has(node.id)&&(!node.phaseTable||Boolean(phase?.[node.phaseTable].includes(node.id))));const hidden=node.foreground&&node.image.depth>foot.y&&node.image.getBounds().contains(foot.x,foot.y-35);node.image.setAlpha(hidden?.42:1);}
+  const foot=project(hero);for(const bucket of this.decorations.values())for(const node of bucket){const visible=!this.hiddenDecorations.has(node.id)&&(!node.phaseTable||Boolean(phase?.[node.phaseTable].includes(node.id)));node.image.setVisible(visible);const hidden=visible&&node.foreground&&node.image.depth>foot.y&&node.bounds!.contains(foot.x,foot.y-35);node.image.setAlpha(hidden?.42:1);}
  }
  get mapData(){return this.map;}
- diagnostics(){return{map:this.mapId,ready:Boolean(this.map),chunks:this.chunks.size,pendingChunks:this.pendingChunks,textureBytes:this.chunks.size*groundWidth*groundHeight*4,decorations:[...this.decorations.values()].reduce((n,b)=>n+b.length,0),totalDecorations:this.map?.decorations.length??0,boundaryModules:[...this.edges.values()].reduce((n,b)=>n+b.length,0),materials:this.materials.size,dressingMs:this.chunkMs.map(n=>Math.round(n*10)/10),errors:[...this.errors]};}
- destroy(){if(this.destroyed)return;this.destroyed=true;this.job?.steps.return();this.job=undefined;for(const node of this.chunks.values()){node.image.destroy();this.scene.textures.remove(node.key);node.canvas.width=0;node.canvas.height=0;}this.chunks.clear();for(const bucket of this.decorations.values())for(const node of bucket)node.image.destroy();for(const bucket of this.edges.values())for(const node of bucket)node.destroy();this.sky?.destroy();this.materials.clear();this.decorations.clear();this.edges.clear();this.decorationSource.clear();this.edgeSource.clear();}
+ diagnostics(){return{map:this.mapId,ready:Boolean(this.map),chunks:this.chunks.size,pendingChunks:this.pendingChunks,buildBudgetMs:this.buildBudgetMs,textureBytes:this.chunks.size*groundWidth*groundHeight*4,decorations:[...this.decorations.values()].reduce((n,b)=>n+b.length,0),totalDecorations:this.map?.decorations.length??0,boundaryModules:[...this.edges.values()].reduce((n,b)=>n+b.length,0),materials:this.materials.size,dressingMs:this.chunkMs.map(n=>Math.round(n*10)/10),errors:[...this.errors]};}
+ destroy(){if(this.destroyed)return;this.destroyed=true;this.pixelOff();this.job?.steps.return();this.job=undefined;for(const node of this.chunks.values()){node.image.destroy();this.scene.textures.remove(node.key);node.canvas.width=0;node.canvas.height=0;}this.chunks.clear();for(const bucket of this.decorations.values())for(const node of bucket)node.image.destroy();for(const bucket of this.edges.values())for(const node of bucket)node.destroy();this.sky?.destroy();this.materials.clear();this.decorations.clear();this.edges.clear();this.decorationSource.clear();this.edgeSource.clear();}
 }

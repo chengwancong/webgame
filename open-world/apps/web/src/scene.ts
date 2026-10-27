@@ -1,10 +1,16 @@
 import {newFollow,stepFollow} from './camera-follow.ts';
+import {applyPixelMode,hookPixelModeShutdown,type PixelSettings} from './pixel-mode.ts';
+import {pixelRuntime,onPixelChange} from './pixel-texture.ts';
+import {pixelAsset,pixelActorHeight} from './pixel-assets.ts';
+import {authoredActorPose,pixelFeedbackTint} from './pixel-actor-view.ts';
 import {interactionReach} from '../../../packages/rules/world-interactions.ts';
+import {bindLandmarkPointer,landmarkPointerFallback,landmarkInteractionRange,type LandmarkPointerTarget} from './landmark-pointer.ts';
 import {CombatSoundEvents,type SoundDispatch} from './audio/combat-sound-events.ts';
 import {dressingResources} from './world-dressing.ts';
 import {FieldEventEffects} from './field-event-effects.ts';
 import {AuthoritativeMotion} from './authoritative-motion.ts';
 import {LocalPrediction} from './local-prediction.ts';
+import type {ClientMovementPresentation} from './client-movement-context.ts';
 import {fieldRegionInfo} from '../../../packages/content/index.ts';
 import {worldTables} from '../../../packages/content/world-tables.ts';
 import type {WorldPhaseView} from '../../../packages/contracts/open-world.ts';
@@ -25,7 +31,7 @@ import {distance,type World,type Entity} from '../../../packages/simulation/inde
 import type {Vec,Reward} from '../../../packages/contracts/index.ts';
 import type {Region} from '../../../packages/content/index.ts';
 import environment from '../../../packages/asset-manifest/environment.v2.json';
-import {groundTexture} from './world-art.ts';
+import {groundTexture,groundTexturePlacement} from './world-art.ts';
 import {actorCatalog} from '../../../packages/asset-manifest/actors.ts';
 import {ChapterEffects,preloadChapterArt} from './chapter-effects.ts';
 import {SkillEffects,preloadSkillEffects,extraClips} from './combat-vfx.ts';
@@ -69,7 +75,7 @@ export type EffectPresenter={consume(w:World):void;draw(w:World,fraction:number)
 const BOSS_PUSH_RANGE=14;
 /** FP6: 阻止移动的状态类型集合（用于决定是否关闭本机预测）。 */
 const MOVE_BLOCK_KINDS=new Set(['stun','petrify','freeze','time_stop','root','fear']);
-export interface ViewBridge{skillSound?:(cue:SoundDispatch,pan:number,visible:boolean)=>void;worldPhase?:()=>WorldPhaseView|undefined;worldMap?:StarseaMap;planeMap?:PlaneMap;interactKey?:()=>string;starSea?:()=>StarseaSceneView|undefined;starSeaInteract?:(id:string)=>void;storyObjects?:()=>StoryObject[];storyEncounter?:()=>StoryEncounterView|undefined;storyInteract?:(id:string)=>void;authoritativeWorld?:boolean;authoritativeSequence?:number;appearanceForActor?:(id:string)=>ResolvedAppearance|undefined;go?:(point:Vec)=>void;selectEnemy?:(id:string)=>void;allowDeathPlayback?:boolean;playbackRate?:number;stepFrames?:number;effectFactory?:(scene:Phaser.Scene,attachment:(id:string,name:SocketName)=>{x:number;y:number}|undefined,pose:()=>RenderPose&{skill:string}|undefined)=>EffectPresenter;/** 野外击杀此刻是否由服务端发奖（开场沙盒、地城结算时为 false），决定要不要蹦金币和强化石。 */killSpoils?:()=>boolean;/** 回执带回的材料，场景取走后在最近一次击杀处蹦出。 */takeSpoils?:()=>SpoilItem[];/** Z3 宠物：返回上阵宠物的 runtime id（如 ss-pet-wind-free-young），无则 null。 */activePetRuntime?:()=>string|null;world:World;rewards:Reward[];panel:string;loggedIn:boolean;resolvedAppearance?:ResolvedAppearance;step():void;interact():void;cast(index:number):void;castAt?:(point:Vec)=>boolean;pause():void;open(panel:string):void;pick(id:string):void;sound(kind:string):void;motionReduced:boolean;}
+export interface ViewBridge{pixelView?:PixelSettings;actorArtHints?:()=>readonly string[];clientMovementFrame?:(now:number)=>ClientMovementPresentation|undefined;movementInput?:()=>Vec;skillSound?:(cue:SoundDispatch,pan:number,visible:boolean)=>void;worldPhase?:()=>WorldPhaseView|undefined;worldMap?:StarseaMap;planeMap?:PlaneMap;interactKey?:()=>string;starSea?:()=>StarseaSceneView|undefined;starSeaInteract?:(id:string)=>void;storyObjects?:()=>StoryObject[];storyEncounter?:()=>StoryEncounterView|undefined;storyInteract?:(id:string)=>void;authoritativeWorld?:boolean;authoritativeSequence?:number;appearanceForActor?:(id:string)=>ResolvedAppearance|undefined;go?:(point:Vec)=>void;selectEnemy?:(id:string)=>void;allowDeathPlayback?:boolean;playbackRate?:number;stepFrames?:number;effectFactory?:(scene:Phaser.Scene,attachment:(id:string,name:SocketName)=>{x:number;y:number}|undefined,pose:()=>RenderPose&{skill:string}|undefined)=>EffectPresenter;/** 野外击杀此刻是否由服务端发奖（开场沙盒、地城结算时为 false），决定要不要蹦金币和强化石。 */killSpoils?:()=>boolean;/** 回执带回的材料，场景取走后在最近一次击杀处蹦出。 */takeSpoils?:()=>SpoilItem[];/** Z3 宠物：返回上阵宠物的 runtime id（如 ss-pet-wind-free-young），无则 null。 */activePetRuntime?:()=>string|null;world:World;rewards:Reward[];panel:string;loggedIn:boolean;resolvedAppearance?:ResolvedAppearance;step():void;interact():void;cast(index:number):void;castAt?:(point:Vec)=>boolean;pause():void;open(panel:string):void;pick(id:string):void;sound(kind:string):void;motionReduced:boolean;/** 像素画风开启时禁用首领镜头推近 */pixelModeOn?:boolean;}
 export {project,unproject} from './iso.ts';
 type ActorView={sprite:Phaser.GameObjects.Sprite;shadow:Phaser.GameObjects.Image;hp:Phaser.GameObjects.Graphics;name?:Phaser.GameObjects.Text;status?:Phaser.GameObjects.Text;rim?:Phaser.GameObjects.Sprite[];tags?:Phaser.GameObjects.Text[];tagKey?:string;action:string;facing:number;art:string;deathAt?:number;actionUntil?:number;actionStarted:number;wardrobe?:WardrobeRenderer;native?:StarseaNativeActor;awaitingArt?:boolean};
 export class WorldScene extends Phaser.Scene {
@@ -83,7 +89,8 @@ export class WorldScene extends Phaser.Scene {
  private pendingInteraction?:{world:World;point:Vec;range:number;valid:()=>boolean;action:()=>void};
  private groundLoot?:GroundLootRenderer;private spoils?:KillSpoils;
  private networkSequence=-1;private partyCasts=new Map<string,{skill:string;action:'attack'|'skill';started:number;windup:number;end:number}>();
- private networkMotion=new AuthoritativeMotion();private localPrediction=new LocalPrediction();private renderNow=0;private previousRenderNow=0;
+ private networkMotion=new AuthoritativeMotion();private localPrediction=new LocalPrediction();private renderNow=0;private previousRenderNow=0;private heroPresentation?:Vec;private clientPose?:ClientMovementPresentation;private clientPoseKey='';private clientWasActive=false;
+ private diagnosticsOn=import.meta.env.DEV||new URLSearchParams(location.search).get('diagnostics')==='1';
  private previousWorld?:World;private previous=new Map<string,Vec>();
  private numbers?:WorldNumbers;private damageNumbersCreated=0;private backdropFrames=0;private heroDeathPlayback=new HeroDeathPlayback();
  private killStreak=new KillStreak();private killStreakRenderer?:KillStreakRenderer;private _killStreakRose=false;
@@ -109,6 +116,9 @@ export class WorldScene extends Phaser.Scene {
   preloadBossBannerArt(this);
  }
  create(){
+ const clearLegacyGround=()=>{for(const [key,chunk] of this.chunks){chunk.destroy(true);for(const node of this.chunkDecorations.get(key)??[])node.destroy();}this.chunks.clear();this.chunkDecorations.clear();};
+ const pixelGroundOff=onPixelChange(clearLegacyGround);this.events.on('pixel-ground-ready',clearLegacyGround);this.events.once('shutdown',()=>{pixelGroundOff();this.events.off('pixel-ground-ready',clearLegacyGround);});
+ hookPixelModeShutdown(this);if(this.bridge.pixelView?.on)applyPixelMode(this,this.bridge.pixelView);
  this.vignette=this.add.graphics().setScrollFactor(0).setDepth(20000);
  this.numbers=new WorldNumbers(this,()=>this.bridge.motionReduced,()=>this.damageNumbersCreated++);
  this.groundLoot=new GroundLootRenderer(this,()=>Boolean(this.bridge.motionReduced));this.spoils=new KillSpoils(this,()=>Boolean(this.bridge.motionReduced));
@@ -120,7 +130,7 @@ export class WorldScene extends Phaser.Scene {
  const gameCanvas=this.game.canvas.parentElement!;
  this.warningUI=new WarningUI(gameCanvas);
  const atlas=this.textures.get('world-props');const frames=environment.frames;for(const [id,[x,y,w,h]] of Object.entries(frames))atlas.add(id,0,x,y,w,h);
- const stamp=this.add.graphics();stamp.fillStyle(0xffffff);stamp.fillEllipse(20,8,40,16);stamp.generateTexture('unit-shadow',40,16);stamp.destroy();this.health=this.add.graphics();this.groundMarks=this.add.graphics();
+ const stamp=this.add.graphics();stamp.fillStyle(0xffffff);stamp.fillEllipse(20,8,40,16);stamp.generateTexture('unit-shadow',40,16);stamp.destroy();this.health=this.add.graphics().setDepth(9000);this.groundMarks=this.add.graphics().setDepth(-8000);
  this.legacyArt=new LegacyActorArt(this);
  createStarseaAnimations(this);
  for(const key of ['W','A','S','D','UP','DOWN','LEFT','RIGHT','E','SPACE','ONE','TWO','THREE','FOUR','B','K','ESC'])this.keys[key]=this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes[key as keyof typeof Phaser.Input.Keyboard.KeyCodes]);
@@ -129,7 +139,9 @@ export class WorldScene extends Phaser.Scene {
    this.pendingInteraction=undefined;
    const starId=over?.find(o=>o.getData('starsea-object-id'))?.getData('starsea-object-id');if(starId){const object=this.starSeaStory?.object(starId);if(object&&object.enabled!==false&&this.bridge.starSeaInteract)this.walkToInteraction(object.position,object.reach??interactionReach.story,()=>this.starSeaStory?.object(starId)?.enabled!==false,()=>this.bridge.starSeaInteract?.(starId));return;}
    const storyTarget=over?.find(o=>o.getData('story-object-id'))?.getData('story-object-id');if(storyTarget){this.bridge.storyInteract?.(storyTarget);return;}
-   const point=unproject({x:pointer.worldX,y:pointer.worldY});if(this.bridge.castAt?.(point))return;if(this.bridge.authoritativeWorld){const portal=this.bridge.world.region.portal;if(portal&&Math.hypot(portal.x-point.x,portal.y-point.y)<4){this.walkToInteraction(portal,4);return;}const enemy=this.bridge.world.enemies.find(e=>e.alive&&Math.hypot(e.position.x-point.x,e.position.y-point.y)<1.2);if(enemy){this.bridge.selectEnemy?.(enemy.id);this.bridge.cast(0);}else this.bridge.go?.(point);return;}
+   const point=unproject({x:pointer.worldX,y:pointer.worldY});if(this.bridge.castAt?.(point))return;
+   const landmark=(over?.find(o=>o.getData('landmark-pointer'))?.getData('landmark-pointer') as LandmarkPointerTarget|undefined)??landmarkPointerFallback(point,this.bridge.world.region);
+   if(this.bridge.authoritativeWorld){if(landmark?.kind==='portal'){this.walkToInteraction(landmark.position,landmarkInteractionRange(landmark.kind));return;}const enemy=this.bridge.world.enemies.find(e=>e.alive&&Math.hypot(e.position.x-point.x,e.position.y-point.y)<1.2);if(enemy){this.bridge.selectEnemy?.(enemy.id);this.bridge.cast(0);}else this.bridge.go?.(point);return;}
    const w=this.bridge.world;
    const clickedId=over?.find(o=>o.getData('ground-reward-id'))?.getData('ground-reward-id');
    const clickedLoot=this.bridge.rewards.find(r=>r.id===clickedId&&r.region===w.region.id);
@@ -140,19 +152,17 @@ export class WorldScene extends Phaser.Scene {
    if(e){w.targetId=e.id;this.bridge.cast(0);return;}
    
    // 检查是否点击可交互对象
-   const interactRange=4;
    const lootRange=settings.pickupRadius;
-   const safeRange=3;
    
    // 传送门
-   if(w.region.portal&&Math.hypot(w.region.portal.x-point.x,w.region.portal.y-point.y)<interactRange){
-     this.walkToInteraction(w.region.portal,interactRange);
+   if(landmark?.kind==='portal'){
+     this.walkToInteraction(landmark.position,landmarkInteractionRange(landmark.kind));
      return;
    }
    
    // 首领结界
-   if(w.region.bossPortal&&Math.hypot(w.region.bossPortal.x-point.x,w.region.bossPortal.y-point.y)<interactRange){
-     this.walkToInteraction(w.region.bossPortal,interactRange);
+   if(landmark?.kind==='boss'){
+     this.walkToInteraction(landmark.position,landmarkInteractionRange(landmark.kind));
      return;
    }
    
@@ -164,14 +174,12 @@ export class WorldScene extends Phaser.Scene {
    }
    
    // 安全点
-   const checkpoint=w.region.landmarks.find(l=>l.kind==='safe'&&Math.hypot(l.x-point.x,l.y-point.y)<safeRange);
-   if(checkpoint){
-     this.walkToInteraction(checkpoint,safeRange);
+   if(landmark?.kind==='safe'){
+     this.walkToInteraction(landmark.position,landmarkInteractionRange(landmark.kind));
      return;
    }
 
-   const forge=w.region.landmarks.find(l=>l.kind==='forge'&&distance(l,point)<interactRange);
-   if(forge){this.walkToInteraction(forge,5);return;}
+   if(landmark?.kind==='forge'){this.walkToInteraction(landmark.position,landmarkInteractionRange(landmark.kind));return;}
    
    // 默认寻路
    w.go(point);
@@ -187,7 +195,7 @@ export class WorldScene extends Phaser.Scene {
  private checkInteraction(){
  const pending=this.pendingInteraction;if(!pending)return;
  const world=this.bridge.world;
- if(pending.world!==world||this.bridge.panel||!this.bridge.loggedIn||!pending.valid()||!this.bridge.authoritativeWorld&&!world.isWalkingTo(pending.point)){this.pendingInteraction=undefined;return;}
+ if((this.bridge.authoritativeWorld?pending.world.region.id!==world.region.id:pending.world!==world)||this.bridge.panel||!this.bridge.loggedIn||!pending.valid()||!this.bridge.authoritativeWorld&&!world.isWalkingTo(pending.point)){this.pendingInteraction=undefined;return;}
  if(world.paused)return;
  if(distance(world.hero.position,pending.point)<pending.range&&lineOfSight(world.region,world.hero.position,pending.point)){this.pendingInteraction=undefined;if(this.bridge.authoritativeWorld)this.bridge.go?.({...world.hero.position});else world.cancelWalk();pending.action();}
  }
@@ -203,7 +211,7 @@ export class WorldScene extends Phaser.Scene {
  private drawChunk(r:Region,cx:number,cy:number){
  const items:Phaser.GameObjects.GameObject[]=[];
  const origin=project({x:cx*32,y:cy*32}),key=groundTexture(this,r,cx,cy);
- const ground=this.add.image(origin.x-1281,origin.y-145,key).setOrigin(0).setDepth(-10000);ground.once('destroy',()=>this.textures.remove(key));items.push(ground);
+ const placement=groundTexturePlacement(this,key),ground=this.add.image(origin.x-1281+(placement?.x??0),origin.y-145+(placement?.y??0),key).setOrigin(0).setScale(placement?.scale??1).setDepth(-10000).setData('pixel-authored',Boolean(placement));ground.once('destroy',()=>this.textures.remove(key));items.push(ground);
  const chapter=['tundra','abyss','dragonbone'].includes(r.theme);
  const propAt=(x:number,y:number,frame:string,width:number)=>{const p=project({x,y}),theme=environment.themedProps[r.theme as keyof typeof environment.themedProps],mapped=theme&&frame==='oak'?theme.wall:frame;const anchor=environment.anchors[mapped as keyof typeof environment.anchors]??[.5,.91];const image=this.add.image(p.x,p.y+10,'world-props',mapped).setOrigin(anchor[0],anchor[1]);if(theme)image.setTint(theme.tint);image.setScale(width/image.width).setDepth(p.y+1);image.setData('occluder',true);items.push(image);return image;};
  for(const o of r.obstacles){if(Math.floor(o.x/32)!==cx||Math.floor(o.y/32)!==cy)continue;
@@ -214,11 +222,11 @@ export class WorldScene extends Phaser.Scene {
  for(let n=0;n<r.width;n+=4){for(const y of [-1,r.height+1])if(Math.floor(n/32)===cx&&cy===(y<0?0:Math.ceil(r.height/32)-1))propAt(n,y,n%8?'rocks':'oak',n%8?180:285);}
  for(let n=2;n<r.height;n+=4){for(const x of [-1,r.width+1])if(Math.floor(n/32)===cy&&cx===(x<0?0:Math.ceil(r.width/32)-1))propAt(x,n,n%8===2?'oak':'rocks',n%8===2?275:170);}
  for(const l of r.landmarks){if(Math.floor(l.x/32)!==cx||Math.floor(l.y/32)!==cy)continue;const p=project(l),prop=this.add.graphics();
- if(l.kind==='boss'||l.kind==='portal'){propAt(l.x,l.y,'portal',170).setTint(l.kind==='boss'?0xddaaff:0xffffff);} else if(l.kind==='bridge'){propAt(l.x,l.y,'bridge',140).setDepth(p.y-1).setData('occluder',false);}
+ if(l.kind==='boss'||l.kind==='portal'){bindLandmarkPointer(propAt(l.x,l.y,'portal',170).setTint(l.kind==='boss'?0xddaaff:0xffffff),{kind:l.kind,position:{x:l.x,y:l.y}});} else if(l.kind==='bridge'){propAt(l.x,l.y,'bridge',140).setDepth(p.y-1).setData('occluder',false);}
  else if(l.kind==='forge'){
- propAt(l.x,l.y,'forge',132);
+ bindLandmarkPointer(propAt(l.x,l.y,'forge',132),{kind:'forge',position:{x:l.x,y:l.y}});
  }else{
- propAt(l.x,l.y,'sign',66);
+ const sign=propAt(l.x,l.y,'sign',66);if(l.kind==='safe')bindLandmarkPointer(sign,{kind:'safe',position:{x:l.x,y:l.y}});
  }
  prop.setDepth(p.y);const text=this.add.text(p.x,p.y+18,l.name,{resolution:worldTextResolution(),fontFamily:resolvedToken('Font.Family'),fontSize:resolvedToken('Font.Size.Body'),color:resolvedToken('Color.TextPrimary'),backgroundColor:resolvedToken('Color.PanelInset'),padding:{x:8,y:4}}).setOrigin(0,0).setDepth(p.y+1);text.setPosition(Math.round(p.x-text.width/2),Math.round(p.y+18));this.landmarkLabels.add(text);text.once('destroy',()=>this.landmarkLabels.delete(text));items.push(prop,text);
  }
@@ -226,7 +234,7 @@ export class WorldScene extends Phaser.Scene {
  for(const item of items.slice(1)){container.remove(item);}
  this.chunkDecorations.set(`${cx},${cy}`,items.slice(1));this.chunks.set(`${cx},${cy}`,container); // props are retained per region, terrain chunks can unload independently
  }
- private resetRegion(){this.spoils?.clear();this.networkMotion.reset();this.localPrediction.reset();this.networkSequence=-1;this.fieldEventEffects?.destroy();this.fieldEventEffects=undefined;this.feedback.reset();this.numbers?.reset();this.killStreak.reset();this.bossPhaseBanner.reset();this.mimicWaking.clear();this.mimicWakeDone.clear();this.questGuide?.destroy();this.questGuide=undefined;this.interactBubble?.destroy();this.interactBubble=undefined;this.storyRenderer?.destroy();this.storyRenderer=undefined;this.starSeaStory?.destroy();this.starSeaStory=undefined;this.starSeaWorld?.destroy();this.starSeaWorld=undefined;this.planeScene?.destroy();this.planeScene=undefined;for(const a of this.actors.values())this.destroyActor(a);this.actors.clear();for(const c of this.chunks.values())c.destroy(true);this.chunks.clear();this.chunkDecorations.clear();this.groundLoot?.clear();
+ private resetRegion(){this.spoils?.clear();this.networkMotion.reset();this.localPrediction.reset();this.clientPoseKey='';this.clientWasActive=false;this.networkSequence=-1;this.fieldEventEffects?.destroy();this.fieldEventEffects=undefined;this.feedback.reset();this.numbers?.reset();this.killStreak.reset();this.bossPhaseBanner.reset();this.mimicWaking.clear();this.mimicWakeDone.clear();this.questGuide?.destroy();this.questGuide=undefined;this.interactBubble?.destroy();this.interactBubble=undefined;this.storyRenderer?.destroy();this.storyRenderer=undefined;this.starSeaStory?.destroy();this.starSeaStory=undefined;this.starSeaWorld?.destroy();this.starSeaWorld=undefined;this.planeScene?.destroy();this.planeScene=undefined;for(const a of this.actors.values())this.destroyActor(a);this.actors.clear();for(const c of this.chunks.values())c.destroy(true);this.chunks.clear();this.chunkDecorations.clear();this.groundLoot?.clear();
  // Z3 宠物跟随：区域切换时销毁精灵
  this.petFollower?.destroy();this.petFollower=undefined;this.petRuntime=null;
  // Region decoration nodes are tagged separately through their depths.
@@ -234,7 +242,7 @@ export class WorldScene extends Phaser.Scene {
  for(const child of [...(this.children?.list??[])])child.destroy();
  this.heroCast=undefined;this.chapterEffects=new ChapterEffects(this,()=>this.bridge.motionReduced);this.skillEffects=this.makeEffects();
  this.previous.clear();this.enemyCasts.clear();
- this.vignette=this.add.graphics().setScrollFactor(0).setDepth(20000);this.health=this.add.graphics();this.groundMarks=this.add.graphics();this.shieldBars.clear();this.transient=this.add.graphics();
+ this.vignette=this.add.graphics().setScrollFactor(0).setDepth(20000);this.health=this.add.graphics().setDepth(9000);this.groundMarks=this.add.graphics().setDepth(-8000);this.shieldBars.clear();this.transient=this.add.graphics();
  this.killStreakRenderer=new KillStreakRenderer(this,this.killStreak,()=>this.bridge.motionReduced);
  this.bossPhaseBannerRenderer=new BossPhaseBannerRenderer(this,this.bossPhaseBanner,()=>this.vignette);
  this.regionId=this.bridge.world.region.presentationKey??this.bridge.world.region.id;this.accumulator=0;this.backdropFrames=45;this.cameras.main.setBackgroundColor(environment.themes[this.bridge.world.region.theme as keyof typeof environment.themes]?.background??0x27443b);
@@ -243,7 +251,7 @@ export class WorldScene extends Phaser.Scene {
  }
  /** Old-campaign regions hold the same loading lock until the atlases of the actors they open with have arrived. */
  private awaitLegacyArt(){
-  const world=this.bridge.world,region=world.region.id,arts=new Set<string>(['hero',...world.enemies.map(e=>e.art),...world.region.spawns.map(s=>s.art)].filter((art):art is string=>Boolean(art)));
+  const world=this.bridge.world,region=world.region.id,arts=new Set<string>(['hero',...this.bridge.actorArtHints?.()??[],...world.enemies.map(e=>e.art),...world.region.spawns.map(s=>s.art)].filter((art):art is string=>Boolean(art)));
   // A5：宝箱怪用 hub-mimic 图集（服务端 art 字段为模板 art，客户端按 name 覆盖）
   if(world.enemies.some(e=>e.name==='宝箱怪'))arts.add('hub-mimic');
   for(const [key,rows] of Object.entries(worldTables))if(key!=='source')for(const row of rows as any[])if(row.region===region)for(const spec of [...(row.pack??[]),...(row.guards??[]),...(row.waves?.flat()??[]),...(row.template?[{template:row.template}]:[])]){const art=world.rules.monsters.templates.find(t=>t.id===spec.template)?.art;if(art)arts.add(art);}
@@ -282,20 +290,21 @@ export class WorldScene extends Phaser.Scene {
   if(map){preloadStarseaRuntimeAssets(this,[map.groundResource,map.backdropResource]);this.load.on(Phaser.Loader.Events.PROGRESS,progress);this.load.once(Phaser.Loader.Events.COMPLETE,()=>{this.load.off(Phaser.Loader.Events.PROGRESS,progress);setTimeout(remaining,0);});this.load.start();}else remaining();
  }
  update(_time:number,delta:number){
- this.previousRenderNow=this.renderNow||performance.now();this.renderNow=performance.now();
+ this.previousRenderNow=this.renderNow||performance.now();this.renderNow=performance.now();this.heroPresentation=undefined;this.clientPose=undefined;
  const world=this.bridge.world;this.starSeaView=this.bridge.starSea?.();if(this.regionId!==(world.region.presentationKey??world.region.id))this.resetRegion();if(this.loadingRegion||this.legacyLoading)return;
  if(this.previousWorld!==world&&!(this.bridge.authoritativeWorld&&this.previousWorld?.region.id===world.region.id&&world.tick>=this.previousWorld.tick)){this.skillEffects?.reset();this.feedback.reset();this.numbers?.reset();this.heroCast=undefined;this.enemyCasts.clear();this.heroDeathPlayback.reset();this.previous.clear();this.accumulator=0;for(const actor of this.actors.values())this.destroyActor(actor);this.actors.clear();for(const node of [...this.children.list])if(node.getData('damage-number'))node.destroy();this.previousWorld=world;}
  this.previousWorld=world;
  if(this.effectFactory!==this.bridge.effectFactory){this.skillEffects?.destroy();this.skillEffects=this.makeEffects();}
  const panel=Boolean(this.bridge.panel),focus=document.activeElement?.tagName;const inputBlocked=panel||focus==='INPUT'||focus==='SELECT'||!this.bridge.loggedIn;
- const logicStart=performance.now(),retainedFraction=this.accumulator,singleStep=(this.bridge.stepFrames??0)>0;
+ const logicStart=this.diagnosticsOn?performance.now():0,retainedFraction=this.accumulator,singleStep=(this.bridge.stepFrames??0)>0;
  if(this.bridge.authoritativeWorld){this.bridge.step();
-  // FP6: 采集本帧等距移动方向（WASD + 方向键；与 main.ts authoritativeWorld 分支一致）
-  {const p=Boolean(this.bridge.panel);const rx=(p?0:(this.keys.D?.isDown||this.keys.RIGHT?.isDown)?1:0);const lx=(p?0:(this.keys.A?.isDown||this.keys.LEFT?.isDown)?1:0);const dy=(p?0:(this.keys.S?.isDown||this.keys.DOWN?.isDown)?1:0);const uy=(p?0:(this.keys.W?.isDown||this.keys.UP?.isDown)?1:0);const rawX=rx-lx,rawY=dy-uy;const ix=rawX+rawY,iy=rawY-rawX;const n=Math.max(1,Math.hypot(ix,iy));this.localPrediction.setInput(ix/n,iy/n);}
+  // Formal play consumes the exact rebound/focus-gated input sent to the server.
+  {const rawX=Number(Boolean(this.keys.D?.isDown||this.keys.RIGHT?.isDown))-Number(Boolean(this.keys.A?.isDown||this.keys.LEFT?.isDown)),rawY=Number(Boolean(this.keys.S?.isDown||this.keys.DOWN?.isDown))-Number(Boolean(this.keys.W?.isDown||this.keys.UP?.isDown));const input=this.bridge.movementInput?.()??{x:rawX+rawY,y:rawY-rawX},n=Math.max(1,Math.hypot(input.x,input.y));this.localPrediction.setInput(inputBlocked||document.hidden?0:input.x/n,inputBlocked||document.hidden?0:input.y/n);}
   if(this.networkSequence!==this.bridge.authoritativeSequence){this.networkSequence=this.bridge.authoritativeSequence??0;const positions:[string,Vec][]=[['hero',world.hero.position],...world.enemies.map(e=>[e.id,e.position] as [string,Vec]),...[...world.players.values()].filter(p=>p.id!==world.playerId).map(p=>[p.id,p.hero.position] as [string,Vec])];this.networkMotion.accept(world.tick,positions,this.renderNow);
   // FP6: 本机预测校正——用最新快照位置（非缓冲延迟位置）校正预测
-  const selfId=world.playerId;const movBlocked=world.statuses.some(s=>s.targetId===selfId&&s.ends>world.tick&&MOVE_BLOCK_KINDS.has(s.effect.kind));this.localPrediction.accept(world.hero.position,this.renderNow);this.localPrediction.setEnabled(world.hero.hp>0&&!movBlocked);
-  this.consume(world);}this.accumulator=this.networkMotion.fraction(this.renderNow)*(1000/30);this.checkInteraction();}
+  this.localPrediction.accept(world.hero.position,this.renderNow);
+  this.consume(world);}this.clientPose=this.bridge.clientMovementFrame?.(this.renderNow);if(this.clientPose){const pose=this.clientPose,key=pose.epoch+':'+pose.revision;if(key!==this.clientPoseKey||this.clientWasActive&&!pose.active)this.networkMotion.rebase('hero',pose.handoffPosition??pose.position);this.clientPoseKey=key;this.clientWasActive=pose.active;if(pose.active){this.heroPresentation={...pose.position};world.hero.position={...pose.position};}}
+  const movBlocked=world.statuses.some(s=>s.targetId===world.playerId&&s.ends>world.tick&&MOVE_BLOCK_KINDS.has(s.effect.kind));this.localPrediction.setEnabled(!this.clientPose&&world.hero.hp>0&&!movBlocked&&!inputBlocked&&!document.hidden);this.accumulator=this.networkMotion.fraction(this.renderNow)*(1000/30);this.checkInteraction();}
  else if(this.networkSequence!==-1){this.networkMotion.reset();this.networkSequence=-1;this.accumulator=0;this.previous.clear();}
  if(singleStep&&!this.bridge.authoritativeWorld){this.bridge.stepFrames!--;world.paused=false;this.accumulator=1000/30;}
  if(!this.bridge.authoritativeWorld&&!singleStep&&!world.paused&&world.hero.hp>0)this.accumulator=Math.min(100,this.accumulator+delta*(this.bridge.playbackRate??1));
@@ -307,8 +316,8 @@ export class WorldScene extends Phaser.Scene {
  }
  if(singleStep)world.paused=true;
  this.heroDeathPlayback.advance(world.hero.hp<=0,delta,world.paused&&!this.bridge.allowDeathPlayback,this.bridge.playbackRate??1,singleStep,this.actors.get('hero')?.wardrobe?.actionDuration('death')??1.5);
- this.logicTimes.push(performance.now()-logicStart);if(this.logicTimes.length>600)this.logicTimes.shift();const renderStart=performance.now();
- const p=project(this.interpolate('hero',world.hero.position));const shake=this.skillEffects?.cameraOffset?.()??{x:0,y:0};const bossNear=world.enemies.some(e=>e.boss&&e.alive&&Math.hypot(e.position.x-world.hero.position.x,e.position.y-world.hero.position.y)<BOSS_PUSH_RANGE),cam=stepFollow(this.follow,p.x,p.y-15,this.bridge.authoritativeWorld?this.renderNow-this.previousRenderNow:delta,{reduced:Boolean(this.bridge.motionReduced),bossNear});this.cameras.main.setZoom(this.baseZoom*(1+cam.push));this.cameras.main.centerOn(cam.x+shake.x,cam.y+shake.y);
+ if(this.diagnosticsOn){this.logicTimes.push(performance.now()-logicStart);if(this.logicTimes.length>600)this.logicTimes.shift();}const renderStart=this.diagnosticsOn?performance.now():0;
+ const p=project(this.interpolate('hero',world.hero.position));const shake=this.skillEffects?.cameraOffset?.()??{x:0,y:0};const bossNear=!this.bridge.pixelModeOn&&world.enemies.some(e=>e.boss&&e.alive&&Math.hypot(e.position.x-world.hero.position.x,e.position.y-world.hero.position.y)<BOSS_PUSH_RANGE),cam=stepFollow(this.follow,p.x,p.y-15,this.bridge.authoritativeWorld?this.renderNow-this.previousRenderNow:delta,{reduced:Boolean(this.bridge.motionReduced),bossNear});this.cameras.main.setZoom(this.baseZoom*(1+cam.push));this.cameras.main.centerOn(cam.x+shake.x,cam.y+shake.y);
  // Letterbox backdrop: one capture per map once its chunks have streamed in, never per frame.
  if(this.backdropFrames>0&&--this.backdropFrames===0)this.game.events.once(Phaser.Core.Events.POST_RENDER,()=>setStageBackdrop(this.game.canvas));
  const cx=Math.floor(world.hero.position.x/32),cy=Math.floor(world.hero.position.y/32);
@@ -317,7 +326,7 @@ export class WorldScene extends Phaser.Scene {
  for(let y=Math.max(0,cy-1);y<=Math.min(Math.ceil(world.region.height/32)-1,cy+1);y++)for(let x=Math.max(0,cx-1);x<=Math.min(Math.ceil(world.region.width/32)-1,cx+1);x++)if(!this.chunks.has(`${x},${y}`))this.drawChunk(world.region,x,y);
  for(const [key,c] of this.chunks){const [x,y]=key.split(',').map(Number);if(Math.abs(x-cx)>1||Math.abs(y-cy)>1){c.destroy(true);for(const decoration of this.chunkDecorations.get(key)??[])decoration.destroy();this.chunkDecorations.delete(key);this.chunks.delete(key);}}
  }
- this.health!.clear().setDepth(9000);this.groundMarks?.clear().setDepth(-8000);this.syncActor('hero',world.hero.position,world.hero.hp<=0?'death':world.hero.action,world.hero.facing,world.hero.hp,world.stats.hp,true,false,false,'hero',world.hero.actionUntil);
+ this.health!.clear();this.groundMarks?.clear();this.syncActor('hero',world.hero.position,world.hero.hp<=0?'death':world.hero.action,world.hero.facing,world.hero.hp,world.stats.hp,true,false,false,'hero',world.hero.actionUntil);
  // Z3 宠物跟随：每帧更新位置与动画
  {const newRuntime=this.bridge.activePetRuntime?.()??null;if(newRuntime){if(!this.petFollower||this.petRuntime!==newRuntime){this.petFollower?.destroy();this.petRuntime=newRuntime;this.petFollower=new PetFollower({scene:this,runtime:newRuntime});}this.petFollower.update(world.hero.position.x,world.hero.position.y,world.tick,newRuntime);}else if(this.petFollower){this.petFollower.destroy();this.petFollower=undefined;this.petRuntime=null;}}
  const partyIds=new Set<string>();for(const player of world.players.values())if(player.id!==world.playerId&&world.isActive(player.id)){partyIds.add(player.id);this.syncActor(player.id,player.hero.position,player.hero.hp<=0?'death':player.hero.action,player.hero.facing,player.hero.hp,player.stats.hp,true,false,false,'hero',player.hero.actionUntil);}
@@ -344,7 +353,7 @@ export class WorldScene extends Phaser.Scene {
  }
  for(const child of (this.children?.list??[])){if(child instanceof Phaser.GameObjects.Image&&child.data?.get('occluder')){const b=child.getBounds();const hidden=b.contains(p.x,p.y-35)&&child.depth>p.y;child.setAlpha(hidden?.42:1);}}
  this.fieldEventEffects??=new FieldEventEffects(this);this.fieldEventEffects.draw(this.starSeaView?.effects??[],world.tick);
- if(this.starSeaStory)this.starSeaStory.draw(this.starSeaView?.objects??starseaPortObjects(this.starSeaWorld?.mapData),world.tick,world.hero.position);else if(this.bridge.storyObjects){this.storyRenderer??=new StoryRenderer(this);this.storyRenderer.draw(this.bridge.storyObjects(),this.bridge.storyEncounter?.(),world.tick);}
+ if(this.starSeaStory)this.starSeaStory.draw(this.starSeaView?.objects??starseaPortObjects(this.starSeaWorld?.mapData),world.tick,world.hero.position,world.region);else if(this.bridge.storyObjects){this.storyRenderer??=new StoryRenderer(this);this.storyRenderer.draw(this.bridge.storyObjects(),this.bridge.storyEncounter?.(),world.tick);}
  if(this.starSeaView?.guide||this.questGuide){this.questGuide??=new QuestGuide(this);const guide=this.starSeaView?.guide,near=this.starSeaView?.prompt;this.questGuide.draw(world,guide,Boolean(guide&&near&&Math.hypot(guide.x-near.x,guide.y-near.y)<1.5));}
  const prompt=this.starSeaView?.prompt;if(prompt||this.interactBubble){this.interactBubble??=new InteractBubble(this);this.interactBubble.draw(prompt,this.bridge.interactKey?.()??'E',world.tick,prompt?.objectId?this.starSeaStory?.labelTop(prompt.objectId):undefined);}
  this.drawEffects(world);
@@ -352,25 +361,38 @@ export class WorldScene extends Phaser.Scene {
  if(this.warningUI){
    this.warningUI.render(world);
  }
- this.syncLoot();this.submitLandmarkLabels();worldLabels(this).flush();this.renderTimes.push(performance.now()-renderStart);if(this.renderTimes.length>600)this.renderTimes.shift();this.frames.push(delta);if(this.frames.length>600)this.frames.shift();this.debugFrame++;
+ this.syncLoot();this.submitLandmarkLabels();worldLabels(this).flush();if(this.diagnosticsOn){this.renderTimes.push(performance.now()-renderStart);if(this.renderTimes.length>600)this.renderTimes.shift();this.frames.push(delta);if(this.frames.length>600)this.frames.shift();this.debugFrame++;}
  if(import.meta.env.DEV&&this.debugFrame%60===0)this.game.canvas.dataset.artDiagnostics=JSON.stringify({region:world.region.id,hero:{position:world.hero.position,frame:this.actors.get('hero')?.wardrobe?.frameName},environment:environment.version,story:this.storyRenderer?.diagnostics(),spoils:this.spoils?.diagnostics(),metrics:this.metrics()});
  }
  private interpolate(id:string,pos:Vec){if(this.bridge.authoritativeWorld){
   // FP6: 本机角色走预测路径，他人与怪物仍走缓冲插值
   const buffered=this.networkMotion.position(id,pos,this.renderNow);
-  return id==='hero'?this.localPrediction.position(this.bridge.world.stats.speed,this.bridge.world.region,this.renderNow,buffered):buffered;}
+  return id==='hero'?(this.heroPresentation??=(this.clientPose?buffered:this.localPrediction.position(this.bridge.world.movementSpeed(),this.bridge.world.region,this.renderNow,buffered,this.bridge.world.rules.bodyCollision.heroRadius))):buffered;}
  const previous=this.previous.get(id);if(!previous)return pos;const a=this.accumulator/(1000/30);return {x:previous.x+(pos.x-previous.x)*a,y:previous.y+(pos.y-previous.y)*a};}
- private syncActor(id:string,pos:Vec,action:string,facing:number,hp:number,max:number,hero=false,elite=false,boss=false,art='raider',actionUntil=0,phase=1,shield=0,affixes:readonly string[]=[]){const a=this.actors.get(id)??this.actor(id,hero,art),p=project(this.interpolate(id,pos));a.sprite.setPosition(p.x,p.y).setDepth(p.y+2);a.shadow.setPosition(p.x,p.y+2).setDepth(p.y-1);
+ private syncActor(id:string,pos:Vec,action:string,facing:number,hp:number,max:number,hero=false,elite=false,boss=false,art='raider',actionUntil=0,phase=1,shield=0,affixes:readonly string[]=[]){if(id==='hero'&&this.clientPose?.active&&hp>0&&['idle','move'].includes(action)){action=this.clientPose.moving?'move':'idle';facing=this.clientPose.facing;}const a=this.actors.get(id)??this.actor(id,hero,art),p=project(this.interpolate(id,pos));a.sprite.setPosition(p.x,p.y).setDepth(p.y+2);a.shadow.setPosition(p.x,p.y+2).setDepth(p.y-1);
 // 星潮海首领等原生骨骼角色由原生绘制器画进自己的画布：不能换成图集贴图、翻转或播放图集动画。
- const profile=(catalog.actors as any)[a.art],sizeFactor=elite&&!boss?1.15:1,artReady=Boolean(a.native)||this.legacyArt.ensure([a.art]);
+ a.sprite.setData('pixel-art-id',a.art).setData('pixel-elite',elite&&!boss).setData('pixel-facing',facing).setData('pixel-cast',undefined);
+ const originalProfile=(catalog.actors as any)[a.art],pixelHeight=pixelRuntime.cellStage>0?pixelActorHeight(a.art,elite&&!boss):undefined;
+ const profile=pixelHeight?{...originalProfile,displayHeight:pixelHeight}:originalProfile,sizeFactor=elite&&!boss&&pixelRuntime.cellStage<=0?1.15:1,artReady=Boolean(a.native)||this.legacyArt.ensure([a.art]);
  // An unexpected spawn whose old-campaign atlas is still loading stays hidden for those few frames.
  if(!artReady)a.sprite.setVisible(false);else if(a.awaitingArt){a.awaitingArt=false;a.sprite.setVisible(true);a.action='';}
- if(!a.native&&artReady){if(a.sprite.texture.key!==(profile.texture??a.art)){a.sprite.setTexture(profile.texture??a.art,'idle_0');a.action='';}const flip=profile.nativeFacing===-1?facing>0:facing<0;a.sprite.setFlipX(flip);a.sprite.setOrigin(flip?1-profile.anchor[0]:profile.anchor[0],profile.anchor[1]);a.sprite.setScale(profile.scale*sizeFactor);}a.sprite.clearTint();a.shadow.setScale(hero?.9:boss?1.35:elite?1:.75);
+ if(!a.native&&artReady){const painted=pixelRuntime.cellStage>0&&a.sprite.texture.key.startsWith('pixel-authored:')&&a.sprite.getData('pixel-painted-art')===a.art&&!String(a.sprite.frame.name).startsWith('cast');if(a.sprite.texture.key!==(profile.texture??a.art)&&!painted){a.sprite.setTexture(profile.texture??a.art,'idle_0');a.action='';}const flip=profile.nativeFacing===-1?facing>0:facing<0;a.sprite.setFlipX(flip);a.sprite.setOrigin(flip?1-profile.anchor[0]:profile.anchor[0],profile.anchor[1]);a.sprite.setScale(profile.scale*sizeFactor);}a.sprite.clearTint();a.shadow.setScale(hero?.9:boss?1.35:elite?1:.75);
  if(hp>0&&boss){a.hp.lineStyle(3,uiColor('Color.Combat.Boss'),.85);a.hp.strokeEllipse(p.x,p.y+2,84,28);}
  if(hp>0&&elite&&!boss)this.drawEliteRing(p,Math.max(.9,Math.min(1.6,(profile.displayHeight??80)/80)));
  if(!hero&&hp>0&&['attack','hurt','skill'].includes(action)&&actionUntil<this.bridge.world.tick)action='idle';
  if(a.action!==action||(['attack','hurt','skill'].includes(action)&&a.actionUntil!==actionUntil)){a.action=action;a.actionStarted=this.bridge.world.tick;a.actionUntil=actionUntil;if(!a.native&&artReady){a.sprite.play(a.art+'-'+action,false);a.sprite.anims.timeScale=['attack','hurt','skill'].includes(action)?(profile.actions[action]/profile.fps)/Math.max(1/30,(actionUntil-this.bridge.world.tick)/30):1;}}
- if(a.native)a.native.sync(id,p,action,this.feedback.animationAge(id,a.actionStarted,this.bridge.world.tick+this.accumulator/(1000/30))/30,facing,phase>=2&&action!=='death'?'phase-active':'default',this.nativeBudget);
+ a.sprite.setData('pixel-clock',{action,seconds:this.feedback.animationAge(id,a.actionStarted,this.bridge.world.tick+this.accumulator/(1000/30))/30*(a.native?1:a.sprite.anims.timeScale)});
+ if(a.native){
+  const now=this.bridge.world.tick+this.accumulator/(1000/30),previousPhase=a.sprite.getData('pixel-phase-index') as number|undefined;
+  if(previousPhase!==phase){a.sprite.setData('pixel-phase-index',phase);if(previousPhase!==undefined)a.sprite.setData('pixel-phase-started',this.bridge.world.tick).setData('pixel-phase-kind',phase>previousPhase?'phase-enter':'phase-end');}
+  let visualAction=action,nativePhase:StarseaPhase=phase>=2&&action!=='death'?'phase-active':'default',nativeClock=this.feedback.animationAge(id,a.actionStarted,now)/30;
+  if(pixelRuntime.cellStage>0&&boss&&hp>0){
+   const started=a.sprite.getData('pixel-phase-started') as number|undefined,transition=a.sprite.getData('pixel-phase-kind') as 'phase-enter'|'phase-end'|undefined,transitionSeconds=transition?a.native.asset.states[transition]?.transitionWindow??0:0;
+   if(started!==undefined&&transition){const elapsed=this.feedback.animationAge(id,started,now)/30;if(elapsed<transitionSeconds){nativePhase=transition;nativeClock=elapsed;}}
+   if(['attack','skill','projectile'].includes(action)){const cast=this.bridge.world.bossCasts.filter(c=>c.owner===id&&!c.interrupted&&this.bridge.world.tick<c.ends+32).at(-1),skills=starseaAsset(a.art)?.actions.skills??{};if(cast){const binding=Object.entries(skills).find(([,s])=>(s as any).mechanism?.rule===cast.skill)?.[0];if(binding&&pixelAsset(a.art)?.actions?.[binding])visualAction=binding;}}
+  }
+  a.native.sync(id,p,visualAction,nativeClock,facing,nativePhase,this.nativeBudget);
+ }
  const activeCast=id==='hero'?this.heroCast:this.partyCasts.get(id);
  const castTarget=id==='hero'?this.heroCast?.target:undefined;
  const motion=hero&&activeCast?physicalBodyMotion(activeCast.skill,this.bridge.world.tick+this.accumulator/(1000/30)-activeCast.started,activeCast.windup,castTarget?{x:project(castTarget).x-p.x,y:project(castTarget).y-p.y}:{x:facing,y:0},this.bridge.motionReduced):{x:0,y:0,groundY:0};
@@ -397,10 +419,10 @@ export class WorldScene extends Phaser.Scene {
  }
  if(!hero&&boss&&hp>0)this.applyBossCast(a,id,art,profile.displayHeight??256);
  const feedback=this.feedback.state(id,this.bridge.world.tick+this.accumulator/(1000/30));
- if(a.native)a.sprite.setScale(1);a.sprite.setPosition(p.x+feedback.x+motion.x,p.y+feedback.y+motion.y).setScale(a.sprite.scaleX*feedback.scaleX,a.sprite.scaleY*feedback.scaleY);
- if(a.wardrobe)a.wardrobe.sprite.setPosition(p.x+feedback.x+motion.x,p.y+feedback.y+motion.y).setScale(feedback.scaleX,feedback.scaleY);
- for(const sprite of [a.sprite,a.wardrobe?.sprite])if(sprite){if(feedback.tint!==undefined)sprite.setTint(feedback.tint).setTintMode(feedback.fill?Phaser.TintModes.FILL:Phaser.TintModes.MULTIPLY);else sprite.clearTint();}
- this.syncEliteRim(a,elite&&!boss&&hp>0&&!a.native&&a.sprite.visible);
+ if(a.native)a.sprite.setScale(1);a.sprite.setPosition(p.x+feedback.x+motion.x,p.y+feedback.y+motion.y).setScale(a.sprite.scaleX*(pixelRuntime.cellStage>0?1:feedback.scaleX),a.sprite.scaleY*(pixelRuntime.cellStage>0?1:feedback.scaleY));
+ if(a.wardrobe)a.wardrobe.sprite.setPosition(p.x+feedback.x+motion.x,p.y+feedback.y+motion.y).setScale(pixelRuntime.cellStage>0?1:feedback.scaleX,pixelRuntime.cellStage>0?1:feedback.scaleY);
+ for(const sprite of [a.sprite,a.wardrobe?.sprite])if(sprite){if(feedback.tint!==undefined)sprite.setTint(pixelRuntime.cellStage>0?pixelFeedbackTint(feedback.tint):feedback.tint).setTintMode(pixelRuntime.cellStage>0||feedback.fill?Phaser.TintModes.FILL:Phaser.TintModes.MULTIPLY);else sprite.clearTint();}
+ this.syncEliteRim(a,elite&&!boss&&hp>0&&!a.native&&a.sprite.visible&&pixelRuntime.cellStage<=0);
  const sourceId=id==='hero'?this.bridge.world.playerId:id,labels:Record<string,string>={burn:'燃烧',poison:'中毒',slow:'减速',stun:'眩晕',silence:'沉默',petrify:'石化',fear:'恐惧',root:'束缚',blind:'致盲',time_stop:'停滞',attack_up:'攻击↑',speed_up:'移速↑',armor_down:'护甲↓',counter:'反击',immunity:'物免',guardian:'守护',regen:'再生',bleed:'流血',freeze:'冰冻',vulnerable:'易伤',shock:'感电'},statuses=this.bridge.world.statuses.filter(s=>s.targetId===sourceId&&s.ends>this.bridge.world.tick);
  if(statuses.length&&hp>0){const kinds=[...new Set(statuses.map(s=>s.effect.kind))],text=kinds.map(kind=>labels[kind]+(statuses.filter(s=>s.effect.kind===kind).length>1?' ×'+statuses.filter(s=>s.effect.kind===kind).length:'')+' '+(Math.max(...statuses.filter(s=>s.effect.kind===kind).map(s=>s.ends-this.bridge.world.tick))/30).toFixed(1)+'秒').join(' · ');a.status??=this.add.text(0,0,'',{resolution:worldTextResolution(),fontFamily:resolvedToken('Font.Family'),fontSize:resolvedToken('Font.Size.Caption'),color:resolvedToken('Color.World.Text'),stroke:resolvedToken('Color.World.Ink'),strokeThickness:2}).setOrigin(.5);a.status.setText(text).setPosition(p.x,p.y-(hero?122:profile.displayHeight*sizeFactor+22+(elite&&!boss?(affixes.length?18:4):0)+(shield>0?6:0))).setDepth(p.y+5).setVisible(true);}else a.status?.setVisible(false);
 
@@ -460,10 +482,12 @@ export class WorldScene extends Phaser.Scene {
   const clip=extraClips[key],cast=this.bridge.world.bossCasts.filter(c=>c.owner===id&&!c.interrupted&&this.bridge.world.tick<c.ends+32).at(-1);if(!clip||!cast)return;
   const now=this.bridge.world.tick+this.accumulator/(1000/30),elapsed=now-cast.started,windup=cast.ends-cast.started;
   const physical=['claw_swipe','tail_slam','dive_bomb','dragon_roar'].includes(cast.skill);
+  const pixelAction=physical?'cast-physical':'cast';
+  if(pixelRuntime.cellStage>0&&pixelAsset(art)?.actions?.[pixelAction]){a.sprite.anims.stop();a.sprite.setData('pixel-cast',{action:pixelAction,elapsed:elapsed/30,windup:windup/30,recovery:physical?24/30:32/30});return;}
   const frame=physical?(now<cast.ends?Math.min(5,Math.floor(elapsed/Math.max(1,windup/6))):16+Math.min(7,Math.floor((now-cast.ends)/3))):now<cast.ends?Math.min(7,Math.floor(elapsed/Math.max(1,Math.min(2,windup/8)))):8+Math.min(15,Math.floor((now-cast.ends)/2));
   a.sprite.anims.stop();a.sprite.setTexture(clip.key,String(frame)).setOrigin(clip.origin[0],clip.origin[1]).setScale(height/clip.visibleHeight);
  }
- private actorPose(id:string):RenderPose|undefined{const view=this.actors.get(id);if(!view)return;const castClip=Object.values(extraClips).find(c=>c.kind==='boss'&&c.key===view.sprite.texture.key);if(castClip){const sprite=view.sprite,index=Number(sprite.frame.name),released=index>=8&&index<16,dragon=sprite.texture.key.includes('dragon'),pose:RenderPose={art:view.art,frame:String(sprite.frame.name),position:{x:sprite.x,y:sprite.y},scale:sprite.scaleX,flip:sprite.flipX};pose.socket=name=>{if(name==='feet')return pose.position;const uv=name==='chest'?[.5,.61]:name==='muzzle'?dragon?[.87,[.75,.71,.60,.49,.42,.39,.43,.47,.53,.55,.56,.55,.54,.53,.49,.47,.46,.49,.54,.60,.66,.71,.76,.79][index]??.5]:[released?.78:.69,released?.55:.36]:name==='weapon'?[.74,released?.56:.28]:[.61,.61];return {x:sprite.x+(uv[0]-sprite.originX)*castClip.cell*sprite.scaleX*(sprite.flipX?-1:1),y:sprite.y+(uv[1]-sprite.originY)*castClip.cell*sprite.scaleY};};return pose;}if(view.wardrobe?.sprite.visible){const pose=view.wardrobe.pose();if(pose)return pose;}return {art:view.art,frame:String(view.sprite.frame.name),position:{x:view.sprite.x,y:view.sprite.y},scale:view.sprite.scaleX,flip:view.sprite.flipX};}
+ private actorPose(id:string):RenderPose|undefined{const view=this.actors.get(id);if(!view)return;if(pixelRuntime.cellStage>0){if(view.wardrobe?.sprite.visible)return view.wardrobe.pose();if(view.native)return view.native.pose();const pixel=authoredActorPose(view.sprite,view.art);if(pixel)return pixel;}const castClip=Object.values(extraClips).find(c=>c.kind==='boss'&&c.key===view.sprite.texture.key);if(castClip){const sprite=view.sprite,index=Number(sprite.frame.name),released=index>=8&&index<16,dragon=sprite.texture.key.includes('dragon'),pose:RenderPose={art:view.art,frame:String(sprite.frame.name),position:{x:sprite.x,y:sprite.y},scale:sprite.scaleX,flip:sprite.flipX};pose.socket=name=>{if(name==='feet')return pose.position;const uv=name==='chest'?[.5,.61]:name==='muzzle'?dragon?[.87,[.75,.71,.60,.49,.42,.39,.43,.47,.53,.55,.56,.55,.54,.53,.49,.47,.46,.49,.54,.60,.66,.71,.76,.79][index]??.5]:[released?.78:.69,released?.55:.36]:name==='weapon'?[.74,released?.56:.28]:[.61,.61];return {x:sprite.x+(uv[0]-sprite.originX)*castClip.cell*sprite.scaleX*(sprite.flipX?-1:1),y:sprite.y+(uv[1]-sprite.originY)*castClip.cell*sprite.scaleY};};return pose;}if(view.wardrobe?.sprite.visible){const pose=view.wardrobe.pose();if(pose)return pose;}return {art:view.art,frame:String(view.sprite.frame.name),position:{x:view.sprite.x,y:view.sprite.y},scale:view.sprite.scaleX,flip:view.sprite.flipX};}
  private effectPoint(id:string,name:SocketName,release=false){const pose=this.actorPose(id);if(!pose)return;const cast=id==='hero'?this.heroCast:this.partyCasts.get(id),frame=release?(pose.releaseFrame??(!pose.socket&&cast&&this.bridge.world.tick<=cast.end?cast.action+'_'+heroAnimationFrame(cast.action,cast.windup,cast.windup,8):pose.frame)):pose.frame;return effectAttachment({...pose,frame},name);}
  private heroEffectPose(){const pose=this.actorPose('hero'),cast=this.heroCast,view=this.actors.get('hero'),sprite=view?.wardrobe?.sprite.visible?view.wardrobe.sprite:view?.sprite;return pose?{...pose,image:sprite?{texture:sprite.texture.key,frame:sprite.frame.name,originX:sprite.originX,originY:sprite.originY,scaleX:sprite.scaleX,scaleY:sprite.scaleY,flipX:sprite.flipX,flipY:sprite.flipY}:undefined,releaseFrame:pose.releaseFrame??(!pose.socket&&cast&&this.bridge.world.tick<=cast.end?cast.action+'_'+heroAnimationFrame(cast.action,cast.windup,cast.windup,8):undefined),skill:cast?.skill??''}:undefined;}
  private drawEffects(w:World){const g=this.transient!;g.clear().setDepth(8000);

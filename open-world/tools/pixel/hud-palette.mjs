@@ -1,0 +1,2 @@
+import fs from 'node:fs';
+const colors=Object.values(JSON.parse(fs.readFileSync('packages/asset-manifest/pixel-palette.json')).ramps).flat(),rgb=c=>c.slice(1).match(/../g).map(n=>parseInt(n,16)),dist=(a,b)=>a.reduce((s,n,i)=>s+(n-b[i])**2,0),file='apps/web/src/ui/pixel-frames.ts';let source=fs.readFileSync(file,'utf8');source=source.replace(/#[a-fA-F0-9]{6}/g,color=>colors.reduce((a,b)=>dist(rgb(a),rgb(color))<=dist(rgb(b),rgb(color))?a:b));fs.writeFileSync(file,source);console.log('HUD frames use the shared 60-color palette');

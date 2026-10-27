@@ -118,7 +118,7 @@ const outer='M25 2 45 13.5v23L25 48 5 36.5v-23Z',inner='M25 7 40.5 16v18L25 43 9
 export function hexRuneIconSvg(glyph:HexGlyph|undefined,quality:GearQuality,label?:string,category?:string){
  const color=qualityColors[quality]??qualityColors.common,categoryGlyph=glyph?undefined:hexGlyphForCategory(category);
  const a11y=label?`role="img" aria-label="${label.replace(/[&<>"]/g,'')}"`:'aria-hidden="true"';
- return `<svg class="hex-rune-icon quality-${quality}" viewBox="0 0 50 50" ${a11y} focusable="false" style="--quality-glyph:${color}" fill="none" stroke="${ink}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${outer}" fill="${color}"/><path d="${inner}" fill="var(--color-icon-paper)" stroke-width="1.5"/>${glyph?glyphPaths[glyph]:categoryGlyph?categoryPaths[categoryGlyph]:fallbackGlyph}</svg>`;
+ return `<svg data-pixel-icon="hex:${glyph??categoryGlyph??'generic'}" class="hex-rune-icon quality-${quality}" viewBox="0 0 50 50" ${a11y} focusable="false" style="--quality-glyph:${color}" fill="none" stroke="${ink}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${outer}" fill="${color}"/><path d="${inner}" fill="var(--color-icon-paper)" stroke-width="1.5"/>${glyph?glyphPaths[glyph]:categoryGlyph?categoryPaths[categoryGlyph]:fallbackGlyph}</svg>`;
 }
 
 /** Flat <img>-safe form for generic item slots (bag/loot/paperdoll resolve art by id); CSS variables can't reach into an <img>, so literals stand in and the slot's quality frame carries the rarity colour. */

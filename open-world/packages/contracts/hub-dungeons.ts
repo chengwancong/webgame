@@ -10,6 +10,8 @@ export type HubDungeonTemplate=z.infer<typeof hubDungeonTemplateSchema>;
 export const hubObjectiveSchema=z.object({kind:hubDungeonTemplateSchema.shape.objective,text:z.string(),progress:z.object({done:z.number().int().nonnegative(),total:z.number().int().nonnegative()}).strict().optional(),timeLeft:z.number().nonnegative().optional()}).strict();
 export const hubDungeonPublicSchema=z.object({
   objective:hubObjectiveSchema,
+  /** Server-owned treasure pursuit; omitted after the original chest is recovered. */
+  chase:z.object({chestId:z.string(),enemyId:z.string(),phase:z.enum(['waking','running','staggered','cornered']),position:z.object({x:z.number().finite(),y:z.number().finite()}).strict(),intercept:z.object({x:z.number().finite(),y:z.number().finite()}).strict().optional(),remainingSeconds:z.number().nonnegative(),interceptions:z.number().int().nonnegative()}).strict().optional(),
   segment:z.object({index:z.number().int().positive(),total:z.number().int().positive()}).strict(),
   wave:z.object({index:z.number().int().nonnegative(),total:z.number().int().positive(),nextIn:z.number().nonnegative().optional()}).strict().optional(),
   beacon:z.object({hp:z.number().nonnegative(),max:z.number().positive()}).strict().optional(),

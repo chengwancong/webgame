@@ -96,7 +96,7 @@ it('FP5: the seeded mimic chest wakes as an elite in place, blocks auto opening,
   console.error('FP5_DIAGNOSTIC',JSON.stringify({tick:live.frame.tick,status:live.frame.status,objective:live.frame.objective,actors:live.frame.actors.map(a=>({hp:a.hp,position:a.position})),opening:live.frame.opening,chests:live.frame.keyChests,liveEnemies:enemies().filter(e=>e.alive).map(e=>({name:e.name,position:e.position})),mimic:saved.hub.mimic,mode:saved.hub.mode}));throw error;
  }
  let seq=0;const mode=(value:'manual'|'auto')=>live.ws.send(JSON.stringify({type:'input',input:{seq:++seq,kind:'mode',mode:value}}));mode('manual');
- await until(()=>live.frame.objective?.text==='击败宝箱怪，夺回宝箱');const chest=live.frame.keyChests.find(c=>c.id===mimicChest)!,mimic=enemies().find(e=>e.name==='宝箱怪')!;expect(mimic.alive).toBe(true);expect(mimic.elite).toBe(true);expect(Math.hypot(mimic.position.x-chest.position.x,mimic.position.y-chest.position.y)).toBeLessThan(2.5);expect(chest.claimed).toBe(false);
+ await until(()=>Boolean(live.frame.chase));const chest=live.frame.keyChests.find(c=>c.id===mimicChest)!,mimic=enemies().find(e=>e.name==='宝箱怪')!;expect(mimic.alive).toBe(true);expect(mimic.elite).toBe(true);expect(Math.hypot(mimic.position.x-chest.position.x,mimic.position.y-chest.position.y)).toBeLessThan(2.5);expect(chest.claimed).toBe(false);
  mode('auto');
  await until(()=>live.frame.keyChests.find(c=>c.id===mimicChest)?.claimed===true,30000);expect(enemies().find(e=>e.id===mimic.id)?.alive).toBe(false);expect(live.frame.objective?.text).toBe('限时开启五个宝箱');expect(live.errors).toEqual([]);await p.command('leave',{instance_id:id});
 },90000);

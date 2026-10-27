@@ -3,7 +3,7 @@ import {starseaAsset} from '../starsea-runtime-assets.ts';
 const markerImages=new Map<string,HTMLImageElement>();
 import type {World} from '../../../../packages/simulation/index.ts';
 import {project,type IsoPoint} from '../iso.ts';
-import {minimapTerrain,minimapNpcs,requestMinimapMap,type MapMarker} from './minimap-data.ts';
+import {minimapTerrain,minimapNpcs,minimapMainTarget,requestMinimapMap,type MapMarker} from './minimap-data.ts';
 import {resolvedToken} from './tokens.ts';
 export type {MapMarker} from './minimap-data.ts';
 import type {FieldMapView} from '../field-controller.ts';
@@ -11,6 +11,7 @@ import {decodeExploration,explorationGrid,exploredAt} from '../../../../packages
 import {stageLayout,STAGE} from '../stage.ts';
 import {artColor,minimapArtFiles} from './minimap-art.ts';
 import {paintSceneMiniature} from './minimap-scene.ts';
+import {pixelRuntime} from '../pixel-texture.ts';
 import {fieldMaps} from '../../../../packages/content/open-world/index.ts';
 import type {StarseaMap} from '../starsea-world-renderer.ts';
 import {storyCropMap} from '../story-crop-map.ts';
@@ -108,7 +109,7 @@ const radarLayers=new WeakMap<HTMLCanvasElement,{key:string;at:number;canvas:HTM
  * An incomplete paint (art still decoding) is retried at most once a second. Layers stay under ~16M device pixels. */
 function radarLayer(owner:HTMLCanvasElement,map:StarseaMap,scale:number,density:number){
  const b=minimapBounds(map.width,map.height),margin=Math.max(24,400*scale),left=b.minX*scale-margin,top=b.minY*scale-margin,width=(b.maxX-b.minX)*scale+margin*2,height=(b.maxY-b.minY)*scale+margin*2;
- const d=Math.min(density,Math.sqrt(16e6/(width*height))),key=[map.id,scale,d].join('|'),hit=radarLayers.get(owner),now=performance.now();
+ const d=Math.min(density,Math.sqrt(16e6/(width*height))),key=[map.id,scale,d,pixelRuntime.version].join('|'),hit=radarLayers.get(owner),now=performance.now();
  if(hit&&(hit.key===key||hit.key==='~'+key&&now-hit.at<1000))return hit;
  const canvas=hit?.canvas??document.createElement('canvas');canvas.width=Math.ceil(width*d);canvas.height=Math.ceil(height*d);
  const r=paintSceneMiniature(canvas.getContext('2d')!,map,{k:scale,ox:-left,oy:-top,density:d,width,height,minSpriteScale:0});if(!r.painted)return;
@@ -140,7 +141,7 @@ export function paintMinimap(canvas:HTMLCanvasElement,world:World,options:{mode?
  let scene=false;
  if(map&&terrain.source==='starsea'){
   const view={k:scale,ox:projection.x,oy:projection.y,density,width:size,height,minSpriteScale:full?9/140:0};
-  if(full){const key=[map.id,pixelWidth,pixelHeight].join('|'),hit=fullLayers.get(canvas);
+  if(full){const key=[map.id,pixelWidth,pixelHeight,pixelRuntime.version].join('|'),hit=fullLayers.get(canvas);
    if(hit?.key===key){ctx.drawImage(hit.canvas,0,0,size,height);scene=true;}
    else{const layer=hit?.canvas??document.createElement('canvas');layer.width=pixelWidth;layer.height=pixelHeight;const r=paintSceneMiniature(layer.getContext('2d')!,map,view);
     if(r.painted){ctx.drawImage(layer,0,0,size,height);scene=true;fullLayers.set(canvas,{key:r.complete?key:'',canvas:layer});}}
@@ -148,7 +149,7 @@ export function paintMinimap(canvas:HTMLCanvasElement,world:World,options:{mode?
   ctx.setTransform(density,0,0,density,0,0);
  }
  // 亮底岛（赤炉沙地、霜镜雪地）缩成小图后发白：按地面平均亮度压一层正片叠底，只罩岛内（Grok：小地图过曝）。
- const shade=scene?minimapExposureShade(artColor(minimapArtFiles(region,map).ground)):0;
+ const shade=scene&&pixelRuntime.cellStage<=0?minimapExposureShade(artColor(minimapArtFiles(region,map).ground)):0;
  if(shade>0){ctx.save();polygon();ctx.clip();ctx.globalCompositeOperation='multiply';ctx.fillStyle=`rgba(96,88,80,${shade})`;ctx.fillRect(0,0,size,height);ctx.restore();}
  // Flat fallback: regions without a sealed map, or the moment before the ground material decodes.
  if(!scene&&terrain.source!=='loading'){
@@ -201,7 +202,7 @@ export function paintMinimap(canvas:HTMLCanvasElement,world:World,options:{mode?
  ctx.rotate(heading);ctx.beginPath();ctx.moveTo(8,0);ctx.lineTo(-5.5,6);ctx.lineTo(-2.5,0);ctx.lineTo(-5.5,-6);ctx.closePath();ctx.lineJoin='round';ctx.lineWidth=2;ctx.strokeStyle=bg;ctx.stroke();ctx.fillStyle=ink('Color.Minimap.Hero');ctx.fill();ctx.restore();
  ctx.restore();
  // Quest direction: when the nearest objective is outside the circle, point at it from the rim (no path line).
- if(!full){const goal=npcs.filter(n=>n.main&&!n.question).map(n=>{const p=point(n.x,n.y);return {p,d:Math.hypot(p.x-size/2,p.y-size/2)};}).sort((a,b)=>a.d-b.d)[0];
+ if(!full){const goal=minimapMainTarget(npcs,n=>point(n.x,n.y),{x:size/2,y:size/2});
   if(goal&&goal.d>size/2-RING-8){const a=Math.atan2(goal.p.y-size/2,goal.p.x-size/2),r=size/2-RING-7,cx=size/2+Math.cos(a)*r,cy=size/2+Math.sin(a)*r,t=(k:number,o:number)=>[cx+Math.cos(a+o)*k,cy+Math.sin(a+o)*k] as const;
    ctx.beginPath();ctx.moveTo(...t(7,0));ctx.lineTo(...t(6,2.5));ctx.lineTo(...t(6,-2.5));ctx.closePath();ctx.fillStyle=ink('Color.Minimap.Quest');ctx.strokeStyle=bg;ctx.lineWidth=1.6;ctx.stroke();ctx.fill();}}
  ctx.restore();

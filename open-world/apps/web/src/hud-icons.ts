@@ -19,7 +19,7 @@ export function hudMenuIcon(name:'bag'|'build'|'growth'|'appearance'|'goal'|'set
  pets:`<path d="M7 17q9-4 18 1 8-5 18-1v27q-9-3-18 2-9-5-18-2Z" fill="${dark}"/><path d="M10 14q7-3 15 2 7-5 15-2v26q-8-3-15 2-8-5-15-2Z" fill="${paper}"/><path d="M25 16v26" fill="none"/><path d="M18 33q-4-4 1-7l4-4q3-3 5 1l4 4q4 6-2 7l-6-2Z" fill="${leather}"/><circle cx="15" cy="21" r="3" fill="${bright}"/><circle cx="21" cy="16" r="3" fill="${bright}"/><circle cx="28" cy="15" r="3" fill="${bright}"/><circle cx="34" cy="21" r="3" fill="${bright}"/>`,
  stargate:`<path d="M6 42h38v7H6Z" fill="${steelDark}"/><path d="M12 37h26v7H12Z" fill="${steel}"/><path d="m15 6 20 0 11 16-11 18H15L4 22Z" fill="${steelLight}"/><path d="m17 12 15 0 8 10-8 12H18l-8-12Z" fill="${fill('blue')}"/><path d="m19 15 11 0 6 7-6 9H20l-6-9Z" fill="${steelDark}"/><path d="m19 24 7-6 6 7-11 3Z" fill="none" stroke="${paper}"/><circle cx="19" cy="24" r="1.5" fill="${paper}"/><circle cx="26" cy="18" r="1.5" fill="${paper}"/><circle cx="32" cy="25" r="1.5" fill="${paper}"/><path d="M15 7l3 5m17-5-3 5M5 22h5m30 0h5M15 39l3-5m17 5-3-5" fill="none" stroke="${bright}"/>`,
  };
- return `<svg class="hud-menu-illustration" viewBox="0 0 50 52" aria-hidden="true" fill="none" stroke="var(--color-chrome-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${pictures[name]}</svg>`;
+ return `<svg data-pixel-icon="hud-icon:${name}" class="hud-menu-illustration" viewBox="0 0 50 52" aria-hidden="true" fill="none" stroke="var(--color-chrome-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${pictures[name]}</svg>`;
 }
 export function hudIcon(name:'bag'|'build'|'growth'|'appearance'|'goal'|'settings'|'coin'|'pause'|'play'|'more'){
  const paths={
@@ -34,5 +34,5 @@ export function hudIcon(name:'bag'|'build'|'growth'|'appearance'|'goal'|'setting
  pause:'<rect x="14" y="11" width="8" height="28" rx="2" stroke="none"/><rect x="29" y="11" width="8" height="28" rx="2" stroke="none"/>',
  play:'<path d="m18 10 23 15-23 15Z" stroke="none"/>'
  };
- return `<svg class="hud-symbol" viewBox="0 0 50 52" aria-hidden="true" focusable="false" fill="currentColor" stroke="var(--color-panel-inset)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths[name]}</svg>`;
+ return `<svg data-pixel-icon="hud-icon:${name}" class="hud-symbol" viewBox="0 0 50 52" aria-hidden="true" focusable="false" fill="currentColor" stroke="var(--color-panel-inset)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths[name]}</svg>`;
 }

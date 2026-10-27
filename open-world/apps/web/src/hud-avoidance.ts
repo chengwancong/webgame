@@ -14,14 +14,58 @@ export function placeHudRect(preferred:HudRect,reserved:HudRect[],viewport:HudRe
  return candidates.find(c=>reserved.every(r=>!overlaps(c,r,gap)));
 }
 const selectors='#vitals,#tracker,#starsea-hud,#minimapbox,#skillbar,#sysbar,.hud-wallet,#feed,#pausebox .paused,#toast,#dungeon-hud';
-function occupied(except?:Element){return [...document.querySelectorAll<HTMLElement>(selectors)].filter(e=>e!==except&&(e.childElementCount>0||Boolean(e.textContent?.trim()))&&!e.hidden&&getComputedStyle(e).display!=='none'&&getComputedStyle(e).visibility!=='hidden'&&Number(getComputedStyle(e).opacity)!==0).map(e=>e.getBoundingClientRect()).filter(r=>r.width>0&&r.height>0).map(r=>({x:r.left,y:r.top,width:r.width,height:r.height}));}
-const cache=new WeakMap<object,{at:number;rects:HudRect[]}>();
-/** Live DOM HUD rectangles in camera pixels. */
-export function screenReservations(scene:Phaser.Scene){
- const now=performance.now(),hit=cache.get(scene);if(hit&&now-hit.at<100)return hit.rects;
- const canvas=scene.game.canvas.getBoundingClientRect(),sx=scene.scale.width/Math.max(1,canvas.width),sy=scene.scale.height/Math.max(1,canvas.height);
- const rects=occupied().map(r=>({x:(r.x-canvas.left)*sx,y:(r.y-canvas.top)*sy,width:r.width*sx,height:r.height*sy}));cache.set(scene,{at:now,rects});return rects;
+function occupied(elements:HTMLElement[]){return elements.filter(e=>{if(!(e.childElementCount>0||Boolean(e.textContent?.trim()))||e.hidden)return false;const style=getComputedStyle(e);return style.display!=='none'&&style.visibility!=='hidden'&&Number(style.opacity)!==0;}).map(e=>e.getBoundingClientRect()).filter(r=>r.width>0&&r.height>0).map(r=>({x:r.left,y:r.top,width:r.width,height:r.height}));}
+const cache=new WeakMap<Phaser.Scene,HudReservationCache>();
+/** Stable HUD geometry has no polling timer. Layout/content changes invalidate
+ * the cache; measurement is deferred until labels actually need reservations. */
+class HudReservationCache{
+ private dirty=true;private disposed=false;private rects:HudRect[]=[];private elements:HTMLElement[]=[];private observed=new Set<Element>();
+ private width=-1;private height=-1;private mutations?:MutationObserver;private resize?:ResizeObserver;
+ private moving=new Set<EventTarget>();
+ private mark=()=>{this.dirty=true;};
+ private motionStart=(event:Event)=>{if(this.layoutTarget(event.target)){this.mark();const geometry=event.type==='transitionrun'?/^(transform|translate|scale|inset|top|left|right|bottom|width|height|margin|padding)/.test((event as TransitionEvent).propertyName):event.target instanceof Element&&!getComputedStyle(event.target).animationIterationCount?.split(',').some(n=>n.trim()==='infinite');if(geometry)this.moving.add(event.target!);}};
+ private motionEnd=(event:Event)=>{if(this.moving.delete(event.target!))this.mark();};
+ constructor(private scene:Phaser.Scene){
+  if(typeof MutationObserver!=='undefined'){this.mutations=new MutationObserver(records=>this.changed(records));this.mutations.observe(document.documentElement,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class','style','hidden']});}
+  if(typeof ResizeObserver!=='undefined')this.resize=new ResizeObserver(this.mark);
+  window.addEventListener('resize',this.mark);window.addEventListener('scroll',this.mark,true);
+  document.fonts?.addEventListener('loadingdone',this.mark);
+  for(const name of ['transitionrun','animationstart'])document.addEventListener(name,this.motionStart,true);
+  for(const name of ['transitionend','transitioncancel','animationend','animationcancel'])document.addEventListener(name,this.motionEnd,true);
+  scene.events.once('shutdown',this.dispose);scene.events.once('destroy',this.dispose);
+ }
+ private layoutTarget(target:EventTarget|null){return target===this.scene.game.canvas||target===document.documentElement||target===document.body||this.elements.some(e=>e===target||(target instanceof Element&&target.contains(e)));}
+ private changed(records:MutationRecord[]){
+  for(const record of records){
+   if(record.type==='attributes'){
+    // Descendant progress-bar widths and cooldown styles do not move the HUD's
+    // outer reservation; actual size changes are reported by ResizeObserver.
+    if(this.layoutTarget(record.target)){this.mark();return;}
+   }else if(this.elements.some(e=>e===record.target||e.contains(record.target)||record.target.contains(e))||[...record.addedNodes,...record.removedNodes].some(n=>n instanceof Element&&(n.matches(selectors)||Boolean(n.querySelector(selectors))))){this.mark();return;}
+  }
+ }
+ read(){
+  this.changed(this.mutations?.takeRecords()??[]);
+  if(this.scene.scale.width!==this.width||this.scene.scale.height!==this.height){this.width=this.scene.scale.width;this.height=this.scene.scale.height;this.mark();}
+  if(!this.dirty&&!this.moving.size)return this.rects;
+  this.dirty=false;this.elements=[...document.querySelectorAll<HTMLElement>(selectors)];
+  const next=new Set<Element>([this.scene.game.canvas,...this.elements]);
+  for(const element of this.observed)if(!next.has(element))this.resize?.unobserve(element);
+  for(const element of next)if(!this.observed.has(element))this.resize?.observe(element);
+  this.observed=next;
+  const canvas=this.scene.game.canvas.getBoundingClientRect(),sx=this.width/Math.max(1,canvas.width),sy=this.height/Math.max(1,canvas.height);
+  this.rects=occupied(this.elements).map(r=>({x:(r.x-canvas.left)*sx,y:(r.y-canvas.top)*sy,width:r.width*sx,height:r.height*sy}));return this.rects;
+ }
+ private dispose=()=>{
+  if(this.disposed)return;this.disposed=true;this.mutations?.disconnect();this.resize?.disconnect();this.observed.clear();this.moving.clear();cache.delete(this.scene);
+  window.removeEventListener('resize',this.mark);window.removeEventListener('scroll',this.mark,true);document.fonts?.removeEventListener('loadingdone',this.mark);
+  for(const name of ['transitionrun','animationstart'])document.removeEventListener(name,this.motionStart,true);
+  for(const name of ['transitionend','transitioncancel','animationend','animationcancel'])document.removeEventListener(name,this.motionEnd,true);
+  this.scene.events.off('shutdown',this.dispose);this.scene.events.off('destroy',this.dispose);
+ };
 }
+/** Live DOM HUD rectangles in camera pixels, remeasured only after a change. */
+export function screenReservations(scene:Phaser.Scene){let hit=cache.get(scene);if(!hit){hit=new HudReservationCache(scene);cache.set(scene,hit);}return hit.read();}
 
 /** 一条世界标签申请：bounds 为世界坐标下的自然位置；apply 收到是否显示与需要上移的世界像素。 */
 export type WorldLabelRequest={id:string;bounds:HudRect;priority:number;steps?:number;apply:(visible:boolean,lift:number)=>void};

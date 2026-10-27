@@ -5,6 +5,7 @@ import type {Point} from './native-frame-math.ts';
 import {materialCanvas} from './open-world-five-art-data.ts';
 import type {ThemeMaterial} from './open-world-five-art-data.ts';
 import type {RuntimeAsset,StarseaPhase} from './starsea-runtime-assets.ts';
+import {onPixelChange} from './pixel-texture.ts';
 
 type PainterEntry={preview:StarseaActorPreview;ready:boolean;failed?:string;failedAt?:number;touched:number;pending:Promise<boolean>};
 type FrameEntry={texture:string;sockets:Record<string,Point>;bytes:number};
@@ -19,12 +20,17 @@ export class NativeFrameCache{
  private lru=new FrameLru<FrameEntry>();
  private budget=new FrameBudget(BAKES_PER_FRAME);
  private bakes=0;private budgetDenied=0;private lastSweep=0;
+ private pixelVersion=-1;private pixelUnsub?:()=>void;
  constructor(private scene:Phaser.Scene){
   if(!scene.textures.exists(nativeBlankKey)){
    const bc=document.createElement('canvas');bc.width=bc.height=1;
    const bt=scene.textures.addCanvas(nativeBlankKey,bc)!;
    bt.add('f',0,0,0,1,1)!.setTrim(512,512,0,0,1,1);
   }
+  // 像素模式切换时清空 LRU，让帧重新烘焙（带/不带像素化）
+  this.pixelUnsub=onPixelChange(rt=>{
+   if(rt.version!==this.pixelVersion){this.pixelVersion=rt.version;this.lru.clear((_k,v)=>{try{this.scene.textures.remove(v.texture);}catch{}});}
+  });
  }
  private pKey(assetId:string,profile:string){return `${assetId}|${profile}`;}
  painter(asset:RuntimeAsset,profile:string):PainterEntry{
@@ -71,8 +77,9 @@ export class NativeFrameCache{
   const srcCanvas=(material?.tint||material?.wash)?materialCanvas(e.preview.canvas,512,512,material):e.preview.canvas;
   const bounds=baked.bounds??{x:0,y:0,w:1,h:1};
   const {x,y,w,h}=bounds;
-  const dc=document.createElement('canvas');dc.width=w;dc.height=h;
-  dc.getContext('2d')!.drawImage(srcCanvas,x,y,w,h,0,0,w,h);
+  const finalCanvas=document.createElement('canvas');finalCanvas.width=w;finalCanvas.height=h;
+  finalCanvas.getContext('2d')!.drawImage(srcCanvas,x,y,w,h,0,0,w,h);
+  const dc=finalCanvas;
   const texKey='starsea-native-frame-'+(++texSerial);
   const tex=this.scene.textures.addCanvas(texKey,dc)!;
   tex.add('f',0,0,0,w,h)!.setTrim(512,512,x,y,w,h);
@@ -92,6 +99,7 @@ export class NativeFrameCache{
  has(texture:string){return this.scene.textures.exists(texture);}
  diagnostics(){return{painters:this.painters.size,frames:this.lru.size,bytes:this.lru.bytes,bakes:this.bakes,budgetDenied:this.budgetDenied};}
  destroy(){
+  this.pixelUnsub?.();
   for(const e of this.painters.values())e.preview.destroy();
   this.painters.clear();
   this.lru.clear((_k,v)=>{try{this.scene.textures.remove(v.texture);}catch{}});

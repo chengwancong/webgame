@@ -14,8 +14,16 @@ import {graphicsQaCases} from './ui-svg-graphics-qa.ts';
 import {slotQaCases} from './ui-svg-slots-qa.ts';
 import {surfaceSvgQaCases} from './ui-svg-surfaces-qa.ts';
 import {tacticalCompactQaCases} from './ui-tactical-compact-qa.ts';
+import {buildingContactQaCases} from './ui-building-contact-qa.ts';
+import {movementQaCases} from './ui-movement-qa.ts';
+import {clientMovementQaCases} from './ui-client-movement-qa.ts';
+import {treasureChaseQaCases} from './ui-treasure-chase-qa.ts';
 export type QaCase={id:string;label:string;render:()=>string;mount?:(root:HTMLElement)=>void|(()=>void);presentation?:'modal'|'stage'};
 const cases:QaCase[]=[
+ ...treasureChaseQaCases,
+ ...clientMovementQaCases,
+ ...movementQaCases,
+ ...buildingContactQaCases,
  ...tacticalCompactQaCases,
  ...surfaceSvgQaCases,
  ...svgFormsQaCases,

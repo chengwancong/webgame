@@ -1,3 +1,4 @@
+import {pixelRuntime} from './pixel-texture.ts';
 import {ShieldFeedback} from './shield-feedback.ts';
 import {combatHash} from './world-numbers.ts';
 import {CameraShake,combatShakeTier,combatShakeDirection,hitDirection,actorPosition} from './hit-feedback.ts';
@@ -213,8 +214,10 @@ export class SkillEffects{
   const d=groundSize(radius);if(!this.pool.visible(position.x,position.y,d.width))return;this.warningCount++;const g=this.pool.graphics('warning:'+key,position.y-1)!;
   const q=enemyCircleWarning(g,position,radius,this.now,started,ends,profile,this.reduced());
   // Telegraph layers are critical: the decorative budget may never hide a real hit area or its countdown.
+  if(!pixelRuntime.cellStage){
   this.pool.image('warning-floor:'+key,telegraphFloorKey,'__BASE')?.setOrigin(.5).setPosition(position.x,position.y).setDisplaySize(d.width,d.height).setTint(telegraphColors.edge).setAlpha(Math.min(1,q.floor)).setDepth(position.y-2);
   this.pool.image('warning-front:'+key,telegraphFrontKey,'__BASE')?.setOrigin(.5).setPosition(position.x,position.y).setDisplaySize(d.width*q.front,d.height*q.front).setTint(telegraphColors.edge).setAlpha(Math.min(1,q.frontAlpha)).setDepth(position.y-1.5);
+  }else{this.pool.graphics('warning-pixel-front:'+key,position.y-1.5)?.lineStyle(2,telegraphColors.edge,q.frontAlpha).strokeEllipse(position.x,position.y,d.width*q.front,d.height*q.front);}
  }
  private drawZone(w:World,z:Zone){
   const raw=this.profile(z.vfxKey??(z.enemy?'monster/basic-area':'player/'+(z.skill??'ember')));if(!raw)return;const p=enemyPresentation(raw,w.enemies.find(n=>n.id===z.sourceId));
@@ -236,7 +239,7 @@ export class SkillEffects{
   const center=projectFx(z.position),size=groundSize(z.radius),palette=vfxPalettes[p.element],style=groundZoneStyle(p.motif),geometry=groundZoneGeometry(z.position,z.radius,age,z.id,style,this.reduced());
   // Reuse the registered ground surface; horizontal missile artwork belongs to flights.
   // Starfall drops are arcane orbs (library-void-flight), not grey blade shards (2026-10-16).
-  const material=this.pool.image('zone-surface:'+z.id,telegraphSurfaceKey,'__BASE',false);
+  const material=pixelRuntime.cellStage?undefined:this.pool.image('zone-surface:'+z.id,telegraphSurfaceKey,'__BASE',false);
   material?.setOrigin(.5).setPosition(center.x,center.y).setDisplaySize(size.width,size.height).setTint(palette.dark).setAlpha(alpha*.48).setDepth(center.y-2);
   for(const strand of geometry.strands){line(g,strand,13,palette.dark,alpha*.35);line(g,strand,6,palette.main,alpha*.8);line(g,strand,2,palette.light,alpha*.65);}
   for(const pulse of geometry.pulses)g.lineStyle(3,palette.main,Math.min(1,pulse.alpha*2.3)*alpha).strokeEllipse(center.x,center.y,size.width*pulse.radius,size.height*pulse.radius);

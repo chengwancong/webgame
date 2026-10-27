@@ -7,6 +7,19 @@ export const worldChunkCells=32;
  * does not repaint them. */
 export const chunkBuild={stepBudgetMs:4,urgentBudgetMs:12,entryBudgetMs:40,spareChunks:4} as const;
 export function chunkBudgetMs(entry:boolean,urgent:boolean){return entry?chunkBuild.entryBudgetMs:urgent?chunkBuild.urgentBudgetMs:chunkBuild.stepBudgetMs;}
+/** A missing hero tile is not necessarily a map entry: ordinary walking can catch
+ * up with a pending chunk. Keep startup loading latched only until that tile is
+ * ready, then re-arm only for a discontinuous position jump. Eight cells matches
+ * the existing snapshot presentation teleport threshold; no movement rules change. */
+export class ChunkBuildBudget{
+ private previous?:IsoPoint;private entering=true;
+ next(hero:IsoPoint,heroChunkMissing:boolean,urgent:boolean){
+  if(this.previous&&Math.hypot(hero.x-this.previous.x,hero.y-this.previous.y)>8)this.entering=true;
+  this.previous={x:hero.x,y:hero.y};
+  if(!heroChunkMissing)this.entering=false;
+  return chunkBudgetMs(this.entering&&heroChunkMissing,urgent);
+ }
+}
 /** Workbook roads store vertices. Rasterize every segment so sparse vertices
  * produce a connected road across chunk boundaries. */
 export function roadCells(points:readonly (readonly [number,number])[]){

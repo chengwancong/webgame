@@ -1,4 +1,6 @@
 import type {Tactics,SkillCondition} from '../contracts/tactics.ts';
+import type {ClientMovementReport} from '../contracts/client-movement.ts';
+import {acceptClientMovement,correctClientMovement,movementView,newClientMovement,validateClientMovement,type ClientMovementState} from './client-movement.ts';
 import {newHexStatistics,hexStatisticsRule,hexStatisticsSchema,type HexStatistics} from './hex-combat-stats.ts';
 import {starseaBossMaps} from '../content/starsea/index.ts';
 import {resolvedSkillTags,resolvedMechanismTags} from '../content/skill-mechanism-tags.ts';
@@ -35,7 +37,9 @@ import {chapterBossSkills,chapterDamageTypes,inBeam,type BossCast,type WarningDi
 export type {WarningDisplay} from '../content/chapter-combat.ts';
 import encounterBalance from '../content/encounter-balance.json';
 export {distance,walkable,findPath} from './navigation.ts';
-export type Entity=Spawn & {hp:number;maxHp:number;alive:boolean;cooldown:number;slow:number;burn:number;position:Vec;facing:number;action:string;actionUntil:number;reward:boolean;path?:Vec[];pathTick?:number;skillCooldowns?:Map<string,number>;currentPhase?:number;engaged?:boolean;contactAt?:number;home?:Vec;leashRadius?:number;returning?:boolean;patrolIndex?:number;shield?:number;shieldUntil?:number;shieldNext?:number};
+export type EnemyChaseOptions={speed:number;wakeTicks:number;totalTicks:number;restTicks:number;interceptTicks:number;stallTicks:number;arrivalRadius:number;interceptRadius:number;interceptApproach:number};
+export type EnemyChaseState={version:1;phase:'waking'|'running'|'staggered'|'cornered';started:number;until:number;phaseUntil:number;speed:number;restTicks:number;interceptTicks:number;stallTicks:number;arrivalRadius:number;interceptRadius:number;interceptApproach:number;destinations:Vec[];leg:number;path:Vec[];stalled:number;interceptions:number};
+export type Entity=Spawn & {hp:number;maxHp:number;alive:boolean;cooldown:number;slow:number;burn:number;position:Vec;facing:number;action:string;actionUntil:number;reward:boolean;path?:Vec[];pathTick?:number;skillCooldowns?:Map<string,number>;currentPhase?:number;engaged?:boolean;contactAt?:number;home?:Vec;leashRadius?:number;returning?:boolean;patrolIndex?:number;shield?:number;shieldUntil?:number;shieldNext?:number;chase?:EnemyChaseState};
 export type VfxOrigin={attackSource?:AttackSource;echo?:boolean;ruleId?:string;castId?:number;sourceId?:string;targetId?:string;vfxKey?:string;projectileId?:number;contact?:Vec};
 export type CombatEvent=VfxOrigin & {type:'effect_triggered'|'cast_started'|'hit_resolved'|'entity_died'|'status_changed'|'danger_started'|'phase_changed'|'cast_released'|'effect_activated'|'cast_failed'|'healed'|'resource_restored'|'shielded'|'missed'|'revived'|'displaced'|'plane_passage_open'|'plane_exit_open';id:string;position:Vec;amount?:number;source?:string;action?:string;followupActions?:string[];skill?:string;tick:number;phase?:number;origin?:Vec;target?:Vec;windup?:number;radius?:number;duration?:number;status?:StatusKind;change?:'applied'|'refreshed'|'expired'|'cleansed'|'broken'|'resisted'|'immune'|'consumed'|'source_lost'|'death';category?:DamageContext['category'];damageType?:DamageType;reason?:CastFailure;blocked?:number;part?:number;crit?:true;shieldPhase?:'applied'|'absorbed';shieldRemaining?:number;shieldGained?:number};
 export type Projectile=VfxOrigin & {hexHoming?:boolean;statusOnHit?:StatusEffect;part?:number;orbit?:{duration:number;radius:number;interval:number;speed:number;angle:number;ends:number;hits:Record<string,number>};returns?:boolean;returning?:boolean;id:number;position:Vec;direction:Vec;damage:number;life:number;enemy:boolean;pierce:boolean;hit:Set<string>;skill?:string;radius?:number;previous?:Vec;origin?:Vec;target?:Vec;owner?:string;targetId?:string;resolvedSkill?:Skill;damageType?:DamageType;penetrations?:number;turnRate?:number;explosionRadius?:number;comboDepth?:number};
@@ -45,7 +49,7 @@ export type WorldPlayer={id:string;hero:World['hero'];stats:Stats;skills:Skill[]
 const outOfCombatTicks=120;
 // 自动施法时，指向敌人的冲刺技只对这个距离内的敌人放：只是一个短突进，不会自己把角色拽过半个屏幕（docs/progression-goal-plan.md §11.1）。
 const autoDashMaxDistance=4;
-const heroFields=['autoBounds','takeoverAt','tactics','skillCharges','hero','stats','skills','cooldowns','pending','heroSlowUntil','targetId','mode','autoState','stopReason','anchor','radius','avoidElite','targetPriority','autoSkills','path','pathGoal','stuck','input','destination','dodge','wardCooldown','lastCastFailure','combatAt','hurtAt','comboReady','comboCounts','effectHitWindows','effectMarks','hexCombat','hexLedger','hexResetFrame','hexRecoveryWindow','hexManaWindow','echoes','castIntent','hexStatistics','effectStats','conditionClock','selfBuffs','effectKillTicks','effectMoved','effectLastPosition','effectsStarted','effectObservedShield','effectShieldPeak','effectPassive','effectCastHits','burst','petCommand'] as const;
+const heroFields=['clientMovement','autoBounds','takeoverAt','tactics','skillCharges','hero','stats','skills','cooldowns','pending','heroSlowUntil','targetId','mode','autoState','stopReason','anchor','radius','avoidElite','targetPriority','autoSkills','path','pathGoal','stuck','input','destination','dodge','wardCooldown','lastCastFailure','combatAt','hurtAt','comboReady','comboCounts','effectHitWindows','effectMarks','hexCombat','hexLedger','hexResetFrame','hexRecoveryWindow','hexManaWindow','echoes','castIntent','hexStatistics','effectStats','conditionClock','selfBuffs','effectKillTicks','effectMoved','effectLastPosition','effectsStarted','effectObservedShield','effectShieldPeak','effectPassive','effectCastHits','burst','petCommand'] as const;
 const encode=(v:any):any=>v instanceof Map?{$map:[...v].map(([k,x])=>[k,encode(x)])}:v instanceof Set?{$set:[...v]}:Array.isArray(v)?v.map(encode):v&&typeof v==='object'?Object.fromEntries(Object.entries(v).map(([k,x])=>[k,encode(x)])):v;
 function decode(v:any):any{
  if(typeof v==='number'&&!Number.isFinite(v))throw Error('Invalid combat number');
@@ -61,6 +65,33 @@ export function screenFacing(from:Vec,to:Vec,current=1){const d=(to.x-to.y)-(fro
 /** 临时接管后松手多久回到自动：1.5 秒（30 tick/秒）。 */
 export const takeoverResumeTicks=45;
 export class World {
+ clientMovement:ClientMovementState|null=null;
+ configureClientMovement(epoch:string){this.input={x:0,y:0};this.destination=undefined;this.path=[];this.pathGoal='';this.takeoverAt=-1;this.clientMovement=newClientMovement(epoch,this.hero.position,this.tick);return this.clientMovementView();}
+ clientMovementView(id=this.playerId){const player=this.players.get(id);return movementView(id===this.playerId?this.clientMovement:player?.clientMovement,id===this.playerId?this.hero.position:player?.hero.position);}
+ receiveClientMovement(report:ClientMovementReport){
+  if(!this.clientMovement)return false;
+  if(this.clientMovement.owner==='client'&&distance(this.clientMovement.expected,this.hero.position)>.01){this.cancelClientMovement('forced-move');return false;}
+  const result=acceptClientMovement(this.clientMovement,report,this.hero.position,this.tick,this.movementSpeed(),this.region,this.rules.bodyCollision.heroRadius,this.hero.hp<=0||this.movementBlocked(this.playerId)||this.hasStatus(this.playerId,'fear'));
+  if(!result.accepted&&!result.corrected)return false;
+  this.hero.position=result.position;this.input={x:0,y:0};this.destination=undefined;this.path=[];this.pathGoal='';this.castIntent=null;
+  this.takeoverAt=this.clientMovement.owner==='client'?this.tick:-1;this.anchor={...this.hero.position};return result.accepted;
+ }
+ cancelClientMovement(reason:string,correct=true){const s=this.clientMovement;if(!s)return;if(correct)correctClientMovement(s,this.hero.position,this.tick,reason);else{s.owner='server';s.active=false;s.direction={x:0,y:0};s.reason=reason;}this.input={x:0,y:0};this.destination=undefined;this.path=[];this.pathGoal='';this.takeoverAt=-1;this.anchor={...this.hero.position};}
+ private stepClientMovement(){
+  const s=this.clientMovement!;
+  if(this.hero.hp<=0||this.movementBlocked(this.playerId)){this.cancelClientMovement('controlled');return;}
+  if(this.tick>s.until){this.cancelClientMovement('expired');return;}
+  this.takeoverAt=this.tick;
+  const before=this.hero.position,amount=s.active?this.movementStep():0;
+  this.hero.position={x:Math.max(1,Math.min(this.region.width-1.001,before.x+s.direction.x*amount)),y:Math.max(1,Math.min(this.region.height-1.001,before.y+s.direction.y*amount))};
+  const moving=distance(before,this.hero.position)>.00001;if(moving)this.hero.facing=screenFacing(before,this.hero.position,this.hero.facing);
+  if(this.hero.actionUntil<this.tick)this.hero.action=moving?'move':'idle';s.expected={...this.hero.position};
+ }
+ private finishClientMovementFrame(){
+  if(this.clientMovement?.owner!=='client'&&![...this.players.values()].some(p=>p.clientMovement?.owner==='client'))return;
+  this.savePlayer();const ids=this.players.size?[...this.players.keys()]:[this.playerId];
+  for(const id of ids)this.forPlayer(id,()=>{const s=this.clientMovement;if(s?.owner==='client'&&(this.hero.hp<=0||distance(s.expected,this.hero.position)>.01))this.cancelClientMovement(this.hero.hp<=0?'downed':'forced-move');});
+ }
  rules=structuredClone({hexPolicy,eliteAffixes,combatNumerics,monsters:monsterContent,aiRules,settings,effects,bodyCollision,encounterBalance,chapterBossSkills,monsterSkills,chapterDamageTypes,statusPolicy,damagePermissions});
  defense:DefenseTarget|null=null;
  /** 原地分层：剧情战斗期间被暂时移出本场战斗的野怪，战斗结束后原样放回。 */
@@ -197,6 +228,9 @@ pickups:Vec[]=[];anchor:Vec;radius=this.rules.settings.autoRadius;avoidElite=fal
  cancelWalk(){this.destination=undefined;this.path=[];}
  movementIntent(){return {destination:this.destination?{...this.destination}:undefined,input:{...this.input}};}
  bodyDiagnostics(){return [...this.livingPlayers().map(p=>({id:p.id,position:{...p.position},radius:this.rules.bodyCollision.heroRadius})),...this.enemyBodies(this.hero.position,Infinity).map(body=>({...body,position:{...body.position}}))];}
+ /** Nearby collision bodies for local movement. The snapshot/step already owns
+  * the spatial index; do not rebuild it or enumerate diagnostic data per frame. */
+ movementBodies(position:Vec,reach=2):Body[]{const span=Math.max(0,Number.isFinite(reach)?reach:0)+this.rules.bodyCollision.heroRadius+Math.max(this.rules.bodyCollision.heroRadius,this.rules.bodyCollision.enemyRadius,this.rules.bodyCollision.eliteRadius,this.rules.bodyCollision.bossRadius);return [...this.enemyBodies(position,span),...this.playerBodies(this.playerId).filter(body=>distance(body.position,position)<span)];}
  /** Independent island arenas own this default approach; authoritative and legacy encounters retain their targeting policy. */
  soloBossTarget(){const boss=this.region.boss&&starseaBossMaps.includes(this.region.id)&&this.players.size===0?this.enemies.find(e=>e.alive&&e.boss):undefined;return boss?(this.enemies.find(e=>e.id===this.targetId&&e.alive)??boss):undefined;}
  private bossNeedsApproach(){const b=this.soloBossTarget();return !!b&&(distance(this.hero.position,b.position)>=this.autoAttackStopRange()||!lineOfSight(this.region,this.hero.position,b.position));}
@@ -404,7 +438,7 @@ pickups:Vec[]=[];anchor:Vec;radius=this.rules.settings.autoRadius;avoidElite=fal
  }this.zones=this.zones.filter(z=>z.life>0);
  this.downedInDefense();
  if(this.defense){const d=this.defense;if(d.hp<=0)d.failed=true;else if(!d.failed&&!d.complete){if(distance(this.hero.position,d.position)<=d.radius)d.heldTicks=Math.min(d.requiredTicks,d.heldTicks+1);d.complete=d.heldTicks>=d.requiredTicks&&!this.enemies.some(e=>d.enemyIds.includes(e.id)&&e.alive);}}
- stepBurst(this);if(this.separatedCount!==this.enemies.length)this.separateBodies();this.stepping=false;
+ stepBurst(this);if(this.separatedCount!==this.enemies.length)this.separateBodies();this.finishClientMovementFrame();this.stepping=false;
  if(!this.players.size&&this.hero.hp<=0)this.stop('你已倒下，请返回安全点。');
  }
  private stepTrackedHero(){this.stepEffects();const before={...this.hero.position};this.effectLastPosition=before;this.stepHero();this.effectMoved+=distance(before,this.hero.position);if(distance(before,this.hero.position)>.001){this.conditionClock.moving++;this.conditionClock.still=0;}else{this.conditionClock.still++;this.conditionClock.moving=0;}}
@@ -417,6 +451,7 @@ pickups:Vec[]=[];anchor:Vec;radius=this.rules.settings.autoRadius;avoidElite=fal
  else if(this.region.calmRegen&&this.tick-(this.hurtAt??-outOfCombatTicks)>=outOfCombatTicks)this.hero.hp=Math.min(this.stats.hp,this.hero.hp+this.stats.hp*this.region.calmRegen/30);
  const h=this.hero.position;
  if(this.hasStatus(this.playerId,'fear')){const status=this.activeStatuses(this.playerId).find(s=>s.effect.kind==='fear')!,source=this.actorPosition(status.sourceId)??status.sourcePosition;this.moveHero({x:h.x+(h.x-source.x),y:h.y+(h.y-source.y)});}
+ else if(this.clientMovement?.owner==='client')this.stepClientMovement();
  else if(this.input.x||this.input.y){if(this.mode==='auto')this.takeoverAt=this.tick;const length=Math.hypot(this.input.x,this.input.y);this.moveHero({x:h.x+this.input.x/length,y:h.y+this.input.y/length});}
  else if(this.castIntent)this.advanceCastIntent();
  else if(this.destination){if(this.takingOver())this.takeoverAt=this.tick;if(distance(h,this.destination)<.3){this.destination=undefined;this.path=[];}else this.follow();}
@@ -484,7 +519,11 @@ pickups:Vec[]=[];anchor:Vec;radius=this.rules.settings.autoRadius;avoidElite=fal
  return distance(nearest,h)<this.rules.aiRules.projectileHitRadius&&lineOfSight(this.region,p.position,h);
  });
  }
- private moveHero(to:Vec){if(this.movementBlocked(this.playerId))return;if(this.mode==='auto'&&!this.takingOver()&&this.autoBounds){const b=this.autoBounds,d=distance(to,b.center);if(d>b.radius)to={x:b.center.x+(to.x-b.center.x)*b.radius/d,y:b.center.y+(to.y-b.center.y)*b.radius/d};}const before=this.hero.position,amount=this.effectiveStats().speed/30*(this.heroSlowUntil>this.tick&&!this.hasStatus(this.playerId,'slow')?.6:1),bodies=[...this.enemyBodies(before,2),...this.playerBodies(this.playerId)];
+ /** Keep the original per-tick operation order for deterministic combat replay. */
+ private movementStep(){return this.effectiveStats().speed/30*(this.heroSlowUntil>this.tick&&!this.hasStatus(this.playerId,'slow')?.6:1);}
+ /** Actual walking speed for presentation; modifiers remain owned by the simulation. */
+ movementSpeed(){return this.movementStep()*30;}
+ private moveHero(to:Vec){if(this.movementBlocked(this.playerId))return;if(this.mode==='auto'&&!this.takingOver()&&this.autoBounds){const b=this.autoBounds,d=distance(to,b.center);if(d>b.radius)to={x:b.center.x+(to.x-b.center.x)*b.radius/d,y:b.center.y+(to.y-b.center.y)*b.radius/d};}const before=this.hero.position,amount=this.movementStep(),bodies=[...this.enemyBodies(before,2),...this.playerBodies(this.playerId)];
  this.hero.position=moveBody(this.region,before,to,amount,this.rules.bodyCollision.heroRadius,bodies);
  if((this.mode==='auto'&&!this.takingOver()||this.castIntent)&&distance(before,this.hero.position)<amount*.2){
   const heading=Math.atan2(to.y-before.y,to.x-before.x),options=[-Math.PI/3,Math.PI/3,-Math.PI/2,Math.PI/2].map(angle=>moveBody(this.region,before,{x:before.x+Math.cos(heading+angle),y:before.y+Math.sin(heading+angle)},amount,this.rules.bodyCollision.heroRadius,bodies)).filter(p=>distance(p,before)>amount*.5);
@@ -1245,8 +1284,43 @@ pickups:Vec[]=[];anchor:Vec;radius=this.rules.settings.autoRadius;avoidElite=fal
   this.withVfx(this.vfxFor(e,'basic-melee'),()=>this.hurt(Math.round(this.enemyAttack(e)*rule.damageMultiplier*weak),'basic-melee'));return true;
  }
  private patrolEnemy(e:Entity){const patrol=e.monster?.patrol;if(!patrol||e.engaged||this.actionBlocked(e.id))return false;e.patrolIndex??=0;let target=patrol.path[e.patrolIndex%patrol.path.length];if(distance(e.position,target)<.25){e.patrolIndex=(e.patrolIndex+1)%patrol.path.length;target=patrol.path[e.patrolIndex];}e.facing=screenFacing(e.position,target,e.facing);this.moveEnemy(e,target,patrol.speed/30);e.action='move';return true;}
+ /** A short authored chase owns only this enemy's normal movement. The service
+  * supplies reachable destinations once; paths are solved once per leg. */
+ startEnemyChase(id:string,destinations:readonly Vec[],options:EnemyChaseOptions){
+  const e=this.enemies.find(e=>e.id===id&&e.alive);if(!e||e.chase||destinations.length>3)return false;
+  if(!Object.values(options).every(n=>Number.isFinite(n)&&n>0)||![options.wakeTicks,options.totalTicks,options.restTicks,options.interceptTicks,options.stallTicks].every(Number.isSafeInteger)||options.wakeTicks>=options.totalTicks||destinations.some(p=>!walkable(this.region,p,this.bodyRadius(e))))return false;
+  this.interruptActor(id);e.path=undefined;e.pathTick=undefined;e.engaged=true;
+  e.chase={version:1,phase:destinations.length?'waking':'cornered',started:this.tick,until:this.tick+options.totalTicks,phaseUntil:destinations.length?this.tick+options.wakeTicks:this.tick,speed:options.speed,restTicks:options.restTicks,interceptTicks:options.interceptTicks,stallTicks:options.stallTicks,arrivalRadius:options.arrivalRadius,interceptRadius:options.interceptRadius,interceptApproach:options.interceptApproach,destinations:destinations.map(p=>({...p})),leg:0,path:[],stalled:0,interceptions:0};
+  e.action='idle';return true;
+ }
+ private cornerChase(e:Entity){const c=e.chase!;c.phase='cornered';c.phaseUntil=this.tick;c.path=[];e.path=undefined;e.pathTick=undefined;if(e.actionUntil<this.tick||['move','idle'].includes(e.action))e.action='idle';}
+ private beginChaseLeg(e:Entity){const c=e.chase!,target=c.destinations[c.leg];if(!target){this.cornerChase(e);return;}
+  c.path=findPath(this.region,e.position,target,this.bodyRadius(e));c.stalled=0;
+  if(!c.path.length){this.cornerChase(e);return;}c.phase='running';
+ }
+ private chaseEnemy(e:Entity):boolean{
+  const c=e.chase;if(!c||c.phase==='cornered')return false;
+  if(this.tick>=c.until){this.cornerChase(e);return true;}
+  // Fear keeps its existing server-owned movement; the finite chase clock keeps running.
+  if(this.hasStatus(e.id,'fear'))return false;
+  const pose=(moving:boolean)=>{if(e.actionUntil<this.tick||['idle','move'].includes(e.action))e.action=moving?'move':'idle';};
+  if(this.movementBlocked(e.id)){pose(false);return true;}
+  if(c.phase==='waking'){pose(false);if(this.tick>=c.phaseUntil)this.beginChaseLeg(e);return true;}
+  if(c.phase==='staggered'){pose(false);if(this.tick>=c.phaseUntil){c.leg++;this.beginChaseLeg(e);}return true;}
+  const target=c.destinations[c.leg];if(!target){this.cornerChase(e);return true;}
+  const intercepted=distance(e.position,target)<=c.interceptApproach&&this.livingPlayers().some(p=>distance(p.position,target)<=c.interceptRadius);
+  if(intercepted||distance(e.position,target)<=c.arrivalRadius){c.phase='staggered';c.phaseUntil=this.tick+(intercepted?c.interceptTicks:c.restTicks);if(intercepted)c.interceptions++;pose(false);return true;}
+  // Intermediate A* corners must be reached, not skipped at the final arrival
+  // radius, otherwise an elite's body cuts into a maze wall on the next segment.
+  while(c.path.length&&distance(e.position,c.path[0])<=1e-5)c.path.shift();
+  if(!c.path.length){c.phase='staggered';c.phaseUntil=this.tick+c.restTicks;pose(false);return true;}
+  const before={...e.position},slow=this.hasStatus(e.id,'slow')?1-this.strength(e.id,'slow'):e.slow>this.tick?.45:1;
+  this.moveEnemy(e,c.path[0],c.speed*Math.max(0,slow)/this.rules.settings.tickRate,false);
+  const moved=distance(before,e.position)>1e-5;pose(moved);if(moved){e.facing=screenFacing(before,e.position,e.facing);c.stalled=0;}else if(++c.stalled>=c.stallTicks)this.cornerChase(e);
+  return true;
+ }
  private enemyStep(e:Entity){
-  this.eliteShield(e);this.eliteTrail(e);if(this.patrolEnemy(e))return;
+  this.eliteShield(e);this.eliteTrail(e);if(this.chaseEnemy(e)||this.patrolEnemy(e))return;
   if(e.home&&e.leashRadius!==undefined&&(e.returning||distance(this.hero.position,e.home)>e.leashRadius||distance(e.position,e.home)>e.leashRadius)){
    if(!e.returning){this.interruptActor(e.id);e.path=[];}e.returning=true;e.engaged=false;
    const origin={x:e.x,y:e.y};if(distance(e.position,origin)>.3){this.moveEnemy(e,origin,this.monsterAi(e).speed/30);e.action='move';}else{e.returning=false;e.path=[];e.action='idle';}return;
@@ -1426,7 +1500,7 @@ pickups:Vec[]=[];anchor:Vec;radius=this.rules.settings.autoRadius;avoidElite=fal
   this.forPlayer(id,()=>this.copyActorRun(previous));
  }
  private copyActorRun(previous:WorldPlayer){
-  const local=new Set<string>(['hero','stats','skills','pending','echoes','targetId','takeoverAt','autoState','stopReason','anchor','radius','path','pathGoal','stuck','input','destination','dodge','castIntent','effectLastPosition','effectCastHits']);
+  const local=new Set<string>(['clientMovement','hero','stats','skills','pending','echoes','targetId','takeoverAt','autoState','stopReason','anchor','radius','path','pathGoal','stuck','input','destination','dodge','castIntent','effectLastPosition','effectCastHits']);
   const position={...this.hero.position};for(const key of heroFields)if(!local.has(key)&&previous[key]!==undefined)(this as any)[key]=structuredClone(previous[key]);this.hero={...structuredClone(previous.hero),position,action:previous.hero.hp>0?'idle':'death'};this.hero.hp=Math.min(this.hero.hp,this.stats.hp);this.hero.mana=Math.min(this.hero.mana,this.stats.mana);this.effectLastPosition={...position};
   // New D10 rules are stage-scoped; legacy non-HEX run buffs retain their old
   // carry semantics. Mechanism cooldowns stay in the copied comboReady ledger.
@@ -1452,7 +1526,7 @@ pickups:Vec[]=[];anchor:Vec;radius=this.rules.settings.autoRadius;avoidElite=fal
   for(const key of heroFields)p[key]=(fresh as any)[key];p.hero.position={...position};p.anchor={...position};this.players.set(id,p);if(this.players.size===1)this.focusPlayer(id);this.separatePlayerBodies();
  }
  removePlayer(id:string){this.forPlayer(id,()=>{this.pending=[];this.input={x:0,y:0};this.destination=undefined;});const p=this.players.get(id);if(p){p.active=false;p.connected=false;}}
- setConnected(id:string,value:boolean){const p=this.players.get(id);if(!p)return;p.connected=value;if(!value)this.forPlayer(id,()=>{this.input={x:0,y:0};this.destination=undefined;this.mode='manual';});}
+ setConnected(id:string,value:boolean){const p=this.players.get(id);if(!p)return;p.connected=value;if(!value)this.forPlayer(id,()=>{this.cancelClientMovement('disconnected');this.input={x:0,y:0};this.destination=undefined;this.mode='manual';});}
  isActive(id:string){const p=this.players.get(id);return !!p?.active&&(p.activeFrom??0)<=this.tick;}
  livingPlayers(){this.savePlayer();return this.players.size?[...this.players.values()].filter(p=>this.isActive(p.id)&&p.hero.hp>0).map(p=>({id:p.id,position:p.hero.position})):this.hero.hp>0?[{id:this.playerId,position:this.hero.position}]:[];}
  private playerBodies(exclude=''):Body[]{return this.livingPlayers().filter(p=>p.id!==exclude).map(p=>({...p,radius:this.rules.bodyCollision.heroRadius}));}
@@ -1468,7 +1542,7 @@ pickups:Vec[]=[];anchor:Vec;radius=this.rules.settings.autoRadius;avoidElite=fal
   if(checkpoint?.version!==1)throw Error('Unknown combat checkpoint version');
   if(!checkpoint.region?.safe||!Array.isArray(checkpoint.region.obstacles)||!Number.isFinite(checkpoint.region.width)||!Number.isFinite(checkpoint.region.height)||!checkpoint.data?.stats||!Array.isArray(checkpoint.data.skills))throw Error('Incomplete combat checkpoint');
   const data=decode(checkpoint.data),world=new World(checkpoint.region,data.stats,data.skills,[],[],1),keys=new Set(Object.keys(world).filter(k=>!['grid','region','spatialCount','spatialOrder','awakeIds'].includes(k)));
-  for(const actor of [data,...[...data.players.values()]]){actor.hexStatistics??=null;if(actor.hexStatistics!==null)hexStatisticsSchema.parse(actor.hexStatistics);}
+  for(const actor of [data,...[...data.players.values()]]){validateClientMovement(actor.clientMovement,data.tick);actor.clientMovement??=null;actor.hexStatistics??=null;if(actor.hexStatistics!==null)hexStatisticsSchema.parse(actor.hexStatistics);}
   for(const marks of [data.effectMarks,...[...data.players.values()].map((p:any)=>p.effectMarks)])if(marks!==undefined)effectMarksSchema.parse(marks);
   for(const combat of [data.hexCombat,...[...data.players.values()].map((p:any)=>p.hexCombat)])if(combat!==undefined&&(!combat||Object.keys(combat).some(k=>!['started','lastDamage','moved'].includes(k))||!Number.isInteger(combat.started)||combat.started<0||!Number.isInteger(combat.lastDamage)||combat.lastDamage<combat.started||combat.lastDamage>data.tick||!Number.isFinite(combat.moved)||combat.moved<0))throw Error('Invalid HEX combat clock');
   for(const history of [data.effectHitWindows,...[...data.players.values()].map((p:any)=>p.effectHitWindows)])validateHitWindows(history,data.tick);
@@ -1501,6 +1575,9 @@ pickups:Vec[]=[];anchor:Vec;radius=this.rules.settings.autoRadius;avoidElite=fal
   }
   if(!validHero(data.hero)||[...data.players.values()].some(p=>!validHero(p.hero)||!Array.isArray(p.pending)||!Array.isArray(p.skills)||typeof p.active!=='boolean')||data.enemies.some((e:any)=>!validHero({...e,mana:0})||typeof e.alive!=='boolean')||new Set(data.enemies.map((e:any)=>e.id)).size!==data.enemies.length)throw Error('Invalid combat actors');
   if(data.enemies.some((e:Entity)=>e.home!==undefined&&(!Number.isFinite(e.home.x)||!Number.isFinite(e.home.y)||!Number.isFinite(e.leashRadius)||e.leashRadius!<=0)||e.returning!==undefined&&typeof e.returning!=='boolean'))throw Error('Invalid camp leash checkpoint');
+  for(const e of data.enemies as Entity[])if(e.chase){const c=e.chase,point=(p:Vec)=>p&&Number.isFinite(p.x)&&Number.isFinite(p.y),ints=[c.started,c.until,c.phaseUntil,c.restTicks,c.interceptTicks,c.stallTicks,c.leg,c.stalled,c.interceptions];
+   if(c.version!==1||!['waking','running','staggered','cornered'].includes(c.phase)||!ints.every(n=>Number.isSafeInteger(n)&&n>=0)||c.started>data.tick||c.until<c.started||![c.speed,c.arrivalRadius,c.interceptRadius,c.interceptApproach].every(n=>Number.isFinite(n)&&n>0)||![c.restTicks,c.interceptTicks,c.stallTicks].every(n=>n>0)||!Array.isArray(c.destinations)||c.destinations.length>3||!c.destinations.length&&c.phase!=='cornered'||c.leg>c.destinations.length||c.destinations.some(p=>!point(p))||!Array.isArray(c.path)||c.path.length>512||c.path.some(p=>!point(p)))throw Error('Invalid enemy chase checkpoint');
+  }
   Object.assign(world,data);world.grid=new SpatialGrid<Entity>(world.region.activationRadius?8:2);world.refreshSpatial(true);const bind=(pending:any[])=>{for(const p of pending)if(p.target)p.target=world.enemies.find(e=>e.id===p.target.id);};bind(world.pending);for(const p of world.players.values())bind(p.pending);return world;
  }
 }

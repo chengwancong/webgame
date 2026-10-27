@@ -6,6 +6,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {committedVersions,assertReleaseVersions} from './deploy-versions.ts';
 import {remoteWebBuildScript} from './deploy-remote-web.ts';
+import {pixelArtUploadPlan} from './deploy-pixel-art.mjs';
 const root=path.resolve(fileURLToPath(new URL('../..',import.meta.url))),project=path.join(root,'open-world'),out='G:/webgame/aw-deploy';
 // A source-only release worktree may share an already installed local preview.
 // Its existing service script still enforces checkout ownership; no guard is bypassed.
@@ -22,8 +23,11 @@ const quote=s=>"'"+String(s).replaceAll("'","'\\''")+"'";
 const head=capture('git',['rev-parse','HEAD']),expectedVersions=committedVersions(capture('git',['show',`${head}:open-world/packages/contracts/index.ts`]));
 const release='release-'+head.slice(0,12)+'-'+Date.now(),artifact=path.join(out,release);
 const api=!flags.has('--skip-api'),web=!flags.has('--skip-web');
-console.log(JSON.stringify({source:head,versions:expectedVersions,api,web,remoteWeb:flags.has('--remote-web'),steps:[flags.has('--remote-web')?'isolated cloud client build; retain live static resources':'isolated client build with local stop/build/restore','verified web and server archives','build and verify candidate while current API stays running','brief API stop, atomic source/client activation, restore with rollback','verify health and mirror committed source']}));
+let committedPixelManifest;try{committedPixelManifest=capture('git',['show',`${head}:open-world/apps/web/public/art-pixel/manifest.json`]);}catch{/* Original-style releases may predate pixel artwork. */}
+const pixelPlan=web?pixelArtUploadPlan(path.join(project,'apps/web/public'),committedPixelManifest):undefined;
+console.log(JSON.stringify({source:head,versions:expectedVersions,api,web,remoteWeb:flags.has('--remote-web'),pixelArt:pixelPlan?{available:pixelPlan.available,files:pixelPlan.files.length,images:pixelPlan.images,bytes:pixelPlan.bytes,complete:pixelPlan.complete}:undefined,steps:[flags.has('--remote-web')?'isolated cloud client build; retain live static resources; overlay verified art-pixel allowlist':'isolated client build with local stop/build/restore','verified web and server archives','build and verify candidate while current API stays running','brief API stop, atomic source/client activation, restore with rollback','verify health and mirror committed source']}));
 if(flags.has('--dry-run'))process.exit(0);
+if(pixelPlan?.available&&(!committedPixelManifest||!pixelPlan.complete))throw Error('Pixel release is not committed and 100% complete; deployment cancelled before upload');
 mkdirSync(out,{recursive:true});const lock=path.join(out,'deploy-staging.lock');
 try{mkdirSync(lock);}catch{throw Error('Deployment already running: '+lock);}
 writeFileSync(path.join(lock,'owner.json'),JSON.stringify({pid:process.pid,release,head}));mkdirSync(artifact);
@@ -31,6 +35,12 @@ let snapshot;
 async function hash(file){const h=createHash('sha256');for await(const c of createReadStream(file))h.update(c);return h.digest('hex');}
 async function healthy(){const r=await fetch('https://43-165-179-11.sslip.io/api/health',{signal:AbortSignal.timeout(5000)});if(!r.ok)throw Error('Health HTTP '+r.status);const h=await r.json();if(!h.ok)throw Error('Health not ready');assertReleaseVersions(h.versions,expectedVersions);return h;}
 try{
+ if(web&&flags.has('--remote-web')&&pixelPlan?.available){
+  const list=path.join(artifact,'pixel-art-files.txt'),archive=path.join(artifact,'pixel-art.tgz');writeFileSync(list,pixelPlan.files.map(f=>f.path).join('\n')+'\n');
+  run('tar',['-czf',archive,'-C',path.join(project,'apps/web/public'),'-T',list]);
+  run(scp,[archive,`abyss-staging:/tmp/${release}.pixel-art.tgz`]);
+  if(readRemote(`sha256sum /tmp/${release}.pixel-art.tgz`).split(/\s/)[0]!==await hash(archive))throw Error('Pixel art archive checksum mismatch');
+ }
  if(capture('git',['status','--porcelain','--untracked-files=no']))console.warn(flags.has('--remote-web')?'Dirty workspace: only committed source is deployed; existing cloud static resources are retained.':'Dirty workspace: only committed source is deployed; local public assets are copied.');
  const before=readRemote('cat ~/abyss/SOURCE_COMMIT 2>/dev/null || true');
  let manifest;
@@ -84,6 +94,7 @@ cp open-world/deploy/.env "$stage/open-world/deploy/.env"
 chmod 600 "$stage/open-world/deploy/.env"
 cp -al open-world/deploy/web-dist "$stage/open-world/deploy/web-dist"
 ${web?`tar --unlink-first -xzf /tmp/${release}.web.tgz -C "$stage/open-world/deploy/web-dist"`:''}
+${web&&flags.has('--remote-web')&&pixelPlan?.available?`tar --unlink-first -xzf /tmp/${release}.pixel-art.tgz -C "$stage/open-world/deploy/web-dist"`:''}
 test "$(cat SOURCE_COMMIT)" = ${quote(before)}
 cd open-world/deploy
 oldImage=$(docker inspect "$(docker compose ps -q api)" --format '{{.Image}}')

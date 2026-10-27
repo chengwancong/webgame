@@ -1,0 +1,81 @@
+/* 像素画风 DOM HUD 皮肤（body.pixel-mode 下生效）
+   --px          像素块边长（CSS px，由 TS 在 applyPixelMode 中写入 document.documentElement.style）
+   --px-frame-*  各面板的 SVG 九宫格 url()，由 TS 写入
+*/
+
+/* 通用面板：圆角→0，九宫格边框，硬像素投影 */
+body.pixel-mode .plate,
+body.pixel-mode #tracker,
+body.pixel-mode #story-hud,
+body.pixel-mode .hint,
+body.pixel-mode .paused,
+body.pixel-mode .hud-wallet,
+body.pixel-mode .minimap.plate {
+  border-radius: 0 !important;
+  border-image: var(--px-frame-panel,none) 4 fill / var(--border-width,1px) / 0 !important;
+  box-shadow: 0 var(--px,3px) 0 rgba(24,46,59,.35) !important;
+}
+
+/* 技能格：圆角→0，九宫格边框 */
+body.pixel-mode .skill-slot {
+  border-radius: 0 !important;
+  border-image: var(--px-frame-panel,none) 4 fill / var(--border-focus-width,2px) / 0 !important;
+  box-shadow: 0 var(--px,3px) 0 rgba(24,46,59,.28) !important;
+}
+
+/* 技能格内图标：像素化 */
+body.pixel-mode .skill-slot img { image-rendering: pixelated; }
+
+/* 系统栏 / 下方菜单按钮 */
+body.pixel-mode #sysbar .entry,
+body.pixel-mode #modebar .entry {
+  border-radius: 0 !important;
+  border-image: var(--px-frame-panel,none) 4 fill / var(--border-width,1px) / 0 !important;
+  box-shadow: 0 var(--px,3px) 0 rgba(24,46,59,.35) !important;
+}
+body.pixel-mode .hud-menu-illustration { image-rendering: pixelated; }
+
+/* 主/次按钮 */
+body.pixel-mode .ui-button--primary {
+  border-radius: 0 !important;
+  border-image: var(--px-frame-primary,none) 4 fill / var(--border-width,1px) / 0 !important;
+  box-shadow: 0 var(--px,3px) 0 rgba(24,46,59,.28) !important;
+}
+body.pixel-mode .ui-button--secondary {
+  border-radius: 0 !important;
+  border-image: var(--px-frame-secondary,none) 4 fill / var(--border-width,1px) / 0 !important;
+  box-shadow: 0 var(--px,3px) 0 rgba(24,46,59,.28) !important;
+}
+
+/* 圆形元素保留 border-radius 但用 box-shadow 模拟硬边框（替代软发光） */
+body.pixel-mode .burst-slot,
+body.pixel-mode .pet-slot {
+  box-shadow: 0 0 0 var(--px,3px) rgba(24,46,59,.55) !important;
+}
+body.pixel-mode .minimap canvas {
+  border-radius: var(--radius-round) !important;
+  box-shadow: 0 0 0 var(--px,3px) rgba(24,46,59,.55) !important;
+}
+
+/* 背包/装备/技能模态浮层 */
+body.pixel-mode #modal .plate,
+body.pixel-mode .confirm-box {
+  border-radius: 0 !important;
+  border-image: var(--px-frame-panel,none) 4 fill / var(--border-width,1px) / 0 !important;
+  box-shadow: 0 var(--px,3px) 0 rgba(24,46,59,.35) !important;
+}
+
+/* 物品/装备插槽图标 */
+body.pixel-mode .bag-item img,
+body.pixel-mode .item-slot img,
+body.pixel-mode .gear-icon img { image-rendering: pixelated; }
+/* Authored pixel surfaces. These overrides exist only while the toggle is on. */
+body.pixel-mode [data-pixel-icon],body.pixel-mode img[src^="/art-pixel/"]{image-rendering:pixelated;filter:none}
+body.pixel-mode .ui-component-art,body.pixel-mode .ui-slot-art{display:none}
+body.pixel-mode .pet-slot--active,body.pixel-mode .pet-slot--support,body.pixel-mode .pet-card__flows [aria-pressed="true"]{background-image:none;border-radius:0;border-image:var(--px-frame-primary) 4 fill / 2px / 0}
+body.pixel-mode .bag-cell::after,body.pixel-mode .bag-eq::after,body.pixel-mode .gear-card::after,body.pixel-mode .gear-card::before,body.pixel-mode .loot-tile::after,body.pixel-mode .loot-tile::before,body.pixel-mode .bag-item-well::after,body.pixel-mode .bag-item-well::before,body.pixel-mode .equip-tip-art::after,body.pixel-mode .equip-tip-art::before,body.pixel-mode .bag-item-image::after,body.pixel-mode .bag-item-image::before,body.pixel-mode #toast .toast::before{background-image:none!important;animation:none!important;border-radius:0;border-image:var(--px-frame-panel) 4 / 2px / 0}
+body.pixel-mode .title-bg__ground{background-image:url('/art-pixel/ui-code/title-grass.png');background-size:32px 32px;filter:none;animation:none}
+body.pixel-mode .title-bg__camp{background-image:url('/art-pixel/ui-code/title-road.png');background-size:32px 32px;filter:none;mask-image:none;-webkit-mask-image:none;opacity:1}
+body.pixel-mode .title-bg img{filter:none;animation:none}
+body.pixel-mode .desk-place>img{max-width:none;object-fit:none!important;object-position:center}
+body.pixel-mode .desk-place>div:not(.missing-art){background:transparent;text-shadow:2px 2px var(--color-background)}

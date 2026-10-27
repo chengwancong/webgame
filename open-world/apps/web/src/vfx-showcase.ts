@@ -1,3 +1,4 @@
+import {pixelRuntime} from './pixel-texture.ts';
 import Phaser from 'phaser';
 import type {CombatEvent,World,Projectile} from '../../../packages/simulation/index.ts';
 import type {VfxPool} from './vfx-pool.ts';
@@ -68,7 +69,9 @@ export class ShowcaseVfx{
   if(o.add)node.setBlendMode(Phaser.BlendModes.ADD);if(o.tint!==undefined){node.setTint(o.tint);if(o.fill)node.setTintMode(Phaser.TintModes.FILL);}return node;
  }
  private soft(key:string,texture:string,point:Point,width:number,height:number,alpha:number,depth:number,tint:number,rotation=0,decor=false,normal=false){
-  if(alpha<=.01||!this.pool.visible(point.x,point.y,Math.max(width,height)))return;const node=this.pool.image(key,texture,'__BASE',!decor);if(!node)return;
+  if(alpha<=.01||!this.pool.visible(point.x,point.y,Math.max(width,height)))return;
+  if(pixelRuntime.cellStage){const g=this.pool.graphics(key,depth,!decor);if(!g)return;g.fillStyle(tint,alpha).lineStyle(2,tint,alpha);if(texture===tex.ring)g.strokeEllipse(point.x,point.y,width,height);else{const vertices=texture===tex.glow?[[-.3,-.5],[.3,-.5],[.5,-.25],[.5,.25],[.3,.5],[-.3,.5],[-.5,.25],[-.5,-.25]]:[[-.5,0],[.28,-.5],[.5,0],[.28,.5]],c=Math.cos(rotation),s=Math.sin(rotation);g.beginPath();vertices.forEach(([x,y],n)=>{const px=point.x+x*width*c-y*height*s,py=point.y+x*width*s+y*height*c;if(n)g.lineTo(px,py);else g.moveTo(px,py);});g.closePath().fillPath();}return;}
+  const node=this.pool.image(key,texture,'__BASE',!decor);if(!node)return;
   node.setOrigin(.5).setPosition(point.x,point.y).setScale(width/node.frame.realWidth,height/node.frame.realHeight).setRotation(rotation).setAlpha(clamp(alpha)).setDepth(depth).setBlendMode(normal?Phaser.BlendModes.NORMAL:Phaser.BlendModes.ADD).setTint(tint);return node;
  }
  /** Four-point glint built from additive spark images (Graphics with ADD blend does not render in this Phaser build). */

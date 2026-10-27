@@ -1,10 +1,13 @@
 import type Phaser from 'phaser';
 import type {ResolvedAppearance} from '../../../packages/contracts/appearance.ts';
 import type {SocketName,RenderPose} from './effect-attachments.ts';
+import {pixelRuntime} from './pixel-texture.ts';
+import {PixelActorPainter,pixelHeroKey} from './pixel-actor.ts';
 
 type Point={x:number;y:number};
 export type WardrobeAction='idle'|'move'|'attack'|'skill'|'projectile'|'hurt'|'death';
 export type WardrobeRenderState={action:WardrobeAction;clock:number;facing:number;motionFamily?:'spear';cast?:{elapsed:number;windup:number;recovery:number};
+ pixelPhase?:string;
  /** casting skill id: the native rig plays its authored motion (skill-motion-map) */ skill?:string;
  /** player's reduced-motion setting: authored motions play in place */ reducedMotion?:boolean};
 export type WardrobePart={name:string;slot:string;matrix:number[];width:number;height:number;color:number[]};
@@ -48,12 +51,16 @@ function validateMotion(motion:MotionFile,url:string){
 
 /** All requested parts decode before commit; stale requests can never replace a newer outfit. */
 export class WardrobePreview{
+ private pixelPainter:PixelActorPainter;private pixelShown=false;
  private alternateMotion?:MotionFile;private activeMotion?:MotionFile;
  protected bundle?:Bundle;private requested='';private generation=0;private dead=false;
  private frame?:WardrobeFrame;private action:WardrobeAction='idle';private index=0;private flipped=false;
  private drawKey='';private retryAfter=0;private options={height:220,footX:.5,footY:.8,hideWeapon:false};
  readonly errors:string[]=[];pending=false;
- constructor(readonly canvas:HTMLCanvasElement,options?:Partial<{height:number;footX:number;footY:number;hideWeapon:boolean}>){Object.assign(this.options,options);}
+ get validationFrameKey(){return this.drawKey;}
+ get validationRevision(){return this.generation;}
+ get renderValid(){return true;}
+ constructor(readonly canvas:HTMLCanvasElement,options?:Partial<{height:number;footX:number;footY:number;hideWeapon:boolean}>){Object.assign(this.options,options);this.pixelPainter=new PixelActorPainter(canvas,this.options);}
  async setAppearance(appearance:ResolvedAppearance):Promise<boolean>{
   if(this.dead)return false;const key=appearanceRenderKey(appearance);if(key===this.requested){
    if(this.bundle?.key===key){this.bundle.appearance.revision=appearance.revision;return true;}
@@ -73,11 +80,13 @@ export class WardrobePreview{
    validateMotion(motion,motionUrl);
    this.alternateMotion=undefined;if(appearance.family==='magic'&&manifest.motions.spear){try{const alternate=await json<MotionFile>(manifest.motions.spear.url);validateMotion(alternate,manifest.motions.spear.url);this.alternateMotion=alternate;}catch{/* D4: retain the accepted original family; body offsets remain available. */}}
    if(this.dead||generation!==this.generation)return false;
-   this.bundle={appearance,motion,images,manifest,key};this.drawKey='';this.pending=false;return true;
+   this.bundle={appearance,motion,images,manifest,key};this.drawKey='';this.pending=false;this.pixelPainter.request(pixelHeroKey(appearance,'wardrobe'),appearance);return true;
   }catch(error){if(generation!==this.generation||this.dead)return false;if(motionUrl)jsonCache.delete(motionUrl);this.pending=false;this.retryAfter=Date.now()+5000;this.errors.push(String(error));if(this.errors.length>8)this.errors.shift();console.error('[wardrobe] Outfit retained; resource failure',error);return false;}
  }
  render(state:WardrobeRenderState):boolean{
   const bundle=this.bundle;if(!bundle||this.dead)return false;
+  if(pixelRuntime.cellStage>0&&this.pixelPainter.supports(state.action)&&!this.options.hideWeapon){if(!this.pixelShown)this.pixelPainter.reset();const changed=this.pixelPainter.render(state);this.pixelShown=true;return changed;}
+  if(this.pixelShown){this.drawKey='';this.pixelShown=false;}
   const action=state.action;this.activeMotion=state.motionFamily==='spear'&&bundle.appearance.family==='magic'&&this.alternateMotion?this.alternateMotion:bundle.motion;const motion=this.activeMotion.actions[action];if(!motion?.frames.length)return false;
   const index=wardrobeFrameIndex(motion,state),flipped=(bundle.manifest.nativeFacing==='left'?-1:1)*state.facing<0;
   const key=`${bundle.key}:${state.motionFamily??'native'}:${action}:${index}:${flipped}:${this.canvas.width}:${this.canvas.height}`;
@@ -109,6 +118,7 @@ export class WardrobePreview{
   return {point:point(frame.sockets[name]),source:`source:${name}`};
  }
  socket(name:SocketName,frameName?:string):Point|undefined{
+  if(this.pixelShown)return this.pixelPainter.socket(name,frameName);
   if(!this.bundle||!this.frame)return;let frame=this.frame;
   const match=frameName&&/^(?:wardrobe-)?(\w+)_(\d+)$/.exec(frameName);
   if(match)frame=(this.activeMotion??this.bundle.motion).actions[match[1]]?.frames[Number(match[2])]??frame;
@@ -116,10 +126,11 @@ export class WardrobePreview{
   return {x:this.canvas.width*this.options.footX+(source.x-feet.x)*scale*(this.flipped?-1:1),y:this.canvas.height*this.options.footY-(source.y-feet.y)*scale};
  }
  get ready(){return Boolean(this.bundle);}
- get mirrored(){return this.flipped;}
- get frameName(){return `wardrobe-${this.action}_${this.index}`;}
+ get mirrored(){return this.pixelShown?this.pixelPainter.mirrored:this.flipped;}
+ get frameName(){return this.pixelShown?this.pixelPainter.frameName:`wardrobe-${this.action}_${this.index}`;}
+ get authoredPixelArt(){return this.pixelShown;}
  actionDuration(action:WardrobeAction){return this.bundle?.motion.actions[action]?.duration;}
- releaseFrame(action:WardrobeAction){const motion=(this.activeMotion??this.bundle?.motion)?.actions[action];return motion?`wardrobe-${action}_${wardrobeFrameIndex(motion,{action,clock:0,facing:1,cast:{elapsed:1,windup:1,recovery:1}})}`:undefined;}
+ releaseFrame(action:WardrobeAction){if(this.pixelShown)return this.pixelPainter.releaseFrame(action);const motion=(this.activeMotion??this.bundle?.motion)?.actions[action];return motion?`wardrobe-${action}_${wardrobeFrameIndex(motion,{action,clock:0,facing:1,cast:{elapsed:1,windup:1,recovery:1}})}`:undefined;}
  /** Avatar uses the selected, styled head image, cropped by actual alpha bounds. */
  drawPortrait(target:HTMLCanvasElement):boolean{
   const image=this.bundle?.images.get('face'),ctx=target.getContext('2d');if(!image||!ctx)return false;
@@ -131,18 +142,19 @@ export class WardrobePreview{
   ctx.drawImage(source,left,top,width,height,(target.width-width*scale)/2,(target.height-height*scale)/2,width*scale,height*scale);return true;
  }
  diagnostics(){const names=['feet','chest','hand','muzzle','weapon'] as SocketName[];return {ready:this.ready,pending:this.pending,key:this.bundle?.key,family:this.bundle?.appearance.family,revision:this.bundle?.appearance.revision,frame:this.frameName,flip:this.flipped,parts:this.bundle?Object.fromEntries(Object.entries(this.bundle.appearance.parts).map(([slot,item])=>[slot,item.setId])):null,partCount:this.bundle?.images.size??0,drawOrder:this.frame?.drawOrder,errors:[...this.errors],sockets:Object.fromEntries(names.map(name=>[name,this.socket(name)])),socketSources:Object.fromEntries(names.map(name=>[name,this.frame?this.sourceSocket(this.frame,name).source:null]))};}
- destroy(){this.dead=true;this.generation++;this.bundle=undefined;this.frame=undefined;this.pending=false;}
+ destroy(){this.dead=true;this.generation++;this.pixelPainter.destroy();this.bundle=undefined;this.frame=undefined;this.pending=false;}
 }
 
 let renderSerial=0;
 export class WardrobeRenderer extends WardrobePreview{
  readonly sprite:Phaser.GameObjects.Image;private texture:Phaser.Textures.CanvasTexture;private position:Point={x:0,y:0};
+ 
  constructor(private scene:Phaser.Scene){
   const key=`wardrobe-live-${++renderSerial}`,texture=scene.textures.createCanvas(key,512,512)!;
   super(texture.canvas,{height:96,footX:.5,footY:.75});this.texture=texture;
   this.sprite=scene.add.image(0,0,key).setOrigin(.5,.75).setVisible(false);
  }
- update(state:WardrobeRenderState,position:Point){this.position=position;const changed=this.render(state);if(changed)this.texture.refresh();this.sprite.setPosition(position.x,position.y).setDepth(position.y+2).setVisible(this.ready);}
+ update(state:WardrobeRenderState,position:Point){this.position=position;const changed=this.render(state);if(changed){this.texture.refresh();}this.sprite.setPosition(position.x,position.y).setDepth(position.y+2).setVisible(this.ready);}
  pose():RenderPose|undefined{if(!this.ready)return;return {art:'hero',frame:this.frameName,position:this.position,scale:1,flip:this.mirrored,socket:(name,frame)=>{const p=this.socket(name,frame);return p?{x:this.position.x+p.x-this.canvas.width*.5,y:this.position.y+p.y-this.canvas.height*.75}:undefined;}};}
  override destroy(){super.destroy();this.sprite.destroy();this.scene.textures.remove(this.texture.key);}
 }

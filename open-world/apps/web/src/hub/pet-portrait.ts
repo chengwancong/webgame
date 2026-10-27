@@ -3,6 +3,8 @@
  * 先输出占位 span，挂到 DOM 后调用 hydratePetPortraits；资源缺失时保持空占位，不报错。
  */
 import {esc} from '../ui-components.ts';
+import {loadPixelManifest,pixelAsset} from '../pixel-assets.ts';
+import {pixelRuntime,onPixelChange} from '../pixel-texture.ts';
 
 type PetArt = {image: string; atlas: string};
 type Frame = {image: string; x: number; y: number; w: number; h: number};
@@ -45,15 +47,22 @@ export function hydratePetPortraits(root: ParentNode): void {
   root.querySelectorAll<HTMLElement>('.pet-portrait[data-pet-runtime]:not([data-ready])').forEach(el => {
     el.dataset.ready = '1';
     const runtime = el.dataset.petRuntime!;
-    const mount = (f: Frame | null) => {
+    const mount = async (original: Frame | null) => {
+      let f=original;const version=pixelRuntime.version;
+      if(pixelRuntime.cellStage>0){await loadPixelManifest();const a=pixelAsset(runtime);if(a){const row=a.actions?.idle?.row??0;f={image:a.file,x:0,y:row*a.frame[1],w:a.frame[0],h:a.frame[1]};}}
+      if(version!==pixelRuntime.version)return;
       if (!f || !el.isConnected) return;
-      const k = Math.min((el.clientWidth || f.w) / f.w, (el.clientHeight || f.h) / f.h);
+      const fit=Math.min((el.clientWidth || f.w) / f.w, (el.clientHeight || f.h) / f.h);
+      const k=pixelRuntime.cellStage>0?Math.max(1,Math.floor(fit)):fit;
+      el.replaceChildren();
       const sprite = document.createElement('i');
       sprite.className = 'pet-portrait__frame';
-      sprite.style.cssText = `width:${f.w}px;height:${f.h}px;background-image:url("${f.image}");background-position:${-f.x}px ${-f.y}px;scale:${k.toFixed(3)}`;
+      sprite.style.cssText = `width:${f.w}px;height:${f.h}px;background-image:url("${f.image}");background-position:${-f.x}px ${-f.y}px;scale:${k.toFixed(3)};image-rendering:${pixelRuntime.cellStage>0?'pixelated':'auto'}`;
       el.append(sprite);
     };
     if (ready.has(runtime)) mount(ready.get(runtime)!);
     else void portraitFrame(runtime).then(mount);
   });
 }
+
+if(typeof document!=='undefined')onPixelChange(()=>{for(const el of document.querySelectorAll<HTMLElement>('.pet-portrait[data-pet-runtime]'))delete el.dataset.ready;hydratePetPortraits(document);});
