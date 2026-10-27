@@ -2,6 +2,8 @@
 
 ## 资源盘点表
 
+视觉完成结论已撤回；技术覆盖不代表达到方向图。当前纠偏与待改项见 [港口纠偏记录](pixel-harbor-art-correction-20261027.md)。
+
 口径：正式 main.ts 可达模块、运行时注册、可选换装与 v3 宠物；排除 QA、legacy、preview、evidence 和对话头像。JSON 路径代表原生角色/动作包，花括号是逐项路径的等价简写，路径中的 @ 等于本行资源键，code:src/ 等于 apps/web/src/，#elite 代表原有精英显示分支。已绘包含本作重绘与已核验 CC0 加工，来源见 manifest。盘点可由 node --import tsx tools/pixel/write-progress.ts 重建。
 
 | 资源键 | 原路径 | 类别 | 批次 | 状态 |

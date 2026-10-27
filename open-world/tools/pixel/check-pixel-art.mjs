@@ -3,6 +3,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import sharp from 'sharp';
+import {validPixelLicense} from './upstream-license.mjs';
 const root=path.resolve(fileURLToPath(new URL('../..',import.meta.url)));
 const point=(p,w,h)=>Array.isArray(p)&&p.length===2&&p.every(Number.isInteger)&&p[0]>=0&&p[1]>=0&&p[0]<w&&p[1]<h;
 export async function checkAsset(asset,{publicRoot=path.join(root,'apps/web/public'),palette=JSON.parse(fs.readFileSync(path.join(root,'packages/asset-manifest/pixel-palette.json'),'utf8')),candidateRoot,candidateFiles}={}){
@@ -12,7 +13,7 @@ export async function checkAsset(asset,{publicRoot=path.join(root,'apps/web/publ
  if(!point(asset.anchor,fw+1,fh+1))add('anchor','Missing or out-of-bounds integer foot anchor');
  if(asset.scale!==2)add('scale','Native art must be displayed at x2');
  if(!['authored-pixels','adapted-pixels'].includes(asset.provenance?.method)||!asset.provenance.reviewed||!asset.provenance.recipe)add('provenance','Authored pixel cleanup review missing');
- if(asset.provenance?.method==='adapted-pixels'){const u=asset.provenance.upstream;if(u?.license!=='CC0-1.0'||!/^https:\/\//.test(u?.url??'')||!/^[0-9a-f]{64}$/.test(u?.sourceSha256??'')||!u?.author||!u?.file||!u?.package||!/^[0-9a-f]{64}$/.test(u?.archiveSha256??'')||!Array.isArray(u?.modifications))add('license','Adapted pixel art requires a pinned CC0 source and author');}
+ if(asset.provenance?.method==='adapted-pixels'){const u=asset.provenance.upstream;if(!validPixelLicense(u)||!/^https:\/\//.test(u?.url??'')||!/^[0-9a-f]{64}$/.test(u?.sourceSha256??'')||!u?.author||!u?.file||!u?.package||!/^[0-9a-f]{64}$/.test(u?.archiveSha256??'')||!Array.isArray(u?.modifications))add('license','Adapted pixel art requires a pinned reviewed license, source and author');}
  if(!asset.file?.startsWith('/art-pixel/')||asset.file.includes('..'))return [...issues,{code:'file',detail:'Unsafe or non-pixel path'}];
  const file=path.join(candidateRoot&&candidateFiles?.has(asset.file)?candidateRoot:publicRoot,asset.file);
  if(!fs.existsSync(file))return [...issues,{code:'file',detail:'Missing image '+asset.file}];
